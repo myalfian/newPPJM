@@ -59,7 +59,7 @@ export const Home: React.FC = () => {
   };
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-16">
+    <div className="space-y-12 sm:space-y-16 lg:space-y-0 pb-16">
       
       {/* 1. HERO SLIDER (3D Coverflow Carousel) */}
       <HeroSlider />
@@ -72,7 +72,7 @@ export const Home: React.FC = () => {
 
 
       {/* 2. SAMBUTAN SINGKAT PENGASUH KH. M. JAUHARUL MAKNUUN */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 lg:pt-12 lg:pb-8">
         <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-m3-1 border border-slate-200/90 relative overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             

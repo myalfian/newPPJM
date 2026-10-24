@@ -323,9 +323,13 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
 
     // In desktop view (>= 1024px): 5 cards visible (offset -2, -1, 0, 1, 2)
     if (isDesktop) {
+      const step1 = Math.min(Math.max(viewportWidth * 0.32, 420), 620);
+      const step2 = Math.min(Math.max(viewportWidth * 0.58, 760), 1140);
+      const stepHidden = Math.min(Math.max(viewportWidth * 0.80, 1000), 1500);
+
       if (absOffset > 2 || absOffset > maxOffset) {
         return {
-          transform: `translate(-50%, -50%) translateX(${offset > 0 ? 880 : -880}px) scale(0.6) translateZ(-200px)`,
+          transform: `translate(-50%, -50%) translateX(${offset > 0 ? stepHidden : -stepHidden}px) scale(0.6) translateZ(-200px)`,
           opacity: 0,
           zIndex: 0,
           pointerEvents: 'none' as const,
@@ -348,14 +352,14 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
         rotateY = dragOffset * 0.03;
         translateZ = 0;
       } else if (absOffset === 1) {
-        translateX = (offset > 0 ? 380 : -380) + dragOffset * 0.75;
-        scale = 0.85;
+        translateX = (offset > 0 ? step1 : -step1) + dragOffset * 0.75;
+        scale = 0.86;
         opacity = 0.82;
         zIndex = 20;
         rotateY = offset > 0 ? -9 : 9;
         translateZ = -60;
       } else if (absOffset === 2) {
-        translateX = (offset > 0 ? 660 : -660) + dragOffset * 0.5;
+        translateX = (offset > 0 ? step2 : -step2) + dragOffset * 0.5;
         scale = 0.72;
         opacity = 0.55;
         zIndex = 10;
@@ -463,7 +467,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       aria-label="Informasi Utama & Program Unggulan Pondok Pesantren Jauharul Maknuun"
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      className="relative w-full pt-2 pb-6 sm:pt-4 sm:pb-8 bg-[#071526] overflow-hidden select-none outline-none"
+      className="relative w-full pt-2 pb-5 sm:pt-4 sm:pb-6 lg:py-0 lg:h-[calc(100vh-175px)] lg:min-h-[500px] lg:max-h-[850px] bg-[#071526] overflow-hidden select-none outline-none lg:flex lg:flex-col lg:justify-center"
       onMouseEnter={() => {
         isInteractingRef.current = true;
         setIsPaused(true);
@@ -493,14 +497,14 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
         </button>
       </div>
 
-      <div className="w-full max-w-7xl mx-auto px-0 sm:px-4 relative z-10">
+      <div className="w-full max-w-full lg:max-w-[1700px] mx-auto px-0 sm:px-4 relative z-10 lg:h-full lg:flex lg:flex-col lg:justify-between lg:py-2">
         
         {/* Carousel Viewport Container with 3D Perspective */}
         <div 
           ref={containerRef}
-          className="relative w-full h-[230px] xs:h-[270px] sm:h-[370px] md:h-[450px] lg:h-[530px] xl:h-[570px] overflow-x-hidden flex items-center justify-center cursor-grab active:cursor-grabbing touch-pan-y"
+          className="relative w-full h-[230px] xs:h-[270px] sm:h-[370px] md:h-[450px] lg:h-[calc(100%-36px)] overflow-x-hidden flex items-center justify-center cursor-grab active:cursor-grabbing touch-pan-y"
           style={{ 
-            perspective: prefersReducedMotion ? 'none' : '1200px',
+            perspective: prefersReducedMotion ? 'none' : '1400px',
             WebkitTapHighlightColor: 'transparent'
           }}
           onTouchStart={handleTouchStart}
@@ -527,7 +531,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                 key={slide.id || index}
                 role="group"
                 aria-roledescription="slide"
-                aria-label={`Slide ${index + 1} dari ${total}: ${slide.title}`}
+                aria-label={`Slide ${index + 1} dari ${total}: ${slide.title || slide.badge}`}
                 aria-hidden={!isActive}
                 style={style}
                 onClick={() => {
@@ -539,9 +543,9 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                     }
                   }
                 }}
-                className={`absolute top-1/2 left-1/2 w-full sm:w-[600px] md:w-[720px] lg:w-[860px] xl:w-[940px] max-w-full aspect-[16/9] rounded-none sm:rounded-3xl overflow-hidden transform-gpu will-change-transform ${
+                className={`absolute top-1/2 left-1/2 w-full sm:w-[600px] md:w-[720px] lg:w-auto lg:h-full lg:max-h-[760px] max-w-full lg:max-w-[92vw] aspect-[16/9] rounded-none sm:rounded-3xl overflow-hidden transform-gpu will-change-transform ${
                   isActive 
-                    ? 'ring-1 ring-white/30 shadow-[0_25px_60px_rgba(0,0,0,0.8),0_0_35px_rgba(212,175,55,0.3)]' 
+                    ? 'ring-1 ring-white/30 shadow-[0_25px_60px_rgba(0,0,0,0.85),0_0_40px_rgba(212,175,55,0.35)]' 
                     : 'ring-1 ring-white/10 shadow-[0_10px_25px_rgba(0,0,0,0.5)] cursor-pointer hover:brightness-105'
                 }`}
               >
@@ -624,7 +628,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
 
         {/* Bottom Pagination Indicators (Centered & Minimalist) */}
         {total > 1 && (
-          <div className="flex items-center justify-center pt-2 sm:pt-3 pb-1">
+          <div className="flex items-center justify-center pt-2 sm:pt-3 pb-1 lg:py-0">
             <div className="flex items-center gap-1.5">
               {slides.map((slide, i) => {
                 const isActiveDot = i === current;
@@ -634,7 +638,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                     type="button"
                     onClick={() => goToSlide(i)}
                     className="p-1 cursor-pointer flex items-center justify-center focus:outline-hidden group"
-                    aria-label={`Pindah ke slide ${i + 1}: ${slide.title}`}
+                    aria-label={`Pindah ke slide ${i + 1}: ${slide.title || slide.badge}`}
                     aria-current={isActiveDot ? 'true' : 'false'}
                   >
                     <span
