@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Award, Filter, Calendar, Trophy, X, ExternalLink, ChevronRight } from 'lucide-react';
+import { Award, Trophy, X, ExternalLink, ChevronRight } from 'lucide-react';
 import { Achievement } from '../lib/supabase';
 import { NavBarTabs } from '../components/common/NavBarTabs';
+import { BottomNavBarTabs } from '../components/common/BottomNavBarTabs';
 
 const SAMPLE_ACHIEVEMENTS: Achievement[] = [
   {
@@ -81,40 +82,17 @@ export const Prestasi: React.FC = () => {
         </div>
       </div>
 
-      {/* Filter Bar */}
-      <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
-          <Filter className="w-4 h-4 text-emerald-700 flex-shrink-0" />
-          <span className="text-xs font-bold text-slate-400 uppercase mr-1">Kategori:</span>
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
-                selectedCategory === cat
-                  ? 'bg-emerald-800 text-white shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:bg-emerald-50'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-emerald-700 flex-shrink-0" />
-          <span className="text-xs font-bold text-slate-400 uppercase">Tahun:</span>
-          <select
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
-            className="text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 focus:outline-none focus:border-emerald-600"
-          >
-            {years.map((y) => (
-              <option key={y} value={y}>{y === 'Semua' ? 'Semua Tahun' : y}</option>
-            ))}
-          </select>
-        </div>
-      </div>
+      {/* Category Navigation with Bottom Floating Animation */}
+      <BottomNavBarTabs
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        years={years}
+        selectedYear={selectedYear}
+        onSelectYear={setSelectedYear}
+        categoryLabel="Kategori"
+        yearLabel="Tahun"
+      />
 
       {/* Grid of Achievements */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
