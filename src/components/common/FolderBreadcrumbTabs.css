@@ -1,0 +1,96 @@
+/* Fluid Sliding Tab Bar with Carved / Inverted Curve Cutout Effect
+ * Inspired by CodePen mario_999/pen/rNYZxNy & Modern Fluid Navigation
+ */
+
+.fluid-tab-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(248, 250, 252, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 9999px;
+  padding: 5px;
+  box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+:is(.dark .fluid-tab-container) {
+  background: rgba(24, 24, 27, 0.9);
+  border-color: rgba(39, 39, 42, 0.9);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+/* Individual Tab Button / Link */
+.fluid-tab-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  border-radius: 9999px;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s ease;
+  z-index: 10;
+}
+
+.fluid-tab-item:active {
+  transform: scale(0.98);
+}
+
+/* Active Sliding Indicator with Inverted Corner Cutouts */
+.fluid-cutout-indicator {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 1px solid rgba(203, 213, 225, 0.7);
+  box-shadow: 0 3px 12px -2px rgba(0, 122, 204, 0.12), 0 1px 3px rgba(0, 0, 0, 0.05);
+  z-index: 0;
+}
+
+:is(.dark .fluid-cutout-indicator) {
+  background: #18181b;
+  border-color: rgba(63, 63, 70, 0.8);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Specular Gloss Line on Top */
+.fluid-cutout-indicator::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 12px;
+  right: 12px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+/* Carved / Inverted Curve Cutout Wings */
+.cutout-wing-left,
+.cutout-wing-right {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cutout-wing-left {
+  left: -9.5px;
+  bottom: 0;
+}
+
+.cutout-wing-right {
+  right: -9.5px;
+  bottom: 0;
+}
