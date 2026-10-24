@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Globe, ChevronRight, Volume2, Sparkles, BookOpen, CheckCircle, MessageSquare } from 'lucide-react';
+import { Globe, Volume2, Sparkles, BookOpen, CheckCircle, MessageSquare, ChevronRight } from 'lucide-react';
 import { MandarinLesson } from '../../../lib/supabase';
+import { FolderBreadcrumbTabs } from '../../../components/common/FolderBreadcrumbTabs';
 
 const DEFAULT_LESSONS: MandarinLesson[] = [
   {
@@ -66,16 +67,8 @@ export const MandarinMateri: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-        <Link to="/" className="hover:text-emerald-800">Beranda</Link>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-emerald-800">Smart JM</span>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-emerald-800">Mandarin Class</span>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-slate-700">Materi & Pinyin</span>
-      </div>
+      {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
+      <FolderBreadcrumbTabs />
 
       {/* Banner */}
       <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-3xl p-6 sm:p-8 text-white shadow-m3-2 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">

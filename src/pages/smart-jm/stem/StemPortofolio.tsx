@@ -1,21 +1,14 @@
 import React from 'react';
-import { StemShowcase } from '../../../components/smart-jm/StemShowcase';
 import { Link } from 'react-router-dom';
-import { ChevronRight, FileText } from 'lucide-react';
+import { FileText } from 'lucide-react';
+import { StemShowcase } from '../../../components/smart-jm/StemShowcase';
+import { FolderBreadcrumbTabs } from '../../../components/common/FolderBreadcrumbTabs';
 
 export const StemPortofolio: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-        <Link to="/" className="hover:text-emerald-800">Beranda</Link>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-emerald-800">Smart JM</span>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-emerald-800">STEM Area</span>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-slate-700">Portofolio Siswa</span>
-      </div>
+      {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
+      <FolderBreadcrumbTabs />
 
       <div className="flex items-center justify-between">
         <Link

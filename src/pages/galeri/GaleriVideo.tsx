@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Play, ChevronRight, ExternalLink, X, Film } from 'lucide-react';
+import { Play, ExternalLink, X, Film, ChevronRight } from 'lucide-react';
 import { YoutubeIcon, InstagramIcon } from '../../components/common/SocialIcons';
+import { FolderBreadcrumbTabs } from '../../components/common/FolderBreadcrumbTabs';
 
 interface VideoItem {
   id: string;
@@ -55,13 +56,9 @@ export const GaleriVideo: React.FC = () => {
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
-        <Link to="/" className="hover:text-emerald-800">Beranda</Link>
-        <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-slate-700">Galeri Video</span>
-      </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 sm:space-y-10">
+      {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
+      <FolderBreadcrumbTabs />
 
       {/* Header Banner */}
       <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-3xl p-8 sm:p-12 text-white shadow-m3-2 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-6">
