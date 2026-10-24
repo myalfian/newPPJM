@@ -23,34 +23,11 @@ import {
   Camera
 } from 'lucide-react';
 import { SearchModal } from './SearchModal';
+import { PUBLIC_NAV_TABS, NavTabItem, NavSubItem, TabColorConfig } from '../../data/navigationData';
 
 interface NavbarProps {
   onOpenMobileMenu?: () => void;
   userName?: string;
-}
-
-interface NavSubItem {
-  title: string;
-  href: string;
-  desc: string;
-  icon: React.ComponentType<{ className?: string }>;
-}
-
-interface TabColorConfig {
-  badgeBg: string;
-  activeBadgeBg: string;
-  activeText: string;
-  activeDot: string;
-}
-
-interface NavTabItem {
-  id: string;
-  label: string;
-  icon: React.ComponentType<{ className?: string }>;
-  href: string;
-  isDropdown: boolean;
-  color: TabColorConfig;
-  items?: NavSubItem[];
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) => {
@@ -119,109 +96,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  // Navigation Items with Android App-style Colorful Badges & Submenus
-  const navTabs: NavTabItem[] = [
-    {
-      id: 'jm-center',
-      label: 'JM Center',
-      icon: Landmark,
-      href: '/',
-      isDropdown: false,
-      color: {
-        badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 group-hover:bg-emerald-100 group-hover:text-emerald-800',
-        activeBadgeBg: 'bg-[#0f5132] text-white shadow-md shadow-emerald-900/30 ring-2 ring-emerald-400/60',
-        activeText: 'text-[#073b22]',
-        activeDot: 'bg-[#0f5132]',
-      },
-      items: [
-        { title: 'Sambutan Pengasuh', href: '/jm-center/sambutan', desc: 'Pesan & Arahan Pimpinan Pondok', icon: Compass },
-        { title: 'Visi & Misi', href: '/jm-center/visi-misi', desc: 'Arah & Nilai Luhur Lembaga', icon: HeartHandshake },
-        { title: 'Sejarah Pesantren', href: '/jm-center/sejarah', desc: 'Napak tilas dakwah di Lasem Sidayu', icon: Landmark },
-        { title: 'Badan Otonom & Lembaga', href: '/jm-center/lembaga', desc: 'Struktur kepengurusan & asrama', icon: Layers },
-      ]
-    },
-    {
-      id: 'programs',
-      label: 'Program Unggulan',
-      icon: BookOpenCheck,
-      href: '/program-unggulan',
-      isDropdown: false,
-      color: {
-        badgeBg: 'bg-blue-50 text-blue-700 border-blue-200/80 group-hover:bg-blue-100 group-hover:text-blue-800',
-        activeBadgeBg: 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-2 ring-blue-400/60',
-        activeText: 'text-blue-800',
-        activeDot: 'bg-blue-600',
-      },
-      items: [
-        { title: 'Tahfidz 30 Juz Bersanad', href: '/smart-jm/hafidz/read', desc: "Mutaba'ah harian & sanad mutqin", icon: BookOpen },
-        { title: 'Kurikulum Terpadu & Terakreditasi "A"', href: '/program-unggulan/program-sekolah', desc: 'Pendidikan formal unggulan', icon: GraduationCap },
-        { title: 'Madrasah Diniyah Salafiyah', href: '/program-unggulan/program-madin', desc: 'Metode maknani gandul kitab turats', icon: BookOpenCheck },
-        { title: 'Amaliyah Pondok', href: '/program-unggulan/amaliyah-pondok', desc: 'Wirid, ratib & sholat berjamaah', icon: HeartHandshake },
-      ]
-    },
-    {
-      id: 'ekskul',
-      label: 'Ekstrakurikuler',
-      icon: Sparkles,
-      href: '/ekskul',
-      isDropdown: false,
-      color: {
-        badgeBg: 'bg-purple-50 text-purple-700 border-purple-200/80 group-hover:bg-purple-100 group-hover:text-purple-800',
-        activeBadgeBg: 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-2 ring-purple-400/60',
-        activeText: 'text-purple-800',
-        activeDot: 'bg-purple-600',
-      },
-    },
-    {
-      id: 'prestasi',
-      label: 'Prestasi',
-      icon: Trophy,
-      href: '/prestasi',
-      isDropdown: false,
-      color: {
-        badgeBg: 'bg-amber-50 text-amber-700 border-amber-200/80 group-hover:bg-amber-100 group-hover:text-amber-800',
-        activeBadgeBg: 'bg-amber-500 text-white shadow-md shadow-amber-500/30 ring-2 ring-amber-300/60',
-        activeText: 'text-amber-900',
-        activeDot: 'bg-amber-500',
-      },
-    },
-    {
-      id: 'stem',
-      label: 'STEM',
-      icon: Atom,
-      href: '/stem',
-      isDropdown: false,
-      color: {
-        badgeBg: 'bg-teal-50 text-teal-700 border-teal-200/80 group-hover:bg-teal-100 group-hover:text-teal-800',
-        activeBadgeBg: 'bg-teal-600 text-white shadow-md shadow-teal-600/30 ring-2 ring-teal-400/60',
-        activeText: 'text-teal-900',
-        activeDot: 'bg-teal-600',
-      },
-      items: [
-        { title: 'Silabus STEM Santri', href: '/smart-jm/stem/materi', desc: 'Modul robotika, IoT & sains digital', icon: Cpu },
-        { title: 'Portofolio Riset Santri', href: '/smart-jm/stem/portofolio', desc: 'Karya teknologi dan otomasi praktis', icon: Sparkles },
-        { title: 'Murojaah AI Santri', href: '/smart-jm/hafidz/murojaah', desc: 'Evaluasi lafadz suara AI', icon: BookOpen },
-        { title: 'Mandarin Class', href: '/smart-jm/mandarin/materi', desc: 'Pinyin audio & percakapan interaktif', icon: GraduationCap },
-      ]
-    },
-    {
-      id: 'galeri',
-      label: 'Galeri',
-      icon: Images,
-      href: '/galeri',
-      isDropdown: false,
-      color: {
-        badgeBg: 'bg-rose-50 text-rose-700 border-rose-200/80 group-hover:bg-rose-100 group-hover:text-rose-800',
-        activeBadgeBg: 'bg-rose-600 text-white shadow-md shadow-rose-600/30 ring-2 ring-rose-400/60',
-        activeText: 'text-rose-900',
-        activeDot: 'bg-rose-600',
-      },
-      items: [
-        { title: 'Galeri Foto Kegiatan', href: '/galeri/foto', desc: 'Dokumentasi asrama & halaqah santri', icon: Camera },
-        { title: 'Galeri Video Profil', href: '/galeri/video', desc: 'Dokumenter resmi & kegiatan hadrah', icon: Video },
-      ]
-    },
-  ];
+  // Navigation Items with Android App-style Colorful Badges & Submenus (Single Source of Truth)
+  const navTabs = PUBLIC_NAV_TABS;
 
   const isTabActive = (tab: NavTabItem) => {
     if (tab.id === 'jm-center') return location.pathname === '/' || location.pathname.startsWith('/jm-center');
