@@ -136,9 +136,9 @@ const DEFAULT_CATEGORY_TABS: Record<
 };
 
 /**
- * NavBarTabs - Fluid Curved Cutout Magic Navigation Bar with Sliding Notch & Floating Dot
- * Exact visual match to CodePen reference with Pesantren PPJM Primary Identity (#0f5132)
- * Stacked layout: Icon on top, Label on bottom
+ * NavBarTabs - Modern Android TabNavBar with Curved Cutout Notch & Floating Dot
+ * Default tab hierarchy: [Beranda] -> [Sub Menu 1] .. [Sub Menu N]
+ * Borderless emerald green container with left-aligned close-spacing text tabs
  */
 export const NavBarTabs: React.FC<NavBarTabsProps> = ({
   tabs: propTabs,
@@ -223,16 +223,15 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
       aria-label="Sub Menu Navigation"
       className={`curved-navbar-wrapper w-full ${className}`}
     >
-      <div className="curved-navbar-bar">
-        {/* Horizontal Scrollable Track */}
+      <div className="curved-navbar-bar w-full">
+        {/* Horizontal Scrollable Track for Smaller Screens (Left Aligned with Close Spacing) */}
         <div
           ref={tabListRef}
-          className="curved-scroll-track w-full flex items-center overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full"
+          className="curved-scroll-track w-full flex items-center justify-start overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full px-2"
         >
-          <ul className="curved-tab-list flex items-center">
+          <ul className="curved-tab-list flex items-center justify-start">
             {tabs.map((tab) => {
               const isActive = activeTab?.id === tab.id;
-              const TabIcon = tab.icon || Layers3;
 
               return (
                 <li
@@ -246,35 +245,30 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
                     aria-current={isActive ? 'page' : undefined}
                     className={`curved-tab-link ${isActive ? 'active' : ''}`}
                   >
-                    {/* Animated Sliding Notch Pointer & Floating Dot (CodePen Style) */}
+                    {/* Animated Sliding Notch Pointer & Floating Dot (Smooth CodePen Style) */}
                     {isActive && (
                       <motion.div
                         layoutId="curvedCutoutPointer"
                         className="curved-pointer"
                         transition={{
                           type: 'spring',
-                          stiffness: 420,
-                          damping: 30,
-                          mass: 0.8,
+                          stiffness: 380,
+                          damping: 28,
+                          mass: 0.7,
                         }}
                       >
                         <span className="curved-dot" aria-hidden="true" />
                       </motion.div>
                     )}
 
-                    {/* Stacked Icon (Top) */}
-                    <span className="curved-tab-icon">
-                      <TabIcon className="w-6 h-6 sm:w-7 sm:h-7" />
-                    </span>
-
-                    {/* Stacked Label (Bottom) */}
+                    {/* Tab Label */}
                     <span className="curved-tab-text">
                       {tab.label}
                     </span>
 
                     {/* Optional Badge */}
                     {tab.badge && (
-                      <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-100 text-[#0f5132] dark:bg-emerald-950 dark:text-emerald-300">
+                      <span className="ml-1.5 text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-gold-400 text-emerald-950">
                         {tab.badge}
                       </span>
                     )}
