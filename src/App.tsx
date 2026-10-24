@@ -1,5 +1,5 @@
-import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { RootLayout } from './layouts/RootLayout';
 import { AdminLayout } from './layouts/AdminLayout';
 
@@ -33,9 +33,18 @@ import { KelolaGaleri } from './pages/admin/KelolaGaleri';
 import { KelolaSlider } from './pages/admin/KelolaSlider';
 
 export const App: React.FC = () => {
+  const navigate = useNavigate();
+
+  // Dukung akses via hash URL (misal #admin atau #/admin)
+  useEffect(() => {
+    if (window.location.hash === '#admin' || window.location.hash.startsWith('#/admin')) {
+      navigate('/admin');
+    }
+  }, [navigate]);
+
   return (
     <Routes>
-      {/* Public Pages with Root Layout */}
+      {/* 1. Public Pages with Root Layout */}
       <Route path="/" element={<RootLayout />}>
         <Route index element={<Home />} />
 
@@ -67,20 +76,27 @@ export const App: React.FC = () => {
         <Route path="galeri/video" element={<GaleriVideo />} />
       </Route>
 
-      {/* Admin Login */}
+      {/* 2. Admin Login Routes */}
       <Route path="/admin/login" element={<Login />} />
+      <Route path="/login" element={<Login />} />
 
-      {/* Admin CMS Zero-IT-Skill Portal */}
-      <Route path="/admin" element={<AdminLayout />}>
+      {/* 3. Admin CMS Zero-IT-Skill Portal */}
+      <Route path="/admin/*" element={<AdminLayout />}>
         <Route index element={<Dashboard />} />
+        <Route path="dashboard" element={<Dashboard />} />
         <Route path="berita" element={<KelolaBerita />} />
         <Route path="stem" element={<KelolaStem />} />
         <Route path="mandarin" element={<KelolaMandarin />} />
         <Route path="galeri" element={<KelolaGaleri />} />
         <Route path="slider" element={<KelolaSlider />} />
+        <Route path="*" element={<Dashboard />} />
+      </Route>
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Dashboard />} />
+        <Route path="*" element={<Dashboard />} />
       </Route>
 
-      {/* 404 Fallback */}
+      {/* 4. 404 Fallback to Home */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

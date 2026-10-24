@@ -9,7 +9,8 @@ import {
   Atom,
   Trophy,
   Menu,
-  ChevronDown
+  ChevronDown,
+  ShieldCheck
 } from 'lucide-react';
 import { SearchModal } from './SearchModal';
 
@@ -326,13 +327,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
                 </kbd>
               </button>
 
-              {/* Admin shortcut */}
+              {/* Admin shortcut (Selalu terlihat di desktop & tablet) */}
               <Link
                 to="/admin"
-                className="hidden xl:inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 transition shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 transition shadow-xs"
                 title="Masuk ke Panel Admin Zero-IT"
               >
-                Admin
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
+                <span>Admin</span>
               </Link>
 
               {/* Mobile Hamburger Button */}
