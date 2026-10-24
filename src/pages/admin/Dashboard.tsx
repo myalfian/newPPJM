@@ -11,7 +11,8 @@ import {
   HelpCircle,
   Sparkles,
   CheckCircle2,
-  ExternalLink
+  ExternalLink,
+  Gauge
 } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
@@ -102,6 +103,27 @@ export const Dashboard: React.FC = () => {
             <div className="pt-2 flex items-center gap-1 text-xs font-bold text-emerald-800">
               <PlusCircle className="w-4 h-4" />
               <span>Buka Modul STEM</span>
+            </div>
+          </Link>
+
+          <Link
+            to="/admin/slider"
+            className="p-6 rounded-3xl bg-white border border-slate-200 hover:border-emerald-400 hover:shadow-m3-2 transition-all space-y-3 group"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
+              <Gauge className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="font-extrabold text-base text-emerald-950 group-hover:text-emerald-700 transition-colors">
+                Kelola Speed Slider Beranda
+              </h3>
+              <p className="text-xs text-slate-500 mt-1">
+                Atur durasi per detik (interval) dan kehalusan animasi geser coverflow 3D.
+              </p>
+            </div>
+            <div className="pt-2 flex items-center gap-1 text-xs font-bold text-emerald-800">
+              <PlusCircle className="w-4 h-4" />
+              <span>Atur Kecepatan Banner</span>
             </div>
           </Link>
         </div>

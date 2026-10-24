@@ -30,6 +30,7 @@ import { KelolaBerita } from './pages/admin/KelolaBerita';
 import { KelolaStem } from './pages/admin/KelolaStem';
 import { KelolaMandarin } from './pages/admin/KelolaMandarin';
 import { KelolaGaleri } from './pages/admin/KelolaGaleri';
+import { KelolaSlider } from './pages/admin/KelolaSlider';
 
 export const App: React.FC = () => {
   return (
@@ -76,6 +77,7 @@ export const App: React.FC = () => {
         <Route path="stem" element={<KelolaStem />} />
         <Route path="mandarin" element={<KelolaMandarin />} />
         <Route path="galeri" element={<KelolaGaleri />} />
+        <Route path="slider" element={<KelolaSlider />} />
       </Route>
 
       {/* 404 Fallback */}

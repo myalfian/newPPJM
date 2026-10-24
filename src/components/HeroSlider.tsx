@@ -3,18 +3,29 @@ import {
   X, 
   Share2, 
   Sparkles,
-  ExternalLink,
-  ChevronLeft,
-  ChevronRight
+  Settings,
+  Gauge,
+  Play,
+  Pause,
+  RotateCcw,
+  Check
 } from 'lucide-react';
 import { HeroSlide, initialHeroSlides } from '../data/heroSlides';
+import { 
+  SliderSettings, 
+  getSliderSettings, 
+  saveSliderSettings, 
+  DEFAULT_SLIDER_SETTINGS 
+} from '../lib/sliderSettings';
 
 interface HeroSliderProps {
   slides?: HeroSlide[];
+  settings?: SliderSettings;
 }
 
 export const HeroSlider: React.FC<HeroSliderProps> = ({ 
-  slides: propSlides 
+  slides: propSlides,
+  settings: propSettings
 }) => {
   const slides = useMemo(() => {
     return propSlides && propSlides.length > 0 ? propSlides : initialHeroSlides;
@@ -28,6 +39,41 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
   const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  // Dynamic Slider Settings (Adjustable by Admin)
+  const [sliderSettings, setSliderSettings] = useState<SliderSettings>(() => {
+    return propSettings || getSliderSettings();
+  });
+  const [showAdminSpeedModal, setShowAdminSpeedModal] = useState(false);
+  const [saveSuccessMsg, setSaveSuccessMsg] = useState(false);
+
+  // Check if admin is currently logged in or dev
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const loggedIn = localStorage.getItem('ppjm_admin_logged_in') === 'true';
+      setIsAdmin(loggedIn);
+    }
+  }, []);
+
+  // Sync settings when external changes occur (custom event or prop)
+  useEffect(() => {
+    const handleSettingsChanged = (e: Event) => {
+      const customEvent = e as CustomEvent<SliderSettings>;
+      if (customEvent.detail) {
+        setSliderSettings(customEvent.detail);
+      } else {
+        setSliderSettings(getSliderSettings());
+      }
+    };
+
+    window.addEventListener('ppjm-slider-settings-changed', handleSettingsChanged);
+    window.addEventListener('storage', handleSettingsChanged);
+    return () => {
+      window.removeEventListener('ppjm-slider-settings-changed', handleSettingsChanged);
+      window.removeEventListener('storage', handleSettingsChanged);
+    };
+  }, []);
   
   // Touch & Mouse Drag State
   const [isDragging, setIsDragging] = useState(false);
@@ -81,13 +127,20 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     setProgress(0);
   }, [total]);
 
-  // Autoplay Loop with Progress updates (5.5s duration)
+  // Autoplay Loop with Admin-defined speed (duration in ms)
   useEffect(() => {
-    if (total <= 1 || prefersReducedMotion || isPaused || isInteractingRef.current) {
+    if (
+      total <= 1 || 
+      prefersReducedMotion || 
+      isPaused || 
+      isInteractingRef.current ||
+      !sliderSettings.isAutoplayEnabled ||
+      sliderSettings.autoplayInterval <= 0
+    ) {
       return;
     }
 
-    const duration = 5500;
+    const duration = Math.max(sliderSettings.autoplayInterval * 1000, 1500); // minimal 1.5s
     const intervalStep = 50;
     let elapsed = 0;
 
@@ -107,7 +160,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     return () => {
       if (timer) clearInterval(timer);
     };
-  }, [total, prefersReducedMotion, isPaused, next, current]);
+  }, [total, prefersReducedMotion, isPaused, next, current, sliderSettings]);
 
   // Auto-pause when Tab is inactive
   useEffect(() => {
@@ -233,6 +286,15 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     }
   };
 
+  // Admin: Update & Save slider settings
+  const handleUpdateSettings = (partial: Partial<SliderSettings>) => {
+    const updated = { ...sliderSettings, ...partial };
+    setSliderSettings(updated);
+    saveSliderSettings(updated);
+    setSaveSuccessMsg(true);
+    setTimeout(() => setSaveSuccessMsg(false), 2000);
+  };
+
   // Calculate Layout Dimensions by Breakpoint
   const isDesktop = viewportWidth >= 1024;
   const isTablet = viewportWidth >= 640 && viewportWidth < 1024;
@@ -244,6 +306,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
   // Determine transforms & 3D styling for each offset relative to current active
   const getCardStyle = (offset: number) => {
     const absOffset = Math.abs(offset);
+    const transSpeed = sliderSettings.transitionSpeed || 600;
 
     // If reduced motion is preferred, use flat 2D layout without perspective
     if (prefersReducedMotion) {
@@ -254,7 +317,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
         zIndex: offset === 0 ? 30 : 20 - absOffset,
         pointerEvents: offset === 0 ? ('auto' as const) : isVisible ? ('auto' as const) : ('none' as const),
         visibility: isVisible ? ('visible' as const) : ('hidden' as const),
-        transition: 'opacity 300ms ease, transform 300ms ease'
+        transition: `opacity ${transSpeed}ms ease, transform ${transSpeed}ms ease`
       };
     }
 
@@ -306,7 +369,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
         zIndex,
         pointerEvents: 'auto' as const,
         visibility: 'visible' as const,
-        transition: isDragging ? 'none' : 'transform 600ms cubic-bezier(0.16, 1, 0.3, 1), opacity 600ms cubic-bezier(0.16, 1, 0.3, 1)'
+        transition: isDragging ? 'none' : `transform ${transSpeed}ms cubic-bezier(0.16, 1, 0.3, 1), opacity ${transSpeed}ms cubic-bezier(0.16, 1, 0.3, 1)`
       };
     }
 
@@ -350,11 +413,11 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
         zIndex,
         pointerEvents: 'auto' as const,
         visibility: 'visible' as const,
-        transition: isDragging ? 'none' : 'transform 600ms cubic-bezier(0.16, 1, 0.3, 1), opacity 600ms cubic-bezier(0.16, 1, 0.3, 1)'
+        transition: isDragging ? 'none' : `transform ${transSpeed}ms cubic-bezier(0.16, 1, 0.3, 1), opacity ${transSpeed}ms cubic-bezier(0.16, 1, 0.3, 1)`
       };
     }
 
-    // In mobile view (< 640px): 1 card fit to (width) screen
+    // In mobile view (< 640px): 1 card fit to screen
     const slideOffset = viewportWidth;
     if (absOffset > 1) {
       return {
@@ -386,7 +449,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       zIndex,
       pointerEvents: 'auto' as const,
       visibility: 'visible' as const,
-      transition: isDragging ? 'none' : 'transform 450ms cubic-bezier(0.16, 1, 0.3, 1), opacity 450ms cubic-bezier(0.16, 1, 0.3, 1)'
+      transition: isDragging ? 'none' : `transform ${transSpeed}ms cubic-bezier(0.16, 1, 0.3, 1), opacity ${transSpeed}ms cubic-bezier(0.16, 1, 0.3, 1)`
     };
   };
 
@@ -414,6 +477,21 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       <div className="absolute inset-0 dark-islamic-pattern opacity-20 pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[250px] bg-amber-500/10 rounded-full blur-[90px] pointer-events-none" />
+
+      {/* Admin Quick Speed Control Badge (Discreet on top right) */}
+      <div className="absolute top-3 right-3 sm:right-6 z-40">
+        <button
+          type="button"
+          onClick={() => setShowAdminSpeedModal(true)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs font-semibold backdrop-blur-md shadow-md transition-all cursor-pointer group"
+          title="Atur Kecepatan Sliding (Pengaturan Admin)"
+        >
+          <Settings className="w-3.5 h-3.5 text-[#ffcc00] group-hover:rotate-45 transition-transform" />
+          <span className="text-[11px] font-mono">
+            {sliderSettings.isAutoplayEnabled ? `${sliderSettings.autoplayInterval}s` : 'Manual'}
+          </span>
+        </button>
+      </div>
 
       <div className="w-full max-w-7xl mx-auto px-0 sm:px-4 relative z-10">
         
@@ -529,13 +607,13 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                           : 'w-2 sm:w-2.5 bg-white/30 group-hover:bg-white/60'
                       }`}
                     >
-                      {isActiveDot && !isPaused && !prefersReducedMotion && (
+                      {isActiveDot && !isPaused && !prefersReducedMotion && sliderSettings.isAutoplayEnabled && (
                         <span 
                           className="absolute inset-y-0 left-0 bg-[#ffcc00] rounded-full transition-all duration-75 ease-linear"
                           style={{ width: `${progress}%` }}
                         />
                       )}
-                      {isActiveDot && (isPaused || prefersReducedMotion) && (
+                      {isActiveDot && (isPaused || prefersReducedMotion || !sliderSettings.isAutoplayEnabled) && (
                         <span className="absolute inset-0 bg-[#ffcc00] rounded-full" />
                       )}
                     </span>
@@ -546,6 +624,174 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
           </div>
         )}
       </div>
+
+      {/* ================= ADMIN QUICK SPEED CONTROLLER MODAL ================= */}
+      {showAdminSpeedModal && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150"
+          onClick={() => setShowAdminSpeedModal(false)}
+        >
+          <div 
+            className="w-full max-w-md bg-white rounded-3xl p-6 shadow-2xl border border-gray-100 space-y-5 text-gray-900"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+                  <Gauge className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base text-gray-900 leading-tight">
+                    Kecepatan Slider Beranda
+                  </h3>
+                  <p className="text-[11px] text-gray-500 font-medium">
+                    Atur durasi pergantian & efek gerakan slide
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowAdminSpeedModal(false)}
+                className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* 1. Preset Durasi Cepat */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-gray-700 flex items-center justify-between">
+                <span>Durasi Tampil per Slide:</span>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-xs font-bold">
+                  {sliderSettings.autoplayInterval} Detik
+                </span>
+              </label>
+
+              {/* Slider Range */}
+              <input 
+                type="range"
+                min="2"
+                max="15"
+                step="0.5"
+                value={sliderSettings.autoplayInterval}
+                onChange={(e) => handleUpdateSettings({ autoplayInterval: parseFloat(e.target.value) })}
+                className="w-full accent-[#1a6b3c] cursor-pointer"
+              />
+
+              <div className="grid grid-cols-4 gap-2 pt-1">
+                {[
+                  { label: '3s (Cepat)', val: 3 },
+                  { label: '5.5s (Standar)', val: 5.5 },
+                  { label: '8s (Santai)', val: 8 },
+                  { label: '12s (Lambat)', val: 12 },
+                ].map((item) => (
+                  <button
+                    key={item.val}
+                    type="button"
+                    onClick={() => handleUpdateSettings({ autoplayInterval: item.val })}
+                    className={`py-1.5 px-2 rounded-xl text-[11px] font-bold border transition-all ${
+                      sliderSettings.autoplayInterval === item.val
+                        ? 'bg-[#1a6b3c] text-white border-[#1a6b3c] shadow-xs'
+                        : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 2. Efek Kecepatan Transisi Animasi */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-gray-700 flex items-center justify-between">
+                <span>Kecepatan Animasi Transisi:</span>
+                <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-mono text-xs font-bold">
+                  {sliderSettings.transitionSpeed} ms
+                </span>
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { label: 'Cepat (350ms)', val: 350 },
+                  { label: 'Halus (600ms)', val: 600 },
+                  { label: 'Sinematik (1000ms)', val: 1000 },
+                ].map((item) => (
+                  <button
+                    key={item.val}
+                    type="button"
+                    onClick={() => handleUpdateSettings({ transitionSpeed: item.val })}
+                    className={`py-1.5 px-2 rounded-xl text-[11px] font-bold border transition-all ${
+                      sliderSettings.transitionSpeed === item.val
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                        : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
+                    }`}
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 3. Saklar Autoplay Otomatis */}
+            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+              <div className="flex items-center gap-2">
+                {sliderSettings.isAutoplayEnabled ? (
+                  <Play className="w-4 h-4 text-emerald-600" />
+                ) : (
+                  <Pause className="w-4 h-4 text-amber-600" />
+                )}
+                <span className="text-xs font-bold text-gray-800">
+                  Putar Slide Otomatis (Autoplay)
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => handleUpdateSettings({ isAutoplayEnabled: !sliderSettings.isAutoplayEnabled })}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  sliderSettings.isAutoplayEnabled ? 'bg-[#1a6b3c]' : 'bg-gray-300'
+                }`}
+              >
+                <span 
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    sliderSettings.isAutoplayEnabled ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </button>
+            </div>
+
+            {/* Success Feedback & Footer */}
+            <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+              <button
+                type="button"
+                onClick={() => {
+                  setSliderSettings(DEFAULT_SLIDER_SETTINGS);
+                  saveSliderSettings(DEFAULT_SLIDER_SETTINGS);
+                }}
+                className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-800 font-semibold"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Reset Standar</span>
+              </button>
+
+              <div className="flex items-center gap-2">
+                {saveSuccessMsg && (
+                  <span className="text-xs font-bold text-emerald-600 flex items-center gap-1 animate-in fade-in">
+                    <Check className="w-4 h-4" /> Tersimpan!
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setShowAdminSpeedModal(false)}
+                  className="px-4 py-2 rounded-xl bg-[#1a6b3c] hover:bg-[#0d4a28] text-white font-bold text-xs shadow-sm transition-colors cursor-pointer"
+                >
+                  Selesai
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {/* ================= FULL-SIZE FLYER MODAL ================= */}
       {selectedFlyer && (

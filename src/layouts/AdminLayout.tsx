@@ -12,7 +12,8 @@ import {
   User,
   Menu,
   X,
-  Sparkles
+  Sparkles,
+  Gauge
 } from 'lucide-react';
 import { UserRole } from '../lib/supabase';
 
@@ -70,6 +71,13 @@ export const AdminLayout: React.FC = () => {
       desc: 'Agenda foto kegiatan & link sosmed',
       href: '/admin/galeri',
       icon: ImageIcon,
+      roles: ['super_admin', 'pengurus_konten']
+    },
+    {
+      title: 'Kelola Speed Slider',
+      desc: 'Kecepatan putar & transisi banner',
+      href: '/admin/slider',
+      icon: Gauge,
       roles: ['super_admin', 'pengurus_konten']
     }
   ];
