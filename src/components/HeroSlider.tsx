@@ -579,82 +579,109 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                     }
                   }
                 }}
-                className={`absolute top-1/2 left-1/2 w-full sm:w-[600px] md:w-[720px] lg:w-auto lg:h-[94%] max-w-full lg:max-w-[92vw] aspect-[16/9] rounded-none sm:rounded-3xl overflow-hidden transform-gpu will-change-transform ${
+                className={`absolute top-1/2 left-1/2 w-full sm:w-[600px] md:w-[720px] lg:w-auto lg:h-[94%] max-w-full lg:max-w-[92vw] aspect-[16/9] rounded-none sm:rounded-3xl transform-gpu will-change-transform ${
                   isActive 
-                    ? 'ring-1 ring-white/30 shadow-[0_25px_60px_rgba(0,0,0,0.85),0_0_40px_rgba(212,175,55,0.35)]' 
-                    : 'ring-1 ring-white/10 shadow-[0_10px_25px_rgba(0,0,0,0.5)] cursor-pointer hover:brightness-105'
+                    ? 'z-30 cursor-pointer' 
+                    : 'cursor-pointer hover:brightness-105'
                 }`}
               >
-                {/* 1. Skeleton Shimmer Placeholder while Loading */}
-                {!isImageLoaded && !hasImageError && (
-                  <div className="absolute inset-0 bg-slate-900 animate-pulse flex items-center justify-center z-0">
-                    <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-[#d4af37] animate-spin" />
+                {/* 0. Ambient Google Gemini Aura Glow (Behind Active Card) */}
+                {isActive && !prefersReducedMotion && (
+                  <div 
+                    className="gemini-ambient-aura-card rounded-none sm:rounded-[32px] pointer-events-none" 
+                    aria-hidden="true"
+                  >
+                    <div className="gemini-beam-sweep-slow" />
                   </div>
                 )}
 
-                {/* 2. Main Sharp Flyer Image Layer */}
-                {!hasImageError ? (
-                  <img
-                    src={slide.image}
-                    alt={slide.title || `Flyer ${index + 1}`}
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                    fetchPriority={index === 0 ? 'high' : 'auto'}
-                    decoding="async"
-                    onLoad={() => setLoadedImages(prev => ({ ...prev, [slide.id]: true }))}
-                    onError={() => setImageErrors(prev => ({ ...prev, [slide.id]: true }))}
-                    className="w-full h-full object-cover rounded-none sm:rounded-3xl select-none pointer-events-none transition-opacity duration-300"
-                  />
-                ) : (
-                  /* Fallback Dark Islamic Background on Image Error */
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#0b3d21] via-slate-900 to-black flex items-center justify-center p-6 text-center rounded-none sm:rounded-3xl">
-                    <div className="space-y-2">
-                      <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mx-auto text-[#d4af37]">
-                        <Sparkles className="w-6 h-6" />
-                      </div>
-                      <p className="text-xs font-bold uppercase text-[#d4af37] tracking-wider">Pondok Pesantren Jauharul Maknuun</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* 3. Subtle Dimming on Inactive Cards */}
-                {!isActive && (
-                  <div className="absolute inset-0 bg-black/45 pointer-events-none rounded-none sm:rounded-3xl transition-opacity duration-300" />
-                )}
-
-                {/* 4. Title & Badge Overlay Layer - Pojok Kiri Atas */}
-                <div className={`absolute inset-x-0 top-0 pointer-events-none transition-all duration-300 z-10 ${
+                {/* Inner Card Clip Container */}
+                <div className={`relative w-full h-full rounded-none sm:rounded-3xl overflow-hidden ${
                   isActive 
-                    ? 'bg-gradient-to-b from-black/85 via-black/45 to-transparent pt-3.5 sm:pt-5 pb-8 sm:pb-12 px-3.5 sm:px-6' 
-                    : 'bg-gradient-to-b from-black/85 via-black/50 to-transparent pt-2.5 sm:pt-4 pb-6 sm:pb-9 px-3 sm:px-4'
+                    ? 'shadow-[0_25px_60px_rgba(0,0,0,0.85)]' 
+                    : 'ring-1 ring-white/10 shadow-[0_10px_25px_rgba(0,0,0,0.5)]'
                 }`}>
-                  <div className="flex flex-col items-start gap-1 sm:gap-1.5 max-w-[90%] sm:max-w-[80%]">
-                    {/* Badge Kategori */}
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider shadow-sm backdrop-blur-xs ${
-                        isActive 
-                          ? 'bg-[#1a6b3c]/90 text-emerald-200 border border-emerald-400/40' 
-                          : 'bg-black/70 text-amber-300 border border-white/20'
-                      }`}>
-                        <Sparkles className="w-3 h-3 text-[#ffcc00]" />
-                        <span className="truncate max-w-[170px] sm:max-w-none">{slide.badge}</span>
-                      </span>
-                      {isActive && slide.tag && (
-                        <span className="hidden sm:inline-block text-[11px] text-amber-300 font-bold bg-amber-950/70 border border-amber-500/30 px-2.5 py-0.5 rounded-full backdrop-blur-xs">
-                          {slide.tag}
+                  {/* Google Gemini 2px Sharp Animated Border Glow Frame */}
+                  {isActive && !prefersReducedMotion && (
+                    <div 
+                      className="gemini-border-glow-frame rounded-none sm:rounded-3xl pointer-events-none" 
+                      aria-hidden="true"
+                    >
+                      <div className="gemini-beam-sweep-slow" />
+                    </div>
+                  )}
+
+                  {/* 1. Skeleton Shimmer Placeholder while Loading */}
+                  {!isImageLoaded && !hasImageError && (
+                    <div className="absolute inset-0 bg-slate-900 animate-pulse flex items-center justify-center z-0">
+                      <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-[#d4af37] animate-spin" />
+                    </div>
+                  )}
+
+                  {/* 2. Main Sharp Flyer Image Layer */}
+                  {!hasImageError ? (
+                    <img
+                      src={slide.image}
+                      alt={slide.title || `Flyer ${index + 1}`}
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                      fetchPriority={index === 0 ? 'high' : 'auto'}
+                      decoding="async"
+                      onLoad={() => setLoadedImages(prev => ({ ...prev, [slide.id]: true }))}
+                      onError={() => setImageErrors(prev => ({ ...prev, [slide.id]: true }))}
+                      className="w-full h-full object-cover rounded-none sm:rounded-3xl select-none pointer-events-none transition-opacity duration-300"
+                    />
+                  ) : (
+                    /* Fallback Dark Islamic Background on Image Error */
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#0b3d21] via-slate-900 to-black flex items-center justify-center p-6 text-center rounded-none sm:rounded-3xl">
+                      <div className="space-y-2">
+                        <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mx-auto text-[#d4af37]">
+                          <Sparkles className="w-6 h-6" />
+                        </div>
+                        <p className="text-xs font-bold uppercase text-[#d4af37] tracking-wider">Pondok Pesantren Jauharul Maknuun</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 3. Subtle Dimming on Inactive Cards */}
+                  {!isActive && (
+                    <div className="absolute inset-0 bg-black/45 pointer-events-none rounded-none sm:rounded-3xl transition-opacity duration-300" />
+                  )}
+
+                  {/* 4. Title & Badge Overlay Layer - Pojok Kiri Atas */}
+                  <div className={`absolute inset-x-0 top-0 pointer-events-none transition-all duration-300 z-10 ${
+                    isActive 
+                      ? 'bg-gradient-to-b from-black/85 via-black/45 to-transparent pt-3.5 sm:pt-5 pb-8 sm:pb-12 px-3.5 sm:px-6' 
+                      : 'bg-gradient-to-b from-black/85 via-black/50 to-transparent pt-2.5 sm:pt-4 pb-6 sm:pb-9 px-3 sm:px-4'
+                  }`}>
+                    <div className="flex flex-col items-start gap-1 sm:gap-1.5 max-w-[90%] sm:max-w-[80%]">
+                      {/* Badge Kategori */}
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider shadow-sm backdrop-blur-xs ${
+                          isActive 
+                            ? 'bg-[#1a6b3c]/90 text-emerald-200 border border-emerald-400/40' 
+                            : 'bg-black/70 text-amber-300 border border-white/20'
+                        }`}>
+                          <Sparkles className="w-3 h-3 text-[#ffcc00]" />
+                          <span className="truncate max-w-[170px] sm:max-w-none">{slide.badge}</span>
                         </span>
+                        {isActive && slide.tag && (
+                          <span className="hidden sm:inline-block text-[11px] text-amber-300 font-bold bg-amber-950/70 border border-amber-500/30 px-2.5 py-0.5 rounded-full backdrop-blur-xs">
+                            {slide.tag}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Judul Slider Card di Pojok Kiri Atas (jika ada) */}
+                      {slide.title && (
+                        <h4 className={`font-black text-white tracking-tight leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] line-clamp-2 ${
+                          isActive 
+                            ? 'text-sm sm:text-lg md:text-xl lg:text-2xl' 
+                            : 'text-xs sm:text-sm md:text-base text-gray-200'
+                        }`}>
+                          {slide.title}
+                        </h4>
                       )}
                     </div>
-
-                    {/* Judul Slider Card di Pojok Kiri Atas (jika ada) */}
-                    {slide.title && (
-                      <h4 className={`font-black text-white tracking-tight leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] line-clamp-2 ${
-                        isActive 
-                          ? 'text-sm sm:text-lg md:text-xl lg:text-2xl' 
-                          : 'text-xs sm:text-sm md:text-base text-gray-200'
-                      }`}>
-                        {slide.title}
-                      </h4>
-                    )}
                   </div>
                 </div>
               </div>

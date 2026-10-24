@@ -267,18 +267,32 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             {/* Brand Logo & Title */}
             <Link
               to="/"
-              className="flex items-center gap-2.5 sm:gap-3 group shrink-0"
+              className="flex items-center gap-2.5 sm:gap-3 group shrink-0 select-none"
               aria-label="Beranda Pondok Pesantren Jauharul Maknuun"
             >
-              <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden bg-white shadow-sm ring-2 ring-[#d4af37]/40 group-hover:ring-[#d4af37] group-hover:scale-105 transition-all duration-300 flex items-center justify-center shrink-0">
-                <img
-                  src="/logo.jpg"
-                  alt="Logo Pondok Pesantren Jauharul Maknuun"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = '/logo-ppjm.svg';
-                  }}
-                />
+              {/* Google Gemini Animated Border Glow Logo Wrapper */}
+              <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full p-[2px] flex items-center justify-center group-hover:scale-105 transition-all duration-300 shrink-0">
+                {/* 1. Soft Ambient Halo Aura */}
+                <div className="gemini-ambient-aura rounded-full" aria-hidden="true">
+                  <div className="gemini-beam-sweep" />
+                </div>
+
+                {/* 2. Sharp 2px Animated Glowing Border Frame */}
+                <div className="gemini-border-glow-frame rounded-full" aria-hidden="true">
+                  <div className="gemini-beam-sweep" />
+                </div>
+
+                {/* 3. Solid White Inner Container with Logo Image */}
+                <div className="relative z-10 w-full h-full rounded-full overflow-hidden bg-white shadow-xs flex items-center justify-center">
+                  <img
+                    src="/logo.jpg"
+                    alt="Logo Pondok Pesantren Jauharul Maknuun"
+                    className="w-full h-full object-cover rounded-full"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/logo-ppjm.svg';
+                    }}
+                  />
+                </div>
               </div>
               <div className="flex flex-col">
                 <span className="font-extrabold text-[9px] sm:text-[10px] tracking-widest text-[#0d4a28] uppercase leading-tight">
@@ -329,26 +343,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                         className="relative z-10 w-full h-full px-1 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
                       >
                         {/* Android-style Rounded Colorful Icon Badge */}
-                        <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-110 group-hover:-translate-y-0.5 ${
-                          isActive 
-                            ? tab.color.activeBadgeBg 
+                        <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-110 group-hover:-translate-y-0.5 ${isActive
+                            ? tab.color.activeBadgeBg
                             : tab.color.badgeBg
-                        }`}>
+                          }`}>
                           <TabIcon className="w-4 h-4 transition-transform duration-200" />
                         </div>
 
                         {/* Menu Label: Equal Width Distribution, Bold & Centered */}
                         <div className="w-full flex items-center justify-center gap-0.5 mt-0.5 px-0.5">
-                          <span className={`text-[10px] xl:text-[11.5px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${
-                            isActive 
-                              ? tab.color.activeText 
+                          <span className={`text-[10px] xl:text-[11.5px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${isActive
+                              ? tab.color.activeText
                               : 'text-slate-700 group-hover:text-slate-950'
-                          }`}>
+                            }`}>
                             {tab.label}
                           </span>
-                          <ChevronDown className={`w-2.5 h-2.5 text-slate-400 transition-transform duration-200 shrink-0 ${
-                            isOpen ? 'rotate-180 text-emerald-700' : 'group-hover:text-slate-600'
-                          }`} />
+                          <ChevronDown className={`w-2.5 h-2.5 text-slate-400 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180 text-emerald-700' : 'group-hover:text-slate-600'
+                            }`} />
                         </div>
 
                         {/* Active Micro Indicator Dot */}
@@ -362,21 +373,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                         className="relative z-10 w-full h-full px-1 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
                       >
                         {/* Android-style Rounded Colorful Icon Badge */}
-                        <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-110 group-hover:-translate-y-0.5 ${
-                          isActive 
-                            ? tab.color.activeBadgeBg 
+                        <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-110 group-hover:-translate-y-0.5 ${isActive
+                            ? tab.color.activeBadgeBg
                             : tab.color.badgeBg
-                        }`}>
+                          }`}>
                           <TabIcon className="w-4 h-4 transition-transform duration-200" />
                         </div>
 
                         {/* Menu Label: Equal Width Distribution, Bold & Centered */}
                         <div className="w-full text-center px-0.5 mt-0.5">
-                          <span className={`block text-[10px] xl:text-[11.5px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${
-                            isActive 
-                              ? tab.color.activeText 
+                          <span className={`block text-[10px] xl:text-[11.5px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${isActive
+                              ? tab.color.activeText
                               : 'text-slate-700 group-hover:text-slate-950'
-                          }`}>
+                            }`}>
                             {tab.label}
                           </span>
                         </div>
@@ -482,16 +491,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                   Ketik topik, berita, hafalan...
                 </div>
               </div>
-
-              {/* Keyboard Shortcut Badge */}
-              <kbd className="hidden xl:inline-flex items-center gap-0.5 text-[10px] bg-white border border-slate-300/80 rounded-lg px-2 py-1 text-slate-500 font-mono shadow-xs font-bold group-hover:border-emerald-300 group-hover:text-emerald-700 shrink-0">
-                ⌘K
-              </kbd>
             </button>
 
             {/* Right Side: Profile Button (Matching Height: h-[58px], with User Name) & Mobile Controls */}
             <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-              
+
               {/* Profile Button with Matching Height (h-[58px]) & User Name (Default: "Guest") */}
               <Link
                 to="/admin"

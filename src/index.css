@@ -105,5 +105,115 @@
   .animate-ticker:hover {
     animation-play-state: paused;
   }
+
+  /* =========================================================================
+     GOOGLE GEMINI / LOADING BORDER GLOW ANIMATION
+     60fps Hardware-Accelerated Conic-Gradient Sweep Beam & Ambient Aura
+     Colors: #4285F4 (Blue), #9B72CF (Purple), #D96570 (Coral), #FBBC05 (Yellow), #34A853 (Green)
+     ========================================================================= */
+
+  @keyframes gemini-sweep-spin {
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  .gemini-beam-sweep {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 250%;
+    height: 250%;
+    transform: translate(-50%, -50%);
+    background: conic-gradient(
+      from 0deg at 50% 50%,
+      transparent 0deg,
+      #4285F4 35deg,
+      #9B72CF 85deg,
+      #D96570 135deg,
+      #FBBC05 185deg,
+      #34A853 235deg,
+      transparent 285deg,
+      transparent 360deg
+    );
+    animation: gemini-sweep-spin 4s linear infinite;
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  .gemini-beam-sweep-slow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 280%;
+    height: 280%;
+    transform: translate(-50%, -50%);
+    background: conic-gradient(
+      from 0deg at 50% 50%,
+      transparent 0deg,
+      #4285F4 40deg,
+      #9B72CF 90deg,
+      #D96570 140deg,
+      #FBBC05 190deg,
+      #34A853 240deg,
+      transparent 290deg,
+      transparent 360deg
+    );
+    animation: gemini-sweep-spin 6.5s linear infinite;
+    will-change: transform;
+    pointer-events: none;
+  }
+
+  /* Sharp Masked Border Frame (1.5px - 2px) */
+  .gemini-border-glow-frame {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 2px;
+    pointer-events: none;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    overflow: hidden;
+    z-index: 25;
+  }
+
+  /* Ambient Aura behind Logo */
+  .gemini-ambient-aura {
+    position: absolute;
+    inset: -4px;
+    border-radius: inherit;
+    pointer-events: none;
+    overflow: hidden;
+    filter: blur(10px);
+    opacity: 0.7;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Ambient Aura behind HeroSlider Card */
+  .gemini-ambient-aura-card {
+    position: absolute;
+    inset: -12px;
+    border-radius: inherit;
+    pointer-events: none;
+    overflow: hidden;
+    filter: blur(28px);
+    opacity: 0.75;
+    z-index: -1;
+    transition: opacity 0.4s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gemini-beam-sweep,
+    .gemini-beam-sweep-slow {
+      animation: none;
+      opacity: 0.4;
+    }
+  }
 }
 
