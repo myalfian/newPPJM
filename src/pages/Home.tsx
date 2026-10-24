@@ -67,8 +67,8 @@ export const Home: React.FC = () => {
       {/* 2. QUICK MENU (Hanya tampil di Mobile & Tablet, tersembunyi di Desktop) */}
       <QuickMenu />
 
-      {/* Wave Transition Pembatas Lengkung Halus untuk Desktop */}
-      <div className="hidden lg:block relative -mt-6 sm:-mt-8 z-20 h-8 sm:h-10 bg-white rounded-t-3xl sm:rounded-t-4xl border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.06)]" />
+      {/* Divider Spacing Halus untuk Desktop */}
+      <div className="hidden lg:block h-6" />
 
 
       {/* 2. SAMBUTAN SINGKAT PENGASUH KH. M. JAUHARUL MAKNUUN */}

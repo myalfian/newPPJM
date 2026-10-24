@@ -100,12 +100,43 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
 
-  // Track Viewport Resize (Passive)
+  // Dynamic Responsive Height for Desktop (from Navbar bottom to Footer top)
+  const [desktopHeroHeight, setDesktopHeroHeight] = useState<number | null>(null);
+
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const handleResize = () => setViewportWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize, { passive: true });
-    return () => window.removeEventListener('resize', handleResize);
+
+    const calculateResponsiveDimensions = () => {
+      setViewportWidth(window.innerWidth);
+
+      if (window.innerWidth >= 1024) {
+        // Measure real-time DOM heights of top navbar (ticker + header) and footer
+        const tickerEl = document.getElementById('topNewsTicker');
+        const headerEl = document.getElementById('mainHeader') || document.querySelector('header');
+        const footerEl = document.getElementById('kontak-ppdb') || document.querySelector('footer');
+
+        const tickerHeight = tickerEl ? tickerEl.getBoundingClientRect().height : 0;
+        const headerHeight = headerEl ? headerEl.getBoundingClientRect().height : 68;
+        const topBarHeight = tickerHeight + headerHeight;
+        const footerHeight = footerEl ? footerEl.getBoundingClientRect().height : 80;
+
+        // Exact responsive height available between top navbar and footer
+        const available = Math.max(window.innerHeight - topBarHeight - footerHeight, 440);
+        setDesktopHeroHeight(available);
+      } else {
+        setDesktopHeroHeight(null);
+      }
+    };
+
+    calculateResponsiveDimensions();
+
+    window.addEventListener('resize', calculateResponsiveDimensions, { passive: true });
+    const timer = setTimeout(calculateResponsiveDimensions, 150);
+
+    return () => {
+      window.removeEventListener('resize', calculateResponsiveDimensions);
+      clearTimeout(timer);
+    };
   }, []);
 
   // Navigation handlers with circular wrap
@@ -467,7 +498,12 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       aria-label="Informasi Utama & Program Unggulan Pondok Pesantren Jauharul Maknuun"
       tabIndex={0}
       onKeyDown={handleKeyDown}
-      className="relative w-full pt-2 pb-5 sm:pt-4 sm:pb-6 lg:py-0 lg:h-[calc(100vh-175px)] lg:min-h-[500px] lg:max-h-[850px] bg-[#071526] overflow-hidden select-none outline-none lg:flex lg:flex-col lg:justify-center"
+      style={
+        isDesktop && desktopHeroHeight 
+          ? { height: `${desktopHeroHeight}px` } 
+          : undefined
+      }
+      className="relative w-full pt-2 pb-5 sm:pt-4 sm:pb-6 lg:py-0 lg:h-[calc(100dvh-175px)] bg-[#071526] overflow-hidden select-none outline-none lg:flex lg:flex-col lg:justify-center transition-[height] duration-150"
       onMouseEnter={() => {
         isInteractingRef.current = true;
         setIsPaused(true);
@@ -543,7 +579,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                     }
                   }
                 }}
-                className={`absolute top-1/2 left-1/2 w-full sm:w-[600px] md:w-[720px] lg:w-auto lg:h-full lg:max-h-[760px] max-w-full lg:max-w-[92vw] aspect-[16/9] rounded-none sm:rounded-3xl overflow-hidden transform-gpu will-change-transform ${
+                className={`absolute top-1/2 left-1/2 w-full sm:w-[600px] md:w-[720px] lg:w-auto lg:h-[94%] max-w-full lg:max-w-[92vw] aspect-[16/9] rounded-none sm:rounded-3xl overflow-hidden transform-gpu will-change-transform ${
                   isActive 
                     ? 'ring-1 ring-white/30 shadow-[0_25px_60px_rgba(0,0,0,0.85),0_0_40px_rgba(212,175,55,0.35)]' 
                     : 'ring-1 ring-white/10 shadow-[0_10px_25px_rgba(0,0,0,0.5)] cursor-pointer hover:brightness-105'

@@ -64,7 +64,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
   return (
     <>
       {/* 1. TOP NEWS TICKER (Light Matcha/Gold Tone matching screenshot) */}
-      <div className="bg-[#d4af37]/15 border-b border-[#d4af37]/30 py-1.5 px-4 overflow-hidden hidden md:flex items-center text-xs">
+      <div id="topNewsTicker" className="bg-[#d4af37]/15 border-b border-[#d4af37]/30 py-1.5 px-4 overflow-hidden hidden md:flex items-center text-xs">
         <div className="bg-[#1a6b3c] text-white font-bold px-3 py-1 rounded-md text-[11px] uppercase tracking-wider shrink-0 flex items-center gap-1.5 mr-3 shadow-xs">
           <Sparkles className="w-3.5 h-3.5 text-[#d4af37] animate-pulse" />
           <span>INFO TERKINI</span>
