@@ -66,7 +66,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     id: 'jm-center',
     label: 'JM Center',
     icon: Landmark,
-    href: '/',
+    href: '/jm-center',
     isDropdown: false,
     color: {
       badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 group-hover:bg-emerald-100 group-hover:text-emerald-800',

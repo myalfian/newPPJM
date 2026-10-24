@@ -100,7 +100,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
   const navTabs = PUBLIC_NAV_TABS;
 
   const isTabActive = (tab: NavTabItem) => {
-    if (tab.id === 'jm-center') return location.pathname === '/' || location.pathname.startsWith('/jm-center');
+    if (tab.id === 'jm-center') return location.pathname.startsWith('/jm-center');
     if (tab.id === 'programs') return location.pathname.startsWith('/program-unggulan') || location.pathname.startsWith('/smart-jm/hafidz/read');
     if (tab.id === 'ekskul') return location.pathname === '/ekskul';
     if (tab.id === 'prestasi') return location.pathname === '/prestasi';
@@ -243,9 +243,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                         to={tab.href}
                         onClick={() => {
                           setActiveDropdown(null);
-                          if (tab.href === '/') {
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                          }
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
                         }}
                         className="relative z-10 w-full h-full px-1 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
                       >
