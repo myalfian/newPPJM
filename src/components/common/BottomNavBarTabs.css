@@ -19,8 +19,8 @@
   align-items: stretch;
   justify-content: flex-start;
   width: 100%;
-  padding-top: 2px;
-  padding-bottom: 10px; /* Clearance for bottom notch dip */
+  padding-top: 0px;
+  padding-bottom: 5px; /* Minimal clearance for bottom notch */
 }
 
 /* Borderless Green Container matching NavBarTabs brand colors */

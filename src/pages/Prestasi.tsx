@@ -62,18 +62,18 @@ export const Prestasi: React.FC = () => {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-4 space-y-3 sm:space-y-4">
+    <div className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2 space-y-1.5 sm:space-y-2">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
       <NavBarTabs />
 
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-4 sm:p-6 lg:p-7 text-white shadow-m3-2 relative overflow-hidden">
-        <div className="relative z-10 space-y-2.5">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-2.5 sm:p-3.5 lg:p-4 text-white shadow-m3-2 relative overflow-hidden">
+        <div className="relative z-10 space-y-1.5">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Trophy className="w-3.5 h-3.5" />
             <span>Panggung Juara Santri</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
             Galeri Prestasi & Penghargaan Santri
           </h1>
           <p className="text-xs sm:text-sm text-emerald-200/90 max-w-2xl">
@@ -94,7 +94,7 @@ export const Prestasi: React.FC = () => {
       />
 
       {/* Grid of Achievements */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1.5 sm:gap-2.5 lg:gap-3">
         {filtered.map((item) => (
           <div
             key={item.id}
@@ -102,21 +102,21 @@ export const Prestasi: React.FC = () => {
             className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all cursor-pointer flex flex-col justify-between"
           >
             <div>
-              <div className="relative h-36 sm:h-44 overflow-hidden bg-slate-100">
+              <div className="relative h-32 sm:h-38 overflow-hidden bg-slate-100">
                 <img
                   src={item.certificate_url}
                   alt={item.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-emerald-900/80 backdrop-blur-md text-gold-300 text-xs font-bold">
+                <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-emerald-900/80 backdrop-blur-md text-gold-300 text-xs font-bold">
                   {item.category}
                 </span>
-                <span className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-gold-500 text-emerald-950 text-xs font-extrabold shadow-sm">
+                <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-gold-500 text-emerald-950 text-xs font-extrabold shadow-sm">
                   {item.year}
                 </span>
               </div>
 
-              <div className="p-3.5 sm:p-4 space-y-1.5">
+              <div className="p-2.5 sm:p-3 space-y-1">
                 <div className="text-xs font-bold text-gold-700">
                   {item.medal_type}
                 </div>
@@ -132,7 +132,7 @@ export const Prestasi: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-3.5 sm:p-4 pt-0 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-800 mt-2.5">
+            <div className="p-2.5 sm:p-3 pt-0 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-800 mt-1.5">
               <span>Lihat Detail Sertifikat</span>
               <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </div>

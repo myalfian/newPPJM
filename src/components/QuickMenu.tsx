@@ -104,11 +104,11 @@ export const QuickMenu: React.FC = () => {
   return (
     <section 
       aria-label="Menu Navigasi Cepat Portal" 
-      className="relative z-30 -mt-3 sm:-mt-4 bg-white rounded-t-3xl sm:rounded-t-4xl border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] pt-5 pb-6 sm:pt-8 sm:pb-9 lg:hidden"
+      className="relative z-30 -mt-2 sm:-mt-3 bg-white rounded-t-3xl sm:rounded-t-4xl border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] pt-2.5 pb-3 sm:pt-4 sm:pb-4.5 lg:hidden"
     >
-      <div className="w-full max-w-7xl mx-auto px-3 sm:px-6">
+      <div className="w-full max-w-7xl mx-auto px-2.5 sm:px-4">
         {/* Layout Menu: 2 Baris x 3 Kolom */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 sm:gap-2.5 lg:gap-3">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -116,7 +116,7 @@ export const QuickMenu: React.FC = () => {
                 key={item.id}
                 onClick={() => navigate(item.route)}
                 type="button"
-                className={`group relative flex flex-col md:flex-row items-center md:items-center text-center md:text-left p-3.5 sm:p-5 lg:p-5.5 rounded-2xl lg:rounded-3xl border transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg active:scale-[0.98] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs min-h-[96px] sm:min-h-[110px] md:min-h-[98px] ${item.cardTheme} ${item.hoverShadow}`}
+                className={`group relative flex flex-col md:flex-row items-center md:items-center text-center md:text-left p-2 sm:p-3 lg:p-3.5 rounded-2xl lg:rounded-3xl border transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg active:scale-[0.98] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs min-h-[72px] sm:min-h-[85px] md:min-h-[78px] ${item.cardTheme} ${item.hoverShadow}`}
                 title={`${item.label} - ${item.subtitle}`}
               >
                 {/* Subtle Glass Highlight */}
@@ -124,14 +124,14 @@ export const QuickMenu: React.FC = () => {
 
                 {/* Animated Icon Badge */}
                 <div 
-                  className={`relative shrink-0 w-11 h-11 sm:w-13 sm:h-13 lg:w-14 lg:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-300 ease-out group-hover:scale-110 group-hover:rotate-2 shadow-xs ${item.pillTheme}`}
+                  className={`relative shrink-0 w-9 h-9 sm:w-11 sm:h-11 lg:w-12 lg:h-12 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-300 ease-out group-hover:scale-110 group-hover:rotate-2 shadow-xs ${item.pillTheme}`}
                 >
                   <div className={`absolute -inset-1 rounded-2xl transition-all duration-300 blur-xs ${item.glowTheme}`} />
-                  <Icon className={`relative z-10 w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7 ${item.iconColor} stroke-[2.2] transition-transform duration-300 group-hover:scale-105`} />
+                  <Icon className={`relative z-10 w-4.5 h-4.5 sm:w-5 sm:h-5 lg:w-6 lg:h-6 ${item.iconColor} stroke-[2.2] transition-transform duration-300 group-hover:scale-105`} />
                 </div>
 
                 {/* Card Text Details */}
-                <div className="flex-1 min-w-0 mt-2 md:mt-0 md:ml-3.5 lg:ml-4 w-full">
+                <div className="flex-1 min-w-0 mt-1 md:mt-0 md:ml-2.5 lg:ml-3 w-full">
                   <div className="flex items-center justify-center md:justify-between gap-1">
                     <span className="text-xs sm:text-sm md:text-base lg:text-[17px] font-black text-gray-900 tracking-tight leading-snug group-hover:text-black transition-colors truncate">
                       {item.label}

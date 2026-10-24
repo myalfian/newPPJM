@@ -56,18 +56,18 @@ export const GaleriVideo: React.FC = () => {
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-4 space-y-3 sm:space-y-4">
+    <div className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2 space-y-1.5 sm:space-y-2">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
       <NavBarTabs />
 
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-4 sm:p-6 lg:p-7 text-white shadow-m3-2 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2.5">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-2.5 sm:p-3.5 lg:p-4 text-white shadow-m3-2 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-4">
+        <div className="space-y-1.5">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Film className="w-3.5 h-3.5" />
             <span>Dokumenter & Video Profil</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
             Galeri Video Resmi PPJM
           </h1>
           <p className="text-xs sm:text-sm text-emerald-200/90 max-w-2xl">
@@ -77,14 +77,14 @@ export const GaleriVideo: React.FC = () => {
 
         <Link
           to="/galeri/foto"
-          className="px-4 py-2 rounded-full text-xs font-bold text-emerald-950 bg-white hover:bg-emerald-50 transition-colors whitespace-nowrap self-start sm:self-center"
+          className="px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-950 bg-white hover:bg-emerald-50 transition-colors whitespace-nowrap self-start sm:self-center shadow-xs"
         >
           Lihat Galeri Foto Agenda
         </Link>
       </div>
 
       {/* Grid of Videos */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1.5 sm:gap-2.5 lg:gap-3">
         {SAMPLE_VIDEOS.map((video) => (
           <div
             key={video.id}
@@ -94,7 +94,7 @@ export const GaleriVideo: React.FC = () => {
               {/* Thumbnail with Play Overlay */}
               <div
                 onClick={() => setActiveVideo(video)}
-                className="relative h-38 sm:h-46 overflow-hidden bg-slate-900 cursor-pointer"
+                className="relative h-32 sm:h-40 overflow-hidden bg-slate-900 cursor-pointer"
               >
                 <img
                   src={video.thumbnail}
@@ -104,31 +104,31 @@ export const GaleriVideo: React.FC = () => {
                 
                 {/* Play Button Icon */}
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-12 h-12 rounded-full bg-emerald-800/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-gold-500 group-hover:text-emerald-950 transition-all">
-                    <Play className="w-5 h-5 fill-current ml-0.5" />
+                  <div className="w-10 h-10 rounded-full bg-emerald-800/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-gold-500 group-hover:text-emerald-950 transition-all">
+                    <Play className="w-4.5 h-4.5 fill-current ml-0.5" />
                   </div>
                 </div>
 
-                <span className="absolute bottom-2.5 right-2.5 px-2 py-0.5 rounded-md bg-black/80 text-white text-[11px] font-bold">
+                <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-black/80 text-white text-[11px] font-bold">
                   {video.duration}
                 </span>
               </div>
 
-              <div className="p-3.5 sm:p-4 space-y-1.5">
+              <div className="p-2.5 sm:p-3 space-y-1">
                 <span className="text-xs text-slate-400 font-semibold">
                   {video.date}
                 </span>
                 <h3 className="font-extrabold text-sm sm:text-base text-emerald-950 group-hover:text-emerald-700 transition-colors line-clamp-2">
                   {video.title}
                 </h3>
-                <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                   {video.desc}
                 </p>
               </div>
             </div>
 
             {/* Social Links Bar */}
-            <div className="p-3.5 sm:p-4 pt-0 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-500 mt-2.5">
+            <div className="p-2.5 sm:p-3 pt-0 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-500 mt-1.5">
               <button
                 onClick={() => setActiveVideo(video)}
                 className="text-emerald-800 hover:text-emerald-950 flex items-center gap-1 font-bold"

@@ -37,18 +37,18 @@ export const Sejarah: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-4 space-y-3 sm:space-y-4">
+    <div className="max-w-5xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2 space-y-1.5 sm:space-y-2">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
       <NavBarTabs />
 
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-4 sm:p-6 lg:p-7 text-white shadow-m3-2 relative overflow-hidden">
-        <div className="relative z-10 space-y-2.5">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-2.5 sm:p-3.5 lg:p-4 text-white shadow-m3-2 relative overflow-hidden">
+        <div className="relative z-10 space-y-1.5">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Milestone className="w-3.5 h-3.5" />
             <span>Napak Tilas Perjuangan</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
             Sejarah Berdirinya PP Jauharul Maknuun
           </h1>
           <p className="text-xs sm:text-sm text-emerald-200/90 max-w-2xl">
@@ -58,8 +58,8 @@ export const Sejarah: React.FC = () => {
       </div>
 
       {/* Narrative Intro Card */}
-      <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-m3-1 border border-slate-200 space-y-2.5 text-slate-700 leading-relaxed text-xs sm:text-sm">
-        <h2 className="text-lg sm:text-xl font-bold text-emerald-950">
+      <div className="bg-white rounded-2xl p-2.5 sm:p-3.5 shadow-m3-1 border border-slate-200 space-y-1.5 text-slate-700 leading-relaxed text-xs sm:text-sm">
+        <h2 className="text-base sm:text-lg font-bold text-emerald-950">
           Kilas Balik: Dari Langgar Sederhana Menuju Sentra Keilmuan
         </h2>
         <p>
@@ -71,34 +71,34 @@ export const Sejarah: React.FC = () => {
       </div>
 
       {/* Interactive Milestone Timeline (Android M3 Style) */}
-      <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-m3-1 border border-slate-200 space-y-4">
+      <div className="bg-white rounded-2xl p-2.5 sm:p-4 shadow-m3-1 border border-slate-200 space-y-2">
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4 text-emerald-700" />
-          <h3 className="text-base sm:text-lg font-extrabold text-emerald-950">
+          <h3 className="text-sm sm:text-base font-extrabold text-emerald-950">
             Garis Waktu Milestone Perjalanan PPJM
           </h3>
         </div>
 
-        <div className="relative border-l-2 border-emerald-200 ml-3 sm:ml-5 space-y-4 pb-2">
+        <div className="relative border-l-2 border-emerald-200 ml-2.5 sm:ml-4 space-y-2 pb-1">
           {milestones.map((item, index) => (
-            <div key={item.year} className="relative pl-5 sm:pl-7 group">
+            <div key={item.year} className="relative pl-4 sm:pl-6 group">
               {/* Timeline Pin */}
-              <div className="absolute -left-[15px] top-1 w-7 h-7 rounded-full bg-emerald-100 border-2 border-white text-emerald-800 flex items-center justify-center font-bold text-xs shadow-sm group-hover:bg-gold-500 group-hover:text-emerald-950 transition-colors">
+              <div className="absolute -left-[14px] top-1 w-6 h-6 rounded-full bg-emerald-100 border-2 border-white text-emerald-800 flex items-center justify-center font-bold text-[10px] shadow-sm group-hover:bg-gold-500 group-hover:text-emerald-950 transition-colors">
                 {index + 1}
               </div>
 
               {/* Timeline Content Card */}
-              <div className="p-3.5 sm:p-4.5 rounded-xl bg-slate-50 border border-slate-100 hover:border-emerald-300 hover:bg-emerald-50/40 transition-all space-y-1.5">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <span className="text-sm sm:text-base font-black text-emerald-900">
+              <div className="p-2.5 sm:p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-emerald-300 hover:bg-emerald-50/40 transition-all space-y-1">
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
+                  <span className="text-xs sm:text-sm font-black text-emerald-900">
                     {item.year}
                   </span>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                  <span className="px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
                     {item.tag}
                   </span>
                 </div>
 
-                <h4 className="text-xs sm:text-sm font-bold text-slate-800">
+                <h4 className="text-xs font-bold text-slate-800">
                   {item.title}
                 </h4>
 

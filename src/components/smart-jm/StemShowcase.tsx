@@ -99,19 +99,19 @@ export const StemShowcase: React.FC<StemShowcaseProps> = ({ mode, projects = DEF
   };
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-1.5 sm:space-y-2">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-2xl p-4 sm:p-6 text-white shadow-m3-2 relative overflow-hidden">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
+      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-2xl p-2.5 sm:p-3.5 text-white shadow-m3-2 relative overflow-hidden">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-2">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
               <Cpu className="w-3.5 h-3.5" />
               <span>{mode === 'materi' ? 'Silabus & Penugasan STEM' : 'Portofolio Riset Santri'}</span>
             </div>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
+            <h2 className="text-lg sm:text-2xl font-extrabold tracking-tight">
               {mode === 'materi' ? 'Laboratorium STEM: Materi & Tugas' : 'Showcase Inovasi & Portofolio Siswa'}
             </h2>
-            <p className="text-xs sm:text-sm text-emerald-100/90 max-w-xl">
+            <p className="text-xs text-emerald-100/90 max-w-xl">
               {mode === 'materi' 
                 ? 'Akses materi silabus, panduan modul praktikum, dan formulir pengumpulan laporan tugas sains santri secara digital.'
                 : 'Kompilasi hasil karya riset teknologi, rekayasa mekatronika, dan inovasi sains terapan yang diciptakan oleh para santri PPJM.'}
@@ -121,35 +121,35 @@ export const StemShowcase: React.FC<StemShowcaseProps> = ({ mode, projects = DEF
       </div>
 
       {/* Grid of Projects */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1.5 sm:gap-2.5 lg:gap-3">
         {displayList.map((project) => (
           <div
             key={project.id}
             onClick={() => setSelectedProject(project)}
             className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all cursor-pointer flex flex-col"
           >
-            <div className="relative h-36 sm:h-44 overflow-hidden bg-slate-100">
+            <div className="relative h-32 sm:h-38 overflow-hidden bg-slate-100">
               <img
                 src={project.cover_image}
                 alt={project.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-emerald-900/80 backdrop-blur-md text-gold-300 text-xs font-bold">
+              <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-emerald-900/80 backdrop-blur-md text-gold-300 text-xs font-bold">
                 {project.category}
               </span>
             </div>
 
-            <div className="p-3.5 sm:p-4 flex-1 flex flex-col justify-between space-y-3">
-              <div className="space-y-1.5">
-                <h3 className="font-extrabold text-sm sm:text-base text-emerald-950 group-hover:text-emerald-700 transition-colors line-clamp-2">
+            <div className="p-2.5 sm:p-3 flex-1 flex flex-col justify-between space-y-2">
+              <div className="space-y-1">
+                <h3 className="font-extrabold text-xs sm:text-sm text-emerald-950 group-hover:text-emerald-700 transition-colors line-clamp-2">
                   {project.title}
                 </h3>
-                <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
                   {project.description}
                 </p>
               </div>
 
-              <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-800">
+              <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-800">
                 <span>{mode === 'materi' ? 'Buka Silabus & Tugas' : 'Lihat Spesifikasi'}</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>

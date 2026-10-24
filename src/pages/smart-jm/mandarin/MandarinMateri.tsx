@@ -66,14 +66,14 @@ export const MandarinMateri: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-4 space-y-3 sm:space-y-4">
+    <div className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2 space-y-1.5 sm:space-y-2">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
       <NavBarTabs />
 
       {/* Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-4 sm:p-6 text-white shadow-m3-2 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-2.5 sm:p-3.5 text-white shadow-m3-2 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Globe className="w-3.5 h-3.5" />
             <span>Pusat Bahasa Mandarin Santri</span>
           </div>
@@ -87,7 +87,7 @@ export const MandarinMateri: React.FC = () => {
 
         <Link
           to="/smart-jm/mandarin/quiz"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-emerald-950 bg-gold-400 hover:bg-gold-300 shadow-glow-gold transition-all whitespace-nowrap self-start sm:self-center"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-950 bg-gold-400 hover:bg-gold-300 shadow-glow-gold transition-all whitespace-nowrap self-start sm:self-center"
         >
           <Sparkles className="w-4 h-4" />
           <span>Uji Kuis Mandarin</span>
@@ -95,22 +95,22 @@ export const MandarinMateri: React.FC = () => {
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-1.5 sm:gap-2.5">
         
         {/* Left Column: Lesson Directory */}
-        <div className="lg:col-span-4 space-y-2.5">
+        <div className="lg:col-span-4 space-y-1.5">
           <div className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">
             Pilih Modul Pembelajaran:
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             {DEFAULT_LESSONS.map((lesson) => {
               const active = selectedLesson.id === lesson.id;
               return (
                 <button
                   key={lesson.id}
                   onClick={() => setSelectedLesson(lesson)}
-                  className={`w-full text-left p-3 rounded-xl border transition-all flex items-center justify-between gap-2.5 ${
+                  className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-center justify-between gap-2 ${
                     active
                       ? 'bg-emerald-800 text-white border-emerald-800 shadow-m3-1'
                       : 'bg-white hover:bg-emerald-50/50 border-slate-200 text-slate-800'
@@ -137,7 +137,7 @@ export const MandarinMateri: React.FC = () => {
         </div>
 
         {/* Right Column: Selected Lesson Detail & Dialog */}
-        <div className="lg:col-span-8 bg-white rounded-2xl p-4 sm:p-6 shadow-m3-1 border border-slate-200 space-y-4">
+        <div className="lg:col-span-8 bg-white rounded-2xl p-2.5 sm:p-3.5 shadow-m3-1 border border-slate-200 space-y-2">
           <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-100 pb-3">
             <div>
               <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">

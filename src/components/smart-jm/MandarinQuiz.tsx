@@ -130,39 +130,39 @@ export const MandarinQuiz: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-3 sm:space-y-4">
+    <div className="max-w-3xl mx-auto space-y-1.5 sm:space-y-2">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-2xl p-4 sm:p-6 text-white shadow-m3-2 relative overflow-hidden">
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
+      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-2xl p-2.5 sm:p-3.5 text-white shadow-m3-2 relative overflow-hidden">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="space-y-0.5">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Mandarin Santri Quiz</span>
             </div>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
+            <h2 className="text-lg sm:text-2xl font-extrabold tracking-tight">
               Kuis Interaktif Bahasa Mandarin
             </h2>
-            <p className="text-xs sm:text-sm text-emerald-100/90">
+            <p className="text-xs text-emerald-100/90">
               Uji pemahaman Pinyin, Hanzi, dan kosakata harian santri dengan sistem skor instan.
             </p>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-2.5 sm:p-3 border border-white/20 text-center min-w-[110px]">
+          <div className="bg-white/10 backdrop-blur-md rounded-xl p-2 sm:p-2.5 border border-white/20 text-center min-w-[90px]">
             <div className="text-[10px] text-emerald-200 font-bold uppercase">Skor Sementara</div>
-            <div className="text-xl sm:text-2xl font-extrabold text-gold-400">{score}</div>
+            <div className="text-lg sm:text-xl font-extrabold text-gold-400">{score}</div>
           </div>
         </div>
       </div>
 
       {!quizFinished ? (
-        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-m3-1 border border-slate-200 space-y-4">
+        <div className="bg-white rounded-2xl p-2.5 sm:p-3.5 shadow-m3-1 border border-slate-200 space-y-2">
           {/* Progress Bar */}
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <div className="flex items-center justify-between text-xs font-bold text-slate-500">
               <span>Soal {currentIndex + 1} dari {SAMPLE_QUIZZES.length}</span>
               <span>Topik: {currentQ.topic}</span>
             </div>
-            <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+            <div className="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-emerald-600 to-gold-500 transition-all duration-300"
                 style={{ width: `${((currentIndex + 1) / SAMPLE_QUIZZES.length) * 100}%` }}
@@ -171,18 +171,18 @@ export const MandarinQuiz: React.FC = () => {
           </div>
 
           {/* Question Box */}
-          <div className="text-center py-4 px-3 rounded-xl bg-slate-50 border border-slate-100 space-y-2">
+          <div className="text-center py-2.5 px-2 rounded-xl bg-slate-50 border border-slate-100 space-y-1">
             {currentQ.hanzi && (
-              <div className="text-4xl sm:text-5xl font-bold text-emerald-950 tracking-wider">
+              <div className="text-3xl sm:text-4xl font-bold text-emerald-950 tracking-wider">
                 {currentQ.hanzi}
               </div>
             )}
             {currentQ.pinyin && (
-              <div className="text-base font-semibold text-gold-700 tracking-wide">
+              <div className="text-sm font-semibold text-gold-700 tracking-wide">
                 [{currentQ.pinyin}]
               </div>
             )}
-            <h3 className="text-base sm:text-lg font-bold text-slate-800 pt-1">
+            <h3 className="text-xs sm:text-sm font-bold text-slate-800 pt-0.5">
               {currentQ.question}
             </h3>
           </div>

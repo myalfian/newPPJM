@@ -114,40 +114,40 @@ export const QuranReader: React.FC = () => {
   );
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-1.5 sm:space-y-2">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-2xl p-4 sm:p-6 text-white shadow-m3-2 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-2xl p-2.5 sm:p-3.5 text-white shadow-m3-2 relative overflow-hidden">
         <div className="absolute right-0 top-0 translate-x-10 -translate-y-10 w-72 h-72 bg-gold-400/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-800/80 border border-emerald-600/40 text-gold-300 text-xs font-bold">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-2.5">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-800/80 border border-emerald-600/40 text-gold-300 text-xs font-bold">
               <BookOpen className="w-3.5 h-3.5" />
               <span>Mushaf Online PPJM</span>
             </div>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
+            <h2 className="text-lg sm:text-2xl font-extrabold tracking-tight">
               Al-Qur’anul Karim 30 Juz
             </h2>
-            <p className="text-xs sm:text-sm text-emerald-200/90 max-w-xl">
+            <p className="text-xs text-emerald-200/90 max-w-xl">
               Dilengkapi teks resmi standar Kementerian Agama RI, terjemahan lengkap bahasa Indonesia, 
               dan lantunan audio tilawah murottal Syaikh Misyari Rasyid Al-Afasy.
             </p>
           </div>
 
           {/* Quick Stats of Current Surah */}
-          <div className="bg-emerald-950/60 backdrop-blur-md rounded-xl p-3 border border-emerald-700/50 flex items-center justify-between gap-4">
+          <div className="bg-emerald-950/60 backdrop-blur-md rounded-xl p-2 sm:p-2.5 border border-emerald-700/50 flex items-center justify-between gap-3">
             <div>
-              <div className="text-[11px] text-emerald-300 font-semibold uppercase">Surat Aktif</div>
-              <div className="text-base font-bold text-gold-300">{selectedSurah.nameLatin}</div>
-              <div className="text-[11px] text-emerald-400">{selectedSurah.nameIndo} • {selectedSurah.numberOfAyahs} Ayat</div>
+              <div className="text-[10px] text-emerald-300 font-semibold uppercase">Surat Aktif</div>
+              <div className="text-sm sm:text-base font-bold text-gold-300">{selectedSurah.nameLatin}</div>
+              <div className="text-[10px] sm:text-[11px] text-emerald-400">{selectedSurah.nameIndo} • {selectedSurah.numberOfAyahs} Ayat</div>
             </div>
-            <div className="font-quran text-2xl text-emerald-200 font-bold">
+            <div className="font-quran text-xl sm:text-2xl text-emerald-200 font-bold">
               {selectedSurah.nameArabic}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-1.5 sm:gap-2.5 lg:gap-3">
         {/* Left Column: Surah Directory / Selector */}
         <div className="lg:col-span-1 bg-white rounded-xl p-3 shadow-sm border border-slate-200 flex flex-col max-h-[700px]">
           <div className="mb-2.5 relative">
