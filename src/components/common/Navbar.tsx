@@ -361,11 +361,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                           <ChevronDown className={`w-2.5 h-2.5 text-slate-400 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180 text-emerald-700' : 'group-hover:text-slate-600'
                             }`} />
                         </div>
-
-                        {/* Active Micro Indicator Dot */}
-                        {isActive && (
-                          <span className={`absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full ${tab.color.activeDot} shadow-xs`} />
-                        )}
                       </button>
                     ) : (
                       <Link
@@ -389,11 +384,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                             {tab.label}
                           </span>
                         </div>
-
-                        {/* Active Micro Indicator Dot */}
-                        {isActive && (
-                          <span className={`absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full ${tab.color.activeDot} shadow-xs`} />
-                        )}
                       </Link>
                     )}
 
