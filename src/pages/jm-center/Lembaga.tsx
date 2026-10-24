@@ -50,46 +50,46 @@ export const Lembaga: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-5">
+    <div className="max-w-5xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-4 space-y-3 sm:space-y-4">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
       <NavBarTabs />
 
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl sm:rounded-3xl p-5 sm:p-7 lg:p-8 text-white shadow-m3-2 relative overflow-hidden">
-        <div className="relative z-10 space-y-3">
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-4 sm:p-6 lg:p-7 text-white shadow-m3-2 relative overflow-hidden">
+        <div className="relative z-10 space-y-2.5">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Building2 className="w-3.5 h-3.5" />
             <span>Struktur Badan Otonom</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
             Badan Otonom & Unit Lembaga PPJM
           </h1>
-          <p className="text-sm sm:text-base text-emerald-200/90 max-w-2xl">
+          <p className="text-xs sm:text-sm text-emerald-200/90 max-w-2xl">
             Sinergi unit pelaksana pendidikan, riset, dan dakwah di bawah naungan Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik.
           </p>
         </div>
       </div>
 
       {/* Lembaga Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
         {lembagaList.map((unit) => {
           const Icon = unit.icon;
           return (
             <div
               key={unit.title}
-              className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all flex flex-col justify-between group"
+              className="bg-white rounded-2xl p-4 sm:p-4.5 shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all flex flex-col justify-between group"
             >
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-800 flex items-center justify-center group-hover:bg-emerald-800 group-hover:text-white transition-colors">
-                    <Icon className="w-6 h-6" />
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center group-hover:bg-emerald-800 group-hover:text-white transition-colors">
+                    <Icon className="w-5 h-5" />
                   </div>
-                  <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-bold">
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-bold">
                     {unit.tag}
                   </span>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-1.5">
                   <h3 className="font-extrabold text-base sm:text-lg text-emerald-950 group-hover:text-emerald-700 transition-colors">
                     {unit.title}
                   </h3>
@@ -99,7 +99,7 @@ export const Lembaga: React.FC = () => {
                 </div>
               </div>
 
-              <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+              <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between">
                 <Link
                   to={unit.link}
                   className="text-xs font-bold text-emerald-800 hover:text-emerald-950 flex items-center gap-1"

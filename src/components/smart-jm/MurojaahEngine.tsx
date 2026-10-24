@@ -274,19 +274,19 @@ export const MurojaahEngine: React.FC = () => {
   const cleanSpokenWords = cleanArabic(spokenTranscript).split(/\s+/);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 sm:space-y-4">
       {/* Title Section */}
-      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-3xl p-6 sm:p-8 text-white shadow-m3-2 relative overflow-hidden">
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-2xl p-4 sm:p-6 text-white shadow-m3-2 relative overflow-hidden">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500 text-emerald-950 text-xs font-extrabold uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Teknologi Suara AI Santri</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
               Murojaah AI: Asisten Mandiri Hafalan Al-Qur’an
             </h2>
-            <p className="text-sm text-emerald-100/90 max-w-xl">
+            <p className="text-xs sm:text-sm text-emerald-100/90 max-w-xl">
               Lafalkan ayat ke mikrofon santri. Sistem AI mendeteksi kecocokan pengucapan secara real-time, 
               menandai kata yang keliru atau terlewat, dan memberikan umpan balik kelancaran bacaan.
             </p>
@@ -294,10 +294,10 @@ export const MurojaahEngine: React.FC = () => {
 
           {/* Quick Accuracy Badge */}
           {matchScore !== null && (
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 text-center min-w-[140px]">
-              <div className="text-xs text-emerald-200 font-bold uppercase">Skor Kelancaran</div>
-              <div className="text-3xl font-extrabold text-gold-400 mt-1">{matchScore}%</div>
-              <div className="text-[11px] text-emerald-300 font-medium">
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-2.5 sm:p-3 border border-white/20 text-center min-w-[120px]">
+              <div className="text-[10px] text-emerald-200 font-bold uppercase">Skor Kelancaran</div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-gold-400 mt-0.5">{matchScore}%</div>
+              <div className="text-[10px] text-emerald-300 font-medium">
                 {matchScore >= 80 ? 'Mumtaz (Fasih!)' : matchScore >= 50 ? 'Jayyid (Cukup)' : 'Perlu Murojaah'}
               </div>
             </div>
@@ -306,7 +306,7 @@ export const MurojaahEngine: React.FC = () => {
       </div>
 
       {/* Target Verse Selector */}
-      <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-4">
+      <div className="bg-white rounded-xl p-3.5 sm:p-4 shadow-sm border border-slate-200 space-y-2.5">
         <div className="flex items-center justify-between">
           <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
             Pilih Target Hafalan Murojaah:
@@ -326,7 +326,7 @@ export const MurojaahEngine: React.FC = () => {
                 setMatchScore(null);
                 setRecordedAudioUrl(null);
               }}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                 selectedVerseIndex === idx
                   ? 'bg-emerald-800 text-white shadow-sm ring-2 ring-emerald-600/30'
                   : 'bg-emerald-50 text-emerald-900 hover:bg-emerald-100'
@@ -339,13 +339,13 @@ export const MurojaahEngine: React.FC = () => {
       </div>
 
       {/* Target Verse Card & Real-time Evaluation */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-m3-1 border border-slate-200 space-y-6">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+      <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-m3-1 border border-slate-200 space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2">
-            <span className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center">
+            <span className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 font-bold text-xs flex items-center justify-center">
               {currentVerse.ayahNum}
             </span>
-            <span className="text-sm font-bold text-slate-800">
+            <span className="text-xs sm:text-sm font-bold text-slate-800">
               Target Surat {currentVerse.surah}
             </span>
           </div>
@@ -360,7 +360,7 @@ export const MurojaahEngine: React.FC = () => {
         </div>
 
         {/* Real-time Highlighting Text */}
-        <div className="p-6 rounded-2xl bg-slate-50/80 border border-slate-100 text-right space-y-4">
+        <div className="p-4 sm:p-5 rounded-xl bg-slate-50/80 border border-slate-100 text-right space-y-3">
           <div className="text-xs text-slate-400 font-sans text-left uppercase font-semibold">
             Lafadz Target (Tandai Kata yang Berhasil Diucapkan):
           </div>

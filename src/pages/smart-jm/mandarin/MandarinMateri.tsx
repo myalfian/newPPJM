@@ -66,18 +66,18 @@ export const MandarinMateri: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-5">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-4 space-y-3 sm:space-y-4">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
       <NavBarTabs />
 
       {/* Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-3xl p-6 sm:p-8 text-white shadow-m3-2 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-4 sm:p-6 text-white shadow-m3-2 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Globe className="w-3.5 h-3.5" />
             <span>Pusat Bahasa Mandarin Santri</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
             Modul Bahasa Mandarin & Audio Pinyin
           </h1>
           <p className="text-xs sm:text-sm text-emerald-200/90 max-w-xl">
@@ -87,7 +87,7 @@ export const MandarinMateri: React.FC = () => {
 
         <Link
           to="/smart-jm/mandarin/quiz"
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-xs font-bold text-emerald-950 bg-gold-400 hover:bg-gold-300 shadow-glow-gold transition-all whitespace-nowrap self-start sm:self-center"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold text-emerald-950 bg-gold-400 hover:bg-gold-300 shadow-glow-gold transition-all whitespace-nowrap self-start sm:self-center"
         >
           <Sparkles className="w-4 h-4" />
           <span>Uji Kuis Mandarin</span>
@@ -95,37 +95,37 @@ export const MandarinMateri: React.FC = () => {
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4">
         
         {/* Left Column: Lesson Directory */}
-        <div className="lg:col-span-4 space-y-3">
-          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider px-2">
+        <div className="lg:col-span-4 space-y-2.5">
+          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">
             Pilih Modul Pembelajaran:
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             {DEFAULT_LESSONS.map((lesson) => {
               const active = selectedLesson.id === lesson.id;
               return (
                 <button
                   key={lesson.id}
                   onClick={() => setSelectedLesson(lesson)}
-                  className={`w-full text-left p-4 rounded-2xl border transition-all flex items-center justify-between gap-3 ${
+                  className={`w-full text-left p-3 rounded-xl border transition-all flex items-center justify-between gap-2.5 ${
                     active
                       ? 'bg-emerald-800 text-white border-emerald-800 shadow-m3-1'
                       : 'bg-white hover:bg-emerald-50/50 border-slate-200 text-slate-800'
                   }`}
                 >
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
                       active ? 'bg-gold-500 text-emerald-950' : 'bg-emerald-100 text-emerald-800'
                     }`}>
                       {lesson.level}
                     </span>
-                    <h4 className="font-extrabold text-sm line-clamp-1">
+                    <h4 className="font-extrabold text-xs sm:text-sm line-clamp-1">
                       {lesson.topic}
                     </h4>
-                    <p className={`text-xs line-clamp-1 ${active ? 'text-emerald-200' : 'text-slate-500'}`}>
+                    <p className={`text-[11px] line-clamp-1 ${active ? 'text-emerald-200' : 'text-slate-500'}`}>
                       {lesson.pinyin}
                     </p>
                   </div>
@@ -137,20 +137,20 @@ export const MandarinMateri: React.FC = () => {
         </div>
 
         {/* Right Column: Selected Lesson Detail & Dialog */}
-        <div className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-8 shadow-m3-1 border border-slate-200 space-y-6">
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+        <div className="lg:col-span-8 bg-white rounded-2xl p-4 sm:p-6 shadow-m3-1 border border-slate-200 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-100 pb-3">
             <div>
               <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">
                 {selectedLesson.level}
               </span>
-              <h2 className="text-xl sm:text-2xl font-black text-emerald-950 mt-0.5">
+              <h2 className="text-lg sm:text-xl font-black text-emerald-950 mt-0.5">
                 {selectedLesson.topic}
               </h2>
             </div>
 
             <button
               onClick={() => speakText(selectedLesson.hanzi || '')}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
             >
               <Volume2 className="w-4 h-4 text-emerald-700" />
               <span>Dengarkan Pelafalan Asli</span>
@@ -158,31 +158,31 @@ export const MandarinMateri: React.FC = () => {
           </div>
 
           {/* Key Sentence Card */}
-          <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-50 to-gold-50/40 border border-emerald-100 space-y-3 text-center sm:text-left">
-            <div className="text-2xl sm:text-3xl font-extrabold text-emerald-950 tracking-wider">
+          <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-r from-emerald-50 to-gold-50/40 border border-emerald-100 space-y-2 text-center sm:text-left">
+            <div className="text-xl sm:text-2xl font-extrabold text-emerald-950 tracking-wider">
               {selectedLesson.hanzi}
             </div>
-            <div className="text-sm font-semibold text-gold-700 font-mono">
+            <div className="text-xs sm:text-sm font-semibold text-gold-700 font-mono">
               [{selectedLesson.pinyin}]
             </div>
-            <p className="text-sm text-slate-700 font-medium italic">
+            <p className="text-xs sm:text-sm text-slate-700 font-medium italic">
               "{selectedLesson.meaning_id}"
             </p>
           </div>
 
           {/* Dialogue Section */}
           {selectedLesson.dialog_script && (
-            <div className="space-y-4 pt-2">
+            <div className="space-y-3 pt-1">
               <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                 <MessageSquare className="w-4 h-4 text-emerald-700" />
                 <span>Naskah Percakapan Praktik Santri:</span>
               </h3>
 
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {selectedLesson.dialog_script.map((dlg, idx) => (
                   <div
                     key={idx}
-                    className="p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-emerald-200 transition-colors flex items-start justify-between gap-4"
+                    className="p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-emerald-200 transition-colors flex items-start justify-between gap-3"
                   >
                     <div className="space-y-1">
                       <div className="text-xs font-bold text-emerald-800">

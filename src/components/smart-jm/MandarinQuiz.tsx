@@ -130,16 +130,16 @@ export const MandarinQuiz: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-3 sm:space-y-4">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-3xl p-6 sm:p-8 text-white shadow-m3-2 relative overflow-hidden">
-        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-2xl p-4 sm:p-6 text-white shadow-m3-2 relative overflow-hidden">
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-1">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5" />
               <span>Mandarin Santri Quiz</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
               Kuis Interaktif Bahasa Mandarin
             </h2>
             <p className="text-xs sm:text-sm text-emerald-100/90">
@@ -147,22 +147,22 @@ export const MandarinQuiz: React.FC = () => {
             </p>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-white/20 text-center min-w-[120px]">
-            <div className="text-[11px] text-emerald-200 font-bold uppercase">Skor Sementara</div>
-            <div className="text-2xl sm:text-3xl font-extrabold text-gold-400">{score}</div>
+          <div className="bg-white/10 backdrop-blur-md rounded-xl p-2.5 sm:p-3 border border-white/20 text-center min-w-[110px]">
+            <div className="text-[10px] text-emerald-200 font-bold uppercase">Skor Sementara</div>
+            <div className="text-xl sm:text-2xl font-extrabold text-gold-400">{score}</div>
           </div>
         </div>
       </div>
 
       {!quizFinished ? (
-        <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-m3-1 border border-slate-200 space-y-6">
+        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-m3-1 border border-slate-200 space-y-4">
           {/* Progress Bar */}
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs font-bold text-slate-500">
               <span>Soal {currentIndex + 1} dari {SAMPLE_QUIZZES.length}</span>
               <span>Topik: {currentQ.topic}</span>
             </div>
-            <div className="w-full h-2.5 rounded-full bg-slate-100 overflow-hidden">
+            <div className="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-emerald-600 to-gold-500 transition-all duration-300"
                 style={{ width: `${((currentIndex + 1) / SAMPLE_QUIZZES.length) * 100}%` }}
@@ -171,24 +171,24 @@ export const MandarinQuiz: React.FC = () => {
           </div>
 
           {/* Question Box */}
-          <div className="text-center py-6 px-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-3">
+          <div className="text-center py-4 px-3 rounded-xl bg-slate-50 border border-slate-100 space-y-2">
             {currentQ.hanzi && (
-              <div className="text-5xl sm:text-6xl font-bold text-emerald-950 tracking-wider">
+              <div className="text-4xl sm:text-5xl font-bold text-emerald-950 tracking-wider">
                 {currentQ.hanzi}
               </div>
             )}
             {currentQ.pinyin && (
-              <div className="text-lg font-semibold text-gold-700 tracking-wide">
+              <div className="text-base font-semibold text-gold-700 tracking-wide">
                 [{currentQ.pinyin}]
               </div>
             )}
-            <h3 className="text-lg sm:text-xl font-bold text-slate-800 pt-2">
+            <h3 className="text-base sm:text-lg font-bold text-slate-800 pt-1">
               {currentQ.question}
             </h3>
           </div>
 
           {/* Options Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             {currentQ.options.map((opt, idx) => {
               const isSelected = selectedOption === idx;
               const isCorrect = idx === currentQ.correctIndex;
@@ -209,7 +209,7 @@ export const MandarinQuiz: React.FC = () => {
                   key={idx}
                   onClick={() => handleSelectOption(idx)}
                   disabled={isAnswered}
-                  className={`p-4 rounded-2xl border text-left text-sm font-semibold transition-all flex items-center justify-between min-h-[56px] ${btnStyle}`}
+                  className={`p-3 rounded-xl border text-left text-xs sm:text-sm font-semibold transition-all flex items-center justify-between min-h-[48px] ${btnStyle}`}
                 >
                   <span>{opt}</span>
                   {isAnswered && isCorrect && <CheckCircle className="w-5 h-5 text-emerald-600 flex-shrink-0" />}
