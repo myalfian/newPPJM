@@ -125,7 +125,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
       id: 'jm-center',
       label: 'JM Center',
       icon: Landmark,
-      href: '/jm-center',
+      href: '/',
       isDropdown: false,
       color: {
         badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 group-hover:bg-emerald-100 group-hover:text-emerald-800',
@@ -224,7 +224,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
   ];
 
   const isTabActive = (tab: NavTabItem) => {
-    if (tab.id === 'jm-center') return location.pathname.startsWith('/jm-center');
+    if (tab.id === 'jm-center') return location.pathname === '/' || location.pathname.startsWith('/jm-center');
     if (tab.id === 'programs') return location.pathname.startsWith('/program-unggulan') || location.pathname.startsWith('/smart-jm/hafidz/read');
     if (tab.id === 'ekskul') return location.pathname === '/ekskul';
     if (tab.id === 'prestasi') return location.pathname === '/prestasi';
@@ -365,6 +365,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                     ) : (
                       <Link
                         to={tab.href}
+                        onClick={() => {
+                          setActiveDropdown(null);
+                          if (tab.href === '/') {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }
+                        }}
                         className="relative z-10 w-full h-full px-1 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
                       >
                         {/* Android-style Rounded Colorful Icon Badge */}
