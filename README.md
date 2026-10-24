@@ -75,7 +75,7 @@ Dilengkapi dengan:
 
 ## ☁️ Panduan Deployment ke Cloudflare Pages
 
-Proyek ini telah dilengkapi file `public/_headers` dan `public/_redirects` untuk menjamin performa Edge CDN dan routing SPA yang sempurna di Cloudflare Pages.
+Proyek ini telah dilengkapi file `wrangler.jsonc`, `public/200.html`, `public/404.html`, dan `public/_headers` untuk menjamin performa Edge CDN dan routing SPA yang sempurna di Cloudflare (baik Cloudflare Workers Static Assets maupun Cloudflare Pages).
 
 ### Metode 1: Hubungkan ke GitHub (Rekomendasi Otomatis)
 1. Push repositori ini ke akun GitHub Anda.
