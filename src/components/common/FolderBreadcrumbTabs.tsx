@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
+  Home,
   Compass,
   HeartHandshake,
   Landmark,
@@ -43,11 +44,20 @@ export interface FolderBreadcrumbTabsProps {
   onChangeTab?: (tab: FolderTabItem) => void;
 }
 
-// Pre-defined category tabs with dedicated icons and clean stacked labels
-const DEFAULT_CATEGORY_TABS: Record<string, { parentLabel: string; parentHref: string; tabs: FolderTabItem[] }> = {
+// Pre-defined category hubs with parent info and dedicated sub-menu tabs
+const DEFAULT_CATEGORY_TABS: Record<
+  string,
+  {
+    parentLabel: string;
+    parentHref: string;
+    parentIcon: React.ComponentType<{ className?: string }>;
+    tabs: FolderTabItem[];
+  }
+> = {
   'jm-center': {
     parentLabel: 'JM Center',
     parentHref: '/jm-center/sambutan',
+    parentIcon: Landmark,
     tabs: [
       { id: 'sambutan', label: 'Sambutan', href: '/jm-center/sambutan', icon: Compass },
       { id: 'visi-misi', label: 'Visi Misi', href: '/jm-center/visi-misi', icon: HeartHandshake },
@@ -56,8 +66,9 @@ const DEFAULT_CATEGORY_TABS: Record<string, { parentLabel: string; parentHref: s
     ],
   },
   'program-unggulan': {
-    parentLabel: 'Program Unggulan',
+    parentLabel: 'Program',
     parentHref: '/program-unggulan/program-sekolah',
+    parentIcon: GraduationCap,
     tabs: [
       { id: 'program-sekolah', label: 'Formal', href: '/program-unggulan/program-sekolah', icon: GraduationCap },
       { id: 'program-madin', label: 'Madin', href: '/program-unggulan/program-madin', icon: BookOpen },
@@ -67,14 +78,16 @@ const DEFAULT_CATEGORY_TABS: Record<string, { parentLabel: string; parentHref: s
   'galeri': {
     parentLabel: 'Galeri',
     parentHref: '/galeri/foto',
+    parentIcon: ImageIcon,
     tabs: [
       { id: 'foto', label: 'Foto', href: '/galeri/foto', icon: ImageIcon },
       { id: 'video', label: 'Video', href: '/galeri/video', icon: Video },
     ],
   },
   'prestasi-ekskul': {
-    parentLabel: 'Aktivitas Santri',
+    parentLabel: 'Aktivitas',
     parentHref: '/prestasi',
+    parentIcon: Trophy,
     tabs: [
       { id: 'prestasi', label: 'Prestasi', href: '/prestasi', icon: Trophy },
       { id: 'ekskul', label: 'Ekskul', href: '/ekskul', icon: Activity },
@@ -83,6 +96,7 @@ const DEFAULT_CATEGORY_TABS: Record<string, { parentLabel: string; parentHref: s
   'smart-jm-hafidz': {
     parentLabel: 'Smart JM',
     parentHref: '/smart-jm/hafidz/read',
+    parentIcon: BookOpen,
     tabs: [
       { id: 'read', label: 'Mushaf 30 Juz', href: '/smart-jm/hafidz/read', icon: BookOpen },
       { id: 'murojaah', label: 'Murojaah AI', href: '/smart-jm/hafidz/murojaah', icon: Volume2 },
@@ -91,6 +105,7 @@ const DEFAULT_CATEGORY_TABS: Record<string, { parentLabel: string; parentHref: s
   'smart-jm-stem': {
     parentLabel: 'Smart JM',
     parentHref: '/smart-jm/stem/materi',
+    parentIcon: Cpu,
     tabs: [
       { id: 'stem-materi', label: 'Silabus STEM', href: '/smart-jm/stem/materi', icon: Cpu },
       { id: 'stem-portofolio', label: 'Portofolio', href: '/smart-jm/stem/portofolio', icon: Sparkles },
@@ -99,6 +114,7 @@ const DEFAULT_CATEGORY_TABS: Record<string, { parentLabel: string; parentHref: s
   'smart-jm-mandarin': {
     parentLabel: 'Smart JM',
     parentHref: '/smart-jm/mandarin/materi',
+    parentIcon: Globe,
     tabs: [
       { id: 'mandarin-materi', label: 'Mandarin Class', href: '/smart-jm/mandarin/materi', icon: Globe },
       { id: 'mandarin-quiz', label: 'Kuis Pinyin', href: '/smart-jm/mandarin/quiz', icon: CheckCircle2 },
@@ -107,6 +123,7 @@ const DEFAULT_CATEGORY_TABS: Record<string, { parentLabel: string; parentHref: s
   'smart-jm': {
     parentLabel: 'Smart JM',
     parentHref: '/smart-jm/hafidz/read',
+    parentIcon: Cpu,
     tabs: [
       { id: 'read', label: 'Mushaf', href: '/smart-jm/hafidz/read', icon: BookOpen },
       { id: 'murojaah', label: 'Murojaah', href: '/smart-jm/hafidz/murojaah', icon: Volume2 },
@@ -119,15 +136,9 @@ const DEFAULT_CATEGORY_TABS: Record<string, { parentLabel: string; parentHref: s
 };
 
 /**
- * Curved Cutout Magic Navigation Bar with Sliding Notch & Floating Dot
- * Inspired by CodePen (mario_999/pen/rNYZxNy)
- * Features:
- * - Stacked layout (Icon on top, label on bottom) matching reference screenshots
- * - Top concave cutout notch dipping into the white bar over the active item
- * - Floating white dot in the center of the notch
- * - Inverted fillet wings seamlessly blending into the bar's top border
- * - Fluid spring motion with framer-motion layoutId
- * - Horizontal smooth scrolling with auto-centering on mobile
+ * Modern Material You Android TabNavBar with Curved Cutout Notch & Floating Dot
+ * Default tab hierarchy: [Beranda] -> [Menu / Category] -> [Sub Menu 1] .. [Sub Menu N]
+ * Container is fully responsive matching the parent sub-menu container (full-width distributed)
  */
 export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
   tabs: propTabs,
@@ -153,13 +164,57 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
   else if (pathname.includes('/smart-jm')) detectedCategory = 'smart-jm';
 
   const defaultCategory = DEFAULT_CATEGORY_TABS[detectedCategory];
-  const tabs = propTabs || defaultCategory?.tabs || [];
 
-  // Find active tab item
-  const activeTab = tabs.find((t) => {
-    if (propActiveTabId) return t.id === propActiveTabId;
-    return pathname === t.href || (t.href !== '/' && pathname.startsWith(t.href));
-  }) || tabs[0];
+  // Construct default tab hierarchy: "Beranda", "Menu" (Category), "Sub Menu 1", ..., "Sub Menu N"
+  let tabs: FolderTabItem[] = [];
+  if (propTabs && propTabs.length > 0) {
+    tabs = propTabs;
+  } else if (defaultCategory) {
+    const homeTab: FolderTabItem = {
+      id: 'beranda',
+      label: 'Beranda',
+      href: '/',
+      icon: Home,
+    };
+
+    const menuTab: FolderTabItem = {
+      id: `menu-${detectedCategory}`,
+      label: defaultCategory.parentLabel,
+      href: defaultCategory.parentHref,
+      icon: defaultCategory.parentIcon,
+    };
+
+    tabs = [homeTab, menuTab, ...defaultCategory.tabs];
+  }
+
+  // Active Tab Detection: Prioritize specific sub-menu items, then category menu, then Beranda
+  let activeTab = tabs.find((t) => propActiveTabId && t.id === propActiveTabId);
+  if (!activeTab) {
+    if (pathname === '/') {
+      activeTab = tabs.find((t) => t.id === 'beranda') || tabs[0];
+    } else {
+      // 1. Check specific sub-menu items first
+      const subMenuTabs = tabs.filter((t) => t.id !== 'beranda' && !t.id.startsWith('menu-'));
+      activeTab = subMenuTabs.find((t) => pathname === t.href);
+
+      // 2. Check sub-menu prefix
+      if (!activeTab) {
+        activeTab = subMenuTabs.find((t) => t.href !== '/' && pathname.startsWith(t.href));
+      }
+
+      // 3. Fallback to Menu tab
+      if (!activeTab) {
+        activeTab = tabs.find(
+          (t) => t.id.startsWith('menu-') && (pathname === t.href || pathname.startsWith(t.href))
+        );
+      }
+
+      // 4. Fallback to any matching tab or first
+      if (!activeTab) {
+        activeTab = tabs.find((t) => pathname === t.href || (t.href !== '/' && pathname.startsWith(t.href))) || tabs[0];
+      }
+    }
+  }
 
   // Auto-center active tab on mobile viewport
   useEffect(() => {
@@ -178,20 +233,26 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
   if (!tabs || tabs.length === 0) return null;
 
   return (
-    <div className={`curved-navbar-wrapper ${className}`}>
-      <div className="curved-navbar-bar">
-        {/* Scrollable Track */}
+    <nav
+      aria-label="Sub Menu Navigation"
+      className={`curved-navbar-wrapper w-full ${className}`}
+    >
+      <div className="curved-navbar-bar w-full">
+        {/* Horizontal Scrollable Track for Smaller Screens */}
         <div
           ref={tabListRef}
-          className="flex items-center overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full max-w-full"
+          className="curved-scroll-track w-full flex items-center overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full"
         >
-          <ul className="curved-tab-list">
+          <ul className="curved-tab-list w-full flex items-center justify-between">
             {tabs.map((tab) => {
               const isActive = activeTab?.id === tab.id;
               const TabIcon = tab.icon || Layers3;
 
               return (
-                <li key={tab.id} className="relative h-full flex items-center justify-center snap-start">
+                <li
+                  key={tab.id}
+                  className="curved-tab-col flex-1 h-full flex items-center justify-center snap-start"
+                >
                   <Link
                     ref={isActive ? activeTabRef : null}
                     to={tab.href}
@@ -217,7 +278,7 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
 
                     {/* Stacked Icon (Top) */}
                     <span className="curved-tab-icon">
-                      <TabIcon className="w-6 h-6 sm:w-7 sm:h-7" />
+                      <TabIcon className="w-5 h-5 sm:w-6 sm:h-6" />
                     </span>
 
                     {/* Stacked Label (Bottom) */}
@@ -227,7 +288,7 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
 
                     {/* Optional Badge */}
                     {tab.badge && (
-                      <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-blue-100 text-[#007acc]">
+                      <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-blue-100 text-[#007acc] dark:bg-blue-950 dark:text-blue-300">
                         {tab.badge}
                       </span>
                     )}
@@ -238,6 +299,6 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
           </ul>
         </div>
       </div>
-    </div>
+    </nav>
   );
 };
