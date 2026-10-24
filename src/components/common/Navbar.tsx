@@ -232,9 +232,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
               </div>
             </Link>
 
-            {/* Desktop Navigation: Dribbble Fluid Sliding Pill Bar */}
+            {/* Desktop Navigation: Single Horizontal Line with Icon on Top & Label on Bottom */}
             <nav 
-              className="hidden lg:flex items-center p-1 rounded-full bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative"
+              className="hidden lg:flex items-center p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-0.5"
               onMouseLeave={() => {
                 setHoveredTab(null);
                 closeDropdownWithDelay();
@@ -260,12 +260,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
                       }
                     }}
                   >
-                    {/* Trigger Button / Link */}
+                    {/* Trigger Button / Link (Icon on top, Name below) */}
                     {tab.isDropdown ? (
                       <button
                         type="button"
                         onClick={() => setActiveDropdown(isOpen ? null : tab.id)}
-                        className={`relative z-10 px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors duration-200 flex items-center gap-1.5 select-none cursor-pointer group ${
+                        className={`relative z-10 px-2.5 sm:px-3 py-1.5 rounded-xl flex flex-col items-center justify-center transition-colors duration-200 select-none cursor-pointer group min-w-[62px] sm:min-w-[68px] ${
                           isActive 
                             ? 'text-[#0d4a28]' 
                             : isHovered 
@@ -273,14 +273,31 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
                               : 'text-slate-600 hover:text-slate-900'
                         }`}
                       >
-                        <TabIcon className={`w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-[#1a6b3c]' : 'text-slate-500 group-hover:text-[#1a6b3c]'}`} />
-                        <span>{tab.label}</span>
-                        <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform duration-250 ${isOpen ? 'rotate-180 text-[#1a6b3c]' : 'group-hover:text-slate-600'}`} />
+                        <div className="relative flex items-center justify-center h-4.5">
+                          <TabIcon className={`w-4 h-4 transition-all duration-200 group-hover:scale-115 group-hover:-translate-y-0.5 ${
+                            isActive 
+                              ? 'text-[#1a6b3c]' 
+                              : isHovered 
+                                ? 'text-[#1a6b3c]' 
+                                : 'text-slate-500 group-hover:text-[#1a6b3c]'
+                          }`} />
+                        </div>
+                        <div className="flex items-center gap-0.5 mt-0.5">
+                          <span className="text-[10px] xl:text-[10.5px] font-bold tracking-tight whitespace-nowrap leading-tight">
+                            {tab.label}
+                          </span>
+                          <ChevronDown className={`w-2.5 h-2.5 text-slate-400 transition-transform duration-200 ${
+                            isOpen ? 'rotate-180 text-[#1a6b3c]' : 'group-hover:text-slate-600'
+                          }`} />
+                        </div>
+                        {isActive && (
+                          <span className="absolute bottom-0.5 w-1 h-1 rounded-full bg-[#1a6b3c]" />
+                        )}
                       </button>
                     ) : (
                       <Link
                         to={tab.href}
-                        className={`relative z-10 px-3.5 py-1.5 rounded-full text-xs font-bold transition-colors duration-200 flex items-center gap-1.5 select-none cursor-pointer group ${
+                        className={`relative z-10 px-2.5 sm:px-3 py-1.5 rounded-xl flex flex-col items-center justify-center transition-colors duration-200 select-none cursor-pointer group min-w-[62px] sm:min-w-[68px] ${
                           isActive 
                             ? 'text-[#0d4a28]' 
                             : isHovered 
@@ -288,8 +305,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
                               : 'text-slate-600 hover:text-slate-900'
                         }`}
                       >
-                        <TabIcon className={`w-3.5 h-3.5 transition-transform duration-200 group-hover:scale-110 ${isActive ? 'text-[#1a6b3c]' : 'text-slate-500 group-hover:text-[#1a6b3c]'}`} />
-                        <span>{tab.label}</span>
+                        <div className="relative flex items-center justify-center h-4.5">
+                          <TabIcon className={`w-4 h-4 transition-all duration-200 group-hover:scale-115 group-hover:-translate-y-0.5 ${
+                            isActive 
+                              ? 'text-[#1a6b3c]' 
+                              : isHovered 
+                                ? 'text-[#1a6b3c]' 
+                                : 'text-slate-500 group-hover:text-[#1a6b3c]'
+                          }`} />
+                        </div>
+                        <span className="text-[10px] xl:text-[10.5px] font-bold tracking-tight whitespace-nowrap leading-tight mt-0.5">
+                          {tab.label}
+                        </span>
+                        {isActive && (
+                          <span className="absolute bottom-0.5 w-1 h-1 rounded-full bg-[#1a6b3c]" />
+                        )}
                       </Link>
                     )}
 
@@ -297,7 +327,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
                     {isHovered && (
                       <motion.div
                         layoutId="nav-capsule-indicator"
-                        className="absolute inset-0 rounded-full bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.04)] border border-slate-200/90 z-0 pointer-events-none"
+                        className="absolute inset-0 rounded-xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.04)] border border-slate-200/90 z-0 pointer-events-none"
                         transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                       />
                     )}
@@ -305,7 +335,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
                     {isActive && !isHovered && !hoveredTab && (
                       <motion.div
                         layoutId="nav-capsule-indicator"
-                        className="absolute inset-0 rounded-full bg-white shadow-[0_2px_10px_rgba(26,107,60,0.1)] border border-emerald-600/30 z-0 pointer-events-none"
+                        className="absolute inset-0 rounded-xl bg-white shadow-[0_2px_10px_rgba(26,107,60,0.1)] border border-emerald-600/30 z-0 pointer-events-none"
                         transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                       />
                     )}
