@@ -246,7 +246,6 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
           <ul className="curved-tab-list w-full flex items-center justify-between">
             {tabs.map((tab) => {
               const isActive = activeTab?.id === tab.id;
-              const TabIcon = tab.icon || Layers3;
 
               return (
                 <li
@@ -276,12 +275,7 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
                       </motion.div>
                     )}
 
-                    {/* Stacked Icon (Top) */}
-                    <span className="curved-tab-icon">
-                      <TabIcon className="w-5 h-5 sm:w-6 sm:h-6" />
-                    </span>
-
-                    {/* Stacked Label (Bottom) */}
+                    {/* Tab Label */}
                     <span className="curved-tab-text">
                       {tab.label}
                     </span>
