@@ -165,7 +165,7 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
 
   const defaultCategory = DEFAULT_CATEGORY_TABS[detectedCategory];
 
-  // Construct default tab hierarchy: "Beranda", "Menu" (Category), "Sub Menu 1", ..., "Sub Menu N"
+  // Construct default tab hierarchy: "Beranda", "Sub Menu 1", ..., "Sub Menu N"
   let tabs: FolderTabItem[] = [];
   if (propTabs && propTabs.length > 0) {
     tabs = propTabs;
@@ -177,24 +177,17 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
       icon: Home,
     };
 
-    const menuTab: FolderTabItem = {
-      id: `menu-${detectedCategory}`,
-      label: defaultCategory.parentLabel,
-      href: defaultCategory.parentHref,
-      icon: defaultCategory.parentIcon,
-    };
-
-    tabs = [homeTab, menuTab, ...defaultCategory.tabs];
+    tabs = [homeTab, ...defaultCategory.tabs];
   }
 
-  // Active Tab Detection: Prioritize specific sub-menu items, then category menu, then Beranda
+  // Active Tab Detection: Prioritize specific sub-menu items, then Beranda
   let activeTab = tabs.find((t) => propActiveTabId && t.id === propActiveTabId);
   if (!activeTab) {
     if (pathname === '/') {
       activeTab = tabs.find((t) => t.id === 'beranda') || tabs[0];
     } else {
       // 1. Check specific sub-menu items first
-      const subMenuTabs = tabs.filter((t) => t.id !== 'beranda' && !t.id.startsWith('menu-'));
+      const subMenuTabs = tabs.filter((t) => t.id !== 'beranda');
       activeTab = subMenuTabs.find((t) => pathname === t.href);
 
       // 2. Check sub-menu prefix
@@ -202,14 +195,7 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
         activeTab = subMenuTabs.find((t) => t.href !== '/' && pathname.startsWith(t.href));
       }
 
-      // 3. Fallback to Menu tab
-      if (!activeTab) {
-        activeTab = tabs.find(
-          (t) => t.id.startsWith('menu-') && (pathname === t.href || pathname.startsWith(t.href))
-        );
-      }
-
-      // 4. Fallback to any matching tab or first
+      // 3. Fallback to any matching tab or first
       if (!activeTab) {
         activeTab = tabs.find((t) => pathname === t.href || (t.href !== '/' && pathname.startsWith(t.href))) || tabs[0];
       }

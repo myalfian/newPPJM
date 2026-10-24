@@ -89,19 +89,34 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: 38px;
   padding: 6px 14px;
-  color: rgba(255, 255, 255, 0.72);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: color 0.22s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s ease;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 10;
 }
 
+/* Modern Glass Hover Effect when mouse is over tab */
 .curved-tab-link:hover:not(.active) {
   color: #ffffff;
+  background: rgba(255, 255, 255, 0.16);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  transform: translateY(-1.5px);
+}
+
+:is(.dark .curved-tab-link:hover:not(.active)) {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.curved-tab-link:hover:not(.active) .curved-tab-text {
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.45);
 }
 
 .curved-tab-link:active {
@@ -118,7 +133,7 @@
   font-weight: 600;
   letter-spacing: 0.2px;
   white-space: nowrap;
-  transition: color 0.22s ease, transform 0.22s ease, font-weight 0.22s ease;
+  transition: color 0.22s ease, transform 0.22s ease, font-weight 0.22s ease, text-shadow 0.22s ease;
   text-align: center;
 }
 
