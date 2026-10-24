@@ -119,6 +119,32 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
+  // Keyboard Arrow navigation across fluid dock tabs
+  const handleNavKeyDown = (e: React.KeyboardEvent) => {
+    const activeTab = navTabs.find(t => isTabActive(t));
+    const activeId = hoveredTab || (activeTab ? activeTab.id : navTabs[0].id);
+    const currentIdx = navTabs.findIndex(t => t.id === activeId);
+
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      const nextIdx = (currentIdx + 1) % navTabs.length;
+      setHoveredTab(navTabs[nextIdx].id);
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const prevIdx = (currentIdx - 1 + navTabs.length) % navTabs.length;
+      setHoveredTab(navTabs[prevIdx].id);
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      setHoveredTab(navTabs[0].id);
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      setHoveredTab(navTabs[navTabs.length - 1].id);
+    } else if (e.key === 'Escape') {
+      setHoveredTab(null);
+      setActiveDropdown(null);
+    }
+  };
+
   // Navigation Items with Android App-style Colorful Badges & Submenus
   const navTabs: NavTabItem[] = [
     {
@@ -307,9 +333,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               </div>
             </Link>
 
-            {/* Desktop Navigation: Equal Width & Uniform Horizontal Distribution (h-[58px]) */}
+            {/* Desktop Navigation: Animated Fluid Floating Pill Dock (Dribbble 23495613) */}
             <nav
-              className="hidden lg:grid grid-cols-6 items-center h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[540px] xl:w-[660px] 2xl:w-[720px]"
+              role="tablist"
+              aria-label="Menu Utama Navigasi"
+              onKeyDown={handleNavKeyDown}
+              className="hidden lg:grid grid-cols-6 items-center h-[58px] p-1.5 rounded-full bg-slate-100/90 backdrop-blur-2xl border border-slate-200/90 shadow-[0_4px_20px_rgba(0,0,0,0.05),0_1px_2px_rgba(0,0,0,0.03),inset_0_1px_1px_rgba(255,255,255,0.9)] relative gap-1 shrink-0 w-[540px] xl:w-[660px] 2xl:w-[720px] transition-all duration-300 hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)]"
               onMouseLeave={() => {
                 setHoveredTab(null);
                 closeDropdownWithDelay();
@@ -319,11 +348,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                 const TabIcon = tab.icon;
                 const isActive = isTabActive(tab);
                 const isHovered = hoveredTab === tab.id;
+                const isSelected = hoveredTab ? isHovered : isActive;
                 const isOpen = activeDropdown === tab.id;
 
                 return (
                   <div
                     key={tab.id}
+                    role="presentation"
                     className="relative h-full w-full flex items-center justify-center"
                     onMouseEnter={() => {
                       setHoveredTab(tab.id);
@@ -339,13 +370,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                     {tab.isDropdown ? (
                       <button
                         type="button"
+                        role="tab"
+                        aria-selected={isActive}
+                        tabIndex={isActive ? 0 : -1}
                         onClick={() => setActiveDropdown(isOpen ? null : tab.id)}
-                        className="relative z-10 w-full h-full px-1 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
+                        className="relative z-10 w-full h-full px-1 py-1 rounded-full flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/70"
                       >
-                        {/* Android-style Rounded Colorful Icon Badge */}
-                        <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-110 group-hover:-translate-y-0.5 ${isActive
+                        {/* Android-style Rounded Colorful Icon Badge with spring scale micro-interaction */}
+                        <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-115 group-hover:-translate-y-0.5 group-active:scale-90 shadow-2xs ${isActive
                             ? tab.color.activeBadgeBg
-                            : tab.color.badgeBg
+                            : isHovered
+                              ? tab.color.badgeBg + ' shadow-xs'
+                              : tab.color.badgeBg
                           }`}>
                           <TabIcon className="w-4 h-4 transition-transform duration-200" />
                         </div>
@@ -354,7 +390,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                         <div className="w-full flex items-center justify-center gap-0.5 mt-0.5 px-0.5">
                           <span className={`text-[10px] xl:text-[11.5px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${isActive
                               ? tab.color.activeText
-                              : 'text-slate-700 group-hover:text-slate-950'
+                              : isHovered
+                                ? 'text-slate-950 font-black'
+                                : 'text-slate-700'
                             }`}>
                             {tab.label}
                           </span>
@@ -365,18 +403,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                     ) : (
                       <Link
                         to={tab.href}
+                        role="tab"
+                        aria-selected={isActive}
+                        aria-current={isActive ? 'page' : undefined}
+                        tabIndex={isActive ? 0 : -1}
                         onClick={() => {
                           setActiveDropdown(null);
                           if (tab.href === '/') {
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                           }
                         }}
-                        className="relative z-10 w-full h-full px-1 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
+                        className="relative z-10 w-full h-full px-1 py-1 rounded-full flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/70"
                       >
-                        {/* Android-style Rounded Colorful Icon Badge */}
-                        <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-110 group-hover:-translate-y-0.5 ${isActive
+                        {/* Android-style Rounded Colorful Icon Badge with spring scale micro-interaction */}
+                        <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-115 group-hover:-translate-y-0.5 group-active:scale-90 shadow-2xs ${isActive
                             ? tab.color.activeBadgeBg
-                            : tab.color.badgeBg
+                            : isHovered
+                              ? tab.color.badgeBg + ' shadow-xs'
+                              : tab.color.badgeBg
                           }`}>
                           <TabIcon className="w-4 h-4 transition-transform duration-200" />
                         </div>
@@ -385,7 +429,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                         <div className="w-full text-center px-0.5 mt-0.5">
                           <span className={`block text-[10px] xl:text-[11.5px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${isActive
                               ? tab.color.activeText
-                              : 'text-slate-700 group-hover:text-slate-950'
+                              : isHovered
+                                ? 'text-slate-950 font-black'
+                                : 'text-slate-700'
                             }`}>
                             {tab.label}
                           </span>
@@ -393,21 +439,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                       </Link>
                     )}
 
-                    {/* Fluid Sliding Pill Indicator (Active or Hovered) */}
-                    {isHovered && (
+                    {/* Dribbble 23495613 Physics-Based Animated Fluid Gliding Indicator Pill */}
+                    {isSelected && (
                       <motion.div
-                        layoutId="nav-capsule-indicator"
-                        className="absolute inset-0 rounded-2xl bg-white shadow-[0_2px_12px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.04)] border border-slate-200/90 z-0 pointer-events-none"
-                        transition={{ type: 'spring', stiffness: 450, damping: 32 }}
-                      />
-                    )}
-
-                    {isActive && !isHovered && !hoveredTab && (
-                      <motion.div
-                        layoutId="nav-capsule-indicator"
-                        className="absolute inset-0 rounded-2xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-200/80 z-0 pointer-events-none"
-                        transition={{ type: 'spring', stiffness: 450, damping: 32 }}
-                      />
+                        layoutId="animated-fluid-indicator"
+                        className="absolute inset-0 rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.04)] border border-slate-200/90 z-0 pointer-events-none"
+                        transition={{
+                          type: 'spring',
+                          stiffness: 400,
+                          damping: 28,
+                          mass: 0.7
+                        }}
+                      >
+                        {/* Top Rim Gloss Light Accent */}
+                        <div className="absolute top-1 inset-x-3 h-[1px] bg-gradient-to-r from-transparent via-white to-transparent opacity-90" />
+                      </motion.div>
                     )}
 
                     {/* Interactive Dropdown Menu Card */}
@@ -525,20 +571,21 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               <button
                 type="button"
                 onClick={() => setSearchOpen(true)}
-                className="flex lg:hidden items-center justify-center w-10 h-10 rounded-2xl text-slate-700 bg-slate-100 hover:bg-emerald-50 hover:text-[#1a6b3c] border border-slate-200 transition-all cursor-pointer active:scale-95"
+                className="flex lg:hidden items-center justify-center min-w-[44px] min-h-[44px] rounded-full text-slate-700 bg-slate-100 hover:bg-emerald-50 hover:text-[#1a6b3c] border border-slate-200/90 shadow-2xs transition-all cursor-pointer active:scale-95"
                 aria-label="Cari Informasi Portal"
                 title="Cari"
               >
-                <Search className="w-4 h-4" />
+                <Search className="w-4.5 h-4.5" />
               </button>
 
               {/* Mobile Profile Icon (Visible only on mobile xs < sm) */}
               <Link
                 to="/admin"
-                className="flex sm:hidden items-center justify-center w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-300 transition-all active:scale-95"
+                className="flex sm:hidden items-center justify-center min-w-[44px] min-h-[44px] rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-2xs transition-all active:scale-95"
                 title={`Profil: ${currentUserName}`}
+                aria-label="Profil Pengguna"
               >
-                <User className="w-4 h-4" />
+                <User className="w-4.5 h-4.5" />
               </Link>
 
               {/* Mobile Hamburger Button */}
@@ -546,7 +593,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                 <button
                   type="button"
                   onClick={onOpenMobileMenu}
-                  className="w-10 h-10 flex items-center justify-center rounded-2xl text-slate-700 bg-slate-100 hover:bg-emerald-50 hover:text-[#1a6b3c] border border-slate-200 transition-all cursor-pointer active:scale-95"
+                  className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-slate-700 bg-slate-100 hover:bg-emerald-50 hover:text-[#1a6b3c] border border-slate-200/90 shadow-2xs transition-all cursor-pointer active:scale-95"
                   aria-label="Buka Menu Navigasi"
                 >
                   <Menu className="w-5 h-5" />
