@@ -1,6 +1,24 @@
 import React, { useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import {
+  Compass,
+  HeartHandshake,
+  Landmark,
+  Layers,
+  GraduationCap,
+  BookOpen,
+  Sparkles,
+  Image as ImageIcon,
+  Video,
+  Trophy,
+  Activity,
+  Volume2,
+  Cpu,
+  Globe,
+  CheckCircle2,
+  Layers3
+} from 'lucide-react';
 import './FolderBreadcrumbTabs.css';
 
 export interface FolderTabItem {
@@ -12,109 +30,106 @@ export interface FolderTabItem {
 }
 
 export interface FolderBreadcrumbTabsProps {
-  // Breadcrumb Trail (Top row)
+  // Breadcrumb Trail Props (preserved for compatibility)
   homeLabel?: string;
   parentLabel?: string;
   parentHref?: string;
   currentLabel?: string;
 
-  // Folder Tabs
+  // Tabs
   tabs?: FolderTabItem[];
   activeTabId?: string;
   className?: string;
   onChangeTab?: (tab: FolderTabItem) => void;
 }
 
-// Pre-defined category tabs corresponding to the portal's navigation hubs
+// Pre-defined category tabs with dedicated icons and clean stacked labels
 const DEFAULT_CATEGORY_TABS: Record<string, { parentLabel: string; parentHref: string; tabs: FolderTabItem[] }> = {
   'jm-center': {
     parentLabel: 'JM Center',
     parentHref: '/jm-center/sambutan',
     tabs: [
-      { id: 'sambutan', label: 'Sambutan Pengasuh', href: '/jm-center/sambutan' },
-      { id: 'visi-misi', label: 'Visi & Misi', href: '/jm-center/visi-misi' },
-      { id: 'sejarah', label: 'Sejarah Pesantren', href: '/jm-center/sejarah' },
-      { id: 'lembaga', label: 'Badan Otonom & Lembaga', href: '/jm-center/lembaga' },
+      { id: 'sambutan', label: 'Sambutan', href: '/jm-center/sambutan', icon: Compass },
+      { id: 'visi-misi', label: 'Visi Misi', href: '/jm-center/visi-misi', icon: HeartHandshake },
+      { id: 'sejarah', label: 'Sejarah', href: '/jm-center/sejarah', icon: Landmark },
+      { id: 'lembaga', label: 'Lembaga', href: '/jm-center/lembaga', icon: Layers },
     ],
   },
   'program-unggulan': {
     parentLabel: 'Program Unggulan',
     parentHref: '/program-unggulan/program-sekolah',
     tabs: [
-      { id: 'program-sekolah', label: 'Pendidikan Formal', href: '/program-unggulan/program-sekolah' },
-      { id: 'program-madin', label: 'Madrasah Diniyah', href: '/program-unggulan/program-madin' },
-      { id: 'amaliyah-pondok', label: 'Amaliyah Pondok', href: '/program-unggulan/amaliyah-pondok' },
+      { id: 'program-sekolah', label: 'Formal', href: '/program-unggulan/program-sekolah', icon: GraduationCap },
+      { id: 'program-madin', label: 'Madin', href: '/program-unggulan/program-madin', icon: BookOpen },
+      { id: 'amaliyah-pondok', label: 'Amaliyah', href: '/program-unggulan/amaliyah-pondok', icon: Sparkles },
     ],
   },
   'galeri': {
     parentLabel: 'Galeri',
     parentHref: '/galeri/foto',
     tabs: [
-      { id: 'foto', label: 'Galeri Foto Kegiatan', href: '/galeri/foto' },
-      { id: 'video', label: 'Galeri Video Profil', href: '/galeri/video' },
+      { id: 'foto', label: 'Foto', href: '/galeri/foto', icon: ImageIcon },
+      { id: 'video', label: 'Video', href: '/galeri/video', icon: Video },
     ],
   },
   'prestasi-ekskul': {
     parentLabel: 'Aktivitas Santri',
     parentHref: '/prestasi',
     tabs: [
-      { id: 'prestasi', label: 'Prestasi Santri', href: '/prestasi' },
-      { id: 'ekskul', label: 'Ekstrakurikuler', href: '/ekskul' },
+      { id: 'prestasi', label: 'Prestasi', href: '/prestasi', icon: Trophy },
+      { id: 'ekskul', label: 'Ekskul', href: '/ekskul', icon: Activity },
     ],
   },
   'smart-jm-hafidz': {
     parentLabel: 'Smart JM',
     parentHref: '/smart-jm/hafidz/read',
     tabs: [
-      { id: 'read', label: 'Al-Qur’an 30 Juz', href: '/smart-jm/hafidz/read' },
-      { id: 'murojaah', label: 'Murojaah AI Suara', href: '/smart-jm/hafidz/murojaah' },
+      { id: 'read', label: 'Mushaf 30 Juz', href: '/smart-jm/hafidz/read', icon: BookOpen },
+      { id: 'murojaah', label: 'Murojaah AI', href: '/smart-jm/hafidz/murojaah', icon: Volume2 },
     ],
   },
   'smart-jm-stem': {
     parentLabel: 'Smart JM',
     parentHref: '/smart-jm/stem/materi',
     tabs: [
-      { id: 'stem-materi', label: 'Modul Materi STEM', href: '/smart-jm/stem/materi' },
-      { id: 'stem-portofolio', label: 'Portofolio Robotika', href: '/smart-jm/stem/portofolio' },
+      { id: 'stem-materi', label: 'Silabus STEM', href: '/smart-jm/stem/materi', icon: Cpu },
+      { id: 'stem-portofolio', label: 'Portofolio', href: '/smart-jm/stem/portofolio', icon: Sparkles },
     ],
   },
   'smart-jm-mandarin': {
     parentLabel: 'Smart JM',
     parentHref: '/smart-jm/mandarin/materi',
     tabs: [
-      { id: 'mandarin-materi', label: 'Materi & Kosakata Mandarin', href: '/smart-jm/mandarin/materi' },
-      { id: 'mandarin-quiz', label: 'Kuis Interaktif Pinyin', href: '/smart-jm/mandarin/quiz' },
+      { id: 'mandarin-materi', label: 'Mandarin Class', href: '/smart-jm/mandarin/materi', icon: Globe },
+      { id: 'mandarin-quiz', label: 'Kuis Pinyin', href: '/smart-jm/mandarin/quiz', icon: CheckCircle2 },
     ],
   },
   'smart-jm': {
     parentLabel: 'Smart JM',
     parentHref: '/smart-jm/hafidz/read',
     tabs: [
-      { id: 'read', label: 'Al-Qur’an 30 Juz', href: '/smart-jm/hafidz/read' },
-      { id: 'murojaah', label: 'Murojaah AI', href: '/smart-jm/hafidz/murojaah' },
-      { id: 'stem-materi', label: 'STEM Materi', href: '/smart-jm/stem/materi' },
-      { id: 'stem-portofolio', label: 'STEM Portofolio', href: '/smart-jm/stem/portofolio' },
-      { id: 'mandarin-materi', label: 'Mandarin Class', href: '/smart-jm/mandarin/materi' },
-      { id: 'mandarin-quiz', label: 'Kuis Interaktif', href: '/smart-jm/mandarin/quiz' },
+      { id: 'read', label: 'Mushaf', href: '/smart-jm/hafidz/read', icon: BookOpen },
+      { id: 'murojaah', label: 'Murojaah', href: '/smart-jm/hafidz/murojaah', icon: Volume2 },
+      { id: 'stem-materi', label: 'STEM', href: '/smart-jm/stem/materi', icon: Cpu },
+      { id: 'stem-portofolio', label: 'Portofolio', href: '/smart-jm/stem/portofolio', icon: Sparkles },
+      { id: 'mandarin-materi', label: 'Mandarin', href: '/smart-jm/mandarin/materi', icon: Globe },
+      { id: 'mandarin-quiz', label: 'Kuis', href: '/smart-jm/mandarin/quiz', icon: CheckCircle2 },
     ],
   },
 };
 
 /**
- * Animated Fluid Tab Bar with Carved / Inverted Curve Cutout
+ * Curved Cutout Magic Navigation Bar with Sliding Notch & Floating Dot
  * Inspired by CodePen (mario_999/pen/rNYZxNy)
  * Features:
- * - Floating pill navigation bar with neutral solid / glassmorphic surface
- * - Physics-based sliding active indicator with smooth X-axis translation
- * - Inverted curve / concave cutout fillets on left & right of active indicator
- * - Automatic centering on mobile viewport with zero CLS
- * - Accessible touch targets (>= 44x44px) & snappy tactile micro-press feedback
+ * - Stacked layout (Icon on top, label on bottom) matching reference screenshots
+ * - Top concave cutout notch dipping into the white bar over the active item
+ * - Floating white dot in the center of the notch
+ * - Inverted fillet wings seamlessly blending into the bar's top border
+ * - Fluid spring motion with framer-motion layoutId
+ * - Horizontal smooth scrolling with auto-centering on mobile
  */
 export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
-  homeLabel = 'Beranda',
-  parentLabel: propParentLabel,
-  parentHref: propParentHref,
-  currentLabel: propCurrentLabel,
   tabs: propTabs,
   activeTabId: propActiveTabId,
   className = '',
@@ -139,16 +154,12 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
 
   const defaultCategory = DEFAULT_CATEGORY_TABS[detectedCategory];
   const tabs = propTabs || defaultCategory?.tabs || [];
-  const parentLabel = propParentLabel || defaultCategory?.parentLabel || 'Informasi';
-  const parentHref = propParentHref || defaultCategory?.parentHref || '/';
 
   // Find active tab item
   const activeTab = tabs.find((t) => {
     if (propActiveTabId) return t.id === propActiveTabId;
     return pathname === t.href || (t.href !== '/' && pathname.startsWith(t.href));
   }) || tabs[0];
-
-  const currentLabel = propCurrentLabel || activeTab?.label || '';
 
   // Auto-center active tab on mobile viewport
   useEffect(() => {
@@ -164,112 +175,69 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
     }
   }, [pathname, activeTab?.id]);
 
-  return (
-    <div className={`w-full ${className}`}>
-      {/* Fluid Sliding Tab Bar with Carved Cutout Inverted Curves */}
-      {tabs.length > 0 && (
-        <div className="w-full flex items-center justify-start">
-          <div className="fluid-tab-container max-w-full inline-flex">
-            {/* Horizontal Snap Scroll Track for Mobile Viewports */}
-            <div
-              ref={tabListRef}
-              className="flex items-center gap-1 overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth w-full p-0.5"
-            >
-              {tabs.map((tab) => {
-                const isActive = activeTab?.id === tab.id;
-                const TabIcon = tab.icon;
+  if (!tabs || tabs.length === 0) return null;
 
-                return (
+  return (
+    <div className={`curved-navbar-wrapper ${className}`}>
+      <div className="curved-navbar-bar">
+        {/* Scrollable Track */}
+        <div
+          ref={tabListRef}
+          className="flex items-center overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full max-w-full"
+        >
+          <ul className="curved-tab-list">
+            {tabs.map((tab) => {
+              const isActive = activeTab?.id === tab.id;
+              const TabIcon = tab.icon || Layers3;
+
+              return (
+                <li key={tab.id} className="relative h-full flex items-center justify-center snap-start">
                   <Link
-                    key={tab.id}
                     ref={isActive ? activeTabRef : null}
                     to={tab.href}
                     onClick={() => onChangeTab?.(tab)}
                     aria-current={isActive ? 'page' : undefined}
-                    className={`fluid-tab-item snap-start shrink-0 relative ${
-                      isActive
-                        ? 'text-[#007acc] dark:text-[#38bdf8] font-black'
-                        : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
-                    }`}
+                    className={`curved-tab-link ${isActive ? 'active' : ''}`}
                   >
-                    {/* Animated Sliding Active Indicator with Inverted Curve Cutout */}
+                    {/* Animated Sliding Notch Pointer & Floating Dot (CodePen Style) */}
                     {isActive && (
                       <motion.div
-                        layoutId="fluidCutoutIndicator"
-                        className="fluid-cutout-indicator"
+                        layoutId="curvedCutoutPointer"
+                        className="curved-pointer"
                         transition={{
                           type: 'spring',
-                          stiffness: 480,
-                          damping: 34,
+                          stiffness: 420,
+                          damping: 30,
                           mass: 0.8,
                         }}
                       >
-                        {/* Left Inverted Concave Curve (CodePen Cutout Effect) */}
-                        <span className="cutout-wing-left" aria-hidden="true">
-                          <svg viewBox="0 0 10 10" className="w-full h-full block">
-                            <path
-                              d="M10 0 C10 5.523 5.523 10 0 10 H10 V0 Z"
-                              className="fill-white dark:fill-zinc-900"
-                            />
-                            <path
-                              d="M10 0 C10 5.523 5.523 10 0 10"
-                              fill="none"
-                              stroke="currentColor"
-                              className="text-slate-200 dark:text-zinc-700"
-                              strokeWidth="1.2"
-                            />
-                          </svg>
-                        </span>
-
-                        {/* Right Inverted Concave Curve (CodePen Cutout Effect) */}
-                        <span className="cutout-wing-right" aria-hidden="true">
-                          <svg viewBox="0 0 10 10" className="w-full h-full block">
-                            <path
-                              d="M0 0 C0 5.523 4.477 10 10 10 H0 V0 Z"
-                              className="fill-white dark:fill-zinc-900"
-                            />
-                            <path
-                              d="M0 0 C0 5.523 4.477 10 10 10"
-                              fill="none"
-                              stroke="currentColor"
-                              className="text-slate-200 dark:text-zinc-700"
-                              strokeWidth="1.2"
-                            />
-                          </svg>
-                        </span>
+                        <span className="curved-dot" aria-hidden="true" />
                       </motion.div>
                     )}
 
-                    {/* Tab Content: Icon + Label + Badge */}
-                    <span className="relative z-10 flex items-center gap-1.5 sm:gap-2">
-                      {TabIcon && (
-                        <TabIcon
-                          className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-transform duration-200 ${
-                            isActive ? 'scale-110 text-[#007acc] dark:text-[#38bdf8]' : 'text-slate-400 group-hover:text-slate-600'
-                          }`}
-                        />
-                      )}
-                      <span>{tab.label}</span>
-                      {tab.badge && (
-                        <span
-                          className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold leading-none ${
-                            isActive
-                              ? 'bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 border border-blue-200/80 dark:border-blue-800'
-                              : 'bg-slate-200 dark:bg-zinc-700 text-slate-700 dark:text-zinc-300'
-                          }`}
-                        >
-                          {tab.badge}
-                        </span>
-                      )}
+                    {/* Stacked Icon (Top) */}
+                    <span className="curved-tab-icon">
+                      <TabIcon className="w-6 h-6 sm:w-7 sm:h-7" />
                     </span>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      )}
 
+                    {/* Stacked Label (Bottom) */}
+                    <span className="curved-tab-text">
+                      {tab.label}
+                    </span>
+
+                    {/* Optional Badge */}
+                    {tab.badge && (
+                      <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-blue-100 text-[#007acc]">
+                        {tab.badge}
+                      </span>
+                    )}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };
