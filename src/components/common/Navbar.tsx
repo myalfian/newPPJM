@@ -11,7 +11,7 @@ import {
   Trophy, 
   Menu, 
   ChevronDown, 
-  ShieldCheck,
+  User,
   ArrowRight,
   Compass,
   GraduationCap,
@@ -383,20 +383,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu }) => {
                 </kbd>
               </button>
 
-              {/* Admin shortcut with Live Status Pulse */}
+              {/* Profile shortcut with Live Status Pulse */}
               <Link
                 to="/admin"
                 className="relative group inline-flex items-center gap-2 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full text-xs font-bold text-emerald-950 bg-gradient-to-r from-emerald-50 via-white to-emerald-50/80 hover:from-emerald-100 hover:to-emerald-100 border border-emerald-300/80 hover:border-emerald-400 transition-all duration-200 shadow-xs active:scale-95 overflow-hidden"
-                title="Masuk ke Panel Admin Zero-IT"
+                title="Profil Pengguna & Portal"
               >
                 <div className="relative flex items-center justify-center">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-700 group-hover:scale-110 transition-transform" />
+                  <User className="w-3.5 h-3.5 text-emerald-700 group-hover:scale-110 transition-transform" />
                   <span className="absolute -top-0.5 -right-0.5 flex h-1.5 w-1.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-600"></span>
                   </span>
                 </div>
-                <span className="tracking-tight">Admin</span>
+                <span className="tracking-tight">Profile</span>
               </Link>
 
               {/* Mobile Hamburger Button */}

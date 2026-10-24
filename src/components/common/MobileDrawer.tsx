@@ -9,7 +9,7 @@ import {
   Award,
   Activity,
   Image as ImageIcon,
-  ShieldCheck,
+  User,
   ChevronRight,
 } from 'lucide-react';
 
@@ -153,8 +153,8 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
                 onClick={onClose}
                 className="flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl text-sm font-bold text-emerald-800 bg-emerald-100/70 hover:bg-emerald-200 min-h-[48px] transition-colors"
               >
-                <ShieldCheck className="w-4 h-4 text-emerald-800" />
-                <span>Masuk Portal Admin</span>
+                <User className="w-4 h-4 text-emerald-800" />
+                <span>Profile Portal</span>
               </Link>
             </div>
           </motion.div>
