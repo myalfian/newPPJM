@@ -2,12 +2,13 @@
  * Theme: Signature Emerald Green & Gold matching website identity
  * Features:
  * - Borderless Green Container (#0a6847 to #0f5132) with soft ambient depth
- * - Left-aligned menu tabs positioned sequentially with close spacing
+ * - Mobile: Adaptive zero-sliding full-width layout with equal distribution
+ * - Desktop: Left-aligned menu tabs positioned sequentially with close spacing
  * - Tab sequence: "Beranda", "Sub Menu 1", ..., "Sub Menu N"
  * - Mathematically continuous C1 SVG cutout notch dipping into the bar over the active item (#FBFBFA)
  * - Perfectly centered floating dot inside the notch
  * - Distortion-free spring physics with Framer Motion layout="position"
- * - Glassmorphic hover effect & responsive smooth horizontal scroll
+ * - Glassmorphic hover effect
  */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Ubuntu:wght@500;600;700;800&display=swap');
 
@@ -29,13 +30,19 @@
   justify-content: flex-start;
   width: 100%;
   background: linear-gradient(135deg, #0a6847 0%, #0f5132 100%);
-  border: none; /* Borderless design */
+  border: none;
   border-radius: 20px;
   box-shadow: 0 10px 28px -8px rgba(15, 81, 50, 0.42), 0 4px 14px -2px rgba(15, 23, 42, 0.1);
-  padding: 0 10px;
+  padding: 0 6px;
   height: 56px;
   max-width: 100%;
   overflow: visible;
+}
+
+@media (min-width: 640px) {
+  .curved-navbar-bar {
+    padding: 0 10px;
+  }
 }
 
 :is(.dark .curved-navbar-bar) {
@@ -57,42 +64,65 @@
   border-radius: 9999px;
 }
 
-/* Track & List Aligned to the Left with Close Spacing */
+/* Track & List: Zero sliding on mobile, fits 100% of the screen */
 .curved-scroll-track {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
+  overflow: visible;
+}
+
+@media (min-width: 768px) {
+  .curved-scroll-track {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 .curved-tab-list {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+  width: 100%;
   height: 100%;
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 6px;
+  gap: 2px;
 }
 
 @media (min-width: 640px) {
+  .curved-tab-list {
+    justify-content: flex-start;
+    width: auto;
+    gap: 8px;
+  }
+}
+
+@media (min-width: 1024px) {
   .curved-tab-list {
     gap: 10px;
   }
 }
 
-/* Compact Tab Column */
+/* Compact Tab Column: Equal distribution on mobile, shrink-wrapped on desktop */
 .curved-tab-col {
-  flex: 0 0 auto;
+  flex: 1 1 0;
+  min-width: 0;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media (min-width: 640px) {
+  .curved-tab-col {
+    flex: 0 0 auto;
+    min-width: auto;
+  }
 }
 
 .curved-tab-link {
@@ -101,7 +131,8 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 0 16px;
+  width: 100%;
+  padding: 0 4px;
   border-radius: 14px;
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
@@ -110,6 +141,13 @@
   -webkit-tap-highlight-color: transparent;
   transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, transform 0.2s ease;
   z-index: 10;
+}
+
+@media (min-width: 640px) {
+  .curved-tab-link {
+    width: auto;
+    padding: 0 16px;
+  }
 }
 
 /* Modern Glass Hover Effect when mouse is over tab */
@@ -140,10 +178,13 @@
 
 .curved-tab-text {
   font-family: 'Plus Jakarta Sans', 'Ubuntu', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 13px;
+  font-size: 11.5px;
   font-weight: 600;
-  letter-spacing: 0.2px;
+  letter-spacing: -0.2px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
   transition: color 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), font-weight 0.22s ease, text-shadow 0.22s ease;
   text-align: center;
   padding-top: 10px; /* Centered comfortably below top notch */
@@ -152,6 +193,8 @@
 @media (min-width: 640px) {
   .curved-tab-text {
     font-size: 13.5px;
+    letter-spacing: 0.2px;
+    max-width: none;
   }
 }
 
@@ -164,10 +207,10 @@
 
 /* Optional Badge */
 .curved-tab-badge {
-  margin-left: 6px;
+  margin-left: 4px;
   font-size: 9px;
   font-weight: 700;
-  padding: 1px 6px;
+  padding: 1px 5px;
   border-radius: 9999px;
   background: #fbbf24;
   color: #064e3b;
@@ -176,15 +219,23 @@
 }
 
 /* The Curved Cutout Pointer / Notch dipping from top edge */
-/* Centered using left: calc(50% - 37px) matching 74px width */
+/* Always centered over the active tab column */
 .curved-pointer {
   position: absolute;
   top: -3px;
-  left: calc(50% - 37px);
+  left: 50%;
+  transform: translateX(-50%);
   width: 74px;
   height: 25px;
   pointer-events: none;
   z-index: 5;
+}
+
+@media (max-width: 639px) {
+  .curved-pointer {
+    transform: translateX(-50%) scale(0.85);
+    transform-origin: top center;
+  }
 }
 
 .curved-notch-svg {

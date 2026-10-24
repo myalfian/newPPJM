@@ -25,6 +25,7 @@ import './NavBarTabs.css';
 export interface NavTabItem {
   id: string;
   label: string;
+  shortLabel?: string;
   href: string;
   icon?: React.ComponentType<{ className?: string }>;
   badge?: string | number;
@@ -98,8 +99,8 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentHref: '/smart-jm/hafidz/read',
     parentIcon: BookOpen,
     tabs: [
-      { id: 'read', label: 'Mushaf 30 Juz', href: '/smart-jm/hafidz/read', icon: BookOpen },
-      { id: 'murojaah', label: 'Murojaah AI', href: '/smart-jm/hafidz/murojaah', icon: Volume2 },
+      { id: 'read', label: 'Mushaf 30 Juz', shortLabel: 'Mushaf', href: '/smart-jm/hafidz/read', icon: BookOpen },
+      { id: 'murojaah', label: 'Murojaah AI', shortLabel: 'Murojaah', href: '/smart-jm/hafidz/murojaah', icon: Volume2 },
     ],
   },
   'smart-jm-stem': {
@@ -107,8 +108,8 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentHref: '/smart-jm/stem/materi',
     parentIcon: Cpu,
     tabs: [
-      { id: 'stem-materi', label: 'Silabus STEM', href: '/smart-jm/stem/materi', icon: Cpu },
-      { id: 'stem-portofolio', label: 'Portofolio', href: '/smart-jm/stem/portofolio', icon: Sparkles },
+      { id: 'stem-materi', label: 'Silabus STEM', shortLabel: 'Silabus', href: '/smart-jm/stem/materi', icon: Cpu },
+      { id: 'stem-portofolio', label: 'Portofolio', shortLabel: 'Karya', href: '/smart-jm/stem/portofolio', icon: Sparkles },
     ],
   },
   'smart-jm-mandarin': {
@@ -116,8 +117,8 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentHref: '/smart-jm/mandarin/materi',
     parentIcon: Globe,
     tabs: [
-      { id: 'mandarin-materi', label: 'Mandarin Class', href: '/smart-jm/mandarin/materi', icon: Globe },
-      { id: 'mandarin-quiz', label: 'Kuis Pinyin', href: '/smart-jm/mandarin/quiz', icon: CheckCircle2 },
+      { id: 'mandarin-materi', label: 'Mandarin Class', shortLabel: 'Materi', href: '/smart-jm/mandarin/materi', icon: Globe },
+      { id: 'mandarin-quiz', label: 'Kuis Pinyin', shortLabel: 'Kuis', href: '/smart-jm/mandarin/quiz', icon: CheckCircle2 },
     ],
   },
   'smart-jm': {
@@ -125,12 +126,12 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentHref: '/smart-jm/hafidz/read',
     parentIcon: Cpu,
     tabs: [
-      { id: 'read', label: 'Mushaf', href: '/smart-jm/hafidz/read', icon: BookOpen },
-      { id: 'murojaah', label: 'Murojaah', href: '/smart-jm/hafidz/murojaah', icon: Volume2 },
-      { id: 'stem-materi', label: 'STEM', href: '/smart-jm/stem/materi', icon: Cpu },
-      { id: 'stem-portofolio', label: 'Portofolio', href: '/smart-jm/stem/portofolio', icon: Sparkles },
-      { id: 'mandarin-materi', label: 'Mandarin', href: '/smart-jm/mandarin/materi', icon: Globe },
-      { id: 'mandarin-quiz', label: 'Kuis', href: '/smart-jm/mandarin/quiz', icon: CheckCircle2 },
+      { id: 'read', label: 'Mushaf', shortLabel: 'Mushaf', href: '/smart-jm/hafidz/read', icon: BookOpen },
+      { id: 'murojaah', label: 'Murojaah', shortLabel: 'Murojaah', href: '/smart-jm/hafidz/murojaah', icon: Volume2 },
+      { id: 'stem-materi', label: 'STEM', shortLabel: 'STEM', href: '/smart-jm/stem/materi', icon: Cpu },
+      { id: 'stem-portofolio', label: 'Portofolio', shortLabel: 'Karya', href: '/smart-jm/stem/portofolio', icon: Sparkles },
+      { id: 'mandarin-materi', label: 'Mandarin', shortLabel: 'Mandarin', href: '/smart-jm/mandarin/materi', icon: Globe },
+      { id: 'mandarin-quiz', label: 'Kuis', shortLabel: 'Kuis', href: '/smart-jm/mandarin/quiz', icon: CheckCircle2 },
     ],
   },
 };
@@ -276,9 +277,16 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
                       </motion.div>
                     )}
 
-                    {/* Tab Label */}
+                    {/* Tab Label (Zero-sliding responsive display) */}
                     <span className="curved-tab-text">
-                      {tab.label}
+                      {tab.shortLabel ? (
+                        <>
+                          <span className="sm:hidden">{tab.shortLabel}</span>
+                          <span className="hidden sm:inline">{tab.label}</span>
+                        </>
+                      ) : (
+                        tab.label
+                      )}
                     </span>
 
                     {/* Optional Badge */}

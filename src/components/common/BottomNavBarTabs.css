@@ -2,12 +2,13 @@
  * Theme: Signature Emerald Green & Gold matching website identity & NavBarTabs
  * Features:
  * - Borderless Green Container (#0a6847 to #0f5132) with soft ambient depth
- * - Left-aligned category tabs positioned sequentially with close spacing
+ * - Mobile: Adaptive zero-sliding full-width layout with equal distribution
+ * - Desktop: Left-aligned category tabs positioned sequentially with close spacing
  * - Animated sliding notch pointer & floating dot positioned at the BOTTOM edge
  * - Mathematically continuous C1 SVG cutout notch scooping upward into the bar over the active item (#FBFBFA)
  * - Perfectly centered floating dot inside the bottom notch
  * - Distortion-free spring physics with Framer Motion layout="position"
- * - Glassmorphic hover effect & responsive smooth horizontal scroll
+ * - Glassmorphic hover effect
  * - Integrated Kategori badge and glass Year filter selector
  */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Ubuntu:wght@500;600;700;800&display=swap');
@@ -33,10 +34,16 @@
   border: none;
   border-radius: 20px;
   box-shadow: 0 10px 28px -8px rgba(15, 81, 50, 0.42), 0 4px 14px -2px rgba(15, 23, 42, 0.1);
-  padding: 0 10px;
+  padding: 0 6px;
   height: 56px;
   max-width: 100%;
   overflow: visible;
+}
+
+@media (min-width: 640px) {
+  .bottom-curved-navbar-bar {
+    padding: 0 10px;
+  }
 }
 
 :is(.dark .bottom-curved-navbar-bar) {
@@ -77,42 +84,65 @@
   margin-left: 2px;
 }
 
-/* Track & List Aligned to the Left with Close Spacing */
+/* Track & List: Zero sliding on mobile, fits 100% of the screen */
 .bottom-curved-scroll-track {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
+  overflow: visible;
+}
+
+@media (min-width: 768px) {
+  .bottom-curved-scroll-track {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 .bottom-curved-tab-list {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+  width: 100%;
   height: 100%;
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 6px;
+  gap: 2px;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
+  .bottom-curved-tab-list {
+    justify-content: flex-start;
+    width: auto;
+    gap: 8px;
+  }
+}
+
+@media (min-width: 1024px) {
   .bottom-curved-tab-list {
     gap: 10px;
   }
 }
 
-/* Compact Tab Column */
+/* Compact Tab Column: Equal distribution on mobile, shrink-wrapped on desktop */
 .bottom-curved-tab-col {
-  flex: 0 0 auto;
+  flex: 1 1 0;
+  min-width: 0;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .bottom-curved-tab-col {
+    flex: 0 0 auto;
+    min-width: auto;
+  }
 }
 
 .bottom-curved-tab-btn {
@@ -121,7 +151,8 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  padding: 0 16px;
+  width: 100%;
+  padding: 0 4px;
   border-radius: 14px;
   color: rgba(255, 255, 255, 0.82);
   text-decoration: none;
@@ -132,6 +163,13 @@
   -webkit-tap-highlight-color: transparent;
   transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, transform 0.2s ease;
   z-index: 10;
+}
+
+@media (min-width: 768px) {
+  .bottom-curved-tab-btn {
+    width: auto;
+    padding: 0 16px;
+  }
 }
 
 /* Modern Glass Hover Effect when mouse is over tab */
@@ -162,19 +200,31 @@
 
 .bottom-curved-tab-text {
   font-family: 'Plus Jakarta Sans', 'Ubuntu', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.2px;
+  letter-spacing: -0.2px;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
   transition: color 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), font-weight 0.22s ease, text-shadow 0.22s ease;
   text-align: center;
   padding-top: 0px;
-  padding-bottom: 10px; /* Centered comfortably above bottom notch */
+  padding-bottom: 8px; /* Centered comfortably above bottom notch */
 }
 
 @media (min-width: 640px) {
   .bottom-curved-tab-text {
+    font-size: 12px;
+    padding-bottom: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  .bottom-curved-tab-text {
     font-size: 13.5px;
+    letter-spacing: 0.2px;
+    max-width: none;
   }
 }
 
@@ -186,15 +236,23 @@
 }
 
 /* The Curved Cutout Pointer / Notch dipping from BOTTOM edge */
-/* Centered using left: calc(50% - 37px) matching 74px width */
+/* Always centered over the active tab column */
 .bottom-curved-pointer {
   position: absolute;
   bottom: -3px;
-  left: calc(50% - 37px);
+  left: 50%;
+  transform: translateX(-50%);
   width: 74px;
   height: 25px;
   pointer-events: none;
   z-index: 5;
+}
+
+@media (max-width: 639px) {
+  .bottom-curved-pointer {
+    transform: translateX(-50%) scale(0.85);
+    transform-origin: bottom center;
+  }
 }
 
 .bottom-curved-notch-svg {
