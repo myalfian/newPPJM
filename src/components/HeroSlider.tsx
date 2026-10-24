@@ -325,7 +325,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     if (isDesktop) {
       if (absOffset > 2 || absOffset > maxOffset) {
         return {
-          transform: `translate(-50%, -50%) translateX(${offset > 0 ? 760 : -760}px) scale(0.6) translateZ(-200px)`,
+          transform: `translate(-50%, -50%) translateX(${offset > 0 ? 880 : -880}px) scale(0.6) translateZ(-200px)`,
           opacity: 0,
           zIndex: 0,
           pointerEvents: 'none' as const,
@@ -348,16 +348,16 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
         rotateY = dragOffset * 0.03;
         translateZ = 0;
       } else if (absOffset === 1) {
-        translateX = (offset > 0 ? 330 : -330) + dragOffset * 0.75;
+        translateX = (offset > 0 ? 380 : -380) + dragOffset * 0.75;
         scale = 0.85;
-        opacity = 0.80;
+        opacity = 0.82;
         zIndex = 20;
         rotateY = offset > 0 ? -9 : 9;
         translateZ = -60;
       } else if (absOffset === 2) {
-        translateX = (offset > 0 ? 570 : -570) + dragOffset * 0.5;
+        translateX = (offset > 0 ? 660 : -660) + dragOffset * 0.5;
         scale = 0.72;
-        opacity = 0.52;
+        opacity = 0.55;
         zIndex = 10;
         rotateY = offset > 0 ? -16 : 16;
         translateZ = -130;
@@ -498,7 +498,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
         {/* Carousel Viewport Container with 3D Perspective */}
         <div 
           ref={containerRef}
-          className="relative w-full h-[220px] xs:h-[260px] sm:h-[350px] md:h-[420px] lg:h-[480px] overflow-x-hidden flex items-center justify-center cursor-grab active:cursor-grabbing touch-pan-y"
+          className="relative w-full h-[230px] xs:h-[270px] sm:h-[370px] md:h-[450px] lg:h-[530px] xl:h-[570px] overflow-x-hidden flex items-center justify-center cursor-grab active:cursor-grabbing touch-pan-y"
           style={{ 
             perspective: prefersReducedMotion ? 'none' : '1200px',
             WebkitTapHighlightColor: 'transparent'
@@ -539,7 +539,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                     }
                   }
                 }}
-                className={`absolute top-1/2 left-1/2 w-full sm:w-[580px] md:w-[680px] lg:w-[800px] max-w-full sm:max-w-[800px] aspect-[16/9] rounded-none sm:rounded-3xl overflow-hidden transform-gpu will-change-transform ${
+                className={`absolute top-1/2 left-1/2 w-full sm:w-[600px] md:w-[720px] lg:w-[860px] xl:w-[940px] max-w-full aspect-[16/9] rounded-none sm:rounded-3xl overflow-hidden transform-gpu will-change-transform ${
                   isActive 
                     ? 'ring-1 ring-white/30 shadow-[0_25px_60px_rgba(0,0,0,0.8),0_0_35px_rgba(212,175,55,0.3)]' 
                     : 'ring-1 ring-white/10 shadow-[0_10px_25px_rgba(0,0,0,0.5)] cursor-pointer hover:brightness-105'
@@ -580,6 +580,41 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                 {!isActive && (
                   <div className="absolute inset-0 bg-black/45 pointer-events-none rounded-none sm:rounded-3xl transition-opacity duration-300" />
                 )}
+
+                {/* 4. Title & Badge Overlay Layer (Tampil untuk masing-masing card slider) */}
+                <div className={`absolute inset-x-0 bottom-0 pointer-events-none transition-all duration-300 z-10 ${
+                  isActive 
+                    ? 'bg-gradient-to-t from-black/95 via-black/60 to-transparent pt-12 sm:pt-20 pb-4 sm:pb-6 px-4 sm:px-7' 
+                    : 'bg-gradient-to-t from-black/95 via-black/70 to-transparent pt-8 sm:pt-14 pb-3 sm:pb-4 px-3 sm:px-5'
+                }`}>
+                  <div className="flex items-center gap-2 mb-1 sm:mb-1.5">
+                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider shadow-sm ${
+                      isActive 
+                        ? 'bg-[#1a6b3c]/90 text-emerald-200 border border-emerald-400/40 backdrop-blur-xs' 
+                        : 'bg-black/70 text-amber-300 border border-white/20 backdrop-blur-xs'
+                    }`}>
+                      <Sparkles className="w-3 h-3 text-[#ffcc00]" />
+                      <span className="truncate max-w-[180px] sm:max-w-none">{slide.badge}</span>
+                    </span>
+                    {isActive && slide.tag && (
+                      <span className="hidden sm:inline-block text-[11px] text-amber-300 font-bold bg-amber-950/60 border border-amber-500/30 px-2.5 py-0.5 rounded-full backdrop-blur-xs">
+                        {slide.tag}
+                      </span>
+                    )}
+                  </div>
+                  <h4 className={`font-black text-white tracking-tight leading-tight drop-shadow-md truncate ${
+                    isActive 
+                      ? 'text-sm sm:text-lg md:text-xl lg:text-2xl' 
+                      : 'text-xs sm:text-sm md:text-base text-gray-200'
+                  }`}>
+                    {slide.title}
+                  </h4>
+                  {isActive && slide.desc && (
+                    <p className="text-[11px] sm:text-xs md:text-sm text-gray-300 font-normal line-clamp-1 sm:line-clamp-2 mt-1 drop-shadow-sm max-w-2xl hidden sm:block">
+                      {slide.desc}
+                    </p>
+                  )}
+                </div>
               </div>
             );
           })}

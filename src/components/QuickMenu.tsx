@@ -104,7 +104,7 @@ export const QuickMenu: React.FC = () => {
   return (
     <section 
       aria-label="Menu Navigasi Cepat Portal" 
-      className="relative z-30 -mt-3 sm:-mt-4 bg-white rounded-t-3xl sm:rounded-t-4xl border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] pt-5 pb-6 sm:pt-8 sm:pb-9"
+      className="relative z-30 -mt-3 sm:-mt-4 bg-white rounded-t-3xl sm:rounded-t-4xl border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] pt-5 pb-6 sm:pt-8 sm:pb-9 lg:hidden"
     >
       <div className="w-full max-w-7xl mx-auto px-3 sm:px-6">
         {/* Layout Menu: 2 Baris x 3 Kolom */}

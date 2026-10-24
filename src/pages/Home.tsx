@@ -61,11 +61,14 @@ export const Home: React.FC = () => {
   return (
     <div className="space-y-12 sm:space-y-16 pb-16">
       
-      {/* 1. HERO SLIDER (3D Coverflow Carousel matching screenshot) */}
+      {/* 1. HERO SLIDER (3D Coverflow Carousel) */}
       <HeroSlider />
 
-      {/* 2. QUICK MENU (2 Rows x 3 Columns with curved wave top matching screenshot) */}
+      {/* 2. QUICK MENU (Hanya tampil di Mobile & Tablet, tersembunyi di Desktop) */}
       <QuickMenu />
+
+      {/* Wave Transition Pembatas Lengkung Halus untuk Desktop */}
+      <div className="hidden lg:block relative -mt-6 sm:-mt-8 z-20 h-8 sm:h-10 bg-white rounded-t-3xl sm:rounded-t-4xl border-t border-gray-100 shadow-[0_-8px_30px_rgba(0,0,0,0.06)]" />
 
 
       {/* 2. SAMBUTAN SINGKAT PENGASUH KH. M. JAUHARUL MAKNUUN */}
