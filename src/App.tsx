@@ -49,17 +49,21 @@ export const App: React.FC = () => {
         <Route index element={<Home />} />
 
         {/* JM Center Hub */}
+        <Route path="jm-center" element={<Navigate to="/jm-center/sambutan" replace />} />
         <Route path="jm-center/sambutan" element={<Sambutan />} />
         <Route path="jm-center/sejarah" element={<Sejarah />} />
         <Route path="jm-center/visi-misi" element={<VisiMisi />} />
         <Route path="jm-center/lembaga" element={<Lembaga />} />
 
         {/* Program Unggulan */}
+        <Route path="program-unggulan" element={<Navigate to="/program-unggulan/program-sekolah" replace />} />
         <Route path="program-unggulan/amaliyah-pondok" element={<AmaliyahPondok />} />
         <Route path="program-unggulan/program-sekolah" element={<ProgramSekolah />} />
         <Route path="program-unggulan/program-madin" element={<ProgramMadin />} />
 
-        {/* Smart JM Modules */}
+        {/* Smart JM & STEM Modules */}
+        <Route path="stem" element={<Navigate to="/smart-jm/stem/materi" replace />} />
+        <Route path="smart-jm" element={<Navigate to="/smart-jm/stem/materi" replace />} />
         <Route path="smart-jm/hafidz/read" element={<QuranReadPage />} />
         <Route path="smart-jm/hafidz/murojaah" element={<MurojaahPage />} />
         <Route path="smart-jm/stem/materi" element={<StemMateri />} />
@@ -72,6 +76,7 @@ export const App: React.FC = () => {
         <Route path="ekskul" element={<Ekskul />} />
 
         {/* Galeri Sekolah */}
+        <Route path="galeri" element={<Navigate to="/galeri/foto" replace />} />
         <Route path="galeri/foto" element={<GaleriFoto />} />
         <Route path="galeri/video" element={<GaleriVideo />} />
       </Route>
