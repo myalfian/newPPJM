@@ -245,19 +245,34 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
                     aria-current={isActive ? 'page' : undefined}
                     className={`curved-tab-link ${isActive ? 'active' : ''}`}
                   >
-                    {/* Animated Sliding Notch Pointer & Floating Dot (Smooth CodePen Style) */}
+                    {/* Animated Sliding Notch Pointer & Floating Dot (Smooth & Precise CodePen Style) */}
                     {isActive && (
                       <motion.div
                         layoutId="curvedCutoutPointer"
+                        layout="position"
                         className="curved-pointer"
                         transition={{
                           type: 'spring',
-                          stiffness: 380,
-                          damping: 28,
-                          mass: 0.7,
+                          stiffness: 350,
+                          damping: 27,
+                          mass: 0.65,
                         }}
                       >
-                        <span className="curved-dot" aria-hidden="true" />
+                        <svg
+                          viewBox="0 -3 74 25"
+                          className="curved-notch-svg"
+                          width="74"
+                          height="25"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                        >
+                          <path
+                            d="M 0 -3 L 74 -3 L 74 0 C 58 0, 52 18, 37 18 C 22 18, 16 0, 0 0 Z"
+                            className="curved-notch-surface"
+                          />
+                          <circle cx="37" cy="5.5" r="4" className="curved-notch-dot" />
+                        </svg>
                       </motion.div>
                     )}
 
@@ -268,7 +283,7 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
 
                     {/* Optional Badge */}
                     {tab.badge && (
-                      <span className="ml-1.5 text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-gold-400 text-emerald-950">
+                      <span className="curved-tab-badge">
                         {tab.badge}
                       </span>
                     )}
