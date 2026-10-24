@@ -15,7 +15,7 @@ export const RootLayout: React.FC = () => {
       <Navbar onOpenMobileMenu={() => setMobileMenuOpen(true)} />
       <MobileDrawer isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
       
-      <main className="flex-1 w-full pb-16 lg:pb-8">
+      <main className="flex-1 w-full pb-4 sm:pb-6">
         <Outlet />
       </main>
 

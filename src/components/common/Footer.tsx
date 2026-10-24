@@ -25,12 +25,12 @@ export const Footer: React.FC = () => {
   return (
     <>
       {/* ========================================================================= */}
-      {/* DESKTOP: DOCKED STICKY BOTTOM BAR (lg:fixed lg:bottom-0)                   */}
-      {/* MOBILE / TABLET: IN-FLOW BOTTOM FOOTER (relative w-full lg:fixed)         */}
+      {/* DESKTOP & MOBILE: IN-FLOW NATURAL FOOTER (FULL CONTENT VISIBILITY)        */}
+      {/* WITH DEDICATED SAFE PADDING FOR MOBILE BOTTOM NAV                         */}
       {/* ========================================================================= */}
       <footer
         id="kontak-ppdb"
-        className="relative w-full lg:fixed lg:bottom-0 lg:left-0 lg:right-0 lg:z-40 bg-[#032110] text-emerald-100 selection:bg-[#d4af37] selection:text-black shadow-[0_-8px_30px_rgba(0,0,0,0.5)] border-t border-[#d4af37]/30"
+        className="relative w-full mt-auto bg-[#032110] text-emerald-100 selection:bg-[#d4af37] selection:text-black shadow-[0_-8px_30px_rgba(0,0,0,0.35)] border-t border-[#d4af37]/30 z-20"
       >
         {/* Subtle Wave Top Divider (Ultra-slim) */}
         <div className="w-full overflow-hidden leading-none h-2 sm:h-3">
@@ -43,8 +43,8 @@ export const Footer: React.FC = () => {
           </svg>
         </div>
 
-        {/* Main Footer Container with Slim Padding */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-1.5 pb-2.5 sm:pt-2 sm:pb-3">
+        {/* Main Footer Container with Slim Padding & Mobile Bottom Nav Safe Clearance */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-24 md:pt-4 md:pb-6">
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3.5 lg:gap-5 items-start">
 
