@@ -20,7 +20,7 @@ export const initialHeroSlides: HeroSlide[] = [
     id: 'slide-1',
     badge: "Takhassus Al-Qur'an Bersanad",
     website: 'https://ppjauharulmaknuun.sch.id/',
-    // High-resolution Sheikh Zayed Grand Mosque glowing in warm amber twilight with water reflection (matches screenshot)
+    //High-resolution Sheikh Zayed Grand Mosque glowing in warm amber twilight with water reflection (matches screenshot)
     image: 'https://images.unsplash.com/photo-1512632570417-a6032a69792d?auto=format&fit=crop&w=1200&q=85',
     cardTheme: 'from-[#08357a] via-[#093c8a] to-[#062c66]',
     badgeTheme: 'bg-emerald-500/20 border-emerald-400/40 text-emerald-200',
