@@ -1,16 +1,16 @@
-/* Modern Material You Android TabNavBar with Curved Cutout Notch & Floating Dot
- * Theme: Signature Emerald Green & Gold matching website identity
+/* Exact Match to Attached Image & CodePen Design
+ * Refined with Website Primary Theme (Emerald Green #0f5132)
  * Features:
- * - Borderless Green Container (#0a6847 to #0f5132) with soft ambient depth
- * - Left-aligned menu tabs positioned sequentially with close spacing
- * - Tab sequence: "Beranda", "Sub Menu 1", ..., "Sub Menu N"
- * - Top concave cutout notch dipping into the bar over the active item (matching page surface #FBFBFA)
+ * - Elevated White Pill Container with rounded corners (#ffffff)
+ * - Top concave cutout notch dipping into the white bar over active tab (#0f5132)
+ * - Floating White Circular Dot inside the center of the cutout curve
  * - Inverted curve fillet wings on left and right (:before & :after)
- * - Centered floating dot inside the notch
- * - Glassmorphic hover effect & smooth organic spring physics
- * - Responsive smooth scroll on smaller mobile screens
+ * - Stacked layout: Icon on top, Label on bottom
+ * - Inactive state: Crisp Neutral Slate (#94a3b8)
+ * - Active state: Signature Emerald Green (#0f5132)
+ * - Fluid spring motion with framer-motion layoutId
  */
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@500;700;800&display=swap');
 
 .curved-navbar-wrapper {
   position: relative;
@@ -18,53 +18,37 @@
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  padding-top: 22px; /* Clearance for top notch dip */
-  padding-bottom: 6px;
+  padding-top: 26px; /* Clearance for top notch dip */
+  padding-bottom: 8px;
 }
 
-/* Borderless Green Container matching website colors */
+/* Elevated White Pill Bar (Matching Attached Image) */
 .curved-navbar-bar {
   position: relative;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  background: linear-gradient(135deg, #0a6847 0%, #0f5132 100%);
-  border: none; /* Borderless design */
-  border-radius: 20px;
-  box-shadow: 0 10px 28px -8px rgba(15, 81, 50, 0.42), 0 4px 14px -2px rgba(15, 23, 42, 0.1);
-  padding: 0 10px;
-  height: 56px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 4px 16px -2px rgba(15, 23, 42, 0.04);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  padding: 0 16px;
+  height: 86px;
   max-width: 100%;
   overflow: visible;
 }
 
 :is(.dark .curved-navbar-bar) {
-  background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
-  border: none;
-  box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.6);
+  background: #18181b;
+  border-color: rgba(39, 39, 42, 0.9);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
-/* Delicate Specular Reflection Highlight at Top Edge */
-.curved-navbar-bar::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 24px;
-  right: 24px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
-  pointer-events: none;
-  border-radius: 9999px;
-}
-
-/* Track & List Aligned to the Left with Close Spacing */
+/* Scrollable Track */
 .curved-scroll-track {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
@@ -72,22 +56,21 @@
 
 .curved-tab-list {
   display: flex;
+  position: relative;
   align-items: center;
-  justify-content: flex-start;
   height: 100%;
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 6px;
+  gap: 4px;
 }
 
 @media (min-width: 640px) {
   .curved-tab-list {
-    gap: 10px;
+    gap: 8px;
   }
 }
 
-/* Compact Tab Column (Tight Distance Between Items) */
 .curved-tab-col {
   flex: 0 0 auto;
   height: 100%;
@@ -96,141 +79,162 @@
   justify-content: center;
 }
 
+/* Individual Stacked Tab Link (Icon on Top, Text Below) */
 .curved-tab-link {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 38px;
-  padding: 6px 15px;
-  border-radius: 12px;
-  color: rgba(255, 255, 255, 0.75);
+  min-width: 80px;
+  height: 100%;
+  padding: 12px 14px 8px 14px;
+  color: #94a3b8; /* Neutral Slate Inactive State */
   text-decoration: none;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s ease;
   z-index: 10;
 }
 
-/* Modern Glass Hover Effect when mouse is over tab */
+@media (min-width: 640px) {
+  .curved-tab-link {
+    min-width: 90px;
+    padding: 12px 18px 8px 18px;
+  }
+}
+
+:is(.dark .curved-tab-link) {
+  color: #71717a;
+}
+
 .curved-tab-link:hover:not(.active) {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.16);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.3);
-  transform: translateY(-1.5px);
+  color: #334155;
 }
 
 :is(.dark .curved-tab-link:hover:not(.active)) {
-  background: rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-}
-
-.curved-tab-link:hover:not(.active) .curved-tab-text {
-  color: #ffffff;
-  text-shadow: 0 0 10px rgba(255, 255, 255, 0.45);
+  color: #e4e4e7;
 }
 
 .curved-tab-link:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
+/* Active State: Emerald Green */
 .curved-tab-link.active {
-  color: #fde047; /* Bright gold for active tab text */
+  color: #0f5132;
+}
+
+:is(.dark .curved-tab-link.active) {
+  color: #34d399;
+}
+
+.curved-tab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.25s ease;
+}
+
+.curved-tab-link.active .curved-tab-icon {
+  transform: translateY(2px) scale(1.1);
+  color: #0f5132;
+}
+
+:is(.dark .curved-tab-link.active .curved-tab-icon) {
+  color: #34d399;
 }
 
 .curved-tab-text {
   font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  margin-top: 5px;
   white-space: nowrap;
-  transition: color 0.22s ease, transform 0.22s ease, font-weight 0.22s ease, text-shadow 0.22s ease;
-  text-align: center;
+  transition: color 0.25s ease;
 }
 
 @media (min-width: 640px) {
   .curved-tab-text {
-    font-size: 13.5px;
+    font-size: 11.5px;
   }
 }
 
 .curved-tab-link.active .curved-tab-text {
+  color: #0f5132;
   font-weight: 800;
-  color: #facc15;
-  text-shadow: 0 0 16px rgba(250, 204, 21, 0.45);
-  transform: translateY(1px) scale(1.04);
 }
 
-/* The Curved Cutout Pointer / Notch dipping from top (adopts page surface color #FBFBFA) */
-/* Centered using left: calc(50% - 30px) to avoid transform collision with Framer Motion */
+:is(.dark .curved-tab-link.active .curved-tab-text) {
+  color: #34d399;
+}
+
+/* The Curved Cutout Pointer / Notch dipping from top (Emerald Green) */
+/* Centered using left: calc(50% - 38px) to avoid transform collision with Framer Motion */
 .curved-pointer {
   position: absolute;
-  top: -19px;
-  left: calc(50% - 30px);
-  width: 60px;
-  height: 34px;
-  background: #FBFBFA;
-  border-radius: 0 0 30px 30px;
+  top: -24px;
+  left: calc(50% - 38px);
+  width: 76px;
+  height: 48px;
+  background: #0f5132;
+  border-radius: 0 0 38px 38px;
   pointer-events: none;
   z-index: 5;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 14px rgba(15, 81, 50, 0.25);
 }
 
 :is(.dark .curved-pointer) {
-  background: #09090b;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  background: #059669;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.4);
 }
 
 /* Left Inverted Concave Fillet */
 .curved-pointer::before {
   content: '';
   position: absolute;
-  top: 19px;
-  left: -13px;
-  width: 13px;
-  height: 13px;
+  top: 24px;
+  left: -16px;
+  width: 16px;
+  height: 16px;
   background: transparent;
-  border-top-right-radius: 12px;
-  box-shadow: 4px -4px 0 0 #FBFBFA;
+  border-top-right-radius: 14px;
+  box-shadow: 5px -5px 0 0 #0f5132;
   pointer-events: none;
 }
 
 :is(.dark .curved-pointer::before) {
-  box-shadow: 4px -4px 0 0 #09090b;
+  box-shadow: 5px -5px 0 0 #059669;
 }
 
 /* Right Inverted Concave Fillet */
 .curved-pointer::after {
   content: '';
   position: absolute;
-  top: 19px;
-  right: -13px;
-  width: 13px;
-  height: 13px;
+  top: 24px;
+  right: -16px;
+  width: 16px;
+  height: 16px;
   background: transparent;
-  border-top-left-radius: 12px;
-  box-shadow: -4px -4px 0 0 #FBFBFA;
+  border-top-left-radius: 14px;
+  box-shadow: -5px -5px 0 0 #0f5132;
   pointer-events: none;
 }
 
 :is(.dark .curved-pointer::after) {
-  box-shadow: -4px -4px 0 0 #09090b;
+  box-shadow: -5px -5px 0 0 #059669;
 }
 
-/* The Floating Dot in center of notch */
+/* The Floating White Dot in center of notch */
 .curved-pointer .curved-dot {
   position: absolute;
-  top: 5px;
-  left: calc(50% - 5px);
-  width: 10px;
-  height: 10px;
+  top: 7px;
+  left: calc(50% - 7px);
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  background: #0f5132;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-:is(.dark .curved-pointer .curved-dot) {
-  background: #10b981;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
