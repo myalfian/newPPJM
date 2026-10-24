@@ -10,22 +10,26 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
+            // Core Framework (React, React-DOM, React-Router)
             if (
               id.includes('/react/') ||
               id.includes('/react-dom/') ||
               id.includes('/react-router/') ||
               id.includes('/react-router-dom/')
             ) {
-              return 'vendor-framework';
+              return 'vendor-react';
             }
-            if (id.includes('framer-motion')) {
-              return 'vendor-animation';
+            // UI & Animation Libraries (Framer Motion, Lucide Icons, Canvas Confetti)
+            if (
+              id.includes('framer-motion') ||
+              id.includes('lucide-react') ||
+              id.includes('canvas-confetti')
+            ) {
+              return 'vendor-ui';
             }
-            if (id.includes('lucide-react')) {
-              return 'vendor-icons';
-            }
+            // Backend, Utilities & Supabase Client
             if (id.includes('@supabase')) {
-              return 'vendor-supabase';
+              return 'vendor-utils';
             }
           }
         },

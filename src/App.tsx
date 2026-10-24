@@ -1,19 +1,26 @@
 import React, { useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { RootLayout } from './layouts/RootLayout';
-import { AdminLayout } from './layouts/AdminLayout';
 
-// Lightweight Fallback Loader for Suspense
-const PageLoader: React.FC = () => (
-  <div className="min-h-[50vh] flex flex-col items-center justify-center py-16" aria-label="Memuat konten">
-    <div className="w-9 h-9 border-3 border-emerald-200 border-t-emerald-800 rounded-full animate-spin" />
-    <span className="mt-3 text-xs font-semibold text-emerald-800/80 tracking-wider uppercase animate-pulse">
-      Memuat...
-    </span>
+// Lightweight Skeleton & Suspense Fallback Loader
+const SkeletonLoader: React.FC = () => (
+  <div className="min-h-[50vh] flex flex-col items-center justify-center py-16 px-4" aria-label="Memuat konten">
+    <div className="w-10 h-10 border-3 border-emerald-100 border-t-emerald-700 rounded-full animate-spin" />
+    <div className="mt-4 flex flex-col items-center gap-2">
+      <span className="text-xs font-semibold text-emerald-800/80 tracking-wider uppercase animate-pulse">
+        Memuat...
+      </span>
+      <div className="w-32 h-2 bg-emerald-100/60 rounded-full overflow-hidden">
+        <div className="w-full h-full bg-emerald-600/40 rounded-full animate-pulse" />
+      </div>
+    </div>
   </div>
 );
 
-// Public Pages (Code-split with React.lazy)
+// Admin Layout (Lazy loaded to isolate heavy CMS bundle from public visitors)
+const AdminLayout = lazy(() => import('./layouts/AdminLayout').then(m => ({ default: m.AdminLayout })));
+
+// Public Pages (Route-level code splitting with React.lazy)
 const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
 const Sambutan = lazy(() => import('./pages/jm-center/Sambutan').then(m => ({ default: m.Sambutan })));
 const Sejarah = lazy(() => import('./pages/jm-center/Sejarah').then(m => ({ default: m.Sejarah })));
@@ -33,7 +40,7 @@ const Ekskul = lazy(() => import('./pages/Ekskul').then(m => ({ default: m.Eksku
 const GaleriFoto = lazy(() => import('./pages/galeri/GaleriFoto').then(m => ({ default: m.GaleriFoto })));
 const GaleriVideo = lazy(() => import('./pages/galeri/GaleriVideo').then(m => ({ default: m.GaleriVideo })));
 
-// Admin CMS Pages (Code-split with React.lazy)
+// Admin CMS Pages (Route-level code splitting with React.lazy)
 const Login = lazy(() => import('./pages/admin/Login').then(m => ({ default: m.Login })));
 const Dashboard = lazy(() => import('./pages/admin/Dashboard').then(m => ({ default: m.Dashboard })));
 const KelolaBerita = lazy(() => import('./pages/admin/KelolaBerita').then(m => ({ default: m.KelolaBerita })));
@@ -53,7 +60,7 @@ export const App: React.FC = () => {
   }, [navigate]);
 
   return (
-    <Suspense fallback={<PageLoader />}>
+    <Suspense fallback={<SkeletonLoader />}>
       <Routes>
         {/* 1. Public Pages with Root Layout */}
         <Route path="/" element={<RootLayout />}>
