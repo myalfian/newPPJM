@@ -7,12 +7,13 @@ import {
   Globe,
   Award,
   ChevronRight,
-  Play,
   Share2,
   Calendar,
   CheckCircle2,
   ArrowUpRight
 } from 'lucide-react';
+import { HeroSlider } from '../components/HeroSlider';
+import { QuickMenu } from '../components/QuickMenu';
 import { generateWhatsAppBroadcastUrl } from '../lib/waFormatter';
 
 export const Home: React.FC = () => {
@@ -58,97 +59,14 @@ export const Home: React.FC = () => {
   };
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-16">
+    <div className="space-y-12 sm:space-y-16 pb-16">
       
-      {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-emerald-950 via-emerald-900 to-emerald-950 text-white pt-12 pb-20 sm:pb-28">
-        {/* Decorative Light Elements */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-emerald-500/10 blur-[120px] pointer-events-none" />
-        <div className="absolute top-20 right-10 w-80 h-80 bg-gold-400/10 rounded-full blur-[100px] pointer-events-none" />
+      {/* 1. HERO SLIDER (3D Coverflow Carousel matching screenshot) */}
+      <HeroSlider />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8">
-            
-            {/* Left Content */}
-            <div className="max-w-2xl space-y-6 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-800/80 border border-emerald-600/50 text-gold-300 text-xs sm:text-sm font-bold shadow-sm">
-                <Sparkles className="w-4 h-4 text-gold-400" />
-                <span>Pendidikan Salaf Terpadu & Berwawasan Global</span>
-              </div>
+      {/* 2. QUICK MENU (2 Rows x 3 Columns with curved wave top matching screenshot) */}
+      <QuickMenu />
 
-              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.15]">
-                Mencetak Ulama Amilin, <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-amber-200">
-                  Hafidz Qur’an & Pelopor STEM
-                </span>
-              </h1>
-
-              <p className="text-base sm:text-lg text-emerald-100/90 leading-relaxed font-normal">
-                Selamat Datang di Portal Resmi <strong>Pondok Pesantren Jauharul Maknuun</strong> Lasem, Sidayu, Gresik. 
-                Perpaduan luhur antara kedalaman sanad kitab kuning (turats), tahfidz 30 juz, 
-                laboratorium sains modern, dan kemahiran bahasa internasional.
-              </p>
-
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-4">
-                <Link
-                  to="/smart-jm/hafidz/read"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-bold text-emerald-950 bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 shadow-glow-gold transition-all transform hover:-translate-y-0.5"
-                >
-                  <BookOpen className="w-4 h-4" />
-                  <span>Jelajahi Smart JM</span>
-                </Link>
-
-                <Link
-                  to="/jm-center/sambutan"
-                  className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full text-sm font-bold text-white bg-emerald-800/70 hover:bg-emerald-800 border border-emerald-600/60 transition-all"
-                >
-                  <span>Sambutan Pengasuh</span>
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-
-              {/* Trust Indicators */}
-              <div className="pt-6 border-t border-emerald-800/60 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-emerald-200/80 font-medium">
-                <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-gold-400" />
-                  <span>Tahfidz Bersanad 30 Juz</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-gold-400" />
-                  <span>Laboratorium Robotika & IoT</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-gold-400" />
-                  <span>Bahasa Mandarin & Arab</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Right Graphic / Emblem Showcase */}
-            <div className="relative flex-shrink-0 flex items-center justify-center">
-              <div className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-full p-2 bg-gradient-to-tr from-emerald-500/40 via-gold-400/40 to-emerald-300/40 backdrop-blur-md shadow-2xl">
-                <div className="w-full h-full rounded-full bg-emerald-950/90 p-4 flex items-center justify-center border border-emerald-500/30">
-                  <img
-                    src="/logo-ppjm.svg"
-                    alt="Logo Resmi PPJM Lasem Sidayu"
-                    className="w-full h-full object-contain filter drop-shadow-xl"
-                  />
-                </div>
-                {/* Floating Badges */}
-                <div className="absolute -bottom-3 -left-3 bg-white text-emerald-950 px-4 py-2 rounded-2xl shadow-m3-2 border border-emerald-100 flex items-center gap-2 text-xs font-bold">
-                  <Award className="w-4 h-4 text-gold-600" />
-                  <span>Pesantren Salaf Modern</span>
-                </div>
-                <div className="absolute -top-3 -right-3 bg-emerald-800/90 backdrop-blur-md text-gold-300 px-4 py-2 rounded-2xl shadow-m3-2 border border-emerald-600 flex items-center gap-2 text-xs font-bold">
-                  <Sparkles className="w-4 h-4 text-gold-400" />
-                  <span>Lasem Sidayu Gresik</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
 
       {/* 2. SAMBUTAN SINGKAT PENGASUH KH. M. JAUHARUL MAKNUUN */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

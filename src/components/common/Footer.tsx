@@ -12,33 +12,39 @@ import { YoutubeIcon, InstagramIcon, FacebookIcon } from './SocialIcons';
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="bg-emerald-950 text-emerald-100 pt-16 pb-24 lg:pb-12 border-t-4 border-gold-500">
+    <footer id="kontak-ppdb" className="bg-[#0b3d21] text-emerald-100 pt-16 pb-24 lg:pb-12 border-t-4 border-[#d4af37]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
           
           {/* Column 1: Identity & Crest */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full p-0.5 bg-gradient-to-tr from-emerald-400 to-gold-400 shadow-glow-gold flex-shrink-0">
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-white p-0.5 shadow-md border-2 border-[#1a6b3c]/30 flex-shrink-0 flex items-center justify-center">
                 <img
-                  src="/logo-ppjm.svg"
+                  src="/logo.jpg"
                   alt="PPJM Crest"
-                  className="w-full h-full object-contain rounded-full bg-white"
+                  className="w-full h-full object-cover rounded-full"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/logo-ppjm.svg';
+                  }}
                 />
               </div>
               <div>
-                <h3 className="font-extrabold text-base text-white leading-tight">
-                  PP JAUHARUL MAKNUUN
+                <h3 className="font-extrabold text-base text-[#d4af37] leading-tight">
+                  PONDOK PESANTREN
                 </h3>
-                <p className="text-xs text-gold-400 font-semibold uppercase tracking-wider">
-                  Lasem - Sidayu - Gresik
+                <h4 className="font-black text-sm text-white tracking-tight">
+                  JAUHARUL MAKNUUN LASEM
+                </h4>
+                <p className="text-[10px] text-gray-300 font-medium">
+                  Sidayu Gresik - Jawa Timur
                 </p>
               </div>
             </div>
-            <p className="text-sm text-emerald-200/80 leading-relaxed">
-              Mendidik generasi Qur’ani yang kokoh dalam sanad keilmuan salaf (turats), 
-              unggul dalam riset sains teknologi (STEM), serta berwawasan global dengan kemahiran bahasa internasional.
+            <p className="text-xs text-gray-300 leading-relaxed">
+              Lembaga pendidikan Islam terpadu yang memadukan keilmuan Kitab Kuning Salafiyah, Tahfidz 30 Juz Bersanad, dengan kurikulum terpadu berakreditasi &quot;A&quot; BAN-PDM dan riset inovasi STEM.
             </p>
+
             <div className="flex items-center gap-3 pt-2">
               <a
                 href="https://youtube.com/@ppjauharulmaknuun"

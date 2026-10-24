@@ -89,10 +89,17 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-slate-100 bg-emerald-50/50">
               <div className="flex items-center gap-3">
-                <img src="/logo-ppjm.svg" alt="PPJM Logo" className="w-10 h-10 object-contain rounded-full bg-white shadow-xs" />
+                <img 
+                  src="/logo.jpg" 
+                  alt="PPJM Logo" 
+                  className="w-10 h-10 object-cover rounded-full bg-white shadow-xs border border-emerald-500/20"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/logo-ppjm.svg';
+                  }} 
+                />
                 <div>
-                  <h3 className="font-bold text-sm text-emerald-900 leading-tight">PP Jauharul Maknuun</h3>
-                  <p className="text-xs text-gold-700 font-medium">Lasem Sidayu Gresik</p>
+                  <h3 className="font-extrabold text-sm text-[#0d4a28] leading-tight">PP Jauharul Maknuun</h3>
+                  <p className="text-[11px] text-[#d4af37] font-bold">Lasem Sidayu Gresik</p>
                 </div>
               </div>
               <button
