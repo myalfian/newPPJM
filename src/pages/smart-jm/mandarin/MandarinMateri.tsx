@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Globe, Volume2, Sparkles, BookOpen, CheckCircle, MessageSquare, ChevronRight } from 'lucide-react';
 import { MandarinLesson } from '../../../lib/supabase';
-import { FolderBreadcrumbTabs } from '../../../components/common/FolderBreadcrumbTabs';
+import { NavBarTabs } from '../../../components/common/NavBarTabs';
 
 const DEFAULT_LESSONS: MandarinLesson[] = [
   {
@@ -68,7 +68,7 @@ export const MandarinMateri: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
-      <FolderBreadcrumbTabs />
+      <NavBarTabs />
 
       {/* Banner */}
       <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-3xl p-6 sm:p-8 text-white shadow-m3-2 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-4">

@@ -20,9 +20,9 @@ import {
   CheckCircle2,
   Layers3
 } from 'lucide-react';
-import './FolderBreadcrumbTabs.css';
+import './NavBarTabs.css';
 
-export interface FolderTabItem {
+export interface NavTabItem {
   id: string;
   label: string;
   href: string;
@@ -30,28 +30,28 @@ export interface FolderTabItem {
   badge?: string | number;
 }
 
-export interface FolderBreadcrumbTabsProps {
-  // Breadcrumb Trail Props (preserved for compatibility)
+export interface NavBarTabsProps {
+  // Compatibility props
   homeLabel?: string;
   parentLabel?: string;
   parentHref?: string;
   currentLabel?: string;
 
   // Tabs
-  tabs?: FolderTabItem[];
+  tabs?: NavTabItem[];
   activeTabId?: string;
   className?: string;
-  onChangeTab?: (tab: FolderTabItem) => void;
+  onChangeTab?: (tab: NavTabItem) => void;
 }
 
-// Pre-defined category hubs with parent info and dedicated sub-menu tabs
+// Pre-defined category hubs with dedicated sub-menu tabs
 const DEFAULT_CATEGORY_TABS: Record<
   string,
   {
     parentLabel: string;
     parentHref: string;
     parentIcon: React.ComponentType<{ className?: string }>;
-    tabs: FolderTabItem[];
+    tabs: NavTabItem[];
   }
 > = {
   'jm-center': {
@@ -136,11 +136,11 @@ const DEFAULT_CATEGORY_TABS: Record<
 };
 
 /**
- * Modern Material You Android TabNavBar with Curved Cutout Notch & Floating Dot
- * Default tab hierarchy: [Beranda] -> [Menu / Category] -> [Sub Menu 1] .. [Sub Menu N]
- * Container is fully responsive matching the parent sub-menu container (full-width distributed)
+ * NavBarTabs - Fluid Curved Cutout Magic Navigation Bar with Sliding Notch & Floating Dot
+ * Exact visual match to CodePen reference with Pesantren PPJM Primary Identity (#0f5132)
+ * Stacked layout: Icon on top, Label on bottom
  */
-export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
+export const NavBarTabs: React.FC<NavBarTabsProps> = ({
   tabs: propTabs,
   activeTabId: propActiveTabId,
   className = '',
@@ -166,11 +166,11 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
   const defaultCategory = DEFAULT_CATEGORY_TABS[detectedCategory];
 
   // Construct default tab hierarchy: "Beranda", "Sub Menu 1", ..., "Sub Menu N"
-  let tabs: FolderTabItem[] = [];
+  let tabs: NavTabItem[] = [];
   if (propTabs && propTabs.length > 0) {
     tabs = propTabs;
   } else if (defaultCategory) {
-    const homeTab: FolderTabItem = {
+    const homeTab: NavTabItem = {
       id: 'beranda',
       label: 'Beranda',
       href: '/',
@@ -288,3 +288,8 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
     </nav>
   );
 };
+
+// Backward-compatible alias
+export const FolderBreadcrumbTabs = NavBarTabs;
+export type FolderBreadcrumbTabsProps = NavBarTabsProps;
+export type FolderTabItem = NavTabItem;

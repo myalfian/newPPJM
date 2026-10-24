@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Compass, Building2, BookOpen, Sparkles, Cpu, Globe, Users, ChevronRight } from 'lucide-react';
-import { FolderBreadcrumbTabs } from '../../components/common/FolderBreadcrumbTabs';
+import { NavBarTabs } from '../../components/common/NavBarTabs';
 
 export const Lembaga: React.FC = () => {
   const lembagaList = [
@@ -52,7 +52,7 @@ export const Lembaga: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 sm:space-y-10">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
-      <FolderBreadcrumbTabs />
+      <NavBarTabs />
 
       {/* Header Banner */}
       <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-3xl p-8 sm:p-12 text-white shadow-m3-2 relative overflow-hidden">

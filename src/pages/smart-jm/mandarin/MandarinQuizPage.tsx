@@ -2,13 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen } from 'lucide-react';
 import { MandarinQuiz } from '../../../components/smart-jm/MandarinQuiz';
-import { FolderBreadcrumbTabs } from '../../../components/common/FolderBreadcrumbTabs';
+import { NavBarTabs } from '../../../components/common/NavBarTabs';
 
 export const MandarinQuizPage: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
-      <FolderBreadcrumbTabs />
+      <NavBarTabs />
 
       <div className="flex items-center justify-between">
         <Link
