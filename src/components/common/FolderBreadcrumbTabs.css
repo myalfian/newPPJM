@@ -1,12 +1,13 @@
 /* Modern Material You Android TabNavBar with Curved Cutout Notch & Floating Dot
  * Theme: Signature Emerald Green & Gold matching website identity
  * Features:
- * - Green Container (#0a6847 to #0f5132) with subtle glow & emerald border
- * - Right-aligned menu tabs positioned sequentially with close spacing
+ * - Borderless Green Container (#0a6847 to #0f5132) with soft ambient depth
+ * - Left-aligned menu tabs positioned sequentially with close spacing
+ * - Tab sequence: "Beranda", "Sub Menu 1", ..., "Sub Menu N"
  * - Top concave cutout notch dipping into the bar over the active item (matching page surface #FBFBFA)
  * - Inverted curve fillet wings on left and right (:before & :after)
  * - Centered floating dot inside the notch
- * - Crisp gold/white active text & soft off-white inactive text
+ * - Glassmorphic hover effect & smooth organic spring physics
  * - Responsive smooth scroll on smaller mobile screens
  */
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@500;600;700;800&display=swap');
@@ -15,24 +16,24 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   width: 100%;
   padding-top: 22px; /* Clearance for top notch dip */
   padding-bottom: 6px;
 }
 
-/* Green Container matching website colors */
+/* Borderless Green Container matching website colors */
 .curved-navbar-bar {
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 100%;
   background: linear-gradient(135deg, #0a6847 0%, #0f5132 100%);
+  border: none; /* Borderless design */
   border-radius: 20px;
-  box-shadow: 0 10px 28px -8px rgba(15, 81, 50, 0.38), 0 4px 12px -2px rgba(15, 23, 42, 0.08);
-  border: 1px solid rgba(52, 211, 153, 0.3);
-  padding: 0 8px;
+  box-shadow: 0 10px 28px -8px rgba(15, 81, 50, 0.42), 0 4px 14px -2px rgba(15, 23, 42, 0.1);
+  padding: 0 10px;
   height: 56px;
   max-width: 100%;
   overflow: visible;
@@ -40,17 +41,30 @@
 
 :is(.dark .curved-navbar-bar) {
   background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
-  border-color: rgba(16, 185, 129, 0.25);
-  box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.5);
+  border: none;
+  box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.6);
 }
 
-/* Track & List Aligned to the Right with Close Spacing */
+/* Delicate Specular Reflection Highlight at Top Edge */
+.curved-navbar-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 24px;
+  right: 24px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  pointer-events: none;
+  border-radius: 9999px;
+}
+
+/* Track & List Aligned to the Left with Close Spacing */
 .curved-scroll-track {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
@@ -59,18 +73,17 @@
 .curved-tab-list {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   height: 100%;
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 4px;
-  margin-left: auto;
+  gap: 6px;
 }
 
 @media (min-width: 640px) {
   .curved-tab-list {
-    gap: 8px;
+    gap: 10px;
   }
 }
 
@@ -90,14 +103,14 @@
   align-items: center;
   justify-content: center;
   height: 38px;
-  padding: 6px 14px;
+  padding: 6px 15px;
   border-radius: 12px;
   color: rgba(255, 255, 255, 0.75);
   text-decoration: none;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 10;
 }
 

@@ -224,18 +224,12 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
       className={`curved-navbar-wrapper w-full ${className}`}
     >
       <div className="curved-navbar-bar w-full">
-        {/* Subtle Category Section Label on the Left */}
-        <div className="hidden sm:flex items-center gap-2 pl-4 text-emerald-100/90 text-xs font-bold tracking-wide select-none shrink-0">
-          <span className="w-2 h-2 rounded-full bg-gold-400 animate-pulse" />
-          <span>{defaultCategory?.parentLabel || 'Navigasi'}</span>
-        </div>
-
-        {/* Horizontal Scrollable Track for Smaller Screens */}
+        {/* Horizontal Scrollable Track for Smaller Screens (Left Aligned with Close Spacing) */}
         <div
           ref={tabListRef}
-          className="curved-scroll-track flex-1 flex items-center justify-end overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full"
+          className="curved-scroll-track w-full flex items-center justify-start overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full px-2"
         >
-          <ul className="curved-tab-list flex items-center justify-end ml-auto">
+          <ul className="curved-tab-list flex items-center justify-start">
             {tabs.map((tab) => {
               const isActive = activeTab?.id === tab.id;
 
@@ -251,16 +245,16 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
                     aria-current={isActive ? 'page' : undefined}
                     className={`curved-tab-link ${isActive ? 'active' : ''}`}
                   >
-                    {/* Animated Sliding Notch Pointer & Floating Dot (CodePen Style) */}
+                    {/* Animated Sliding Notch Pointer & Floating Dot (Smooth CodePen Style) */}
                     {isActive && (
                       <motion.div
                         layoutId="curvedCutoutPointer"
                         className="curved-pointer"
                         transition={{
                           type: 'spring',
-                          stiffness: 420,
-                          damping: 30,
-                          mass: 0.8,
+                          stiffness: 380,
+                          damping: 28,
+                          mass: 0.7,
                         }}
                       >
                         <span className="curved-dot" aria-hidden="true" />
