@@ -605,14 +605,16 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                       )}
                     </div>
 
-                    {/* Judul Slider Card di Pojok Kiri Atas */}
-                    <h4 className={`font-black text-white tracking-tight leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] line-clamp-2 ${
-                      isActive 
-                        ? 'text-sm sm:text-lg md:text-xl lg:text-2xl' 
-                        : 'text-xs sm:text-sm md:text-base text-gray-200'
-                    }`}>
-                      {slide.title}
-                    </h4>
+                    {/* Judul Slider Card di Pojok Kiri Atas (jika ada) */}
+                    {slide.title && (
+                      <h4 className={`font-black text-white tracking-tight leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] line-clamp-2 ${
+                        isActive 
+                          ? 'text-sm sm:text-lg md:text-xl lg:text-2xl' 
+                          : 'text-xs sm:text-sm md:text-base text-gray-200'
+                      }`}>
+                        {slide.title}
+                      </h4>
+                    )}
                   </div>
                 </div>
               </div>
