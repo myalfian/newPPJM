@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="skyGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#E2F9FC" />
+      <stop offset="85%" stop-color="#C2F0F7" />
+      <stop offset="100%" stop-color="#AEE7F1" />
+    </radialGradient>
+
+    <!-- Quran Gold Glow -->
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF085" />
+      <stop offset="40%" stop-color="#F5CE26" />
+      <stop offset="100%" stop-color="#CCA114" />
+    </linearGradient>
+
+    <!-- Emerald Mosque Gradient -->
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0E6B47" />
+      <stop offset="100%" stop-color="#084E32" />
+    </linearGradient>
+
+    <!-- Curved Text Paths -->
+    <!-- Top arc for "PONDOK PESANTREN JAUHARUL MAKNUUN LASEM" -->
+    <path id="textArcTop" d="M 45 200 A 155 155 0 1 1 355 200" fill="none" />
+  </defs>
+
+  <!-- Outer Circle Frame with subtle border -->
+  <circle cx="200" cy="200" r="190" fill="url(#skyGrad)" stroke="#A6E0EB" stroke-width="3" />
+
+  <!-- Circular Outer Text -->
+  <text font-family="'Plus Jakarta Sans', Arial, sans-serif" font-size="14.5" font-weight="800" fill="#B4982A" letter-spacing="3.2">
+    <textPath href="#textArcTop" startOffset="50%" text-anchor="middle">
+      PONDOK PESANTREN JAUHARUL MAKNUUN LASEM
+    </textPath>
+  </text>
+
+  <!-- Palm Trees (Left & Right) -->
+  <g fill="#0B6B46" opacity="0.85">
+    <!-- Left Palm Trees -->
+    <path d="M 85 240 Q 82 280 80 320 L 86 320 Q 88 280 91 240 Z" />
+    <path d="M 88 240 Q 60 230 45 245 Q 65 242 86 248 Z" />
+    <path d="M 88 238 Q 65 215 52 225 Q 72 225 89 242 Z" />
+    <path d="M 89 235 Q 85 205 78 205 Q 88 215 91 238 Z" />
+    <path d="M 91 236 Q 105 210 115 218 Q 102 228 92 242 Z" />
+    <!-- Secondary Left Palm -->
+    <path d="M 108 255 Q 106 285 105 320 L 110 320 Q 111 285 113 255 Z" />
+    <path d="M 110 255 Q 90 245 80 255 Q 98 252 110 260 Z" />
+    <path d="M 111 252 Q 105 235 98 240 Q 108 245 112 256 Z" />
+    <path d="M 112 252 Q 125 235 132 242 Q 122 248 113 258 Z" />
+
+    <!-- Right Palm Trees -->
+    <path d="M 315 240 Q 318 280 320 320 L 314 320 Q 312 280 309 240 Z" />
+    <path d="M 312 240 Q 340 230 355 245 Q 335 242 314 248 Z" />
+    <path d="M 312 238 Q 335 215 348 225 Q 328 225 311 242 Z" />
+    <path d="M 311 235 Q 315 205 322 205 Q 312 215 309 238 Z" />
+    <path d="M 309 236 Q 295 210 285 218 Q 298 228 308 242 Z" />
+    <!-- Secondary Right Palm -->
+    <path d="M 292 255 Q 294 285 295 320 L 290 320 Q 289 285 287 255 Z" />
+    <path d="M 290 255 Q 310 245 320 255 Q 302 252 290 260 Z" />
+    <path d="M 289 252 Q 295 235 302 240 Q 292 245 288 256 Z" />
+    <path d="M 288 252 Q 275 235 268 242 Q 278 248 287 258 Z" />
+  </g>
+
+  <!-- Green Islamic Mosque Silhouette -->
+  <g fill="url(#emeraldGrad)">
+    <!-- Base Foundation Walls -->
+    <rect x="120" y="240" width="160" height="82" rx="3" />
+    <rect x="152" y="206" width="96" height="36" />
+
+    <!-- Left Tower & Minaret -->
+    <rect x="130" y="160" width="22" height="80" />
+    <!-- Minaret Balcony Left -->
+    <path d="M 126 160 L 156 160 L 153 148 L 129 148 Z" />
+    <rect x="135" y="112" width="12" height="36" />
+    <!-- Minaret Dome & Spire Left -->
+    <path d="M 141 78 C 137 92 131 106 131 112 L 151 112 C 151 106 145 92 141 78 Z" />
+    <line x1="141" y1="78" x2="141" y2="68" stroke="#084E32" stroke-width="2.5" />
+    <circle cx="141" cy="67" r="2.5" fill="#084E32" />
+
+    <!-- Right Tower & Minaret -->
+    <rect x="248" y="160" width="22" height="80" />
+    <!-- Minaret Balcony Right -->
+    <path d="M 244 160 L 274 160 L 271 148 L 247 148 Z" />
+    <rect x="253" y="112" width="12" height="36" />
+    <!-- Minaret Dome & Spire Right -->
+    <path d="M 259 78 C 255 92 249 106 249 112 L 269 112 C 269 106 263 92 259 78 Z" />
+    <line x1="259" y1="78" x2="259" y2="68" stroke="#084E32" stroke-width="2.5" />
+    <circle cx="259" cy="67" r="2.5" fill="#084E32" />
+
+    <!-- Parapet crenellations on top of central wall -->
+    <rect x="154" y="202" width="8" height="6" />
+    <rect x="168" y="202" width="8" height="6" />
+    <rect x="182" y="202" width="8" height="6" />
+    <rect x="196" y="202" width="8" height="6" />
+    <rect x="210" y="202" width="8" height="6" />
+    <rect x="224" y="202" width="8" height="6" />
+    <rect x="238" y="202" width="8" height="6" />
+
+    <!-- Main Gateway Arch opening (cut out from wall / lighter interior) -->
+    <!-- Center Arch -->
+    <path d="M 166 322 L 166 260 C 166 238 234 238 234 260 L 234 322 Z" fill="#C6F1F8" />
+    <!-- Left Arched Window -->
+    <rect x="133" y="260" width="12" height="34" rx="6" fill="#C6F1F8" />
+    <!-- Right Arched Window -->
+    <rect x="255" y="260" width="12" height="34" rx="6" fill="#C6F1F8" />
+
+    <!-- 3 Mini Arches inside the Central Gate top -->
+    <path d="M 172 272 Q 182 284 192 272 Q 202 284 212 272 Q 222 284 228 272 L 228 245 L 172 245 Z" fill="#0E6B47" />
+    <rect x="178" y="250" width="10" height="10" fill="#C6F1F8" />
+    <rect x="195" y="250" width="10" height="10" fill="#C6F1F8" />
+    <rect x="212" y="250" width="10" height="10" fill="#C6F1F8" />
+  </g>
+
+  <!-- Stars Decoration -->
+  <!-- Flanking Left Star -->
+  <polygon points="116,215 119,223 127,223 121,228 123,236 116,231 109,236 111,228 105,223 113,223" fill="#0A5B3B" />
+  <!-- Flanking Right Star -->
+  <polygon points="284,215 287,223 295,223 289,228 291,236 284,231 277,236 279,228 273,223 281,223" fill="#0A5B3B" />
+  <!-- Center Twin Stars -->
+  <polygon points="184,188 186,194 192,194 187,198 189,204 184,200 179,204 181,198 176,194 182,194" fill="#0A5B3B" />
+  <polygon points="216,188 218,194 224,194 219,198 221,204 216,200 211,204 213,198 208,194 214,194" fill="#0A5B3B" />
+
+  <!-- Radiant Holy Quran (Top Center between Minarets) -->
+  <g filter="url(#goldGlow)">
+    <!-- Light Rays -->
+    <path d="M 200 110 L 190 85 M 200 110 L 210 85 M 200 110 L 175 105 M 200 110 L 225 105" stroke="#F5CE26" stroke-width="2" stroke-linecap="round" opacity="0.8" />
+    
+    <!-- Open Holy Quran Pages -->
+    <!-- Left Leaf -->
+    <path d="M 198 142 C 185 140 170 128 168 116 C 178 116 190 124 198 132 Z" fill="url(#goldGradient)" stroke="#C89D11" stroke-width="1.2" />
+    <path d="M 197 142 C 185 142 172 134 168 125 C 178 123 190 130 197 135 Z" fill="#FFFBE6" opacity="0.6" />
+
+    <!-- Right Leaf -->
+    <path d="M 202 142 C 215 140 230 128 232 116 C 222 116 210 124 202 132 Z" fill="url(#goldGradient)" stroke="#C89D11" stroke-width="1.2" />
+    <path d="M 203 142 C 215 142 228 134 232 125 C 222 123 210 130 203 135 Z" fill="#FFFBE6" opacity="0.6" />
+
+    <!-- Book Center Fold -->
+    <line x1="200" y1="130" x2="200" y2="144" stroke="#A7820B" stroke-width="2" />
+  </g>
+
+  <!-- Open Rehal / Book Stand at the Bottom Base -->
+  <g>
+    <!-- Base Lower Ribbon/Book layers -->
+    <!-- Top Green Page Layer -->
+    <path d="M 72 320 Q 200 348 328 320 L 320 334 Q 200 360 80 334 Z" fill="#9FE328" stroke="#0F5132" stroke-width="1.5" />
+    <!-- Golden Mid Layer -->
+    <path d="M 80 334 Q 200 360 320 334 L 312 346 Q 200 370 88 346 Z" fill="#F1C40F" stroke="#B7950B" stroke-width="1.5" />
+    <!-- Bottom Green Base Stand -->
+    <path d="M 88 346 Q 200 370 312 346 L 298 358 Q 200 378 102 358 Z" fill="#88D41C" stroke="#0F5132" stroke-width="1.5" />
+    <!-- Spine notch -->
+    <polygon points="196,358 200,344 204,358" fill="#0A5B3B" />
+  </g>
+</svg>
