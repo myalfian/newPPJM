@@ -90,7 +90,6 @@ export const Prestasi: React.FC = () => {
         years={years}
         selectedYear={selectedYear}
         onSelectYear={setSelectedYear}
-        categoryLabel="Kategori"
         yearLabel="Tahun"
       />
 

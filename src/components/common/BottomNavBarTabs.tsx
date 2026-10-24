@@ -1,42 +1,82 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Filter, Calendar } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import './BottomNavBarTabs.css';
 
 export interface BottomNavBarTabsProps {
   categories: string[];
-  categoryShortLabels?: Record<string, string>;
   selectedCategory: string;
   onSelectCategory: (category: string) => void;
   years?: string[];
   selectedYear?: string;
   onSelectYear?: (year: string) => void;
-  categoryLabel?: string;
   yearLabel?: string;
   className?: string;
+  categoryLabel?: string; // Kept for backward compatibility, ignored as requested
 }
 
-const DEFAULT_CATEGORY_SHORT_LABELS: Record<string, string> = {
-  'Semua': 'Semua',
-  'Kitab Kuning / MQK': 'MQK',
-  'Tahfidz 30 Juz': 'Tahfidz',
-  'Robotika / STEM': 'STEM',
-  'Olahraga & Silat': 'Silat',
-};
+/**
+ * Renders 2-line wrapped text for category tabs on mobile without truncation
+ */
+function renderCategoryMobileLabel(cat: string) {
+  if (cat === 'Kitab Kuning / MQK') {
+    return (
+      <>
+        <span className="block font-bold leading-tight">Kitab Kuning</span>
+        <span className="block text-[9.5px] opacity-90 font-medium">(MQK)</span>
+      </>
+    );
+  }
+  if (cat === 'Tahfidz 30 Juz') {
+    return (
+      <>
+        <span className="block font-bold leading-tight">Tahfidz</span>
+        <span className="block text-[9.5px] opacity-90 font-medium">30 Juz</span>
+      </>
+    );
+  }
+  if (cat === 'Robotika / STEM') {
+    return (
+      <>
+        <span className="block font-bold leading-tight">Robotika</span>
+        <span className="block text-[9.5px] opacity-90 font-medium">(STEM)</span>
+      </>
+    );
+  }
+  if (cat === 'Olahraga & Silat') {
+    return (
+      <>
+        <span className="block font-bold leading-tight">Olahraga</span>
+        <span className="block text-[9.5px] opacity-90 font-medium">&amp; Silat</span>
+      </>
+    );
+  }
+  if (cat.includes('/')) {
+    const [p1, ...rest] = cat.split('/');
+    return (
+      <>
+        <span className="block font-bold leading-tight">{p1.trim()}</span>
+        <span className="block text-[9.5px] opacity-90 font-medium">{rest.join('/').trim()}</span>
+      </>
+    );
+  }
+  return <span className="block font-bold leading-tight">{cat}</span>;
+}
 
 /**
- * BottomNavBarTabs - Category Navigation matching NavBarTabs style & spring dynamics,
- * with zero horizontal sliding on mobile and bottom-positioned curved notch & floating dot.
+ * BottomNavBarTabs - Category Navigation matching NavBarTabs style & spring dynamics.
+ * - Label "KATEGORI" removed.
+ * - Year filter redesigned to top-right on mobile, integrated in-bar on desktop.
+ * - Mobile: 2-line wrapped category text with zero truncation or horizontal sliding.
+ * - Bottom-positioned curved notch & floating emerald dot.
  */
 export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
   categories,
-  categoryShortLabels = DEFAULT_CATEGORY_SHORT_LABELS,
   selectedCategory,
   onSelectCategory,
   years,
   selectedYear,
   onSelectYear,
-  categoryLabel = 'Kategori',
   yearLabel = 'Tahun',
   className = '',
 }) => {
@@ -45,19 +85,14 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
       aria-label="Filter Kategori dan Tahun"
       className={`bottom-curved-navbar-wrapper w-full ${className}`}
     >
-      {/* 1. Mobile Phone View (< 768px): Zero-Sliding Adaptive 2-Tier Layout */}
-      <div className="md:hidden flex flex-col gap-2 w-full">
-        {/* Top Control Bar: Kategori Badge & Tahun Dropdown */}
-        <div className="flex items-center justify-between px-1">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-900/10 dark:bg-emerald-950/60 border border-emerald-800/20 text-emerald-900 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider">
-            <Filter className="w-3.5 h-3.5 text-emerald-700 dark:text-gold-400 shrink-0" />
-            <span>{categoryLabel}</span>
-          </div>
-
-          {years && years.length > 0 && onSelectYear && (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold shadow-xs">
+      {/* 1. Mobile Phone View (< 768px): Redesigned Year Pill at Top Right + Full-Width 2-Line Tabs */}
+      <div className="md:hidden flex flex-col w-full">
+        {/* Top Right: Redesigned Year Filter Pill (Label Kategori eliminated) */}
+        {years && years.length > 0 && onSelectYear && (
+          <div className="flex items-center justify-end w-full mb-1.5 px-0.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs text-xs font-bold text-slate-700 dark:text-slate-200">
               <Calendar className="w-3.5 h-3.5 text-emerald-700 dark:text-gold-400 shrink-0" />
-              <span className="text-slate-400 font-semibold uppercase">{yearLabel}:</span>
+              <span className="text-[11px] font-semibold text-slate-400 uppercase">{yearLabel}:</span>
               <select
                 value={selectedYear}
                 onChange={(e) => onSelectYear(e.target.value)}
@@ -71,23 +106,22 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                 ))}
               </select>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Category Tabs Bar: 100% Full-Width Fit, Equal Distribution, No Horizontal Scroll */}
-        <div className="bottom-curved-navbar-bar w-full h-[50px] px-1.5">
+        {/* Category Tabs Bar: 100% Full-Width Fit, Equal Distribution, 2-Line Text, Zero Sliding */}
+        <div className="bottom-curved-navbar-bar w-full px-1">
           <ul className="w-full h-full flex items-center justify-between gap-1 p-0 m-0 list-none">
             {categories.map((cat) => {
               const isActive = selectedCategory === cat;
-              const shortName = categoryShortLabels[cat] || cat;
 
               return (
-                <li key={cat} className="flex-1 min-w-0 h-full flex items-center justify-center">
+                <li key={cat} className="bottom-curved-tab-col flex-1 min-w-0">
                   <button
                     type="button"
                     onClick={() => onSelectCategory(cat)}
                     aria-pressed={isActive}
-                    className={`bottom-curved-tab-btn w-full px-1 ${isActive ? 'active' : ''}`}
+                    className={`bottom-curved-tab-btn w-full ${isActive ? 'active' : ''}`}
                   >
                     {/* Animated Sliding Notch Pointer & Floating Dot at the BOTTOM */}
                     {isActive && (
@@ -120,9 +154,9 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                       </motion.div>
                     )}
 
-                    {/* Concise Label for mobile screens */}
-                    <span className="bottom-curved-tab-text text-[11px] truncate w-full">
-                      {shortName}
+                    {/* 2-Line Vertically Wrapped Text: Completely readable, zero truncation */}
+                    <span className="bottom-curved-tab-text w-full">
+                      {renderCategoryMobileLabel(cat)}
                     </span>
                   </button>
                 </li>
@@ -132,16 +166,10 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
         </div>
       </div>
 
-      {/* 2. Tablet & Desktop View (>= 768px): Unified Single Emerald Bar */}
+      {/* 2. Tablet & Desktop View (>= 768px): Unified Single Emerald Bar (No Kategori label) */}
       <div className="bottom-curved-navbar-bar w-full hidden md:flex items-center justify-between">
-        {/* Left: Kategori Badge */}
-        <div className="bottom-curved-label">
-          <Filter className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-          <span>{categoryLabel}:</span>
-        </div>
-
-        {/* Center: Full-Width Tabs with Bottom Notch */}
-        <div className="bottom-curved-scroll-track flex-1 min-w-0 flex items-center justify-start h-full mx-2">
+        {/* Left/Center: Full-Width Tabs with Bottom Notch */}
+        <div className="bottom-curved-scroll-track flex-1 min-w-0 flex items-center justify-start h-full mx-1">
           <ul className="bottom-curved-tab-list flex items-center justify-start">
             {categories.map((cat) => {
               const isActive = selectedCategory === cat;

@@ -2,7 +2,7 @@
  * Theme: Signature Emerald Green & Gold matching website identity
  * Features:
  * - Borderless Green Container (#0a6847 to #0f5132) with soft ambient depth
- * - Mobile: Adaptive zero-sliding full-width layout with equal distribution
+ * - Mobile: Adaptive full-width layout with auto-wrapping 2-line text (no ellipsis, no clipping)
  * - Desktop: Left-aligned menu tabs positioned sequentially with close spacing
  * - Tab sequence: "Beranda", "Sub Menu 1", ..., "Sub Menu N"
  * - Mathematically continuous C1 SVG cutout notch dipping into the bar over the active item (#FBFBFA)
@@ -33,8 +33,9 @@
   border: none;
   border-radius: 20px;
   box-shadow: 0 10px 28px -8px rgba(15, 81, 50, 0.42), 0 4px 14px -2px rgba(15, 23, 42, 0.1);
-  padding: 0 6px;
-  height: 56px;
+  padding: 4px 6px;
+  min-height: 56px;
+  height: auto;
   max-width: 100%;
   overflow: visible;
 }
@@ -42,6 +43,8 @@
 @media (min-width: 640px) {
   .curved-navbar-bar {
     padding: 0 10px;
+    height: 56px;
+    min-height: 56px;
   }
 }
 
@@ -113,6 +116,7 @@
   flex: 1 1 0;
   min-width: 0;
   height: 100%;
+  min-height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -122,6 +126,7 @@
   .curved-tab-col {
     flex: 0 0 auto;
     min-width: auto;
+    min-height: auto;
   }
 }
 
@@ -131,8 +136,9 @@
   align-items: center;
   justify-content: center;
   height: 100%;
+  min-height: 48px;
   width: 100%;
-  padding: 0 4px;
+  padding: 2px 2px;
   border-radius: 14px;
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
@@ -147,6 +153,7 @@
   .curved-tab-link {
     width: auto;
     padding: 0 16px;
+    min-height: 56px;
   }
 }
 
@@ -176,25 +183,35 @@
   color: #fde047; /* Bright gold for active tab text */
 }
 
+/* Adaptive 2-Line Text: No truncation ellipsis, full visibility on mobile */
 .curved-tab-text {
   font-family: 'Plus Jakarta Sans', 'Ubuntu', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 11.5px;
-  font-weight: 600;
+  font-size: 10.5px;
+  font-weight: 700;
   letter-spacing: -0.2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  transition: color 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), font-weight 0.22s ease, text-shadow 0.22s ease;
+  line-height: 1.15;
+  white-space: normal;
+  word-break: normal;
   text-align: center;
-  padding-top: 10px; /* Centered comfortably below top notch */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-top: 14px; /* Clearance below top notch */
+  padding-bottom: 4px;
+  transition: color 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), font-weight 0.22s ease, text-shadow 0.22s ease;
 }
 
 @media (min-width: 640px) {
   .curved-tab-text {
     font-size: 13.5px;
+    font-weight: 600;
     letter-spacing: 0.2px;
-    max-width: none;
+    line-height: normal;
+    white-space: nowrap;
+    padding-top: 10px;
+    padding-bottom: 0px;
   }
 }
 
@@ -202,20 +219,20 @@
   font-weight: 800;
   color: #facc15;
   text-shadow: 0 0 16px rgba(250, 204, 21, 0.48);
-  transform: translateY(2px) scale(1.04);
+  transform: translateY(2px) scale(1.03);
 }
 
 /* Optional Badge */
 .curved-tab-badge {
-  margin-left: 4px;
-  font-size: 9px;
+  margin-left: 3px;
+  font-size: 8.5px;
   font-weight: 700;
-  padding: 1px 5px;
+  padding: 1px 4px;
   border-radius: 9999px;
   background: #fbbf24;
   color: #064e3b;
   line-height: 1.2;
-  transform: translateY(4px);
+  transform: translateY(2px);
 }
 
 /* The Curved Cutout Pointer / Notch dipping from top edge */
@@ -233,7 +250,7 @@
 
 @media (max-width: 639px) {
   .curved-pointer {
-    transform: translateX(-50%) scale(0.85);
+    transform: translateX(-50%) scale(0.78);
     transform-origin: top center;
   }
 }
