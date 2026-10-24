@@ -261,8 +261,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
         id="mainHeader"
         className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-[0_4px_25px_rgba(0,0,0,0.03)] transition-all duration-300"
       >
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-4 xl:px-8">
-          <div className="flex items-center justify-between gap-2 xl:gap-3.5 py-2 sm:py-2.5 min-h-[4rem] sm:min-h-[4.5rem]">
+        <div className="max-w-[1536px] mx-auto px-3 sm:px-6 lg:px-6 xl:px-8">
+          <div className="flex items-center justify-between gap-3.5 lg:gap-5 xl:gap-7 2xl:gap-9 py-2 sm:py-2.5 min-h-[4rem] sm:min-h-[4.5rem]">
 
             {/* Brand Logo & Title */}
             <Link
@@ -287,7 +287,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                 <span className="font-black text-xs sm:text-base lg:text-lg tracking-tight text-[#d4af37] leading-tight">
                   JAUHARUL MAKNUUN
                 </span>
-                <span className="text-[9px] sm:text-[10px] text-slate-500 font-medium">
+                <span className="text-[9px] sm:text-[10px] text-slate-500 font-medium hidden sm:block">
                   Lasem Sidayu Gresik - Jawa Timur
                 </span>
               </div>
@@ -295,7 +295,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
 
             {/* Desktop Navigation: Equal Width & Uniform Horizontal Distribution (h-[58px]) */}
             <nav
-              className="hidden lg:grid grid-cols-6 items-center h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[588px] xl:w-[696px] 2xl:w-[750px]"
+              className="hidden lg:grid grid-cols-6 items-center h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[540px] xl:w-[660px] 2xl:w-[720px]"
               onMouseLeave={() => {
                 setHoveredTab(null);
                 closeDropdownWithDelay();
