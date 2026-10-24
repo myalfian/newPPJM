@@ -581,39 +581,39 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                   <div className="absolute inset-0 bg-black/45 pointer-events-none rounded-none sm:rounded-3xl transition-opacity duration-300" />
                 )}
 
-                {/* 4. Title & Badge Overlay Layer (Tampil untuk masing-masing card slider) */}
-                <div className={`absolute inset-x-0 bottom-0 pointer-events-none transition-all duration-300 z-10 ${
+                {/* 4. Title & Badge Overlay Layer - Pojok Kiri Atas */}
+                <div className={`absolute inset-x-0 top-0 pointer-events-none transition-all duration-300 z-10 ${
                   isActive 
-                    ? 'bg-gradient-to-t from-black/95 via-black/60 to-transparent pt-12 sm:pt-20 pb-4 sm:pb-6 px-4 sm:px-7' 
-                    : 'bg-gradient-to-t from-black/95 via-black/70 to-transparent pt-8 sm:pt-14 pb-3 sm:pb-4 px-3 sm:px-5'
+                    ? 'bg-gradient-to-b from-black/85 via-black/45 to-transparent pt-3.5 sm:pt-5 pb-8 sm:pb-12 px-3.5 sm:px-6' 
+                    : 'bg-gradient-to-b from-black/85 via-black/50 to-transparent pt-2.5 sm:pt-4 pb-6 sm:pb-9 px-3 sm:px-4'
                 }`}>
-                  <div className="flex items-center gap-2 mb-1 sm:mb-1.5">
-                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider shadow-sm ${
-                      isActive 
-                        ? 'bg-[#1a6b3c]/90 text-emerald-200 border border-emerald-400/40 backdrop-blur-xs' 
-                        : 'bg-black/70 text-amber-300 border border-white/20 backdrop-blur-xs'
-                    }`}>
-                      <Sparkles className="w-3 h-3 text-[#ffcc00]" />
-                      <span className="truncate max-w-[180px] sm:max-w-none">{slide.badge}</span>
-                    </span>
-                    {isActive && slide.tag && (
-                      <span className="hidden sm:inline-block text-[11px] text-amber-300 font-bold bg-amber-950/60 border border-amber-500/30 px-2.5 py-0.5 rounded-full backdrop-blur-xs">
-                        {slide.tag}
+                  <div className="flex flex-col items-start gap-1 sm:gap-1.5 max-w-[90%] sm:max-w-[80%]">
+                    {/* Badge Kategori */}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider shadow-sm backdrop-blur-xs ${
+                        isActive 
+                          ? 'bg-[#1a6b3c]/90 text-emerald-200 border border-emerald-400/40' 
+                          : 'bg-black/70 text-amber-300 border border-white/20'
+                      }`}>
+                        <Sparkles className="w-3 h-3 text-[#ffcc00]" />
+                        <span className="truncate max-w-[170px] sm:max-w-none">{slide.badge}</span>
                       </span>
-                    )}
+                      {isActive && slide.tag && (
+                        <span className="hidden sm:inline-block text-[11px] text-amber-300 font-bold bg-amber-950/70 border border-amber-500/30 px-2.5 py-0.5 rounded-full backdrop-blur-xs">
+                          {slide.tag}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Judul Slider Card di Pojok Kiri Atas */}
+                    <h4 className={`font-black text-white tracking-tight leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] line-clamp-2 ${
+                      isActive 
+                        ? 'text-sm sm:text-lg md:text-xl lg:text-2xl' 
+                        : 'text-xs sm:text-sm md:text-base text-gray-200'
+                    }`}>
+                      {slide.title}
+                    </h4>
                   </div>
-                  <h4 className={`font-black text-white tracking-tight leading-tight drop-shadow-md truncate ${
-                    isActive 
-                      ? 'text-sm sm:text-lg md:text-xl lg:text-2xl' 
-                      : 'text-xs sm:text-sm md:text-base text-gray-200'
-                  }`}>
-                    {slide.title}
-                  </h4>
-                  {isActive && slide.desc && (
-                    <p className="text-[11px] sm:text-xs md:text-sm text-gray-300 font-normal line-clamp-1 sm:line-clamp-2 mt-1 drop-shadow-sm max-w-2xl hidden sm:block">
-                      {slide.desc}
-                    </p>
-                  )}
                 </div>
               </div>
             );
