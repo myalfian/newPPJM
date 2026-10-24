@@ -261,8 +261,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
         id="mainHeader"
         className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-[0_4px_25px_rgba(0,0,0,0.03)] transition-all duration-300"
       >
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-2 sm:py-2.5 min-h-[4rem] sm:min-h-[4.5rem]">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-4 xl:px-8">
+          <div className="flex items-center justify-between gap-2 xl:gap-3.5 py-2 sm:py-2.5 min-h-[4rem] sm:min-h-[4.5rem]">
 
             {/* Brand Logo & Title */}
             <Link
@@ -293,9 +293,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               </div>
             </Link>
 
-            {/* Desktop Navigation: Single Horizontal Line with Icon on Top & Label on Bottom (h-[58px]) */}
+            {/* Desktop Navigation: Equal Width & Uniform Horizontal Distribution (h-[58px]) */}
             <nav
-              className="hidden lg:flex items-center h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-0.5 shrink-0"
+              className="hidden lg:grid grid-cols-6 items-center h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[588px] xl:w-[696px] 2xl:w-[750px]"
               onMouseLeave={() => {
                 setHoveredTab(null);
                 closeDropdownWithDelay();
@@ -310,7 +310,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                 return (
                   <div
                     key={tab.id}
-                    className="relative h-full flex items-center"
+                    className="relative h-full w-full flex items-center justify-center"
                     onMouseEnter={() => {
                       setHoveredTab(tab.id);
                       if (tab.isDropdown) {
@@ -321,12 +321,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                       }
                     }}
                   >
-                    {/* Trigger Button / Link (Icon on top with Android color badge, Name below) */}
+                    {/* Trigger Button / Link (Icon on top with Android color badge, Name below) - Equal Width & Centered */}
                     {tab.isDropdown ? (
                       <button
                         type="button"
                         onClick={() => setActiveDropdown(isOpen ? null : tab.id)}
-                        className="relative z-10 h-full px-2.5 sm:px-3 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group min-w-[66px] sm:min-w-[72px]"
+                        className="relative z-10 w-full h-full px-1 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
                       >
                         {/* Android-style Rounded Colorful Icon Badge */}
                         <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-110 group-hover:-translate-y-0.5 ${
@@ -337,29 +337,29 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                           <TabIcon className="w-4 h-4 transition-transform duration-200" />
                         </div>
 
-                        {/* Menu Label: Bigger, Bold & Vibrant */}
-                        <div className="flex items-center gap-0.5 mt-0.5">
-                          <span className={`text-[11px] sm:text-xs xl:text-[12.5px] font-black tracking-tight whitespace-nowrap leading-none transition-colors duration-200 ${
+                        {/* Menu Label: Equal Width Distribution, Bold & Centered */}
+                        <div className="w-full flex items-center justify-center gap-0.5 mt-0.5 px-0.5">
+                          <span className={`text-[10px] xl:text-[11.5px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${
                             isActive 
                               ? tab.color.activeText 
                               : 'text-slate-700 group-hover:text-slate-950'
                           }`}>
                             {tab.label}
                           </span>
-                          <ChevronDown className={`w-2.5 h-2.5 text-slate-400 transition-transform duration-200 ${
+                          <ChevronDown className={`w-2.5 h-2.5 text-slate-400 transition-transform duration-200 shrink-0 ${
                             isOpen ? 'rotate-180 text-emerald-700' : 'group-hover:text-slate-600'
                           }`} />
                         </div>
 
                         {/* Active Micro Indicator Dot */}
                         {isActive && (
-                          <span className={`absolute bottom-0.5 w-1.5 h-1.5 rounded-full ${tab.color.activeDot} shadow-xs`} />
+                          <span className={`absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full ${tab.color.activeDot} shadow-xs`} />
                         )}
                       </button>
                     ) : (
                       <Link
                         to={tab.href}
-                        className="relative z-10 h-full px-2.5 sm:px-3 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group min-w-[66px] sm:min-w-[72px]"
+                        className="relative z-10 w-full h-full px-1 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
                       >
                         {/* Android-style Rounded Colorful Icon Badge */}
                         <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-110 group-hover:-translate-y-0.5 ${
@@ -370,18 +370,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                           <TabIcon className="w-4 h-4 transition-transform duration-200" />
                         </div>
 
-                        {/* Menu Label: Bigger, Bold & Vibrant */}
-                        <span className={`text-[11px] sm:text-xs xl:text-[12.5px] font-black tracking-tight whitespace-nowrap leading-none mt-0.5 transition-colors duration-200 ${
-                          isActive 
-                            ? tab.color.activeText 
-                            : 'text-slate-700 group-hover:text-slate-950'
-                        }`}>
-                          {tab.label}
-                        </span>
+                        {/* Menu Label: Equal Width Distribution, Bold & Centered */}
+                        <div className="w-full text-center px-0.5 mt-0.5">
+                          <span className={`block text-[10px] xl:text-[11.5px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${
+                            isActive 
+                              ? tab.color.activeText 
+                              : 'text-slate-700 group-hover:text-slate-950'
+                          }`}>
+                            {tab.label}
+                          </span>
+                        </div>
 
                         {/* Active Micro Indicator Dot */}
                         {isActive && (
-                          <span className={`absolute bottom-0.5 w-1.5 h-1.5 rounded-full ${tab.color.activeDot} shadow-xs`} />
+                          <span className={`absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full ${tab.color.activeDot} shadow-xs`} />
                         )}
                       </Link>
                     )}
@@ -462,7 +464,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className="hidden lg:flex items-center h-[58px] flex-1 min-w-[140px] max-w-[420px] px-3.5 rounded-2xl bg-slate-100/90 hover:bg-white text-left border border-slate-200/90 hover:border-emerald-500/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md hover:shadow-emerald-900/5 transition-all duration-200 cursor-pointer group select-none relative"
+              className="hidden lg:flex items-center h-[58px] flex-1 min-w-[120px] xl:min-w-[140px] max-w-[420px] px-3 xl:px-3.5 rounded-2xl bg-slate-100/90 hover:bg-white text-left border border-slate-200/90 hover:border-emerald-500/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md hover:shadow-emerald-900/5 transition-all duration-200 cursor-pointer group select-none relative"
               title="Cari Berita, Tahfidz, STEM, Galeri (Ctrl+K)"
               aria-label="Cari Informasi Portal"
             >
