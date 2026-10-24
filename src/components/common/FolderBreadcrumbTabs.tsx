@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ChevronRight, Home, Sparkles } from 'lucide-react';
 import './FolderBreadcrumbTabs.css';
 
 export interface FolderTabItem {
@@ -166,41 +165,8 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
   }, [pathname, activeTab?.id]);
 
   return (
-    <div className={`w-full space-y-3.5 ${className}`}>
-      
-      {/* 1. Breadcrumb Trail (Top Layer) */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-zinc-400 flex-wrap">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1 text-slate-600 dark:text-zinc-300 hover:text-[#007acc] dark:hover:text-[#38bdf8] transition-colors py-0.5 group"
-        >
-          <Home className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#007acc] dark:group-hover:text-[#38bdf8] transition-colors" />
-          <span>{homeLabel}</span>
-        </Link>
-
-        {parentLabel && (
-          <>
-            <ChevronRight className="w-3 h-3 text-slate-400 dark:text-zinc-600 shrink-0" />
-            <Link
-              to={parentHref}
-              className="text-slate-600 dark:text-zinc-300 hover:text-[#007acc] dark:hover:text-[#38bdf8] transition-colors py-0.5"
-            >
-              {parentLabel}
-            </Link>
-          </>
-        )}
-
-        {currentLabel && (
-          <>
-            <ChevronRight className="w-3 h-3 text-slate-400 dark:text-zinc-600 shrink-0" />
-            <span className="text-[#007acc] dark:text-[#38bdf8] font-bold py-0.5 truncate max-w-[240px] sm:max-w-none">
-              {currentLabel}
-            </span>
-          </>
-        )}
-      </nav>
-
-      {/* 2. Fluid Sliding Tab Bar with Carved Cutout Inverted Curves */}
+    <div className={`w-full ${className}`}>
+      {/* Fluid Sliding Tab Bar with Carved Cutout Inverted Curves */}
       {tabs.length > 0 && (
         <div className="w-full flex items-center justify-start">
           <div className="fluid-tab-container max-w-full inline-flex">
