@@ -91,13 +91,13 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
       {/* 1. Mobile-Only Year Filter Pill: Positioned at Top Right (Separate from Category Bar) */}
       {hasYears && (
         <div className="flex items-center justify-end w-full mb-1.5 px-0.5 md:hidden">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs text-xs font-bold text-slate-700 dark:text-slate-200">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border-0 shadow-sm text-xs font-bold text-slate-700 dark:text-slate-200">
             <Calendar className="w-3.5 h-3.5 text-emerald-700 dark:text-gold-400 shrink-0" />
             <span className="text-[11px] font-semibold text-slate-400 uppercase">{yearLabel}:</span>
             <select
               value={selectedYear}
               onChange={(e) => onSelectYear!(e.target.value)}
-              className="bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none cursor-pointer"
+              className="bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none cursor-pointer border-0"
               aria-label="Filter Tahun Mobile"
             >
               {years!.map((y) => (
@@ -179,7 +179,6 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
         {/* 3. Desktop-Only Year Filter Pill: Integrated inside the emerald bar on the right */}
         {hasYears && (
           <div className="hidden md:flex items-center shrink-0 ml-2">
-            <div className="w-px h-6 bg-white/20 mr-2" />
             <div className="bottom-curved-year">
               <Calendar className="w-3.5 h-3.5 text-gold-400 shrink-0" />
               <span className="uppercase text-white/80">{yearLabel}:</span>
