@@ -238,19 +238,25 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
       className={`curved-navbar-wrapper w-full ${className}`}
     >
       <div className="curved-navbar-bar w-full">
+        {/* Subtle Category Section Label on the Left */}
+        <div className="hidden sm:flex items-center gap-2 pl-4 text-emerald-100/90 text-xs font-bold tracking-wide select-none shrink-0">
+          <span className="w-2 h-2 rounded-full bg-gold-400 animate-pulse" />
+          <span>{defaultCategory?.parentLabel || 'Navigasi'}</span>
+        </div>
+
         {/* Horizontal Scrollable Track for Smaller Screens */}
         <div
           ref={tabListRef}
-          className="curved-scroll-track w-full flex items-center overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full"
+          className="curved-scroll-track flex-1 flex items-center justify-end overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full"
         >
-          <ul className="curved-tab-list w-full flex items-center justify-between">
+          <ul className="curved-tab-list flex items-center justify-end ml-auto">
             {tabs.map((tab) => {
               const isActive = activeTab?.id === tab.id;
 
               return (
                 <li
                   key={tab.id}
-                  className="curved-tab-col flex-1 h-full flex items-center justify-center snap-start"
+                  className="curved-tab-col flex-none h-full flex items-center justify-center snap-start shrink-0"
                 >
                   <Link
                     ref={isActive ? activeTabRef : null}
@@ -282,7 +288,7 @@ export const FolderBreadcrumbTabs: React.FC<FolderBreadcrumbTabsProps> = ({
 
                     {/* Optional Badge */}
                     {tab.badge && (
-                      <span className="absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-blue-100 text-[#007acc] dark:bg-blue-950 dark:text-blue-300">
+                      <span className="ml-1.5 text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-gold-400 text-emerald-950">
                         {tab.badge}
                       </span>
                     )}
