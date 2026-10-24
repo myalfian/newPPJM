@@ -12,11 +12,11 @@ export interface BottomNavBarTabsProps {
   onSelectYear?: (year: string) => void;
   yearLabel?: string;
   className?: string;
-  categoryLabel?: string; // Kept for backward compatibility, ignored as requested
+  categoryLabel?: string; // Optional legacy prop (label Kategori intentionally removed)
 }
 
 /**
- * Renders 2-line wrapped text for category tabs on mobile without truncation
+ * Formats 2-line wrapped text on mobile screens to prevent any clipping or truncation
  */
 function renderCategoryMobileLabel(cat: string) {
   if (cat === 'Kitab Kuning / MQK') {
@@ -64,11 +64,12 @@ function renderCategoryMobileLabel(cat: string) {
 }
 
 /**
- * BottomNavBarTabs - Category Navigation matching NavBarTabs style & spring dynamics.
+ * BottomNavBarTabs - Single Unified Category Navigation with Bottom Floating Animation.
+ * Clean, DRY architecture: Single category loop prevents any duplicate tab rendering.
  * - Label "KATEGORI" removed.
- * - Year filter redesigned to top-right on mobile, integrated in-bar on desktop.
- * - Mobile: 2-line wrapped category text with zero truncation or horizontal sliding.
- * - Bottom-positioned curved notch & floating emerald dot.
+ * - Year filter: top-right on mobile, in-bar on desktop.
+ * - Mobile: 2-line wrapped text, 100% full-width, zero horizontal sliding, zero truncation.
+ * - Desktop: Unified single emerald bar with full 1-line text and integrated Year filter.
  */
 export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
   categories,
@@ -80,53 +81,58 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
   yearLabel = 'Tahun',
   className = '',
 }) => {
+  const hasYears = Boolean(years && years.length > 0 && onSelectYear);
+
   return (
     <nav
       aria-label="Filter Kategori dan Tahun"
       className={`bottom-curved-navbar-wrapper w-full ${className}`}
     >
-      {/* 1. Mobile Phone View (< 768px): Redesigned Year Pill at Top Right + Full-Width 2-Line Tabs */}
-      <div className="md:hidden flex flex-col w-full">
-        {/* Top Right: Redesigned Year Filter Pill (Label Kategori eliminated) */}
-        {years && years.length > 0 && onSelectYear && (
-          <div className="flex items-center justify-end w-full mb-1.5 px-0.5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs text-xs font-bold text-slate-700 dark:text-slate-200">
-              <Calendar className="w-3.5 h-3.5 text-emerald-700 dark:text-gold-400 shrink-0" />
-              <span className="text-[11px] font-semibold text-slate-400 uppercase">{yearLabel}:</span>
-              <select
-                value={selectedYear}
-                onChange={(e) => onSelectYear(e.target.value)}
-                className="bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none cursor-pointer"
-                aria-label="Filter Tahun Mobile"
-              >
-                {years.map((y) => (
-                  <option key={y} value={y} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
-                    {y === 'Semua' ? 'Semua Tahun' : y}
-                  </option>
-                ))}
-              </select>
-            </div>
+      {/* 1. Mobile-Only Year Filter Pill: Positioned at Top Right (Separate from Category Bar) */}
+      {hasYears && (
+        <div className="flex items-center justify-end w-full mb-1.5 px-0.5 md:hidden">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs text-xs font-bold text-slate-700 dark:text-slate-200">
+            <Calendar className="w-3.5 h-3.5 text-emerald-700 dark:text-gold-400 shrink-0" />
+            <span className="text-[11px] font-semibold text-slate-400 uppercase">{yearLabel}:</span>
+            <select
+              value={selectedYear}
+              onChange={(e) => onSelectYear!(e.target.value)}
+              className="bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none cursor-pointer"
+              aria-label="Filter Tahun Mobile"
+            >
+              {years!.map((y) => (
+                <option key={y} value={y} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+                  {y === 'Semua' ? 'Semua Tahun' : y}
+                </option>
+              ))}
+            </select>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Category Tabs Bar: 100% Full-Width Fit, Equal Distribution, 2-Line Text, Zero Sliding */}
-        <div className="bottom-curved-navbar-bar w-full px-1">
-          <ul className="w-full h-full flex items-center justify-between gap-1 p-0 m-0 list-none">
+      {/* 2. Single Unified Emerald Bar: Rendered Exactly ONCE for both Mobile & Desktop */}
+      <div className="bottom-curved-navbar-bar w-full">
+        {/* Category Tabs Track */}
+        <div className="bottom-curved-scroll-track flex-1 min-w-0 flex items-center justify-start h-full">
+          <ul className="bottom-curved-tab-list flex items-center">
             {categories.map((cat) => {
               const isActive = selectedCategory === cat;
 
               return (
-                <li key={cat} className="bottom-curved-tab-col flex-1 min-w-0">
+                <li
+                  key={cat}
+                  className="bottom-curved-tab-col flex-1 md:flex-none h-full flex items-center justify-center min-w-0"
+                >
                   <button
                     type="button"
                     onClick={() => onSelectCategory(cat)}
                     aria-pressed={isActive}
-                    className={`bottom-curved-tab-btn w-full ${isActive ? 'active' : ''}`}
+                    className={`bottom-curved-tab-btn w-full md:w-auto ${isActive ? 'active' : ''}`}
                   >
                     {/* Animated Sliding Notch Pointer & Floating Dot at the BOTTOM */}
                     {isActive && (
                       <motion.div
-                        layoutId="bottomCurvedCutoutPointerMobile"
+                        layoutId="bottomCurvedCutoutPointer"
                         layout="position"
                         className="bottom-curved-pointer"
                         transition={{
@@ -154,9 +160,14 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                       </motion.div>
                     )}
 
-                    {/* 2-Line Vertically Wrapped Text: Completely readable, zero truncation */}
+                    {/* Responsive Text: 2-line wrapped on mobile, 1-line on desktop */}
                     <span className="bottom-curved-tab-text w-full">
-                      {renderCategoryMobileLabel(cat)}
+                      <span className="md:hidden">
+                        {renderCategoryMobileLabel(cat)}
+                      </span>
+                      <span className="hidden md:inline">
+                        {cat}
+                      </span>
                     </span>
                   </button>
                 </li>
@@ -164,78 +175,20 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
             })}
           </ul>
         </div>
-      </div>
 
-      {/* 2. Tablet & Desktop View (>= 768px): Unified Single Emerald Bar (No Kategori label) */}
-      <div className="bottom-curved-navbar-bar w-full hidden md:flex items-center justify-between">
-        {/* Left/Center: Full-Width Tabs with Bottom Notch */}
-        <div className="bottom-curved-scroll-track flex-1 min-w-0 flex items-center justify-start h-full mx-1">
-          <ul className="bottom-curved-tab-list flex items-center justify-start">
-            {categories.map((cat) => {
-              const isActive = selectedCategory === cat;
-
-              return (
-                <li
-                  key={cat}
-                  className="bottom-curved-tab-col flex-none h-full flex items-center justify-center"
-                >
-                  <button
-                    type="button"
-                    onClick={() => onSelectCategory(cat)}
-                    aria-pressed={isActive}
-                    className={`bottom-curved-tab-btn ${isActive ? 'active' : ''}`}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="bottomCurvedCutoutPointerDesktop"
-                        layout="position"
-                        className="bottom-curved-pointer"
-                        transition={{
-                          type: 'spring',
-                          stiffness: 350,
-                          damping: 27,
-                          mass: 0.65,
-                        }}
-                      >
-                        <svg
-                          viewBox="0 0 74 25"
-                          className="bottom-curved-notch-svg"
-                          width="74"
-                          height="25"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          aria-hidden="true"
-                        >
-                          <path
-                            d="M 0 25 L 74 25 L 74 22 C 58 22, 52 4, 37 4 C 22 4, 16 22, 0 22 Z"
-                            className="bottom-curved-notch-surface"
-                          />
-                          <circle cx="37" cy="16.5" r="4" className="bottom-curved-notch-dot" />
-                        </svg>
-                      </motion.div>
-                    )}
-
-                    <span className="bottom-curved-tab-text">{cat}</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-
-        {/* Right: Year Filter */}
-        {years && years.length > 0 && onSelectYear && (
-          <div className="flex items-center shrink-0">
+        {/* 3. Desktop-Only Year Filter Pill: Integrated inside the emerald bar on the right */}
+        {hasYears && (
+          <div className="hidden md:flex items-center shrink-0 ml-2">
             <div className="w-px h-6 bg-white/20 mr-2" />
             <div className="bottom-curved-year">
               <Calendar className="w-3.5 h-3.5 text-gold-400 shrink-0" />
               <span className="uppercase text-white/80">{yearLabel}:</span>
               <select
                 value={selectedYear}
-                onChange={(e) => onSelectYear(e.target.value)}
+                onChange={(e) => onSelectYear!(e.target.value)}
                 aria-label="Filter Tahun Desktop"
               >
-                {years.map((y) => (
+                {years!.map((y) => (
                   <option key={y} value={y}>
                     {y === 'Semua' ? 'Semua Tahun' : y}
                   </option>
