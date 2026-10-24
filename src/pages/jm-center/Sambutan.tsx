@@ -4,12 +4,12 @@ import { NavBarTabs } from '../../components/common/NavBarTabs';
 
 export const Sambutan: React.FC = () => {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 sm:space-y-10">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-5">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
       <NavBarTabs />
 
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-3xl p-8 sm:p-12 text-white shadow-m3-2 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl sm:rounded-3xl p-5 sm:p-7 lg:p-8 text-white shadow-m3-2 relative overflow-hidden">
         <div className="relative z-10 space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Compass className="w-3.5 h-3.5" />
@@ -25,7 +25,7 @@ export const Sambutan: React.FC = () => {
       </div>
 
       {/* Main Narrative & High-Res Photo */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
         {/* Photo & Quote Card */}
         <div className="lg:col-span-5 space-y-6">
           <div className="bg-white rounded-3xl p-4 shadow-m3-1 border border-slate-200 space-y-4">
@@ -62,7 +62,7 @@ export const Sambutan: React.FC = () => {
         </div>
 
         {/* Narrative Text */}
-        <div className="lg:col-span-7 bg-white rounded-3xl p-8 sm:p-10 shadow-m3-1 border border-slate-200 space-y-6 text-slate-700 leading-relaxed text-sm sm:text-base">
+        <div className="lg:col-span-7 bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-m3-1 border border-slate-200 space-y-6 text-slate-700 leading-relaxed text-sm sm:text-base">
           <div className="font-quran text-2xl sm:text-3xl text-emerald-900 text-center py-2 border-b border-slate-100">
             بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
           </div>

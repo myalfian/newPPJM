@@ -43,12 +43,12 @@ export const AmaliyahPondok: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 sm:space-y-10">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-5">
       {/* Sub Menu Navigation Tabs */}
       <NavBarTabs />
 
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-3xl p-8 sm:p-12 text-white shadow-m3-2 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl sm:rounded-3xl p-5 sm:p-7 lg:p-8 text-white shadow-m3-2 relative overflow-hidden">
         <div className="relative z-10 space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Heart className="w-3.5 h-3.5" />
@@ -64,7 +64,7 @@ export const AmaliyahPondok: React.FC = () => {
       </div>
 
       {/* Jadwal Harian Rutin */}
-      <div className="bg-white rounded-3xl p-8 sm:p-10 shadow-m3-1 border border-slate-200 space-y-6">
+      <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-m3-1 border border-slate-200 space-y-6">
         <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div>
             <h2 className="text-xl sm:text-2xl font-black text-emerald-950">
@@ -106,7 +106,7 @@ export const AmaliyahPondok: React.FC = () => {
       </div>
 
       {/* Amaliyah Khusus Malam Jumat */}
-      <div className="bg-gradient-to-br from-emerald-50 to-white rounded-3xl p-8 shadow-m3-1 border border-emerald-200 space-y-4">
+      <div className="bg-gradient-to-br from-emerald-50 to-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-m3-1 border border-emerald-200 space-y-4">
         <div className="flex items-center gap-2">
           <BookOpen className="w-5 h-5 text-emerald-800" />
           <h3 className="text-lg font-bold text-emerald-950">

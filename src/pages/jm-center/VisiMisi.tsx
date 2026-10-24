@@ -32,12 +32,12 @@ export const VisiMisi: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 sm:space-y-10">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-5">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
       <NavBarTabs />
 
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-3xl p-8 sm:p-12 text-white shadow-m3-2 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl sm:rounded-3xl p-5 sm:p-7 lg:p-8 text-white shadow-m3-2 relative overflow-hidden">
         <div className="relative z-10 space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Target className="w-3.5 h-3.5" />
@@ -53,7 +53,7 @@ export const VisiMisi: React.FC = () => {
       </div>
 
       {/* 3D Visi Card */}
-      <div className="bg-gradient-to-br from-white to-emerald-50/50 rounded-3xl p-8 sm:p-12 shadow-m3-2 border border-emerald-200/80 relative overflow-hidden space-y-6">
+      <div className="bg-gradient-to-br from-white to-emerald-50/50 rounded-2xl sm:rounded-3xl p-5 sm:p-7 lg:p-8 shadow-m3-2 border border-emerald-200/80 relative overflow-hidden space-y-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-emerald-800 text-gold-400 flex items-center justify-center shadow-md">
             <Eye className="w-6 h-6" />

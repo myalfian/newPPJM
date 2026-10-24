@@ -43,12 +43,12 @@ export const ProgramMadin: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 sm:space-y-10">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-5">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
       <NavBarTabs />
 
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-3xl p-8 sm:p-12 text-white shadow-m3-2 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl sm:rounded-3xl p-5 sm:p-7 lg:p-8 text-white shadow-m3-2 relative overflow-hidden">
         <div className="relative z-10 space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <BookOpen className="w-3.5 h-3.5" />
@@ -64,7 +64,7 @@ export const ProgramMadin: React.FC = () => {
       </div>
 
       {/* Narrative Section */}
-      <div className="bg-white rounded-3xl p-8 shadow-m3-1 border border-slate-200 space-y-4 text-slate-700 leading-relaxed text-sm sm:text-base">
+      <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-m3-1 border border-slate-200 space-y-4 text-slate-700 leading-relaxed text-sm sm:text-base">
         <h2 className="text-xl sm:text-2xl font-bold text-emerald-950">
           Metode Sorogan, Bandongan & Musyawarah Bahsul Masail
         </h2>

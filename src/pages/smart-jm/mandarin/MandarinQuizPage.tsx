@@ -6,7 +6,7 @@ import { NavBarTabs } from '../../../components/common/NavBarTabs';
 
 export const MandarinQuizPage: React.FC = () => {
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-5">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
       <NavBarTabs />
 

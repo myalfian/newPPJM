@@ -66,7 +66,7 @@ export const MandarinMateri: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-5">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
       <NavBarTabs />
 
@@ -95,7 +95,7 @@ export const MandarinMateri: React.FC = () => {
       </div>
 
       {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
         
         {/* Left Column: Lesson Directory */}
         <div className="lg:col-span-4 space-y-3">

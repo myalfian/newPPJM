@@ -17,8 +17,8 @@
   align-items: center;
   justify-content: flex-start;
   width: 100%;
-  padding-top: 18px; /* Clearance for top notch dip */
-  padding-bottom: 6px;
+  padding-top: 10px; /* Clearance for top notch dip */
+  padding-bottom: 2px;
 }
 
 /* Borderless Green Container matching website colors */
