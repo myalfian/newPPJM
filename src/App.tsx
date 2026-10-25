@@ -151,6 +151,10 @@ const KelolaStem = lazy(() => import('./pages/admin/KelolaStem').then(m => ({ de
 const KelolaMandarin = lazy(() => import('./pages/admin/KelolaMandarin').then(m => ({ default: m.KelolaMandarin })));
 const KelolaGaleri = lazy(() => import('./pages/admin/KelolaGaleri').then(m => ({ default: m.KelolaGaleri })));
 const KelolaSlider = lazy(() => import('./pages/admin/KelolaSlider').then(m => ({ default: m.KelolaSlider })));
+const KelolaHafidz = lazy(() => import('./pages/admin/KelolaHafidz').then(m => ({ default: m.KelolaHafidz })));
+const KelolaPrestasi = lazy(() => import('./pages/admin/KelolaPrestasi').then(m => ({ default: m.KelolaPrestasi })));
+const KelolaEkskul = lazy(() => import('./pages/admin/KelolaEkskul').then(m => ({ default: m.KelolaEkskul })));
+const KelolaProfil = lazy(() => import('./pages/admin/KelolaProfil').then(m => ({ default: m.KelolaProfil })));
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
@@ -215,6 +219,10 @@ export const App: React.FC = () => {
           <Route path="mandarin" element={<KelolaMandarin />} />
           <Route path="galeri" element={<KelolaGaleri />} />
           <Route path="slider" element={<KelolaSlider />} />
+          <Route path="hafidz" element={<KelolaHafidz />} />
+          <Route path="prestasi" element={<KelolaPrestasi />} />
+          <Route path="ekskul" element={<KelolaEkskul />} />
+          <Route path="profil" element={<KelolaProfil />} />
           <Route path="*" element={<Dashboard />} />
         </Route>
         <Route path="/admin" element={<AdminLayout />}>

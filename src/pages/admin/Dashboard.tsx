@@ -28,7 +28,10 @@ import {
   Zap,
   Activity,
   Flame,
-  UserCheck
+  UserCheck,
+  BookOpen,
+  Trophy,
+  Landmark
 } from 'lucide-react';
 
 interface PipelineTask {
@@ -443,76 +446,170 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          {/* Quick Launchpad Cards (Tactile Shortcuts) */}
+          {/* Quick Launchpad Cards (Tactile Shortcuts for Every Public Website Component) */}
           <div className="space-y-3">
             <h3 className="text-xs font-extrabold uppercase tracking-wider text-zinc-400 dark:text-zinc-500 px-1">
-              Pintasan Aksi Cepat
+              Pusat Editor & Publikasi Komponen Website Publik
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {/* 1. Berita & Warta */}
               <Link
                 to="/admin/berita"
-                className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-[#007acc] hover:shadow-md transition-all active:scale-[0.99] flex items-center gap-4 group"
+                className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-[#007acc] hover:shadow-md transition-all active:scale-[0.99] flex items-center gap-3.5 group"
               >
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-950 text-[#007acc] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <Newspaper className="w-6 h-6" />
+                <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950 text-[#007acc] flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Newspaper className="w-5 h-5" />
                 </div>
-                <div>
-                  <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white group-hover:text-[#007acc] transition-colors">
-                    Formulir Berita & Warta
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-xs sm:text-sm text-zinc-900 dark:text-white group-hover:text-[#007acc] transition-colors truncate">
+                    Warta & Berita
                   </h4>
-                  <p className="text-xs text-zinc-400 mt-0.5">
-                    Tulis warta & siapkan pesan broadcast WhatsApp wali santri.
+                  <p className="text-[11px] text-zinc-400 truncate">
+                    Artikel & WhatsApp broadcast
                   </p>
                 </div>
               </Link>
 
-              <Link
-                to="/admin/galeri"
-                className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-[#007acc] hover:shadow-md transition-all active:scale-[0.99] flex items-center gap-4 group"
-              >
-                <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <ImageIcon className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white group-hover:text-[#007acc] transition-colors">
-                    Upload Foto & Video
-                  </h4>
-                  <p className="text-xs text-zinc-400 mt-0.5">
-                    Otomatis dikonversi ke WebP tajam dan ringan.
-                  </p>
-                </div>
-              </Link>
-
+              {/* 2. STEM Area */}
               <Link
                 to="/admin/stem"
-                className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-[#007acc] hover:shadow-md transition-all active:scale-[0.99] flex items-center gap-4 group"
+                className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-[#007acc] hover:shadow-md transition-all active:scale-[0.99] flex items-center gap-3.5 group"
               >
-                <div className="w-12 h-12 rounded-2xl bg-teal-50 dark:bg-teal-950 text-teal-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <Cpu className="w-6 h-6" />
+                <div className="w-10 h-10 rounded-xl bg-teal-50 dark:bg-teal-950 text-teal-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Cpu className="w-5 h-5" />
                 </div>
-                <div>
-                  <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white group-hover:text-[#007acc] transition-colors">
-                    Modul Riset STEM
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-xs sm:text-sm text-zinc-900 dark:text-white group-hover:text-[#007acc] transition-colors truncate">
+                    STEM Area
                   </h4>
-                  <p className="text-xs text-zinc-400 mt-0.5">
-                    Silabus teknologi praktis & karya robotika santri.
+                  <p className="text-[11px] text-zinc-400 truncate">
+                    Materi silabus & portofolio siswa
                   </p>
                 </div>
               </Link>
 
+              {/* 3. Mandarin Class */}
+              <Link
+                to="/admin/mandarin"
+                className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-[#007acc] hover:shadow-md transition-all active:scale-[0.99] flex items-center gap-3.5 group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-sky-50 dark:bg-sky-950 text-sky-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Globe className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-xs sm:text-sm text-zinc-900 dark:text-white group-hover:text-[#007acc] transition-colors truncate">
+                    Mandarin Class
+                  </h4>
+                  <p className="text-[11px] text-zinc-400 truncate">
+                    Materi narasi & bank soal quiz
+                  </p>
+                </div>
+              </Link>
+
+              {/* 4. Hafidz & Murojaah AI */}
+              <Link
+                to="/admin/hafidz"
+                className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-[#007acc] hover:shadow-md transition-all active:scale-[0.99] flex items-center gap-3.5 group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <BookOpen className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-xs sm:text-sm text-zinc-900 dark:text-white group-hover:text-[#007acc] transition-colors truncate">
+                    Hafidz & Murojaah AI
+                  </h4>
+                  <p className="text-[11px] text-zinc-400 truncate">
+                    Evaluasi audio & nilai tajwid
+                  </p>
+                </div>
+              </Link>
+
+              {/* 5. Prestasi Santri */}
+              <Link
+                to="/admin/prestasi"
+                className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-[#007acc] hover:shadow-md transition-all active:scale-[0.99] flex items-center gap-3.5 group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Trophy className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-xs sm:text-sm text-zinc-900 dark:text-white group-hover:text-[#007acc] transition-colors truncate">
+                    Prestasi Santri
+                  </h4>
+                  <p className="text-[11px] text-zinc-400 truncate">
+                    Piagam, olimpiade & MQK
+                  </p>
+                </div>
+              </Link>
+
+              {/* 6. Ekstrakurikuler */}
+              <Link
+                to="/admin/ekskul"
+                className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-[#007acc] hover:shadow-md transition-all active:scale-[0.99] flex items-center gap-3.5 group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-purple-50 dark:bg-purple-950 text-purple-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Sparkles className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-xs sm:text-sm text-zinc-900 dark:text-white group-hover:text-[#007acc] transition-colors truncate">
+                    Ekstrakurikuler
+                  </h4>
+                  <p className="text-[11px] text-zinc-400 truncate">
+                    Jadwal, pelatih & dokumentasi
+                  </p>
+                </div>
+              </Link>
+
+              {/* 7. Galeri Media */}
+              <Link
+                to="/admin/galeri"
+                className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-[#007acc] hover:shadow-md transition-all active:scale-[0.99] flex items-center gap-3.5 group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950 text-rose-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <ImageIcon className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-xs sm:text-sm text-zinc-900 dark:text-white group-hover:text-[#007acc] transition-colors truncate">
+                    Galeri Foto & Video
+                  </h4>
+                  <p className="text-[11px] text-zinc-400 truncate">
+                    Upload WebP & tautan YouTube
+                  </p>
+                </div>
+              </Link>
+
+              {/* 8. Hero Slider */}
               <Link
                 to="/admin/slider"
-                className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-[#007acc] hover:shadow-md transition-all active:scale-[0.99] flex items-center gap-4 group"
+                className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-[#007acc] hover:shadow-md transition-all active:scale-[0.99] flex items-center gap-3.5 group"
               >
-                <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950 text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <Gauge className="w-6 h-6" />
+                <div className="w-10 h-10 rounded-xl bg-orange-50 dark:bg-orange-950 text-orange-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Gauge className="w-5 h-5" />
                 </div>
-                <div>
-                  <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white group-hover:text-[#007acc] transition-colors">
-                    Kecepatan Banner Slider
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-xs sm:text-sm text-zinc-900 dark:text-white group-hover:text-[#007acc] transition-colors truncate">
+                    Banner & Hero Slider
                   </h4>
-                  <p className="text-xs text-zinc-400 mt-0.5">
-                    Kustomisasi interval putar coverflow beranda publik.
+                  <p className="text-[11px] text-zinc-400 truncate">
+                    Slide beranda & kecepatan putar
+                  </p>
+                </div>
+              </Link>
+
+              {/* 9. Profil Lembaga & Program */}
+              <Link
+                to="/admin/profil"
+                className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800/80 hover:border-[#007acc] hover:shadow-md transition-all active:scale-[0.99] flex items-center gap-3.5 group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950 text-emerald-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <Landmark className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="font-extrabold text-xs sm:text-sm text-zinc-900 dark:text-white group-hover:text-[#007acc] transition-colors truncate">
+                    JM Center & Program
+                  </h4>
+                  <p className="text-[11px] text-zinc-400 truncate">
+                    Sambutan, visi-misi & kurikulum
                   </p>
                 </div>
               </Link>
