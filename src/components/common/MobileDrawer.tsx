@@ -12,7 +12,8 @@ import {
   ChevronRight,
   Cpu,
   Layers,
-  GraduationCap
+  GraduationCap,
+  Calendar
 } from 'lucide-react';
 
 interface DrawerSubGroup {
@@ -96,6 +97,13 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
       items: [
         { label: 'Foto', to: '/galeri/foto' },
         { label: 'Video', to: '/galeri/video' },
+      ],
+    },
+    {
+      title: '7. Agenda Program',
+      icon: Calendar,
+      items: [
+        { label: 'Jadwal Agenda Bulanan', to: '/agenda' },
       ],
     },
   ];

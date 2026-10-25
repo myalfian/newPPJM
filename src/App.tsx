@@ -140,6 +140,7 @@ const MandarinMateri = lazy(() => import('./pages/smart-jm/mandarin/MandarinMate
 const MandarinQuizPage = lazy(() => import('./pages/smart-jm/mandarin/MandarinQuizPage').then(m => ({ default: m.MandarinQuizPage })));
 const Prestasi = lazy(() => import('./pages/Prestasi').then(m => ({ default: m.Prestasi })));
 const Ekskul = lazy(() => import('./pages/Ekskul').then(m => ({ default: m.Ekskul })));
+const Agenda = lazy(() => import('./pages/Agenda').then(m => ({ default: m.Agenda })));
 const GaleriFoto = lazy(() => import('./pages/galeri/GaleriFoto').then(m => ({ default: m.GaleriFoto })));
 const GaleriVideo = lazy(() => import('./pages/galeri/GaleriVideo').then(m => ({ default: m.GaleriVideo })));
 
@@ -199,6 +200,9 @@ export const App: React.FC = () => {
           {/* Prestasi & Ekskul */}
           <Route path="prestasi" element={<Prestasi />} />
           <Route path="ekskul" element={<Ekskul />} />
+
+          {/* Agenda Kegiatan Santri (Historical, Current, Future) */}
+          <Route path="agenda" element={<Agenda />} />
 
           {/* Galeri Sekolah */}
           <Route path="galeri" element={<Navigate to="/galeri/foto" replace />} />

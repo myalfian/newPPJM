@@ -18,7 +18,10 @@ import {
   Cpu,
   Globe,
   CheckCircle2,
-  Layers3
+  Layers3,
+  CalendarDays,
+  CalendarCheck2,
+  Clock3
 } from 'lucide-react';
 import './NavBarTabs.css';
 
@@ -134,6 +137,16 @@ const DEFAULT_CATEGORY_TABS: Record<
       { id: 'murojaah', label: 'Murojaah', shortLabel: 'Murojaah', href: '/smart-jm/hafidz/murojaah', icon: Volume2 },
     ],
   },
+  'agenda': {
+    parentLabel: 'Agenda',
+    parentHref: '/agenda',
+    parentIcon: CalendarCheck2,
+    tabs: [
+      { id: 'agenda-current', label: 'Bulan Ini', shortLabel: 'Current', href: '/agenda', icon: CalendarDays },
+      { id: 'agenda-future', label: 'Mendatang', shortLabel: 'Future', href: '/agenda', icon: Clock3 },
+      { id: 'agenda-historical', label: 'Arsip Program', shortLabel: 'Historical', href: '/agenda', icon: CheckCircle2 },
+    ],
+  },
 };
 
 /**
@@ -155,7 +168,8 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
 
   // Auto-detect hub category if tabs are not provided explicitly
   let detectedCategory = '';
-  if (pathname.includes('/jm-center')) detectedCategory = 'jm-center';
+  if (pathname.includes('/agenda')) detectedCategory = 'agenda';
+  else if (pathname.includes('/jm-center')) detectedCategory = 'jm-center';
   else if (pathname.includes('/program-unggulan')) detectedCategory = 'program-unggulan';
   else if (pathname.includes('/galeri')) detectedCategory = 'galeri';
   else if (pathname === '/prestasi' || pathname === '/ekskul') detectedCategory = 'prestasi-ekskul';

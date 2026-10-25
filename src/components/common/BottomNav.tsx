@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Newspaper, Sprout, Bookmark, GraduationCap, X, Share2, ExternalLink } from 'lucide-react';
+import { Home, Newspaper, Sprout, CalendarDays, GraduationCap, X, Share2, ExternalLink } from 'lucide-react';
 
 export const BottomNav: React.FC = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ export const BottomNav: React.FC = () => {
   }, []);
 
   // Determine active tab corresponding to the 5 positions
-  let activeTab: 'home' | 'news' | 'center' | 'elearning' | 'program' = 'home';
+  let activeTab: 'home' | 'news' | 'center' | 'agenda' | 'program' = 'home';
   if (showMedsosModal) {
     activeTab = 'center';
   } else if (
@@ -39,8 +39,8 @@ export const BottomNav: React.FC = () => {
     location.pathname.startsWith('/ekskul')
   ) {
     activeTab = 'news';
-  } else if (location.pathname.startsWith('/smart-jm')) {
-    activeTab = 'elearning';
+  } else if (location.pathname.startsWith('/agenda')) {
+    activeTab = 'agenda';
   } else if (
     location.pathname.startsWith('/program-unggulan') ||
     location.pathname.startsWith('/jm-center')
@@ -270,37 +270,37 @@ export const BottomNav: React.FC = () => {
               </span>
             </div>
 
-            {/* 4. Smart JM / E-Learning */}
+            {/* 4. Agenda Kegiatan Santri (Historical, Current, Future) */}
             <button
               type="button"
-              onClick={() => navigate('/smart-jm/hafidz/read')}
+              onClick={() => navigate('/agenda')}
               className="flex flex-col items-center justify-center h-full relative cursor-pointer group py-1"
-              aria-label="Smart JM"
-              title="Smart JM"
+              aria-label="Agenda"
+              title="Agenda Kegiatan Santri"
             >
               <motion.div
                 whileTap={{ scale: 0.88 }}
                 animate={{
-                  scale: activeTab === 'elearning' ? 1.1 : 1,
-                  y: activeTab === 'elearning' ? -1.5 : 0,
+                  scale: activeTab === 'agenda' ? 1.1 : 1,
+                  y: activeTab === 'agenda' ? -1.5 : 0,
                 }}
                 transition={{ type: 'spring', stiffness: 420, damping: 28 }}
                 className={`transition-colors duration-200 ${
-                  activeTab === 'elearning'
+                  activeTab === 'agenda'
                     ? 'text-emerald-700 dark:text-emerald-400'
                     : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
                 }`}
               >
-                <Bookmark className="w-5 h-5 stroke-[2.3]" />
+                <CalendarDays className="w-5 h-5 stroke-[2.3]" />
               </motion.div>
               <span
                 className={`text-[11.5px] sm:text-[12px] tracking-tight mt-1 leading-none transition-colors duration-200 ${
-                  activeTab === 'elearning'
+                  activeTab === 'agenda'
                     ? 'font-black text-emerald-800 dark:text-emerald-300'
                     : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200'
                 }`}
               >
-                Smart JM
+                Agenda
               </span>
             </button>
 
