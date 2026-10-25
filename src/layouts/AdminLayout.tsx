@@ -101,12 +101,15 @@ export const AdminLayout: React.FC = () => {
               <Menu className="w-5 h-5" />
             </button>
 
-            <Link to="/admin" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 rounded-xl p-0.5 bg-gradient-to-tr from-[#007acc] via-indigo-500 to-sky-400 shadow-sm flex items-center justify-center shrink-0">
+            <Link to="/admin" className="flex items-center gap-2.5 group shrink-0 select-none">
+              <div className="w-9 h-9 min-w-[36px] min-h-[36px] max-w-[36px] max-h-[36px] rounded-xl p-0.5 bg-gradient-to-tr from-[#007acc] via-indigo-500 to-sky-400 shadow-sm flex items-center justify-center shrink-0 flex-none aspect-square">
                 <img
                   src="/logo-ppjm.svg"
                   alt="PPJM Logo"
-                  className="w-full h-full object-contain rounded-[10px] bg-white p-0.5"
+                  width="36"
+                  height="36"
+                  loading="eager"
+                  className="w-full h-full min-w-full min-h-full max-w-full max-h-full object-contain rounded-[10px] bg-white p-0.5 block shrink-0 flex-none pointer-events-none"
                 />
               </div>
               <div className="hidden sm:block">
@@ -221,8 +224,8 @@ export const AdminLayout: React.FC = () => {
             </div>
 
             {/* User Profile Avatar & Logout */}
-            <div className="flex items-center gap-2 pl-1 border-l border-zinc-200 dark:border-zinc-800">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#007acc] to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-xs relative">
+            <div className="flex items-center gap-2 pl-1 border-l border-zinc-200 dark:border-zinc-800 shrink-0 flex-none">
+              <div className="w-8 h-8 min-w-[32px] min-h-[32px] max-w-[32px] max-h-[32px] rounded-full bg-gradient-to-tr from-[#007acc] to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-xs relative shrink-0 flex-none aspect-square">
                 <span>AD</span>
                 <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-zinc-900" />
               </div>

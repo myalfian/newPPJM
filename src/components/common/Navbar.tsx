@@ -254,16 +254,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             {/* Right Side: Fixed Min-Width Container to prevent CLS when Auth is empty/loading */}
             <div className="flex items-center justify-between gap-1 xs:gap-1.5 sm:gap-2 lg:gap-3 shrink-0 min-w-[105px] xs:min-w-[120px] sm:min-w-[145px] lg:min-w-[170px]">
 
-              {/* 1. Notification Bell Button (Universal for All Viewports) */}
-              <div className="relative flex items-center">
+              {/* 1. Notification Bell Button (Universal for All Viewports - Fixed Locked Dimensions) */}
+              <div className="relative flex items-center shrink-0 flex-none">
                 <button
                   type="button"
                   onClick={() => setNotificationsOpen((prev) => !prev)}
-                  className="w-8 h-8 xs:w-8.5 xs:h-8.5 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 shadow-2xs flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer relative"
+                  className="w-8 h-8 min-w-[32px] min-h-[32px] max-w-[32px] max-h-[32px] xs:w-8.5 xs:h-8.5 xs:min-w-[34px] xs:min-h-[34px] xs:max-w-[34px] xs:max-h-[34px] sm:w-9 sm:h-9 sm:min-w-[36px] sm:min-h-[36px] sm:max-w-[36px] sm:max-h-[36px] lg:w-10 lg:h-10 lg:min-w-[40px] lg:min-h-[40px] lg:max-w-[40px] lg:max-h-[40px] rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 shadow-2xs flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer relative shrink-0 flex-none aspect-square"
                   aria-label="Notifikasi & Informasi"
                   title="Warta & Informasi Terkini"
                 >
-                  <Bell className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-4.5 sm:h-4.5 text-slate-700 stroke-[2.2]" />
+                  <Bell className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-4.5 sm:h-4.5 text-slate-700 stroke-[2.2] shrink-0" />
                   <span className="absolute top-1 xs:top-1.5 right-1 xs:right-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 ring-1 ring-white" />
                 </button>
 
@@ -296,23 +296,27 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                 </AnimatePresence>
               </div>
 
-              {/* 2. Profile Pill Capsule (Universal for All Viewports: (Avatar) Michael Admin ⌄) */}
+              {/* 2. Profile Pill Capsule (Universal for All Viewports - Fixed Locked Dimensions) */}
               <Link
                 to="/admin"
-                className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 pl-0.5 xs:pl-1 pr-1.5 xs:pr-2.5 sm:pr-3 py-0.5 xs:py-1 lg:py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer select-none shrink-0"
+                className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 pl-0.5 xs:pl-1 pr-1.5 xs:pr-2.5 sm:pr-3 py-0.5 xs:py-1 lg:py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer select-none shrink-0 flex-none h-8 xs:h-8.5 sm:h-9 lg:h-10 max-h-10"
                 title={`Profil Pengguna: ${currentUserName}`}
               >
-                {/* User Portrait Avatar */}
-                <div className="w-6.5 h-6.5 xs:w-7 xs:h-7 sm:w-7.5 sm:h-7.5 lg:w-8 lg:h-8 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                {/* User Portrait Avatar - Strictly Dimension Locked */}
+                <div className="w-[26px] h-[26px] min-w-[26px] min-h-[26px] max-w-[26px] max-h-[26px] xs:w-[28px] xs:h-[28px] xs:min-w-[28px] xs:min-h-[28px] xs:max-w-[28px] xs:max-h-[28px] sm:w-[30px] sm:h-[30px] sm:min-w-[30px] sm:min-h-[30px] sm:max-w-[30px] sm:max-h-[30px] lg:w-[32px] lg:h-[32px] lg:min-w-[32px] lg:min-h-[32px] lg:max-w-[32px] lg:max-h-[32px] rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0 flex-none aspect-square">
                   <img
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
                     alt="Michael Admin"
-                    className="w-full h-full object-cover"
+                    width="32"
+                    height="32"
+                    loading="eager"
+                    decoding="async"
+                    className="w-full h-full min-w-full min-h-full max-w-full max-h-full object-cover rounded-full block shrink-0 flex-none select-none pointer-events-none"
                   />
                 </div>
 
                 {/* Name & Role Text Stack */}
-                <div className="flex flex-col text-left leading-tight">
+                <div className="flex flex-col text-left leading-tight shrink-0">
                   <span className="text-[10px] xs:text-[11px] sm:text-xs lg:text-[13px] font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[38px] xs:max-w-[60px] sm:max-w-[85px] lg:max-w-[120px]">
                     Michael
                   </span>
