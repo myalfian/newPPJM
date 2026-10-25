@@ -18,58 +18,64 @@ import { Sparkles } from 'lucide-react';
  */
 const SkeletonLoader: React.FC = () => (
   <div
-    className="min-h-[60vh] xs:min-h-[70vh] w-full flex flex-col items-center justify-center py-12 px-4 select-none relative overflow-hidden"
+    className="min-h-[65vh] xs:min-h-[75vh] w-full flex flex-col items-center justify-center py-12 px-4 select-none relative overflow-hidden"
     aria-label="Memuat portal santri"
   >
     {/* 1. Ambient Background Glow Aura (Dual Tones: Emerald & Celestial Gold) */}
-    <div className="absolute w-72 h-72 sm:w-96 sm:h-96 rounded-full bg-gradient-to-tr from-emerald-500/15 via-teal-400/10 to-[#d4af37]/15 blur-3xl pointer-events-none -z-10 animate-pulse" />
+    <div className="absolute w-80 h-80 sm:w-96 sm:h-96 rounded-full bg-gradient-to-tr from-emerald-500/15 via-teal-400/10 to-[#d4af37]/15 blur-3xl pointer-events-none -z-10 animate-pulse" />
 
-    {/* 2. Central Holographic Orbital Gyroscope & Wave Petals System */}
-    <div className="relative w-40 h-40 xs:w-44 xs:h-44 sm:w-48 sm:h-48 flex items-center justify-center mb-6">
+    {/* 2. Central Fusion Container: Airgram 4-Blade Morphing Pinwheel + AI Tech Gyroscope */}
+    <div className="relative w-44 h-44 xs:w-48 xs:h-48 sm:w-52 sm:h-52 flex items-center justify-center mb-6">
       
-      {/* Dynamic Neural Expanding Wave Rings (AI Energy Pulse) */}
-      <div className="absolute inset-2 rounded-full border border-emerald-500/30 animate-neural-ring pointer-events-none" />
-      <div className="absolute inset-0 rounded-full border border-[#d4af37]/25 animate-neural-ring [animation-delay:1.2s] pointer-events-none" />
+      {/* AI Tech Layer 1: Concentric Expanding Sonar Energy Waves */}
+      <div className="absolute inset-4 rounded-full border border-emerald-500/35 animate-neural-ring pointer-events-none" />
+      <div className="absolute inset-1 rounded-full border border-[#d4af37]/25 animate-neural-ring [animation-delay:1.3s] pointer-events-none" />
 
-      {/* Outer 3D Gyroscopic Orbital Ring (AI Tech Ring 1) */}
+      {/* AI Tech Layer 2: 3D Outer Gyroscopic Orbital Ring with Laser Satellite Bead */}
       <div className="absolute inset-0 rounded-full border border-dashed border-emerald-500/40 animate-ai-gyro-1 pointer-events-none">
-        {/* Orbital Satellite Node Dot */}
-        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_12px_#10b981] border border-white" />
+        <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-emerald-400 shadow-[0_0_14px_#10b981] border-2 border-white" />
       </div>
 
-      {/* Secondary Counter-Rotating Gyroscopic Ring (AI Tech Ring 2) */}
-      <div className="absolute inset-2 rounded-full border border-emerald-400/30 border-t-[#d4af37] border-b-teal-400 animate-ai-gyro-2 pointer-events-none">
-        {/* Counter Satellite Node Dot */}
-        <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-[#d4af37] shadow-[0_0_10px_#d4af37] border border-white" />
+      {/* AI Tech Layer 3: Secondary Counter-Rotating Tilted Ring */}
+      <div className="absolute inset-2.5 rounded-full border-2 border-transparent border-t-[#d4af37] border-b-teal-400 animate-ai-gyro-2 pointer-events-none">
+        <div className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-3 h-3 rounded-full bg-[#d4af37] shadow-[0_0_12px_#d4af37] border-2 border-white" />
       </div>
 
-      {/* 2D Flat Radial Orbit with 4-Point Airgram Petals */}
-      <div className="absolute inset-4 rounded-full border border-slate-200/60 dark:border-slate-700/60 animate-ai-orbit-cw pointer-events-none">
-        {/* Airgram North Petal Node */}
-        <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 shadow-md animate-airgram-petal border border-white" />
-        {/* Airgram South Petal Node */}
-        <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-gradient-to-br from-teal-500 to-emerald-600 shadow-md animate-airgram-petal [animation-delay:0.55s] border border-white" />
-        {/* Airgram East Petal Node */}
-        <div className="absolute top-1/2 -right-2 -translate-y-1/2 w-4 h-4 rounded-full bg-gradient-to-br from-[#d4af37] to-amber-500 shadow-md animate-airgram-petal [animation-delay:1.1s] border border-white" />
-        {/* Airgram West Petal Node */}
-        <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-4 h-4 rounded-full bg-gradient-to-br from-emerald-500 to-[#d4af37] shadow-md animate-airgram-petal [animation-delay:1.65s] border border-white" />
-      </div>
-
-      {/* Center Neural Core (Glassmorphic Luminous Orb) */}
-      <div className="relative z-10 w-18 h-18 xs:w-20 xs:h-20 rounded-3xl p-1 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/80 dark:border-slate-700/80 shadow-[0_10px_30px_rgba(15,81,50,0.18)] flex items-center justify-center group overflow-hidden">
-        {/* Conic Beam Sweep Flare */}
-        <div className="gemini-ambient-aura rounded-3xl">
-          <div className="gemini-beam-sweep" />
-        </div>
-        <div className="gemini-border-glow-frame rounded-3xl">
-          <div className="gemini-beam-sweep" />
+      {/* Airgram Core Layer: Iconic 4-Blade Morphing Pinwheel (Mind Cruiser / Croissanttuna signature) */}
+      <div className="relative w-28 h-28 xs:w-32 xs:h-32 flex items-center justify-center animate-airgram-pinwheel">
+        
+        {/* Blade 1 (North): Emerald to Teal Capsule */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 origin-bottom animate-airgram-petal-morph">
+          <div className="w-4 h-9 xs:w-4.5 xs:h-10 rounded-full bg-gradient-to-t from-emerald-600 via-emerald-500 to-teal-400 shadow-md border border-white/60" />
         </div>
 
-        {/* Inner Emblem Badge */}
-        <div className="relative z-10 w-full h-full rounded-[20px] bg-gradient-to-br from-emerald-700 via-[#0d4a28] to-emerald-950 flex flex-col items-center justify-center text-white shadow-inner">
-          <Sparkles className="w-6 h-6 xs:w-7 xs:h-7 text-[#d4af37] animate-pulse drop-shadow-[0_0_8px_rgba(212,175,55,0.7)]" />
-          <span className="text-[9px] font-black tracking-widest text-emerald-200/90 mt-0.5">PPJM</span>
+        {/* Blade 2 (East): Celestial Gold to Amber Capsule */}
+        <div className="absolute right-0 top-1/2 translate-x-2 -translate-y-1/2 origin-left animate-airgram-petal-morph [animation-delay:0.6s]">
+          <div className="h-4 w-9 xs:h-4.5 xs:w-10 rounded-full bg-gradient-to-r from-amber-600 via-[#d4af37] to-yellow-300 shadow-md border border-white/60" />
         </div>
+
+        {/* Blade 3 (South): Teal to Deep Forest Emerald Capsule */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-2 origin-top animate-airgram-petal-morph [animation-delay:1.2s]">
+          <div className="w-4 h-9 xs:w-4.5 xs:h-10 rounded-full bg-gradient-to-b from-emerald-600 via-teal-600 to-emerald-800 shadow-md border border-white/60" />
+        </div>
+
+        {/* Blade 4 (West): Cyan to Emerald Capsule */}
+        <div className="absolute left-0 top-1/2 -translate-x-2 -translate-y-1/2 origin-right animate-airgram-petal-morph [animation-delay:1.8s]">
+          <div className="h-4 w-9 xs:h-4.5 xs:w-10 rounded-full bg-gradient-to-l from-teal-500 via-cyan-400 to-emerald-400 shadow-md border border-white/60" />
+        </div>
+
+        {/* Floating Satellite Constellation Droplets (Orbiting the Pinwheel) */}
+        <div className="absolute -top-1 right-2 w-2 h-2 rounded-full bg-emerald-400 shadow-sm animate-ping" />
+        <div className="absolute -bottom-1 left-2 w-2 h-2 rounded-full bg-[#d4af37] shadow-sm animate-ping [animation-delay:0.8s]" />
+
+        {/* Center Neural Core (Glassmorphic Luminous Hub) */}
+        <div className="relative z-20 w-12 h-12 xs:w-14 xs:h-14 rounded-2xl p-0.5 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-white/90 dark:border-slate-700/90 shadow-[0_4px_20px_rgba(15,81,50,0.25)] flex items-center justify-center">
+          <div className="w-full h-full rounded-[14px] bg-gradient-to-br from-emerald-700 via-[#0d4a28] to-emerald-950 flex flex-col items-center justify-center text-white shadow-inner">
+            <Sparkles className="w-4 h-4 xs:w-5 xs:h-5 text-[#d4af37] animate-pulse drop-shadow-[0_0_6px_rgba(212,175,55,0.8)]" />
+            <span className="text-[7.5px] font-black tracking-widest text-emerald-200 mt-0.5 leading-none">PPJM</span>
+          </div>
+        </div>
+
       </div>
 
     </div>

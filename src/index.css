@@ -269,6 +269,29 @@
   .animate-neural-ring {
     animation: neural-pulse-ring 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
   }
+  .animate-airgram-pinwheel {
+    animation: airgram-spin 9s linear infinite;
+  }
+  .animate-airgram-petal-morph {
+    animation: airgram-petal-stretch 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes airgram-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes airgram-petal-stretch {
+  0%, 100% {
+    transform: scale(0.88);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 1;
+    filter: drop-shadow(0 0 18px rgba(16, 185, 129, 0.7));
+  }
 }
 
 @keyframes ai-orbit-cw {
