@@ -260,10 +260,10 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
                         }}
                       >
                         <svg
-                          viewBox="0 -3 74 25"
+                          viewBox="0 0 74 22"
                           className="curved-notch-svg"
                           width="74"
-                          height="25"
+                          height="22"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
                           aria-hidden="true"
@@ -277,14 +277,14 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
                             </radialGradient>
                           </defs>
                           <path
-                            d="M 0 -3 L 74 -3 L 74 0 C 58 0, 52 18, 37 18 C 22 18, 16 0, 0 0 Z"
+                            d="M 0 0 C 16 0, 22 18, 37 18 C 52 18, 58 0, 74 0 Z"
                             className="curved-notch-surface"
                             stroke="none"
                           />
                           {/* Radiant Jewel Gold Floating Indicator */}
                           <circle
                             cx="37"
-                            cy="5.5"
+                            cy="6"
                             r="4.8"
                             fill="url(#topNotchDotGrad)"
                             className="curved-notch-dot"
@@ -293,7 +293,7 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
                           {/* Specular Gem Reflection */}
                           <circle
                             cx="35.5"
-                            cy="4"
+                            cy="4.5"
                             r="1.4"
                             fill="#ffffff"
                             opacity="0.85"

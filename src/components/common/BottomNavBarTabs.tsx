@@ -143,10 +143,10 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                         }}
                       >
                         <svg
-                          viewBox="0 0 74 25"
+                          viewBox="0 0 74 22"
                           className="bottom-curved-notch-svg"
                           width="74"
-                          height="25"
+                          height="22"
                           fill="none"
                           xmlns="http://www.w3.org/2000/svg"
                           aria-hidden="true"
@@ -160,14 +160,14 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                             </radialGradient>
                           </defs>
                           <path
-                            d="M 0 25 L 74 25 L 74 22 C 58 22, 52 4, 37 4 C 22 4, 16 22, 0 22 Z"
+                            d="M 0 22 C 16 22, 22 4, 37 4 C 52 4, 58 22, 74 22 Z"
                             className="bottom-curved-notch-surface"
                             stroke="none"
                           />
                           {/* Radiant Jewel Gold Floating Indicator */}
                           <circle
                             cx="37"
-                            cy="16.5"
+                            cy="16"
                             r="4.8"
                             fill="url(#bottomNotchDotGrad)"
                             className="bottom-curved-notch-dot"
@@ -176,7 +176,7 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                           {/* Specular Gem Reflection */}
                           <circle
                             cx="35.5"
-                            cy="15"
+                            cy="14.5"
                             r="1.4"
                             fill="#ffffff"
                             opacity="0.85"

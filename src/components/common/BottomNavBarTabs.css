@@ -20,7 +20,7 @@
   justify-content: flex-start;
   width: 100%;
   padding-top: 0px;
-  padding-bottom: 5px; /* Minimal clearance for bottom notch */
+  padding-bottom: 0px;
   border: 0 !important;
   outline: none !important;
 }
@@ -37,11 +37,11 @@
   outline: none !important;
   border-radius: 20px;
   box-shadow: 0 10px 28px -8px rgba(15, 81, 50, 0.42), 0 4px 14px -2px rgba(15, 23, 42, 0.1);
-  padding: 4px 6px;
+  padding: 0 8px;
+  height: 56px;
   min-height: 56px;
-  height: auto;
   max-width: 100%;
-  overflow: visible;
+  overflow: hidden;
 }
 
 @media (min-width: 768px) {
@@ -113,7 +113,7 @@
   flex: 1 1 0;
   min-width: 0;
   height: 100%;
-  min-height: 48px;
+  min-height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -123,7 +123,7 @@
   .bottom-curved-tab-col {
     flex: 0 0 auto;
     min-width: auto;
-    min-height: auto;
+    min-height: 56px;
   }
 }
 
@@ -133,9 +133,9 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  min-height: 48px;
+  min-height: 56px;
   width: 100%;
-  padding: 2px 2px;
+  padding: 0 4px;
   border-radius: 14px;
   color: rgba(255, 255, 255, 0.82);
   text-decoration: none;
@@ -230,32 +230,25 @@
   transform: translateY(-2px) scale(1.03);
 }
 
-/* The Curved Cutout Pointer / Notch dipping from BOTTOM edge */
-/* Always centered over the active tab column */
+/* The Curved Cutout Pointer / Notch dipping from BOTTOM border of the card */
+/* Always centered over the active tab column, flush with the bottom card border */
 .bottom-curved-pointer {
   position: absolute;
-  bottom: -3px;
+  bottom: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 74px;
-  height: 25px;
+  height: 22px;
   pointer-events: none;
   z-index: 5;
   border: 0 !important;
   outline: none !important;
 }
 
-@media (max-width: 639px) {
-  .bottom-curved-pointer {
-    transform: translateX(-50%) scale(0.78);
-    transform-origin: bottom center;
-  }
-}
-
 .bottom-curved-notch-svg {
   display: block;
   width: 100%;
-  height: 100%;
+  height: 22px;
   overflow: visible;
   filter: drop-shadow(0 -3px 5px rgba(0, 0, 0, 0.06));
   border: 0 !important;
