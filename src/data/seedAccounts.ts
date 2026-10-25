@@ -154,7 +154,7 @@ export const SEED_ACCOUNTS: Record<UserRole, SeedAccount> = {
   },
   visitor: {
     role: 'visitor',
-    roleLabel: 'Tamu / Pengunjung',
+    roleLabel: 'Guest',
     badgeColor: {
       bg: 'bg-emerald-500/10 dark:bg-emerald-500/20',
       text: 'text-emerald-800 dark:text-emerald-300',
@@ -162,24 +162,26 @@ export const SEED_ACCOUNTS: Record<UserRole, SeedAccount> = {
       dot: 'bg-emerald-500',
       accent: '#059669'
     },
-    email: 'visitor@ppjauharulmaknuun.sch.id',
+    email: 'guest@ppjauharulmaknuun.sch.id',
     password: '',
-    fullName: 'Tamu / Pengunjung',
-    department: 'Masyarakat & Pengunjung Publik',
-    nisOrNip: 'VISITOR',
+    fullName: 'Guest',
+    department: 'Tamu Terhormat & Pengunjung Publik',
+    nisOrNip: 'GUEST',
     phone: '-',
-    avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80',
-    bio: 'Pengunjung umum portal resmi Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik.',
+    avatarUrl: '/avatars/guest-avatar.svg',
+    bio: 'Pengunjung umum portal resmi Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik. Memiliki akses membaca fitur publik dan mengisi Buku Tamu digital.',
     permissions: [
-      'Akses Informasi Publik & Berita Resmi Pesantren',
+      'Membaca Seluruh Konten & Berita Resmi Pesantren',
+      'Mengisi Buku Tamu Digital & Menyampaikan Pesan Silaturahmi',
       'Membaca Al-Qur’an Digital 30 Juz & Audio Murottal',
       'Melihat Kalender Agenda Bulanan (Historical, Current, Future)',
       'Akses Dokumentasi Galeri Foto & Profil Video Sinematik'
     ],
     responsibilities: [
-      'Menjelajahi konten publik PPJM dengan adab dan tata tertib'
+      'Menjelajahi konten publik PPJM dengan adab dan tata tertib',
+      'Menitipkan doa dan kesan melalui Buku Tamu resmi'
     ],
-    securityLevel: 'Akses Publik (Visitor / Guest)'
+    securityLevel: 'Akses Publik (Guest: Read-Only & Buku Tamu)'
   }
 };
 

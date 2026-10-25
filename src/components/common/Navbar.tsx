@@ -13,10 +13,10 @@ import { PUBLIC_NAV_TABS, NavTabItem } from '../../data/navigationData';
 import { useAuth } from '../../context/AuthContext';
 
 // Helper formatters for Profile Pill
-const DEFAULT_VISITOR_AVATAR = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80';
+const DEFAULT_VISITOR_AVATAR = '/avatars/guest-avatar.svg';
 
 const getFormattedDisplayName = (fullName?: string, role?: string): string => {
-  if (!fullName || role === 'visitor') return 'Tamu';
+  if (!fullName || role === 'visitor') return 'Guest';
   const trimmed = fullName.trim();
   if (trimmed.startsWith('KH.')) {
     const parts = trimmed.split(' ');
@@ -34,7 +34,7 @@ const getFormattedDisplayName = (fullName?: string, role?: string): string => {
 };
 
 const getRoleDisplayBadge = (role?: string, statusBadge?: string): string => {
-  if (!role || role === 'visitor') return 'Visitor';
+  if (!role || role === 'visitor') return 'Guest';
   if (role === 'super_admin') return 'Super Admin';
   if (role === 'pengurus_konten') return 'Pengurus Konten';
   if (role === 'guru_akademik') return 'Guru Akademik';

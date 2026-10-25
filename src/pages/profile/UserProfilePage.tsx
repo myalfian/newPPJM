@@ -34,12 +34,13 @@ import { EditProfileModal } from '../../components/profile/EditProfileModal';
 import { ChangePasswordModal } from '../../components/profile/ChangePasswordModal';
 import { AvatarPickerModal } from '../../components/profile/AvatarPickerModal';
 import { SantriPortalHub } from '../../components/profile/SantriPortalHub';
+import { BukuTamuSection } from '../../components/profile/BukuTamuSection';
 import { Link } from 'react-router-dom';
 
 export const UserProfilePage: React.FC = () => {
   const { user, profile, role, signOut, updateProfile, switchMockRole } = useAuth();
 
-  const [activeTab, setActiveTab] = useState<'overview' | 'santri-hub' | 'security' | 'seed-accounts'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'buku-tamu' | 'santri-hub' | 'security' | 'seed-accounts'>('overview');
 
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
@@ -200,7 +201,7 @@ export const UserProfilePage: React.FC = () => {
                     <span>•</span>
                     <span className="inline-flex items-center gap-1">
                       <Calendar className="w-3.5 h-3.5 text-zinc-400" />
-                      <span>{role === 'visitor' ? 'Mode Tamu Publik' : 'Akun Terverifikasi'}</span>
+                      <span>{role === 'visitor' ? 'Mode Guest (Tamu Publik)' : 'Akun Terverifikasi'}</span>
                     </span>
                   </div>
                 </div>
@@ -210,12 +211,21 @@ export const UserProfilePage: React.FC = () => {
               <div className="flex flex-wrap sm:flex-col lg:flex-row items-center gap-2.5 w-full sm:w-auto shrink-0 pt-2 sm:pt-0">
                 {role === 'visitor' ? (
                   <>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('buku-tamu')}
+                      className="flex-1 sm:flex-none min-h-[44px] px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/30 text-amber-900 dark:text-amber-300 text-xs font-bold transition-all active:scale-[0.98] flex items-center justify-center gap-2 border border-amber-300/80 dark:border-amber-800/60 cursor-pointer shadow-2xs"
+                    >
+                      <BookOpen className="w-3.5 h-3.5 text-amber-600" />
+                      <span>Isi Buku Tamu</span>
+                    </button>
+
                     <Link
                       to="/admin/login"
                       className="flex-1 sm:flex-none min-h-[44px] px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-sm"
                     >
                       <Key className="w-3.5 h-3.5 text-emerald-200" />
-                      <span>Masuk Akun Pengurus / Santri</span>
+                      <span>Masuk Akun</span>
                     </Link>
 
                     <button
@@ -280,6 +290,22 @@ export const UserProfilePage: React.FC = () => {
           >
             <User className="w-4 h-4" />
             <span>Overview & Otorisasi Role</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('buku-tamu')}
+            className={`min-h-[44px] px-5 py-3 text-xs sm:text-sm font-bold border-b-2 transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+              activeTab === 'buku-tamu'
+                ? 'border-emerald-600 text-emerald-800 dark:text-emerald-400 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-t-xl'
+                : 'border-transparent text-zinc-500 hover:text-emerald-700 dark:hover:text-emerald-300'
+            }`}
+          >
+            <BookOpen className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <span>Buku Tamu Digital</span>
+            <span className="px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-[10px] font-black text-emerald-800 dark:text-emerald-300">
+              {role === 'visitor' ? 'Fitur Utama' : 'Guest'}
+            </span>
           </button>
 
           {role === 'user' && (
@@ -495,6 +521,59 @@ export const UserProfilePage: React.FC = () => {
                 </div>
               )}
 
+              {role === 'visitor' && (
+                <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 border border-zinc-200/80 dark:border-zinc-800 shadow-sm space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
+                      <BookOpen className="w-4 h-4" />
+                      <span>Fasilitas & Layanan Tamu (Guest Service)</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('buku-tamu')}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-900 dark:text-emerald-300 cursor-pointer self-start sm:self-auto bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 rounded-xl border border-emerald-200 dark:border-emerald-800/60 transition-all hover:shadow-xs active:scale-95"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Buka Buku Tamu Digital</span>
+                      <ArrowRight className="w-3.5 h-3.5 ml-0.5" />
+                    </button>
+                  </div>
+
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed font-sans">
+                    Sebagai <strong>Guest (Tamu Publik)</strong>, Anda dapat membaca seluruh informasi resmi pesantren, menyimak murottal 30 Juz, melihat kalender agenda santri, serta menitipkan doa silaturahmi melalui Buku Tamu.
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('buku-tamu')}
+                      className="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 text-left hover:border-emerald-500 transition-all cursor-pointer group"
+                    >
+                      <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold uppercase block">Layanan Tamu</span>
+                      <p className="text-sm font-extrabold text-zinc-900 dark:text-white mt-1 group-hover:text-emerald-700 transition-colors">Isi Buku Tamu</p>
+                      <p className="text-[10px] text-zinc-500 mt-0.5">Sampaikan doa & kesan kunjungan</p>
+                    </button>
+
+                    <Link
+                      to="/smart-jm/hafidz/read"
+                      className="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 text-left hover:border-emerald-500 transition-all block group"
+                    >
+                      <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold uppercase block">SMART JM</span>
+                      <p className="text-sm font-extrabold text-zinc-900 dark:text-white mt-1 group-hover:text-emerald-700 transition-colors">Al-Qur'an 30 Juz</p>
+                      <p className="text-[10px] text-zinc-500 mt-0.5">Baca ayat & dengar murottal</p>
+                    </Link>
+
+                    <Link
+                      to="/agenda"
+                      className="p-3.5 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800 text-left hover:border-emerald-500 transition-all block group"
+                    >
+                      <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold uppercase block">Kalender Pondok</span>
+                      <p className="text-sm font-extrabold text-zinc-900 dark:text-white mt-1 group-hover:text-emerald-700 transition-colors">Agenda Santri</p>
+                      <p className="text-[10px] text-zinc-500 mt-0.5">Jadwal kegiatan pesantren</p>
+                    </Link>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Right Column: Contact, Security Snapshot & Quick Links */}
@@ -561,6 +640,19 @@ export const UserProfilePage: React.FC = () => {
                     <span>Website Publik Beranda</span>
                     <ExternalLink className="w-3.5 h-3.5" />
                   </Link>
+                  {role === 'visitor' && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab('buku-tamu')}
+                      className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white text-xs font-bold transition-all flex items-center justify-between cursor-pointer shadow-sm active:scale-[0.98]"
+                    >
+                      <span className="flex items-center gap-2">
+                        <BookOpen className="w-4 h-4" />
+                        <span>Isi Buku Tamu Digital</span>
+                      </span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  )}
                   {role === 'user' && (
                     <button
                       type="button"
@@ -574,7 +666,7 @@ export const UserProfilePage: React.FC = () => {
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   )}
-                  {role !== 'user' && (
+                  {role !== 'user' && role !== 'visitor' && (
                     <Link
                       to="/admin"
                       className="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all flex items-center justify-between"
@@ -588,6 +680,16 @@ export const UserProfilePage: React.FC = () => {
 
             </div>
 
+          </div>
+        )}
+
+        {/* TAB BUKU TAMU DIGITAL (GUEST BOOK) */}
+        {activeTab === 'buku-tamu' && (
+          <div className="space-y-6">
+            <BukuTamuSection
+              guestName={profile?.full_name || 'Tamu Terhormat (Guest)'}
+              onSuccessMessage={showToast}
+            />
           </div>
         )}
 
@@ -764,7 +866,7 @@ export const UserProfilePage: React.FC = () => {
                         }`}
                       >
                         <Key className="w-3.5 h-3.5" />
-                        <span>{isCurrent ? 'Peran Sedang Digunakan' : (accountRole === 'visitor' ? 'Kembali ke Mode Tamu' : 'Uji Masuk Role Ini')}</span>
+                        <span>{isCurrent ? 'Peran Sedang Digunakan' : (accountRole === 'visitor' ? 'Kembali ke Mode Guest' : 'Uji Masuk Role Ini')}</span>
                       </button>
                     </div>
 

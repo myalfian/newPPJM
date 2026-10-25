@@ -41,10 +41,10 @@ export const AVATAR_PRESETS = [
     url: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80',
   },
   {
-    id: 'visitor',
-    title: 'Tamu / Pengunjung',
+    id: 'guest',
+    title: 'Avatar Tamu (Guest)',
     category: 'Umum',
-    url: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80',
+    url: '/avatars/guest-avatar.svg',
   },
   {
     id: 'logo-ppjm',
