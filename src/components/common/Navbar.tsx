@@ -85,10 +85,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
         </div>
       </div>
 
-      {/* 2. MAIN HEADER (Dribbble Modern Floating Pill Animation Bar) - Hidden on Mobile Viewport (< md) */}
+      {/* 2. MAIN HEADER (Dribbble Modern Floating Pill Animation Bar) */}
       <header
         id="mainHeader"
-        className="hidden md:block sticky top-0 z-40 w-full bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-[0_4px_25px_rgba(0,0,0,0.03)] transition-all duration-300"
+        className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-[0_4px_25px_rgba(0,0,0,0.03)] transition-all duration-300"
       >
         <div className="max-w-[1536px] mx-auto px-3 sm:px-6 lg:px-6 xl:px-8">
           <div className="flex items-center justify-between gap-3.5 lg:gap-5 xl:gap-7 2xl:gap-9 py-2 sm:py-2.5 min-h-[4rem] sm:min-h-[4.5rem]">
