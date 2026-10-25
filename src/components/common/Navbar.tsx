@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Sparkles,
   Search,
+  Bell,
   ChevronDown,
   User
 } from 'lucide-react';
@@ -17,6 +18,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) => {
   const [searchOpen, setSearchOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const location = useLocation();
 
@@ -46,6 +48,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Close notifications on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('#mainHeader')) {
+        setNotificationsOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
   // Navigation Items with Android App-style Colorful Badges (Single Source of Truth)
@@ -199,6 +213,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               })}
             </nav>
 
+            {/* Mobile Viewport: Rounded Pill Search Bar (1:1 with reference image: 🔍 Search for anything...) */}
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              className="flex lg:hidden items-center h-9 sm:h-9.5 flex-1 min-w-[70px] max-w-[190px] xs:max-w-[240px] sm:max-w-[340px] px-3 rounded-full bg-slate-50/90 hover:bg-white text-left border border-slate-200/90 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] hover:border-emerald-500/70 transition-all duration-200 cursor-pointer group select-none gap-2 shrink mx-1 xs:mx-2"
+              title="Search for anything... (Ctrl+K)"
+              aria-label="Cari Informasi Portal"
+            >
+              <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-700 stroke-[2.2] shrink-0" />
+              <span className="text-[11px] sm:text-xs text-slate-400 font-normal truncate tracking-tight">
+                Search for anything...
+              </span>
+            </button>
+
             {/* Desktop Responsive & Adaptive Search Field (Matching Height: h-[58px], Fills space between Menu and Profile) */}
             <button
               type="button"
@@ -223,8 +251,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               </div>
             </button>
 
-            {/* Right Side: Profile Button (Matching Height: h-[58px], with User Name) & Mobile Controls */}
-            <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            {/* Right Side: Desktop Profile Button & Mobile 1:1 Reference Controls */}
+            <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 shrink-0">
 
               {/* Desktop Profile Button (Matching Height: h-[58px], with User Name) - Visible only on Desktop (>= lg) */}
               <Link
@@ -255,25 +283,75 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                 <ChevronDown className="w-3.5 h-3.5 text-emerald-600/70 group-hover:text-emerald-800 transition-colors shrink-0" />
               </Link>
 
-              {/* Mobile Viewport: 1. Search Button (Soft Gray Squircle matching reference image) */}
-              <button
-                type="button"
-                onClick={() => setSearchOpen(true)}
-                className="flex lg:hidden items-center justify-center w-10.5 h-10.5 rounded-2xl bg-[#f0f4f9] hover:bg-slate-200/80 text-slate-700 border border-slate-200/80 shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer"
-                aria-label="Cari Informasi Portal"
-                title="Cari Berita, Tahfidz, STEM (Ctrl+K)"
-              >
-                <Search className="w-5 h-5 text-slate-700 stroke-[2.2]" />
-              </button>
+              {/* Mobile Viewport: 1. Notification Bell Button (Matching reference image) */}
+              <div className="relative flex lg:hidden">
+                <button
+                  type="button"
+                  onClick={() => setNotificationsOpen((prev) => !prev)}
+                  className="w-9 h-9 sm:w-9.5 sm:h-9.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 shadow-2xs flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer relative"
+                  aria-label="Notifikasi & Informasi"
+                  title="Warta & Informasi Terkini"
+                >
+                  <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-slate-700 stroke-[2.2]" />
+                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 ring-1 ring-white" />
+                </button>
 
-              {/* Mobile Viewport: 2. Profile Button (Mint Green Squircle with Crisp Emerald Border matching reference image) */}
+                {/* Notifications Dropdown Popover */}
+                <AnimatePresence>
+                  {notificationsOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 6, scale: 0.95 }}
+                      transition={{ duration: 0.16 }}
+                      className="absolute right-0 top-full mt-2 w-64 sm:w-72 bg-white rounded-2xl shadow-xl border border-slate-200/90 p-3 z-50 text-left select-none"
+                    >
+                      <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                        <span className="text-xs font-bold text-slate-800">Warta Terkini</span>
+                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">Aktif</span>
+                      </div>
+                      <div className="space-y-1.5 pt-2">
+                        <div className="p-2 rounded-xl bg-slate-50 hover:bg-emerald-50/50 transition-colors">
+                          <p className="font-bold text-slate-800 text-[11px] leading-tight">PPDB TP 2026/2027 Dibuka</p>
+                          <p className="text-[10px] text-slate-500 mt-0.5 leading-snug">Pendaftaran santri baru jalur reguler & tahfidz resmi dibuka.</p>
+                        </div>
+                        <div className="p-2 rounded-xl bg-slate-50 hover:bg-emerald-50/50 transition-colors">
+                          <p className="font-bold text-slate-800 text-[11px] leading-tight">Akreditasi "A" BAN-PDM</p>
+                          <p className="text-[10px] text-slate-500 mt-0.5 leading-snug">Raihan predikat Unggul untuk kurikulum terpadu.</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Mobile Viewport: 2. Profile Pill Capsule (1:1 with reference image: (Avatar) Michael Admin ⌄) */}
               <Link
                 to="/admin"
-                className="flex lg:hidden items-center justify-center w-10.5 h-10.5 rounded-2xl bg-[#ecfdf5] hover:bg-emerald-100/80 text-emerald-800 border-[1.5px] border-[#34d399] shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer"
-                title={`Profil Pengguna: ${currentUserName}`}
-                aria-label="Profil Pengguna"
+                className="flex lg:hidden items-center gap-1.5 sm:gap-2 pl-1 pr-2 sm:pr-2.5 py-1 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer select-none shrink-0"
+                title={`Profil: ${currentUserName}`}
               >
-                <User className="w-5 h-5 text-[#0f5132] stroke-[2.2]" />
+                {/* User Portrait Avatar */}
+                <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                  <img
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
+                    alt="Michael Admin"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                {/* Name & Role Text Stack */}
+                <div className="flex flex-col text-left leading-tight">
+                  <span className="text-[11px] sm:text-xs font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[48px] xs:max-w-[65px] sm:max-w-[85px]">
+                    Michael
+                  </span>
+                  <span className="text-[9px] sm:text-[9.5px] font-medium text-slate-400 leading-none">
+                    Admin
+                  </span>
+                </div>
+
+                {/* Dropdown Chevron */}
+                <ChevronDown className="w-3 h-3 text-slate-400 shrink-0 ml-0.5" />
               </Link>
 
             </div>
