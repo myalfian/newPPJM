@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import {
   Sparkles,
   Search,
-  Menu,
   ChevronDown,
   User
 } from 'lucide-react';
@@ -227,10 +226,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             {/* Right Side: Profile Button (Matching Height: h-[58px], with User Name) & Mobile Controls */}
             <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
 
-              {/* Profile Button with Matching Height (h-[58px]) & User Name (Default: "Guest") */}
+              {/* Desktop Profile Button (Matching Height: h-[58px], with User Name) - Visible only on Desktop (>= lg) */}
               <Link
                 to="/admin"
-                className="hidden sm:flex items-center h-[58px] px-3.5 xl:px-4 rounded-2xl bg-gradient-to-r from-emerald-50/90 via-white to-emerald-50/80 hover:from-emerald-100 hover:to-emerald-100/90 border border-emerald-300/80 hover:border-emerald-400/90 shadow-[0_2px_10px_rgba(26,107,60,0.08)] transition-all duration-200 group active:scale-95 shrink-0 select-none gap-2.5"
+                className="hidden lg:flex items-center h-[58px] px-3.5 xl:px-4 rounded-2xl bg-gradient-to-r from-emerald-50/90 via-white to-emerald-50/80 hover:from-emerald-100 hover:to-emerald-100/90 border border-emerald-300/80 hover:border-emerald-400/90 shadow-[0_2px_10px_rgba(26,107,60,0.08)] transition-all duration-200 group active:scale-95 shrink-0 select-none gap-2.5"
                 title={`Profil Pengguna: ${currentUserName}`}
               >
                 {/* User Avatar / Squircle with Status Pulse */}
@@ -256,37 +255,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                 <ChevronDown className="w-3.5 h-3.5 text-emerald-600/70 group-hover:text-emerald-800 transition-colors shrink-0" />
               </Link>
 
-              {/* Mobile Search Button (Visible only on < lg) */}
+              {/* Mobile Viewport: 1. Search Button (Soft Gray Squircle matching reference image) */}
               <button
                 type="button"
                 onClick={() => setSearchOpen(true)}
-                className="flex lg:hidden items-center justify-center w-10 h-10 rounded-2xl text-slate-700 bg-slate-100 hover:bg-emerald-50 hover:text-[#1a6b3c] border border-slate-200 transition-all cursor-pointer active:scale-95"
+                className="flex lg:hidden items-center justify-center w-10.5 h-10.5 rounded-2xl bg-[#f0f4f9] hover:bg-slate-200/80 text-slate-700 border border-slate-200/80 shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer"
                 aria-label="Cari Informasi Portal"
-                title="Cari"
+                title="Cari Berita, Tahfidz, STEM (Ctrl+K)"
               >
-                <Search className="w-4 h-4" />
+                <Search className="w-5 h-5 text-slate-700 stroke-[2.2]" />
               </button>
 
-              {/* Mobile Profile Icon (Visible only on mobile xs < sm) */}
+              {/* Mobile Viewport: 2. Profile Button (Mint Green Squircle with Crisp Emerald Border matching reference image) */}
               <Link
                 to="/admin"
-                className="flex sm:hidden items-center justify-center w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-300 transition-all active:scale-95"
-                title={`Profil: ${currentUserName}`}
+                className="flex lg:hidden items-center justify-center w-10.5 h-10.5 rounded-2xl bg-[#ecfdf5] hover:bg-emerald-100/80 text-emerald-800 border-[1.5px] border-[#34d399] shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer"
+                title={`Profil Pengguna: ${currentUserName}`}
+                aria-label="Profil Pengguna"
               >
-                <User className="w-4 h-4" />
+                <User className="w-5 h-5 text-[#0f5132] stroke-[2.2]" />
               </Link>
-
-              {/* Mobile Hamburger Button */}
-              <div className="flex lg:hidden items-center">
-                <button
-                  type="button"
-                  onClick={onOpenMobileMenu}
-                  className="w-10 h-10 flex items-center justify-center rounded-2xl text-slate-700 bg-slate-100 hover:bg-emerald-50 hover:text-[#1a6b3c] border border-slate-200 transition-all cursor-pointer active:scale-95"
-                  aria-label="Buka Menu Navigasi"
-                >
-                  <Menu className="w-5 h-5" />
-                </button>
-              </div>
 
             </div>
 
