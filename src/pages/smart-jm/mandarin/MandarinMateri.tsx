@@ -149,10 +149,10 @@ export const MandarinMateri: React.FC = () => {
                       </span>
                     </div>
 
-                    <h4 className="font-extrabold text-xs sm:text-sm line-clamp-1">
+                    <h4 className="font-black text-sm sm:text-base line-clamp-1">
                       {lesson.topic}
                     </h4>
-                    <p className={`text-[11px] font-mono line-clamp-1 ${active ? 'text-emerald-200/90' : 'text-slate-500'}`}>
+                    <p className={`text-xs sm:text-sm font-mono line-clamp-1 font-semibold ${active ? 'text-emerald-200' : 'text-slate-600'}`}>
                       {lesson.pinyin}
                     </p>
                   </div>
@@ -169,10 +169,10 @@ export const MandarinMateri: React.FC = () => {
           {/* Header Topik */}
           <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-100 pb-3">
             <div>
-              <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">
+              <span className="text-xs sm:text-sm font-bold text-gold-600 uppercase tracking-wider">
                 {selectedLesson.level}
               </span>
-              <h2 className="text-lg sm:text-xl font-black text-emerald-950 mt-0.5">
+              <h2 className="text-xl sm:text-2xl font-black text-emerald-950 mt-0.5">
                 {selectedLesson.topic}
               </h2>
             </div>
@@ -180,16 +180,16 @@ export const MandarinMateri: React.FC = () => {
             <button
               type="button"
               onClick={() => speakText(selectedLesson.hanzi || '')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs sm:text-sm font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
             >
-              <Volume2 className="w-4 h-4 text-emerald-700" />
+              <Volume2 className="w-4.5 h-4.5 text-emerald-700" />
               <span>Dengarkan Pelafalan Asli</span>
             </button>
           </div>
 
           {/* Foto Topik Pembelajaran */}
           {selectedLesson.cover_image && (
-            <div className="relative h-44 sm:h-56 rounded-2xl overflow-hidden shadow-xs bg-slate-100 group border border-slate-100">
+            <div className="relative h-48 sm:h-64 rounded-2xl overflow-hidden shadow-xs bg-slate-100 group border border-slate-100">
               <img
                 src={selectedLesson.cover_image}
                 alt={selectedLesson.topic}
@@ -197,10 +197,10 @@ export const MandarinMateri: React.FC = () => {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
               <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white">
-                <span className="text-xs font-bold bg-emerald-950/80 backdrop-blur-md px-3 py-1 rounded-full border border-emerald-700/50">
+                <span className="text-xs sm:text-sm font-extrabold bg-emerald-950/80 backdrop-blur-md px-3 py-1 rounded-full border border-emerald-700/50">
                   Dokumentasi Kelas Bahasa Santri PPJM
                 </span>
-                <span className="text-xs font-semibold text-emerald-200">
+                <span className="text-xs sm:text-sm font-bold text-emerald-200">
                   {selectedLesson.topic}
                 </span>
               </div>
@@ -209,35 +209,35 @@ export const MandarinMateri: React.FC = () => {
 
           {/* Narasi Penjelasan Materi Topik */}
           {selectedLesson.narrative && (
-            <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
-              <h4 className="text-xs font-bold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
-                <Info className="w-4 h-4 text-emerald-700" />
+            <div className="p-4 sm:p-5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+              <h4 className="text-xs sm:text-sm font-black text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
+                <Info className="w-4.5 h-4.5 text-emerald-700" />
                 <span>Narasi Konteks & Ulasan Pembelajaran:</span>
               </h4>
-              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-800 leading-relaxed sm:leading-loose font-medium">
                 {selectedLesson.narrative}
               </p>
             </div>
           )}
 
           {/* Key Sentence Card */}
-          <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-r from-emerald-50 to-gold-50/40 border border-emerald-100 space-y-1.5 text-center sm:text-left">
-            <div className="text-xl sm:text-2xl font-extrabold text-emerald-950 tracking-wider">
+          <div className="p-4 sm:p-6 rounded-xl bg-gradient-to-r from-emerald-50 to-gold-50/40 border border-emerald-100 space-y-2 text-center sm:text-left">
+            <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-950 tracking-wider">
               {selectedLesson.hanzi}
             </div>
-            <div className="text-xs sm:text-sm font-semibold text-gold-700 font-mono">
+            <div className="text-sm sm:text-base font-bold text-gold-700 font-mono">
               [{selectedLesson.pinyin}]
             </div>
-            <p className="text-xs sm:text-sm text-slate-700 font-medium italic">
+            <p className="text-sm sm:text-base text-slate-800 font-semibold italic">
               "{selectedLesson.meaning_id}"
             </p>
           </div>
 
           {/* Dialogue Section */}
           {selectedLesson.dialog_script && (
-            <div className="space-y-2.5 pt-1">
-              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-                <MessageSquare className="w-4 h-4 text-emerald-700" />
+            <div className="space-y-3 pt-1">
+              <h3 className="text-xs sm:text-sm font-black text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
+                <MessageSquare className="w-4.5 h-4.5 text-emerald-700" />
                 <span>Naskah Percakapan Praktik Santri:</span>
               </h3>
 

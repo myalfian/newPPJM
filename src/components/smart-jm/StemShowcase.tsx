@@ -198,24 +198,24 @@ export const StemShowcase: React.FC<StemShowcaseProps> = ({ mode, projects = DEF
               </div>
 
               {/* Nama Project & Deskripsi Ringkas */}
-              <div className="p-3.5 sm:p-4 space-y-1.5">
-                <div className="text-[10px] font-extrabold text-emerald-800 uppercase tracking-wider">
+              <div className="p-4 sm:p-5 space-y-2">
+                <div className="text-xs sm:text-sm font-black text-emerald-800 uppercase tracking-wider">
                   {mode === 'materi' ? 'Modul Silabus & Tugas' : 'Karya Inovasi Siswa'}
                 </div>
-                <h3 className="font-extrabold text-sm sm:text-base text-slate-900 group-hover:text-emerald-800 transition-colors line-clamp-2">
+                <h3 className="font-black text-base sm:text-lg text-slate-900 group-hover:text-emerald-800 transition-colors line-clamp-2 leading-snug">
                   {project.title}
                 </h3>
-                <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                <p className="text-sm text-slate-700 line-clamp-2 leading-relaxed font-normal">
                   {project.description}
                 </p>
               </div>
             </div>
 
             {/* Action Bar */}
-            <div className="p-3.5 sm:p-4 pt-0">
-              <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-emerald-800 group-hover:text-emerald-950">
+            <div className="p-4 sm:p-5 pt-0">
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm font-extrabold text-emerald-800 group-hover:text-emerald-950">
                 <span>{mode === 'materi' ? 'Buka Materi & Penugasan' : 'Lihat Detail Portofolio'}</span>
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform text-gold-600" />
+                <ChevronRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform text-gold-600" />
               </div>
             </div>
           </div>
@@ -234,16 +234,16 @@ export const StemShowcase: React.FC<StemShowcaseProps> = ({ mode, projects = DEF
             {/* Header Modal */}
             <div className="flex items-start justify-between gap-4">
               <div>
-                <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">
+                <span className="text-xs sm:text-sm font-bold text-gold-600 uppercase tracking-wider">
                   {selectedProject.category}
                 </span>
-                <h3 className="text-lg sm:text-2xl font-black text-emerald-950 mt-1">
+                <h3 className="text-xl sm:text-2xl font-black text-emerald-950 mt-1">
                   {selectedProject.title}
                 </h3>
                 {selectedProject.author_santri && (
-                  <p className="text-xs text-slate-500 mt-1 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-emerald-700" />
-                    <span>Inovator / Tim: <strong>{selectedProject.author_santri}</strong></span>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1 flex items-center gap-1.5 font-medium">
+                    <User className="w-4 h-4 text-emerald-700" />
+                    <span>Inovator / Tim: <strong className="text-emerald-950 font-bold">{selectedProject.author_santri}</strong></span>
                   </p>
                 )}
               </div>
@@ -266,11 +266,11 @@ export const StemShowcase: React.FC<StemShowcaseProps> = ({ mode, projects = DEF
             </div>
 
             {/* Narasi & Deskripsi Lengkap Proyek */}
-            <div className="space-y-1.5">
-              <h4 className="text-xs font-bold text-emerald-900 uppercase tracking-wider">
+            <div className="space-y-2">
+              <h4 className="text-xs sm:text-sm font-black text-emerald-900 uppercase tracking-wider">
                 {mode === 'materi' ? 'Uraian Materi & Panduan Praktikum:' : 'Latar Belakang Riset Siswa:'}
               </h4>
-              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-800 leading-relaxed sm:leading-loose font-medium">
                 {selectedProject.description}
               </p>
             </div>

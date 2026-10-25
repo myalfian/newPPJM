@@ -123,9 +123,9 @@ export const QuickMenu: React.FC = () => {
                   <Icon className={`relative z-10 w-4.5 h-4.5 xs:w-5 xs:h-5 ${item.iconColor} stroke-[2.3] transition-transform duration-300 group-hover:scale-105`} />
                 </div>
 
-                {/* Card Label: Bold & Highly Readable (Larger font size) */}
+                {/* Card Label: Extra Large, Bold & Highly Readable for Elderly */}
                 <div className="flex-1 min-w-0 ml-2 xs:ml-2.5 sm:ml-3 overflow-hidden">
-                  <span className="block text-[13px] xs:text-[14px] sm:text-[15px] md:text-base font-black text-slate-900 dark:text-slate-100 tracking-tight leading-snug group-hover:text-black dark:group-hover:text-white transition-colors line-clamp-2">
+                  <span className="block text-[14.5px] xs:text-[15.5px] sm:text-[16.5px] md:text-lg font-black text-slate-900 dark:text-slate-100 tracking-tight leading-snug group-hover:text-black dark:group-hover:text-white transition-colors line-clamp-2">
                     {item.label}
                   </span>
                 </div>

@@ -316,22 +316,22 @@ export const QuranReader: React.FC = () => {
                 <button
                   type="button"
                   onClick={handlePauseAudio}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gold-500 hover:bg-gold-400 text-emerald-950 font-extrabold text-xs shadow-md transition-all"
+                  className="flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-emerald-950 font-black text-sm shadow-md transition-all active:scale-95"
                   title="Jeda Murottal (Pause)"
                   aria-label="Pause Audio Murottal"
                 >
-                  <Pause className="w-4 h-4 fill-current" />
+                  <Pause className="w-4.5 h-4.5 fill-current" />
                   <span>Pause</span>
                 </button>
               ) : (
                 <button
                   type="button"
                   onClick={handlePlayAudio}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-extrabold text-xs shadow-md transition-all"
+                  className="flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-black text-sm shadow-md transition-all active:scale-95"
                   title="Putar Murottal (Play)"
                   aria-label="Play Audio Murottal"
                 >
-                  <Play className="w-4 h-4 fill-current" />
+                  <Play className="w-4.5 h-4.5 fill-current" />
                   <span>Play</span>
                 </button>
               )}
@@ -340,16 +340,16 @@ export const QuranReader: React.FC = () => {
               <button
                 type="button"
                 onClick={handleStopAudio}
-                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all border ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-black transition-all border ${
                   isPlaying || activeAyahNum !== null
-                    ? 'bg-rose-900/80 hover:bg-rose-800 text-rose-100 border-rose-700/60'
+                    ? 'bg-rose-900/80 hover:bg-rose-800 text-rose-100 border-rose-700/60 active:scale-95'
                     : 'bg-emerald-900/60 text-slate-400 border-emerald-800/40 cursor-not-allowed opacity-60'
                 }`}
                 title="Hentikan Murottal (Stop & Reset)"
                 aria-label="Stop Audio Murottal"
                 disabled={!isPlaying && activeAyahNum === null}
               >
-                <Square className="w-3.5 h-3.5 fill-current" />
+                <Square className="w-4 h-4 fill-current" />
                 <span>Stop</span>
               </button>
 
@@ -463,22 +463,22 @@ export const QuranReader: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* Arabic Verse Text */}
-                    <div className="py-5 text-right font-quran text-2xl sm:text-3xl lg:text-4xl leading-[2.2] sm:leading-[2.2] text-slate-900 dir-rtl select-text">
+                    {/* Arabic Verse Text - Extra Large for Elderly Readability */}
+                    <div className="py-6 text-right font-quran text-3xl sm:text-4xl lg:text-5xl leading-[2.4] sm:leading-[2.5] text-slate-950 dir-rtl select-text font-normal tracking-wide">
                       {ayah.textArabic}
-                      <span className="inline-block mr-2 text-gold-600 font-sans text-sm font-bold align-middle">
+                      <span className="inline-block mr-2.5 text-gold-600 font-sans text-base sm:text-lg font-extrabold align-middle">
                         ۝{ayah.numberInSurah}
                       </span>
                     </div>
 
                     {/* Transliteration & Indonesian Translation */}
-                    <div className="space-y-1.5 pt-2 border-t border-slate-100/80">
+                    <div className="space-y-2 pt-3 border-t border-slate-200">
                       {ayah.textLatin && (
-                        <p className="text-xs sm:text-sm text-emerald-800 font-semibold italic">
+                        <p className="text-sm sm:text-base text-emerald-900 font-bold italic tracking-wide leading-relaxed">
                           {ayah.textLatin}
                         </p>
                       )}
-                      <p className="text-sm text-slate-700 leading-relaxed">
+                      <p className="text-base sm:text-lg text-slate-800 font-medium leading-relaxed sm:leading-loose">
                         {ayah.translationIndo}
                       </p>
                     </div>

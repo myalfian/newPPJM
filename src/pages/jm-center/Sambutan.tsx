@@ -50,24 +50,24 @@ export const Sambutan: React.FC = () => {
           </div>
 
           {/* Quote Card */}
-          <div className="p-3 sm:p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200/70 space-y-1.5 relative">
-            <Quote className="w-5 h-5 text-gold-500 opacity-60 absolute top-2.5 right-2.5" />
-            <div className="text-xs font-bold text-emerald-900 uppercase tracking-wider">
+          <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 border border-emerald-200/80 space-y-2 relative">
+            <Quote className="w-6 h-6 text-gold-500 opacity-60 absolute top-3 right-3" />
+            <div className="text-xs sm:text-sm font-extrabold text-emerald-900 uppercase tracking-wider">
               Amanat Pesantren
             </div>
-            <p className="text-xs sm:text-sm text-emerald-950 italic leading-relaxed">
+            <p className="text-sm sm:text-base text-emerald-950 font-medium italic leading-relaxed sm:leading-loose">
               “Kekuatan santri terletak pada keikhlasan niat, ketawadhuan adab, serta kesiapan menjawab tantangan zaman dengan bekal ilmu agama yang shahih dan teknologi yang maslahat.”
             </p>
           </div>
         </div>
 
         {/* Narrative Text */}
-        <div className="lg:col-span-7 bg-white rounded-2xl p-3 sm:p-4 shadow-m3-1 border border-slate-200 space-y-2 text-slate-700 leading-relaxed text-xs sm:text-sm">
-          <div className="font-quran text-xl sm:text-2xl text-emerald-900 text-center py-1 border-b border-slate-100">
+        <div className="lg:col-span-7 bg-white rounded-2xl p-4 sm:p-6 shadow-m3-1 border border-slate-200 space-y-4 text-slate-800 leading-relaxed sm:leading-loose text-base sm:text-lg font-medium">
+          <div className="font-quran text-2xl sm:text-3xl text-emerald-900 text-center py-2 border-b border-slate-100">
             بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
           </div>
 
-          <p className="font-semibold text-emerald-900">
+          <p className="font-bold text-emerald-900 text-lg sm:text-xl">
             Assalamu’alaikum Warahmatullahi Wabarakatuh,
           </p>
 
@@ -76,30 +76,30 @@ export const Sambutan: React.FC = () => {
           </p>
 
           <p>
-            Selamat datang di media informasi resmi <strong>Pondok Pesantren Jauharul Maknuun Lasem, Sidayu, Gresik</strong>. Di era disrupsi digital yang bergerak begitu cepat, pesantren kami terus berikhtiar mempertahankan nilai-nilai salafus sholih yang luhur seraya membuka diri terhadap kemaslahatan inovasi teknologi modern.
+            Selamat datang di media informasi resmi <strong className="text-emerald-950 font-black">Pondok Pesantren Jauharul Maknuun Lasem, Sidayu, Gresik</strong>. Di era disrupsi digital yang bergerak begitu cepat, pesantren kami terus berikhtiar mempertahankan nilai-nilai salafus sholih yang luhur seraya membuka diri terhadap kemaslahatan inovasi teknologi modern.
           </p>
 
           <p>
-            Nama <em>“Jauharul Maknuun”</em> (Permata yang Tersimpan Indah) terinspirasi dari kitab masyhur ilmu Balaghah karangan Syaikh Abdurrahman al-Akhdhari. Kami bertekad membimbing putra-putri santri agar bertransformasi menjadi mutiara-mutiara ilmu yang memancarkan akhlaqul karimah, ketajaman akal fikiran, serta keteguhan jiwa di manapun kelak mereka berkhidmat.
+            Nama <em className="text-emerald-950 font-bold">“Jauharul Maknuun”</em> (Permata yang Tersimpan Indah) terinspirasi dari kitab masyhur ilmu Balaghah karangan Syaikh Abdurrahman al-Akhdhari. Kami bertekad membimbing putra-putri santri agar bertransformasi menjadi mutiara-mutiara ilmu yang memancarkan akhlaqul karimah, ketajaman akal fikiran, serta keteguhan jiwa di manapun kelak mereka berkhidmat.
           </p>
 
-          <div className="p-3 sm:p-3.5 rounded-2xl bg-slate-50 border-l-4 border-emerald-700 space-y-1.5 text-xs sm:text-sm">
-            <div className="font-bold text-emerald-900">Fokus Tarbiyah Pesantren:</div>
-            <ul className="space-y-1 text-slate-600">
-              <li className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+          <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50/50 border-l-4 border-emerald-700 space-y-2.5 text-base sm:text-lg">
+            <div className="font-black text-emerald-950">Fokus Tarbiyah Pesantren:</div>
+            <ul className="space-y-2 text-slate-800 font-medium">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-700 flex-shrink-0" />
                 <span>Penguasaan sanad kitab kuning (turats) berjenjang.</span>
               </li>
-              <li className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-700 flex-shrink-0" />
                 <span>Karantina intensif Tahfidzul Qur’an 30 Juz mutqin.</span>
               </li>
-              <li className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-700 flex-shrink-0" />
                 <span>Pengembangan sains terapan melalui Laboratorium STEM Santri.</span>
               </li>
-              <li className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-700 flex-shrink-0" />
                 <span>Kemahiran bahasa penutur asli (Arab & Mandarin).</span>
               </li>
             </ul>
@@ -109,12 +109,12 @@ export const Sambutan: React.FC = () => {
             Semoga kehadiran portal ini semakin mempererat ukhuwah islamiyyah antara pesantren, wali santri, alumni, dan segenap kaum muslimin. Kami memohon doa restu agar amanah pendidikan suci ini senantiasa diridhoi oleh Allah SWT.
           </p>
 
-          <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="pt-3 border-t border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <p className="font-bold text-emerald-900">Wassalamu’alaikum Warahmatullahi Wabarakatuh,</p>
-              <p className="text-xs text-slate-500 mt-0.5">Lasem, Sidayu, Gresik</p>
+              <p className="font-extrabold text-emerald-950 text-base sm:text-lg">Wassalamu’alaikum Warahmatullahi Wabarakatuh,</p>
+              <p className="text-sm text-slate-600 font-semibold mt-0.5">Lasem, Sidayu, Gresik</p>
             </div>
-            <div className="font-quran text-xl text-emerald-800">
+            <div className="font-quran text-2xl sm:text-3xl text-emerald-900">
               خادم المعهد جوهر المكنون
             </div>
           </div>

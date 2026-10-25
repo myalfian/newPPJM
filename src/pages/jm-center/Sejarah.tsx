@@ -58,51 +58,51 @@ export const Sejarah: React.FC = () => {
       </div>
 
       {/* Narrative Intro Card */}
-      <div className="bg-white rounded-2xl p-2.5 sm:p-3.5 shadow-m3-1 border border-slate-200 space-y-1.5 text-slate-700 leading-relaxed text-xs sm:text-sm">
-        <h2 className="text-base sm:text-lg font-bold text-emerald-950">
+      <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-m3-1 border border-slate-200 space-y-3 text-slate-800 leading-relaxed sm:leading-loose text-base sm:text-lg font-medium">
+        <h2 className="text-lg sm:text-xl font-black text-emerald-950">
           Kilas Balik: Dari Langgar Sederhana Menuju Sentra Keilmuan
         </h2>
         <p>
-          Kecamatan Sidayu di pesisir utara Kabupaten Gresik dikenal sebagai salah satu wilayah yang sarat akan warisan sejarah keislaman dan perjuangan para ulama. Di sinilah, tepatnya di Desa Lasem, benih dakwah <strong>Pondok Pesantren Jauharul Maknuun</strong> disemaikan dengan penuh keikhlasan.
+          Kecamatan Sidayu di pesisir utara Kabupaten Gresik dikenal sebagai salah satu wilayah yang sarat akan warisan sejarah keislaman dan perjuangan para ulama. Di sinilah, tepatnya di Desa Lasem, benih dakwah <strong className="text-emerald-950 font-black">Pondok Pesantren Jauharul Maknuun</strong> disemaikan dengan penuh keikhlasan.
         </p>
         <p>
-          Filosofi nama <em>“Jauharul Maknuun”</em> diambil dari permata ilmu balaghah, dengan harapan bahwa setiap santri yang menimba ilmu di tempat ini akan ditempa menjadi permata yang tersimpan indah, memancarkan kearifan, adab budi pekerti, dan kemaslahatan nyata bagi umat manusia.
+          Filosofi nama <em className="text-emerald-950 font-bold">“Jauharul Maknuun”</em> diambil dari permata ilmu balaghah, dengan harapan bahwa setiap santri yang menimba ilmu di tempat ini akan ditempa menjadi permata yang tersimpan indah, memancarkan kearifan, adab budi pekerti, dan kemaslahatan nyata bagi umat manusia.
         </p>
       </div>
 
       {/* Interactive Milestone Timeline (Android M3 Style) */}
-      <div className="bg-white rounded-2xl p-2.5 sm:p-4 shadow-m3-1 border border-slate-200 space-y-2">
-        <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-emerald-700" />
-          <h3 className="text-sm sm:text-base font-extrabold text-emerald-950">
+      <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-m3-1 border border-slate-200 space-y-3">
+        <div className="flex items-center gap-2.5">
+          <Calendar className="w-5 h-5 text-emerald-700" />
+          <h3 className="text-base sm:text-lg font-black text-emerald-950">
             Garis Waktu Milestone Perjalanan PPJM
           </h3>
         </div>
 
-        <div className="relative border-l-2 border-emerald-200 ml-2.5 sm:ml-4 space-y-2 pb-1">
+        <div className="relative border-l-2 border-emerald-200 ml-3 sm:ml-5 space-y-3 pb-2">
           {milestones.map((item, index) => (
-            <div key={item.year} className="relative pl-4 sm:pl-6 group">
+            <div key={item.year} className="relative pl-5 sm:pl-7 group">
               {/* Timeline Pin */}
-              <div className="absolute -left-[14px] top-1 w-6 h-6 rounded-full bg-emerald-100 border-2 border-white text-emerald-800 flex items-center justify-center font-bold text-[10px] shadow-sm group-hover:bg-gold-500 group-hover:text-emerald-950 transition-colors">
+              <div className="absolute -left-[15px] top-1.5 w-7 h-7 rounded-full bg-emerald-100 border-2 border-white text-emerald-900 flex items-center justify-center font-black text-xs shadow-sm group-hover:bg-gold-500 group-hover:text-emerald-950 transition-colors">
                 {index + 1}
               </div>
 
               {/* Timeline Content Card */}
-              <div className="p-2.5 sm:p-3 rounded-xl bg-slate-50 border border-slate-100 hover:border-emerald-300 hover:bg-emerald-50/40 transition-all space-y-1">
-                <div className="flex flex-wrap items-center justify-between gap-1.5">
-                  <span className="text-xs sm:text-sm font-black text-emerald-900">
+              <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-100 hover:border-emerald-300 hover:bg-emerald-50/40 transition-all space-y-1.5">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-sm sm:text-base font-black text-emerald-900">
                     {item.year}
                   </span>
-                  <span className="px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
                     {item.tag}
                   </span>
                 </div>
 
-                <h4 className="text-xs font-bold text-slate-800">
+                <h4 className="text-sm sm:text-base font-bold text-slate-900">
                   {item.title}
                 </h4>
 
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-sm text-slate-700 leading-relaxed font-normal">
                   {item.desc}
                 </p>
               </div>

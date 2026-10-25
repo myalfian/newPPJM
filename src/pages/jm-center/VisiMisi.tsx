@@ -53,54 +53,54 @@ export const VisiMisi: React.FC = () => {
       </div>
 
       {/* 3D Visi Card */}
-      <div className="bg-gradient-to-br from-white to-emerald-50/50 rounded-2xl p-3 sm:p-4 shadow-m3-2 border border-emerald-200/80 relative overflow-hidden space-y-2">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-emerald-800 text-gold-400 flex items-center justify-center shadow-md">
-            <Eye className="w-4.5 h-4.5" />
+      <div className="bg-gradient-to-br from-white to-emerald-50/50 rounded-2xl p-4 sm:p-6 shadow-m3-2 border border-emerald-200/80 relative overflow-hidden space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-emerald-800 text-gold-400 flex items-center justify-center shadow-md">
+            <Eye className="w-5 h-5" />
           </div>
           <div>
-            <span className="text-xs font-bold text-gold-700 uppercase tracking-widest">
+            <span className="text-xs sm:text-sm font-bold text-gold-700 uppercase tracking-widest">
               Visi Utama PPJM
             </span>
-            <h2 className="text-base sm:text-lg font-black text-emerald-950">
+            <h2 className="text-lg sm:text-xl font-black text-emerald-950">
               Visi Pondok Pesantren
             </h2>
           </div>
         </div>
 
-        <blockquote className="text-sm sm:text-base font-bold text-emerald-900 leading-relaxed italic border-l-4 border-gold-500 pl-3 sm:pl-4 py-0.5">
+        <blockquote className="text-base sm:text-lg lg:text-xl font-bold text-emerald-900 leading-relaxed sm:leading-loose italic border-l-4 border-gold-500 pl-4 py-1">
           “Menjadi pusat keunggulan pendidikan Islam salaf-modern yang melahirkan ulama amilin, cendekiawan berakhlak mulia, penghafal Al-Qur’an, dan pelopor inovasi teknologi yang berdaya saing global.”
         </blockquote>
       </div>
 
       {/* Misi Cards Grid */}
-      <div className="space-y-1.5">
-        <div className="flex items-center gap-2">
-          <Target className="w-4 h-4 text-emerald-700" />
-          <h3 className="text-base sm:text-lg font-extrabold text-emerald-950">
+      <div className="space-y-2 sm:space-y-3">
+        <div className="flex items-center gap-2.5">
+          <Target className="w-5 h-5 text-emerald-700" />
+          <h3 className="text-lg sm:text-xl font-black text-emerald-950">
             Lima Misi Utama Pesantren
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5 sm:gap-2.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-4">
           {misiItems.map((misi) => (
             <div
               key={misi.number}
-              className="bg-white rounded-2xl p-2.5 sm:p-3 shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all space-y-1.5 flex flex-col justify-between"
+              className="bg-white rounded-2xl p-3.5 sm:p-4.5 shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all space-y-2 flex flex-col justify-between"
             >
               <div className="flex items-center justify-between">
-                <span className="text-lg sm:text-xl font-black text-gold-500">
+                <span className="text-xl sm:text-2xl font-black text-gold-500">
                   {misi.number}
                 </span>
-                <span className="w-6 h-6 rounded-full bg-emerald-50 text-emerald-800 flex items-center justify-center">
-                  <Sparkles className="w-3 h-3" />
+                <span className="w-7 h-7 rounded-full bg-emerald-50 text-emerald-800 flex items-center justify-center">
+                  <Sparkles className="w-3.5 h-3.5" />
                 </span>
               </div>
-              <div className="space-y-0.5">
-                <h4 className="font-extrabold text-xs sm:text-sm text-emerald-950">
+              <div className="space-y-1">
+                <h4 className="font-black text-base sm:text-lg text-emerald-950">
                   {misi.title}
                 </h4>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-sm text-slate-700 leading-relaxed font-normal">
                   {misi.desc}
                 </p>
               </div>

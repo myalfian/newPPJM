@@ -49,9 +49,9 @@ export const Footer: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3.5 lg:gap-5 items-start">
 
             {/* ================= COLUMN 1: IDENTITY & CREST (lg:col-span-4) ================= */}
-            <div className="lg:col-span-4 space-y-1">
+            <div className="lg:col-span-4 space-y-1.5">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full overflow-hidden bg-white p-0.5 shadow-sm border border-[#d4af37] shrink-0 flex items-center justify-center">
+                <div className="w-9 h-9 rounded-full overflow-hidden bg-white p-0.5 shadow-sm border border-[#d4af37] shrink-0 flex items-center justify-center">
                   <img
                     src="/logo.jpg"
                     alt="PPJM Crest"
@@ -62,33 +62,33 @@ export const Footer: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-[10px] text-[#e5a93b] leading-none tracking-wider uppercase">
+                  <h3 className="font-extrabold text-xs text-[#e5a93b] leading-none tracking-wider uppercase">
                     PONDOK PESANTREN
                   </h3>
-                  <h4 className="font-black text-xs text-white tracking-tight uppercase leading-snug">
+                  <h4 className="font-black text-sm sm:text-base text-white tracking-tight uppercase leading-snug">
                     JAUHARUL MAKNUUN LASEM
                   </h4>
                 </div>
               </div>
 
-              <p className="text-[10px] text-emerald-100/75 leading-tight pr-2 line-clamp-2">
+              <p className="text-xs sm:text-sm text-emerald-100/85 leading-normal pr-2">
                 Lembaga pendidikan Islam terpadu yang memadukan keilmuan Kitab Kuning Salafiyah dengan kurikulum terpadu berakreditasi &quot;A&quot; BAN-PDM.
               </p>
             </div>
 
             {/* ================= COLUMN 2: TAUTAN CEPAT (lg:col-span-3) ================= */}
-            <div className="lg:col-span-3 space-y-1">
-              <h4 className="text-[10px] font-bold text-[#e5a93b] uppercase tracking-wider">
+            <div className="lg:col-span-3 space-y-1.5">
+              <h4 className="text-xs sm:text-sm font-bold text-[#e5a93b] uppercase tracking-wider">
                 TAUTAN CEPAT (QUICK LINKS)
               </h4>
-              <ul className="space-y-1 text-[10px] text-emerald-100/80 font-medium">
+              <ul className="space-y-1.5 text-xs sm:text-sm text-emerald-100/90 font-medium">
                 <li>
                   <button
                     type="button"
                     onClick={() => openModal('privacy')}
                     className="hover:text-white transition-colors flex items-center gap-1.5 text-left cursor-pointer group"
                   >
-                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-[10px]">→</span>
+                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-xs">→</span>
                     <span>Kebijakan Privasi (Privacy Policy)</span>
                   </button>
                 </li>
@@ -97,7 +97,7 @@ export const Footer: React.FC = () => {
                     to="/"
                     className="hover:text-white transition-colors flex items-center gap-1.5 group"
                   >
-                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-[10px]">→</span>
+                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-xs">→</span>
                     <span>Beranda Utama</span>
                   </Link>
                 </li>
@@ -107,7 +107,7 @@ export const Footer: React.FC = () => {
                     onClick={() => openModal('faq')}
                     className="hover:text-white transition-colors flex items-center gap-1.5 text-left cursor-pointer group"
                   >
-                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-[10px]">→</span>
+                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-xs">→</span>
                     <span>Tanya Jawab (FAQ PPDB)</span>
                   </button>
                 </li>
@@ -115,79 +115,79 @@ export const Footer: React.FC = () => {
             </div>
 
             {/* ================= COLUMN 3: SOCIAL ICONS PILL (lg:col-span-2) ================= */}
-            <div className="lg:col-span-2 flex flex-col justify-start lg:items-center space-y-1.5 pt-0.5">
+            <div className="lg:col-span-2 flex flex-col justify-start lg:items-center space-y-2 pt-0.5">
               {/* Row 1 */}
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 <a
                   href="https://facebook.com/ppjauharulmaknuun"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-7 h-7 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
+                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
                   aria-label="Facebook PPJM"
                 >
-                  <FacebookIcon className="w-3 h-3" />
+                  <FacebookIcon className="w-3.5 h-3.5" />
                 </a>
                 <a
                   href="https://instagram.com/ppjauharulmaknuun"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-7 h-7 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
+                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
                   aria-label="Instagram PPJM"
                 >
-                  <InstagramIcon className="w-3 h-3" />
+                  <InstagramIcon className="w-3.5 h-3.5" />
                 </a>
                 <a
                   href="https://youtube.com/@ppjauharulmaknuun"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-7 h-7 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
+                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
                   aria-label="YouTube PPJM"
                 >
-                  <YoutubeIcon className="w-3 h-3" />
+                  <YoutubeIcon className="w-3.5 h-3.5" />
                 </a>
               </div>
 
               {/* Row 2 */}
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-2">
                 <a
                   href="https://facebook.com/ppjauharulmaknuun"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-7 h-7 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
+                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
                   aria-label="Facebook PPJM Fanpage"
                 >
-                  <FacebookIcon className="w-3 h-3" />
+                  <FacebookIcon className="w-3.5 h-3.5" />
                 </a>
                 <a
                   href="https://instagram.com/ppjauharulmaknuun"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-7 h-7 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
+                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
                   aria-label="Instagram Galeri Santri"
                 >
-                  <InstagramIcon className="w-3 h-3" />
+                  <InstagramIcon className="w-3.5 h-3.5" />
                 </a>
                 <a
                   href="https://youtube.com/@ppjauharulmaknuun"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-7 h-7 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
+                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
                   aria-label="YouTube Live Streaming PPJM"
                 >
-                  <YoutubeIcon className="w-3 h-3" />
+                  <YoutubeIcon className="w-3.5 h-3.5" />
                 </a>
               </div>
             </div>
 
             {/* ================= COLUMN 4: SEKRETARIAT & ASRAMA (lg:col-span-3) ================= */}
-            <div className="lg:col-span-3 space-y-1">
-              <h4 className="text-[10px] font-bold text-[#e5a93b] uppercase tracking-wider">
+            <div className="lg:col-span-3 space-y-1.5">
+              <h4 className="text-xs sm:text-sm font-bold text-[#e5a93b] uppercase tracking-wider">
                 SEKRETARIAT & ASRAMA
               </h4>
-              <div className="space-y-1 text-[10px] text-emerald-100/80 font-normal">
+              <div className="space-y-1.5 text-xs sm:text-sm text-emerald-100/90 font-medium">
                 {/* Location */}
                 <div className="flex items-start gap-1.5">
-                  <MapPin className="w-3 h-3 text-[#e5a93b] shrink-0 mt-0.5" />
+                  <MapPin className="w-3.5 h-3.5 text-[#e5a93b] shrink-0 mt-0.5" />
                   <p className="leading-tight truncate">
                     Jl. Pesantren No. 01, Lasem, Sidayu, Gresik 61153
                   </p>
@@ -195,7 +195,7 @@ export const Footer: React.FC = () => {
 
                 {/* Phone */}
                 <div className="flex items-center gap-1.5">
-                  <Phone className="w-3 h-3 text-[#e5a93b] shrink-0" />
+                  <Phone className="w-3.5 h-3.5 text-[#e5a93b] shrink-0" />
                   <a href="tel:0313949000" className="hover:text-white transition-colors">
                     031-3949xxx (Panitia PPDB)
                   </a>
@@ -203,7 +203,7 @@ export const Footer: React.FC = () => {
 
                 {/* Email */}
                 <div className="flex items-center gap-1.5">
-                  <Mail className="w-3 h-3 text-[#e5a93b] shrink-0" />
+                  <Mail className="w-3.5 h-3.5 text-[#e5a93b] shrink-0" />
                   <a href="mailto:sekretariat@ppjauharulmaknuun.sch.id" className="hover:text-white transition-colors truncate">
                     sekretariat@ppjauharulmaknuun.sch.id
                   </a>
@@ -214,17 +214,17 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* ================= BOTTOM SUB-FOOTER BAR (Divider & Copyright) ================= */}
-          <div className="mt-2 pt-1.5 border-t border-emerald-900/60 flex flex-col md:flex-row items-center justify-between text-[10px] text-emerald-200/65 gap-1.5">
+          <div className="mt-3 pt-2 border-t border-emerald-900/60 flex flex-col md:flex-row items-center justify-between text-xs sm:text-sm text-emerald-200/80 gap-2">
             {/* Copyright with Shield */}
-            <div className="flex items-center gap-1 text-center md:text-left">
-              <ShieldCheck className="w-3 h-3 text-[#e5a93b] shrink-0" />
+            <div className="flex items-center gap-1.5 text-center md:text-left">
+              <ShieldCheck className="w-4 h-4 text-[#e5a93b] shrink-0" />
               <span>
                 © 2026 Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik. All rights reserved.
               </span>
             </div>
 
             {/* Inline Sub-links matching screenshot */}
-            <div className="flex items-center gap-2 text-center md:text-right flex-wrap justify-center">
+            <div className="flex items-center gap-2.5 text-center md:text-right flex-wrap justify-center">
               <button
                 type="button"
                 onClick={() => openModal('contact')}
