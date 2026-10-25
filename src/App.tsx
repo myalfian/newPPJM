@@ -27,7 +27,7 @@ const SkeletonLoader: React.FC = () => (
     {/* 2. Central Fusion Container: Airgram 4-Blade Morphing Pinwheel + AI Tech Gyroscope */}
     <div className="relative w-44 h-44 xs:w-48 xs:h-48 sm:w-52 sm:h-52 flex items-center justify-center mb-6">
       
-      {/* AI Tech Layer 1: Concentric Expanding Sonar Energy Waves */}
+      {/* AI Tech Layer 1: Concentric Expanding Sonar Energy Waves (afroman style) */}
       <div className="absolute inset-4 rounded-full border border-emerald-500/35 animate-neural-ring pointer-events-none" />
       <div className="absolute inset-1 rounded-full border border-[#d4af37]/25 animate-neural-ring [animation-delay:1.3s] pointer-events-none" />
 
@@ -45,22 +45,22 @@ const SkeletonLoader: React.FC = () => (
       <div className="relative w-28 h-28 xs:w-32 xs:h-32 flex items-center justify-center animate-airgram-pinwheel">
         
         {/* Blade 1 (North): Emerald to Teal Capsule */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 origin-bottom animate-airgram-petal-morph">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-2 origin-bottom animate-[airgram-blade-n_2.2s_ease-in-out_infinite]">
           <div className="w-4 h-9 xs:w-4.5 xs:h-10 rounded-full bg-gradient-to-t from-emerald-600 via-emerald-500 to-teal-400 shadow-md border border-white/60" />
         </div>
 
         {/* Blade 2 (East): Celestial Gold to Amber Capsule */}
-        <div className="absolute right-0 top-1/2 translate-x-2 -translate-y-1/2 origin-left animate-airgram-petal-morph [animation-delay:0.6s]">
+        <div className="absolute right-0 top-1/2 translate-x-2 -translate-y-1/2 origin-left animate-[airgram-blade-e_2.2s_ease-in-out_0.55s_infinite]">
           <div className="h-4 w-9 xs:h-4.5 xs:w-10 rounded-full bg-gradient-to-r from-amber-600 via-[#d4af37] to-yellow-300 shadow-md border border-white/60" />
         </div>
 
         {/* Blade 3 (South): Teal to Deep Forest Emerald Capsule */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-2 origin-top animate-airgram-petal-morph [animation-delay:1.2s]">
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-2 origin-top animate-[airgram-blade-s_2.2s_ease-in-out_1.1s_infinite]">
           <div className="w-4 h-9 xs:w-4.5 xs:h-10 rounded-full bg-gradient-to-b from-emerald-600 via-teal-600 to-emerald-800 shadow-md border border-white/60" />
         </div>
 
         {/* Blade 4 (West): Cyan to Emerald Capsule */}
-        <div className="absolute left-0 top-1/2 -translate-x-2 -translate-y-1/2 origin-right animate-airgram-petal-morph [animation-delay:1.8s]">
+        <div className="absolute left-0 top-1/2 -translate-x-2 -translate-y-1/2 origin-right animate-[airgram-blade-w_2.2s_ease-in-out_1.65s_infinite]">
           <div className="h-4 w-9 xs:h-4.5 xs:w-10 rounded-full bg-gradient-to-l from-teal-500 via-cyan-400 to-emerald-400 shadow-md border border-white/60" />
         </div>
 
@@ -81,12 +81,12 @@ const SkeletonLoader: React.FC = () => (
     </div>
 
     {/* 3. Airgram Audio-Tech Equalizer Waveform Indicator */}
-    <div className="flex items-center gap-1.5 h-6 mb-4" aria-hidden="true">
-      <span className="w-1 bg-emerald-600 rounded-full animate-[airgram-bar-bounce_1.2s_ease-in-out_infinite]" />
-      <span className="w-1 bg-[#d4af37] rounded-full animate-[airgram-bar-bounce_1.2s_ease-in-out_0.2s_infinite]" />
-      <span className="w-1 bg-teal-500 rounded-full animate-[airgram-bar-bounce_1.2s_ease-in-out_0.4s_infinite]" />
-      <span className="w-1 bg-emerald-700 rounded-full animate-[airgram-bar-bounce_1.2s_ease-in-out_0.6s_infinite]" />
-      <span className="w-1 bg-[#d4af37] rounded-full animate-[airgram-bar-bounce_1.2s_ease-in-out_0.8s_infinite]" />
+    <div className="flex items-center gap-1.5 h-7 mb-4" aria-hidden="true">
+      <span className="w-1.5 bg-emerald-600 rounded-full animate-[airgram-bar-1_1.2s_ease-in-out_infinite]" />
+      <span className="w-1.5 bg-[#d4af37] rounded-full animate-[airgram-bar-2_1.2s_ease-in-out_0.15s_infinite]" />
+      <span className="w-1.5 bg-teal-500 rounded-full animate-[airgram-bar-3_1.2s_ease-in-out_0.3s_infinite]" />
+      <span className="w-1.5 bg-emerald-700 rounded-full animate-[airgram-bar-4_1.2s_ease-in-out_0.45s_infinite]" />
+      <span className="w-1.5 bg-[#d4af37] rounded-full animate-[airgram-bar-5_1.2s_ease-in-out_0.6s_infinite]" />
     </div>
 
     {/* 4. AI Telemetry Status Badge */}
