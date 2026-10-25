@@ -1,10 +1,25 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Globe, Volume2, Sparkles, BookOpen, CheckCircle, MessageSquare, ChevronRight } from 'lucide-react';
+import {
+  Globe,
+  Volume2,
+  Sparkles,
+  BookOpen,
+  CheckCircle,
+  MessageSquare,
+  ChevronRight,
+  Info,
+  Layers,
+  Image as ImageIcon
+} from 'lucide-react';
 import { MandarinLesson } from '../../../lib/supabase';
-import { NavBarTabs } from '../../../components/common/NavBarTabs';
+import { SmartJmSubNav } from '../../../components/smart-jm/SmartJmSubNav';
 
-const DEFAULT_LESSONS: MandarinLesson[] = [
+interface EnrichedLesson extends MandarinLesson {
+  narrative?: string;
+}
+
+const DEFAULT_LESSONS: EnrichedLesson[] = [
   {
     id: 'l1',
     order_index: 1,
@@ -13,6 +28,7 @@ const DEFAULT_LESSONS: MandarinLesson[] = [
     hanzi: '你好！很高兴认识你。',
     pinyin: 'Nǐ hǎo! Hěn gāoxìng rènshí nǐ.',
     meaning_id: 'Halo! Sangat senang bisa mengenalmu.',
+    narrative: 'Dalam tradisi pesantren modern, santri dibekali keterampilan diplomasi bahasa internasional dengan tetap menjunjung tinggi akhlaqul karimah. Topik ini mengajarkan bagaimana mengawali percakapan dengan nada sopan, menyapa asatidz dan tamu kehormatan dari mancanegara saat berkunjung ke Pondok Pesantren Jauharul Maknuun.',
     dialog_script: [
       { speaker: 'Santri A', hanzi: '你好！请问你叫什么名字？', pinyin: 'Nǐ hǎo! Qǐngwèn nǐ jiào shénme míngzì?', arti: 'Halo! Boleh tanya siapa namamu?' },
       { speaker: 'Santri B', hanzi: '我叫扎基。我是这个伊斯兰寄宿学校的学生。', pinyin: 'Wǒ jiào Zhājī. Wǒ shì zhège yīsīlán jìsù xuéxiào de xuéshēng.', arti: 'Nama saya Zaki. Saya santri di pondok pesantren ini.' },
@@ -28,6 +44,7 @@ const DEFAULT_LESSONS: MandarinLesson[] = [
     hanzi: '我们在伊斯兰寄宿学校读古兰经',
     pinyin: 'Wǒmen zài yīsīlán jìsù xuéxiào dú gǔlánjīng',
     meaning_id: 'Kami membaca Al-Qur’an di pondok pesantren',
+    narrative: 'Kehidupan harian santri dipenuhi dengan kegiatan mengaji Al-Qur’an, muraja’ah hafalan, dan kajian kitab kuning. Modul ini mengajarkan kosakata seputar aktivitas literasi keislaman dalam bahasa Mandarin, sehingga santri mampu menjelaskan identitas kepesantrenan kepada komunitas global.',
     dialog_script: [
       { speaker: 'Ustadz', hanzi: '你们今天学什么？', pinyin: 'Nǐmen jīntiān xué shénme?', arti: 'Kalian belajar apa hari ini?' },
       { speaker: 'Santri', hanzi: '我们今天学阿拉伯语和汉语。', pinyin: 'Wǒmen jīntiān xué ālābóyǔ hé hànyǔ.', arti: 'Hari ini kami belajar Bahasa Arab dan Bahasa Mandarin.' },
@@ -43,6 +60,7 @@ const DEFAULT_LESSONS: MandarinLesson[] = [
     hanzi: '非常感谢您的指导，老师！',
     pinyin: 'Fēicháng gǎnxiè nín de zhǐdǎo, lǎoshī!',
     meaning_id: 'Terima kasih banyak atas bimbingannya, Guru/Ustadz!',
+    narrative: 'Ta’dzim kepada guru merupakan ruh pendidikan di Pondok Pesantren Jauharul Maknuun. Pada modul ini, santri melatih pelafalan ungkapan rasa syukur (Xièxiè), memohon maaf dengan tulus (Duìbuqǐ), dan meminta izin dengan tutur kata santun (Qǐngwèn).',
     dialog_script: [
       { speaker: 'Santri', hanzi: '老师，谢谢您的帮助。', pinyin: 'Lǎoshī, xièxiè nín de bāngzhù.', arti: 'Ustadz, terima kasih banyak atas bantuannya.' },
       { speaker: 'Ustadz', hanzi: '不客气，这是我的职责。', pinyin: 'Bù kèqì, zhè shì wǒ de zhízé.', arti: 'Sama-sama, ini sudah menjadi kewajiban saya.' }
@@ -52,13 +70,13 @@ const DEFAULT_LESSONS: MandarinLesson[] = [
 ];
 
 export const MandarinMateri: React.FC = () => {
-  const [selectedLesson, setSelectedLesson] = useState<MandarinLesson>(DEFAULT_LESSONS[0]);
+  const [selectedLesson, setSelectedLesson] = useState<EnrichedLesson>(DEFAULT_LESSONS[0]);
 
   const speakText = (text: string) => {
     if ('speechSynthesis' in window) {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'zh-CN';
-      utterance.rate = 0.85; // Slightly slower for clear santri learning
+      utterance.rate = 0.85;
       window.speechSynthesis.speak(utterance);
     } else {
       alert('Fitur Text-to-Speech tidak didukung pada browser ini.');
@@ -66,12 +84,12 @@ export const MandarinMateri: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2 space-y-1.5 sm:space-y-2">
-      {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
-      <NavBarTabs />
+    <div className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-2 space-y-2.5 sm:space-y-3">
+      {/* 1. Navigasi Submenu SMART JM */}
+      <SmartJmSubNav />
 
-      {/* Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-2.5 sm:p-3.5 text-white shadow-m3-2 relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+      {/* 2. Banner Pusat Bahasa Mandarin */}
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-3 sm:p-4 text-white shadow-md relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="space-y-1">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Globe className="w-3.5 h-3.5" />
@@ -81,63 +99,74 @@ export const MandarinMateri: React.FC = () => {
             Modul Bahasa Mandarin & Audio Pinyin
           </h1>
           <p className="text-xs sm:text-sm text-emerald-200/90 max-w-xl">
-            Kuasai kosakata harian, nada Pinyin, dan percakapan adab kesantrian dengan audio penutur standar (Putonghua).
+            Kuasai kosakata harian, nada Pinyin, narasi budaya, dan percakapan adab kesantrian dengan audio penutur standar (Putonghua).
           </p>
         </div>
 
         <Link
           to="/smart-jm/mandarin/quiz"
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-950 bg-gold-400 hover:bg-gold-300 shadow-glow-gold transition-all whitespace-nowrap self-start sm:self-center"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-emerald-950 bg-gold-400 hover:bg-gold-300 shadow-md transition-all whitespace-nowrap self-start sm:self-center"
         >
           <Sparkles className="w-4 h-4" />
-          <span>Uji Kuis Mandarin</span>
+          <span>Uji Kuis Topik Interaktif</span>
         </Link>
       </div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-1.5 sm:gap-2.5">
+      {/* 3. Main Grid: List Topik (Kiri) & Detail Narasi + Foto (Kanan) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
         
         {/* Left Column: Lesson Directory */}
-        <div className="lg:col-span-4 space-y-1.5">
-          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1">
-            Pilih Modul Pembelajaran:
+        <div className="lg:col-span-4 space-y-2">
+          <div className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1 flex items-center justify-between">
+            <span>Daftar Topik Materi:</span>
+            <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">
+              {DEFAULT_LESSONS.length} Modul
+            </span>
           </div>
 
-          <div className="space-y-1">
-            {DEFAULT_LESSONS.map((lesson) => {
+          <div className="space-y-1.5">
+            {DEFAULT_LESSONS.map((lesson, idx) => {
               const active = selectedLesson.id === lesson.id;
               return (
                 <button
                   key={lesson.id}
                   onClick={() => setSelectedLesson(lesson)}
-                  className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-center justify-between gap-2 ${
+                  className={`w-full text-left p-3 rounded-2xl border transition-all flex items-center justify-between gap-2.5 ${
                     active
-                      ? 'bg-emerald-800 text-white border-emerald-800 shadow-m3-1'
-                      : 'bg-white hover:bg-emerald-50/50 border-slate-200 text-slate-800'
+                      ? 'bg-emerald-900 text-white border-emerald-900 shadow-sm'
+                      : 'bg-white hover:bg-emerald-50/70 border-slate-200 text-slate-800'
                   }`}
                 >
-                  <div className="space-y-0.5">
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
-                      active ? 'bg-gold-500 text-emerald-950' : 'bg-emerald-100 text-emerald-800'
-                    }`}>
-                      {lesson.level}
-                    </span>
+                  <div className="space-y-0.5 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className={`text-[10px] font-bold px-2 py-0.2 rounded-full uppercase ${
+                        active ? 'bg-gold-400 text-emerald-950' : 'bg-emerald-100 text-emerald-800'
+                      }`}>
+                        Topik {idx + 1}
+                      </span>
+                      <span className={`text-[10px] font-semibold ${active ? 'text-emerald-200' : 'text-slate-400'}`}>
+                        {lesson.level}
+                      </span>
+                    </div>
+
                     <h4 className="font-extrabold text-xs sm:text-sm line-clamp-1">
                       {lesson.topic}
                     </h4>
-                    <p className={`text-[11px] line-clamp-1 ${active ? 'text-emerald-200' : 'text-slate-500'}`}>
+                    <p className={`text-[11px] font-mono line-clamp-1 ${active ? 'text-emerald-200/90' : 'text-slate-500'}`}>
                       {lesson.pinyin}
                     </p>
                   </div>
-                  <ChevronRight className={`w-4 h-4 flex-shrink-0 ${active ? 'text-white' : 'text-slate-400'}`} />
+                  <ChevronRight className={`w-4 h-4 shrink-0 ${active ? 'text-gold-400' : 'text-slate-400'}`} />
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Right Column: Selected Lesson Detail & Dialog */}
-        <div className="lg:col-span-8 bg-white rounded-2xl p-2.5 sm:p-3.5 shadow-m3-1 border border-slate-200 space-y-2">
+        {/* Right Column: Selected Lesson Detail: Foto, Narasi, Audio, Dialog */}
+        <div className="lg:col-span-8 bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 space-y-4">
+          
+          {/* Header Topik */}
           <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-100 pb-3">
             <div>
               <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">
@@ -149,6 +178,7 @@ export const MandarinMateri: React.FC = () => {
             </div>
 
             <button
+              type="button"
               onClick={() => speakText(selectedLesson.hanzi || '')}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
             >
@@ -157,8 +187,41 @@ export const MandarinMateri: React.FC = () => {
             </button>
           </div>
 
+          {/* Foto Topik Pembelajaran */}
+          {selectedLesson.cover_image && (
+            <div className="relative h-44 sm:h-56 rounded-2xl overflow-hidden shadow-xs bg-slate-100 group border border-slate-100">
+              <img
+                src={selectedLesson.cover_image}
+                alt={selectedLesson.topic}
+                className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+              <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white">
+                <span className="text-xs font-bold bg-emerald-950/80 backdrop-blur-md px-3 py-1 rounded-full border border-emerald-700/50">
+                  Dokumentasi Kelas Bahasa Santri PPJM
+                </span>
+                <span className="text-xs font-semibold text-emerald-200">
+                  {selectedLesson.topic}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* Narasi Penjelasan Materi Topik */}
+          {selectedLesson.narrative && (
+            <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+              <h4 className="text-xs font-bold text-emerald-900 uppercase tracking-wider flex items-center gap-1.5">
+                <Info className="w-4 h-4 text-emerald-700" />
+                <span>Narasi Konteks & Ulasan Pembelajaran:</span>
+              </h4>
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                {selectedLesson.narrative}
+              </p>
+            </div>
+          )}
+
           {/* Key Sentence Card */}
-          <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-r from-emerald-50 to-gold-50/40 border border-emerald-100 space-y-2 text-center sm:text-left">
+          <div className="p-4 sm:p-5 rounded-xl bg-gradient-to-r from-emerald-50 to-gold-50/40 border border-emerald-100 space-y-1.5 text-center sm:text-left">
             <div className="text-xl sm:text-2xl font-extrabold text-emerald-950 tracking-wider">
               {selectedLesson.hanzi}
             </div>
@@ -172,7 +235,7 @@ export const MandarinMateri: React.FC = () => {
 
           {/* Dialogue Section */}
           {selectedLesson.dialog_script && (
-            <div className="space-y-3 pt-1">
+            <div className="space-y-2.5 pt-1">
               <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                 <MessageSquare className="w-4 h-4 text-emerald-700" />
                 <span>Naskah Percakapan Praktik Santri:</span>
@@ -200,8 +263,9 @@ export const MandarinMateri: React.FC = () => {
                     </div>
 
                     <button
+                      type="button"
                       onClick={() => speakText(dlg.hanzi)}
-                      className="p-2 rounded-full text-slate-400 hover:text-emerald-800 hover:bg-emerald-50 transition-colors"
+                      className="p-2 rounded-full text-slate-400 hover:text-emerald-800 hover:bg-emerald-50 transition-colors shrink-0"
                       title="Dengarkan dialog ini"
                     >
                       <Volume2 className="w-4 h-4" />
@@ -221,7 +285,7 @@ export const MandarinMateri: React.FC = () => {
               to="/smart-jm/mandarin/quiz"
               className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 hover:text-emerald-950 underline underline-offset-4"
             >
-              <span>Uji Pemahaman Lewat Kuis</span>
+              <span>Uji Pemahaman Lewat Kuis Topik</span>
               <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>

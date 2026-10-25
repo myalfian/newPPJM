@@ -143,11 +143,11 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
         ]
       },
       {
-        title: 'Hafidz Quran',
+        title: "Hafidz Qur'an",
         icon: BookOpen,
         color: 'emerald',
         items: [
-          { title: 'Read Quran', href: '/smart-jm/hafidz/read', desc: 'Mushaf Al-Qur’an 30 juz bersanad', icon: BookOpen },
+          { title: "Read Qur'an", href: '/smart-jm/hafidz/read', desc: 'Mushaf Al-Qur’an 30 juz bersanad', icon: BookOpen },
           { title: 'Murojaah', href: '/smart-jm/hafidz/murojaah', desc: 'Evaluasi bacaan & hafalan santri', icon: Volume2 },
         ]
       }

@@ -8,13 +8,17 @@ import {
 import {
   Play,
   Pause,
+  Square,
   Bookmark,
   Share2,
   Search,
   Volume2,
   ChevronLeft,
   ChevronRight,
-  BookOpen
+  BookOpen,
+  SkipBack,
+  SkipForward,
+  RotateCcw
 } from 'lucide-react';
 
 export const QuranReader: React.FC = () => {
@@ -41,6 +45,7 @@ export const QuranReader: React.FC = () => {
     setLoading(true);
     if (audioRef.current) {
       audioRef.current.pause();
+      audioRef.current.currentTime = 0;
       setIsPlaying(false);
       setActiveAyahNum(null);
     }
@@ -54,27 +59,26 @@ export const QuranReader: React.FC = () => {
 
     return () => {
       isMounted = false;
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
     };
   }, [selectedSurah]);
 
-  const togglePlayAyah = (ayah: AyahItem) => {
-    if (activeAyahNum === ayah.numberInSurah && isPlaying) {
-      audioRef.current?.pause();
-      setIsPlaying(false);
-      return;
-    }
+  const playAyahByNumber = (ayahNum: number) => {
+    const targetAyah = ayahs.find((a) => a.numberInSurah === ayahNum);
+    if (!targetAyah) return;
 
     if (!audioRef.current) {
-      audioRef.current = new Audio(ayah.audioUrl);
+      audioRef.current = new Audio(targetAyah.audioUrl);
     } else {
-      audioRef.current.src = ayah.audioUrl;
+      audioRef.current.src = targetAyah.audioUrl;
     }
 
     audioRef.current.onended = () => {
-      // Auto-play next ayah if exists
-      const nextIndex = ayahs.findIndex((a) => a.numberInSurah === ayah.numberInSurah) + 1;
+      const nextIndex = ayahs.findIndex((a) => a.numberInSurah === targetAyah.numberInSurah) + 1;
       if (nextIndex < ayahs.length) {
-        togglePlayAyah(ayahs[nextIndex]);
+        playAyahByNumber(ayahs[nextIndex].numberInSurah);
       } else {
         setIsPlaying(false);
         setActiveAyahNum(null);
@@ -83,11 +87,76 @@ export const QuranReader: React.FC = () => {
 
     audioRef.current.play().then(() => {
       setIsPlaying(true);
-      setActiveAyahNum(ayah.numberInSurah);
+      setActiveAyahNum(targetAyah.numberInSurah);
     }).catch((err) => {
       console.warn('Playback error:', err);
       setIsPlaying(false);
     });
+  };
+
+  const togglePlayAyah = (ayah: AyahItem) => {
+    if (activeAyahNum === ayah.numberInSurah) {
+      if (isPlaying) {
+        audioRef.current?.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current?.play().then(() => {
+          setIsPlaying(true);
+        }).catch((err) => {
+          console.warn('Playback error:', err);
+        });
+      }
+      return;
+    }
+
+    playAyahByNumber(ayah.numberInSurah);
+  };
+
+  // Play Button Handler
+  const handlePlayAudio = () => {
+    if (isPlaying) return;
+    if (activeAyahNum && audioRef.current) {
+      audioRef.current.play().then(() => {
+        setIsPlaying(true);
+      }).catch(() => {
+        if (ayahs.length > 0) playAyahByNumber(ayahs[0].numberInSurah);
+      });
+    } else if (ayahs.length > 0) {
+      playAyahByNumber(ayahs[0].numberInSurah);
+    }
+  };
+
+  // Pause Button Handler
+  const handlePauseAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    setIsPlaying(false);
+  };
+
+  // Stop Button Handler (Stops audio and resets position)
+  const handleStopAudio = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsPlaying(false);
+    setActiveAyahNum(null);
+  };
+
+  // Next / Previous Ayah Handlers
+  const handleNextAyah = () => {
+    if (!ayahs.length) return;
+    const currentNum = activeAyahNum || 1;
+    const nextAyah = ayahs.find((a) => a.numberInSurah === currentNum + 1) || ayahs[0];
+    playAyahByNumber(nextAyah.numberInSurah);
+  };
+
+  const handlePrevAyah = () => {
+    if (!ayahs.length) return;
+    const currentNum = activeAyahNum || 1;
+    const prevAyah = ayahs.find((a) => a.numberInSurah === currentNum - 1) || ayahs[ayahs.length - 1];
+    playAyahByNumber(prevAyah.numberInSurah);
   };
 
   const toggleBookmark = (ayahNum: number) => {
@@ -202,6 +271,101 @@ export const QuranReader: React.FC = () => {
 
         {/* Right Column: Ayah Reader */}
         <div className="lg:col-span-3 space-y-3">
+          {/* Global Surah Murottal Player Bar with Play, Pause, Stop */}
+          <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-3 sm:p-4 text-white shadow-md border border-emerald-700/60 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-3 w-full sm:w-auto">
+              <div className="w-10 h-10 rounded-xl bg-gold-400 text-emerald-950 flex items-center justify-center font-bold shrink-0 shadow-sm">
+                <Volume2 className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-800 text-gold-300 border border-emerald-600/50">
+                    Audio Player Murottal
+                  </span>
+                  {isPlaying && (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-300">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                      Sedang Melantunkan
+                    </span>
+                  )}
+                </div>
+                <h4 className="text-sm sm:text-base font-extrabold truncate text-white mt-0.5">
+                  Surat {selectedSurah.nameLatin} {activeAyahNum ? `(Ayat ke-${activeAyahNum})` : `(Penuh 1-${selectedSurah.numberOfAyahs})`}
+                </h4>
+                <p className="text-[11px] text-emerald-200/80">
+                  Qari: Syaikh Misyari Rasyid Al-Afasy
+                </p>
+              </div>
+            </div>
+
+            {/* Audio Controls: Play, Pause, Stop, Prev, Next */}
+            <div className="flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto justify-end">
+              {/* Prev Button */}
+              <button
+                type="button"
+                onClick={handlePrevAyah}
+                className="p-2 rounded-xl bg-emerald-800/80 hover:bg-emerald-700 text-emerald-100 border border-emerald-600/50 transition-colors"
+                title="Ayat Sebelumnya"
+                aria-label="Ayat Sebelumnya"
+              >
+                <SkipBack className="w-4 h-4" />
+              </button>
+
+              {/* Play / Pause Toggle Button */}
+              {isPlaying ? (
+                <button
+                  type="button"
+                  onClick={handlePauseAudio}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gold-500 hover:bg-gold-400 text-emerald-950 font-extrabold text-xs shadow-md transition-all"
+                  title="Jeda Murottal (Pause)"
+                  aria-label="Pause Audio Murottal"
+                >
+                  <Pause className="w-4 h-4 fill-current" />
+                  <span>Pause</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handlePlayAudio}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-emerald-950 font-extrabold text-xs shadow-md transition-all"
+                  title="Putar Murottal (Play)"
+                  aria-label="Play Audio Murottal"
+                >
+                  <Play className="w-4 h-4 fill-current" />
+                  <span>Play</span>
+                </button>
+              )}
+
+              {/* Stop Button */}
+              <button
+                type="button"
+                onClick={handleStopAudio}
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all border ${
+                  isPlaying || activeAyahNum !== null
+                    ? 'bg-rose-900/80 hover:bg-rose-800 text-rose-100 border-rose-700/60'
+                    : 'bg-emerald-900/60 text-slate-400 border-emerald-800/40 cursor-not-allowed opacity-60'
+                }`}
+                title="Hentikan Murottal (Stop & Reset)"
+                aria-label="Stop Audio Murottal"
+                disabled={!isPlaying && activeAyahNum === null}
+              >
+                <Square className="w-3.5 h-3.5 fill-current" />
+                <span>Stop</span>
+              </button>
+
+              {/* Next Button */}
+              <button
+                type="button"
+                onClick={handleNextAyah}
+                className="p-2 rounded-xl bg-emerald-800/80 hover:bg-emerald-700 text-emerald-100 border border-emerald-600/50 transition-colors"
+                title="Ayat Selanjutnya"
+                aria-label="Ayat Selanjutnya"
+              >
+                <SkipForward className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
           {/* Surah Header & Bismillah */}
           <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-200 text-center space-y-2">
             <h3 className="text-lg sm:text-xl font-extrabold text-emerald-900">
@@ -228,6 +392,7 @@ export const QuranReader: React.FC = () => {
             <div className="space-y-2.5">
               {ayahs.map((ayah) => {
                 const isCurrentPlaying = activeAyahNum === ayah.numberInSurah && isPlaying;
+                const isCurrentActive = activeAyahNum === ayah.numberInSurah;
                 const isBookmarked = bookmarkedAyahs.includes(selectedSurah.number * 1000 + ayah.numberInSurah);
 
                 return (
@@ -236,6 +401,8 @@ export const QuranReader: React.FC = () => {
                     className={`bg-white rounded-xl p-3.5 sm:p-4 shadow-sm border transition-all ${
                       isCurrentPlaying
                         ? 'border-emerald-600 ring-2 ring-emerald-500/20 bg-emerald-50/30'
+                        : isCurrentActive
+                        ? 'border-gold-400 bg-gold-50/20'
                         : 'border-slate-200 hover:border-emerald-300'
                     }`}
                   >
@@ -246,11 +413,12 @@ export const QuranReader: React.FC = () => {
                       </span>
 
                       <div className="flex items-center gap-1.5">
+                        {/* Play/Pause Button */}
                         <button
                           onClick={() => togglePlayAyah(ayah)}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
                             isCurrentPlaying
-                              ? 'bg-emerald-800 text-white shadow-sm'
+                              ? 'bg-gold-500 text-emerald-950 shadow-sm'
                               : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
                           }`}
                           aria-label={`Dengarkan Murottal Ayat ${ayah.numberInSurah}`}
@@ -258,15 +426,28 @@ export const QuranReader: React.FC = () => {
                           {isCurrentPlaying ? (
                             <>
                               <Pause className="w-3.5 h-3.5" />
-                              <span>Jeda</span>
+                              <span>Pause</span>
                             </>
                           ) : (
                             <>
                               <Play className="w-3.5 h-3.5" />
-                              <span>Murottal</span>
+                              <span>Play</span>
                             </>
                           )}
                         </button>
+
+                        {/* Stop Button per Ayah (Only visible or active if this ayah is active) */}
+                        {isCurrentActive && (
+                          <button
+                            onClick={handleStopAudio}
+                            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-bold bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 transition-colors"
+                            title="Stop Tilawah"
+                            aria-label="Stop Tilawah"
+                          >
+                            <Square className="w-3 h-3 fill-current" />
+                            <span>Stop</span>
+                          </button>
+                        )}
 
                         <button
                           onClick={() => toggleBookmark(ayah.numberInSurah)}
