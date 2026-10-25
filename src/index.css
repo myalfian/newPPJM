@@ -246,5 +246,91 @@
       opacity: 0.4;
     }
   }
+
+  /* Airgram x AI-Tech Holographic Loader Animations (Dribbble 16189380 & 5831856) */
+  .animate-ai-orbit-cw {
+    animation: ai-orbit-cw 7s linear infinite;
+  }
+  .animate-ai-orbit-ccw {
+    animation: ai-orbit-ccw 5s linear infinite;
+  }
+  .animate-ai-gyro-1 {
+    animation: ai-gyro-tilt 6s linear infinite;
+  }
+  .animate-ai-gyro-2 {
+    animation: ai-gyro-tilt-reverse 4.5s linear infinite;
+  }
+  .animate-airgram-petal {
+    animation: airgram-petal-pulse 2.2s ease-in-out infinite;
+  }
+  .animate-laser-shimmer {
+    animation: tech-laser-shimmer 1.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  }
+  .animate-neural-ring {
+    animation: neural-pulse-ring 2.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  }
+}
+
+@keyframes ai-orbit-cw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ai-orbit-ccw {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes ai-gyro-tilt {
+  0% { transform: rotateX(65deg) rotateY(18deg) rotateZ(0deg); }
+  100% { transform: rotateX(65deg) rotateY(18deg) rotateZ(360deg); }
+}
+
+@keyframes ai-gyro-tilt-reverse {
+  0% { transform: rotateX(65deg) rotateY(-18deg) rotateZ(360deg); }
+  100% { transform: rotateX(65deg) rotateY(-18deg) rotateZ(0deg); }
+}
+
+@keyframes airgram-petal-pulse {
+  0%, 100% {
+    transform: scale(0.92);
+    opacity: 0.75;
+  }
+  50% {
+    transform: scale(1.12);
+    opacity: 1;
+    filter: drop-shadow(0 0 14px rgba(16, 185, 129, 0.65));
+  }
+}
+
+@keyframes airgram-bar-bounce {
+  0%, 100% {
+    height: 6px;
+    opacity: 0.45;
+  }
+  50% {
+    height: 22px;
+    opacity: 1;
+  }
+}
+
+@keyframes tech-laser-shimmer {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(250%); }
+}
+
+@keyframes neural-pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.85);
+    opacity: 0;
+  }
 }
 
