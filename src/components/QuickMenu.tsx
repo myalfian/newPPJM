@@ -6,8 +6,7 @@ import {
   Cpu,
   Trophy,
   Palette,
-  Images,
-  ArrowUpRight
+  Images
 } from 'lucide-react';
 
 interface MenuItem {
@@ -97,11 +96,11 @@ export const QuickMenu: React.FC = () => {
   return (
     <section
       aria-label="Menu Navigasi Cepat Portal"
-      className="relative z-30 -mt-2 sm:-mt-3 bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-t-4xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.35)] pt-2.5 pb-3 sm:pt-4 sm:pb-4.5 lg:hidden transition-colors duration-200"
+      className="relative z-30 -mt-2 sm:-mt-3 bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-t-4xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.35)] pt-2.5 pb-3 sm:pt-3.5 sm:pb-4 lg:hidden transition-colors duration-200"
     >
-      <div className="w-full max-w-7xl mx-auto px-2.5 sm:px-4">
-        {/* Layout Menu: 2 Kolom di Mobile, 3 Kolom di Tablet */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 sm:gap-2.5 lg:gap-3">
+      <div className="w-full max-w-7xl mx-auto px-2 sm:px-3 sm:px-4">
+        {/* Layout Menu: Grid 2x3 (2 Baris x 3 Kolom) Responsive */}
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 md:gap-3">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -109,30 +108,25 @@ export const QuickMenu: React.FC = () => {
                 key={item.id}
                 onClick={() => navigate(item.route)}
                 type="button"
-                className={`group relative flex flex-col md:flex-row items-center md:items-center text-center md:text-left p-2 sm:p-2.5 lg:p-3 rounded-2xl lg:rounded-3xl border transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-lg active:scale-[0.97] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs min-h-[62px] sm:min-h-[68px] md:min-h-[64px] ${item.cardTheme} ${item.hoverShadow}`}
+                className={`group relative flex flex-col items-center justify-center text-center p-1.5 xs:p-2 sm:p-2.5 rounded-2xl sm:rounded-3xl border transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-md active:scale-95 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs h-[74px] xs:h-[78px] sm:h-[84px] md:h-[88px] ${item.cardTheme} ${item.hoverShadow}`}
                 title={item.label}
               >
                 {/* Subtle Glass Highlight */}
-                <div className="absolute inset-x-0 top-0 h-1/2 bg-white/40 dark:bg-white/5 pointer-events-none rounded-t-2xl lg:rounded-t-3xl" />
+                <div className="absolute inset-x-0 top-0 h-1/2 bg-white/45 dark:bg-white/5 pointer-events-none rounded-t-2xl sm:rounded-t-3xl" />
 
                 {/* Animated Icon Badge */}
                 <div
-                  className={`relative shrink-0 w-9 h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-300 ease-out group-hover:scale-110 group-hover:rotate-2 shadow-xs ${item.pillTheme}`}
+                  className={`relative shrink-0 w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl flex items-center justify-center transition-all duration-300 ease-out group-hover:scale-110 group-hover:rotate-2 shadow-xs ${item.pillTheme}`}
                 >
                   <div className={`absolute -inset-1 rounded-2xl transition-all duration-300 blur-xs ${item.glowTheme}`} />
-                  <Icon className={`relative z-10 w-4.5 h-4.5 sm:w-5 sm:h-5 lg:w-5.5 lg:h-5.5 ${item.iconColor} stroke-[2.3] transition-transform duration-300 group-hover:scale-105`} />
+                  <Icon className={`relative z-10 w-4 h-4 xs:w-4.5 xs:h-4.5 sm:w-5 sm:h-5 ${item.iconColor} stroke-[2.3] transition-transform duration-300 group-hover:scale-105`} />
                 </div>
 
-                {/* Card Text Details */}
-                <div className="flex-1 min-w-0 mt-1.5 md:mt-0 md:ml-2.5 lg:ml-3 w-full">
-                  <div className="flex items-center justify-center md:justify-between gap-1">
-                    <span className="text-[12.5px] sm:text-[13.5px] md:text-sm lg:text-[15px] font-black text-slate-800 dark:text-slate-100 tracking-tight leading-snug group-hover:text-black dark:group-hover:text-white transition-colors truncate">
-                      {item.label}
-                    </span>
-                    <div className="hidden md:flex items-center justify-center w-6 h-6 rounded-full bg-white/80 dark:bg-slate-800/80 text-slate-400 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white group-hover:bg-white dark:group-hover:bg-slate-700 group-hover:translate-x-0.5 transition-all shadow-2xs">
-                      <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.4]" />
-                    </div>
-                  </div>
+                {/* Card Label: 2-line wrapped text if needed, bold & legible */}
+                <div className="w-full px-0.5 mt-1 flex items-center justify-center">
+                  <span className="text-[10.5px] xs:text-[11.5px] sm:text-[12.5px] md:text-sm font-black text-slate-800 dark:text-slate-100 tracking-tight leading-[1.15] group-hover:text-black dark:group-hover:text-white transition-colors line-clamp-2 text-center">
+                    {item.label}
+                  </span>
                 </div>
               </button>
             );
