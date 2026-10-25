@@ -79,7 +79,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     label: 'JM Center',
     icon: Landmark,
     href: '/jm-center',
-    isDropdown: true,
+    isDropdown: false,
     color: {
       badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 group-hover:bg-emerald-100 group-hover:text-emerald-800',
       activeBadgeBg: 'bg-[#0f5132] text-white shadow-md shadow-emerald-900/30 ring-2 ring-emerald-400/60',
@@ -98,7 +98,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     label: 'Program Unggulan',
     icon: BookOpenCheck,
     href: '/program-unggulan',
-    isDropdown: true,
+    isDropdown: false,
     color: {
       badgeBg: 'bg-blue-50 text-blue-700 border-blue-200/80 group-hover:bg-blue-100 group-hover:text-blue-800',
       activeBadgeBg: 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-2 ring-blue-400/60',
@@ -116,7 +116,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     label: 'SMART JM',
     icon: Cpu,
     href: '/smart-jm',
-    isDropdown: true,
+    isDropdown: false,
     color: {
       badgeBg: 'bg-teal-50 text-teal-700 border-teal-200/80 group-hover:bg-teal-100 group-hover:text-teal-800',
       activeBadgeBg: 'bg-teal-600 text-white shadow-md shadow-teal-600/30 ring-2 ring-teal-400/60',
@@ -184,7 +184,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     label: 'Galeri Sekolah',
     icon: Images,
     href: '/galeri',
-    isDropdown: true,
+    isDropdown: false,
     color: {
       badgeBg: 'bg-rose-50 text-rose-700 border-rose-200/80 group-hover:bg-rose-100 group-hover:text-rose-800',
       activeBadgeBg: 'bg-rose-600 text-white shadow-md shadow-rose-600/30 ring-2 ring-rose-400/60',

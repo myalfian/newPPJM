@@ -1,29 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
-  Landmark,
-  BookOpenCheck,
-  Images,
   Sparkles,
   Search,
-  Atom,
-  Trophy,
   Menu,
   ChevronDown,
-  User,
-  ArrowRight,
-  Compass,
-  GraduationCap,
-  Layers,
-  HeartHandshake,
-  BookOpen,
-  Cpu,
-  Video,
-  Camera
+  User
 } from 'lucide-react';
 import { SearchModal } from './SearchModal';
-import { PUBLIC_NAV_TABS, NavTabItem, NavSubItem, TabColorConfig } from '../../data/navigationData';
+import { PUBLIC_NAV_TABS, NavTabItem } from '../../data/navigationData';
 
 interface NavbarProps {
   onOpenMobileMenu?: () => void;
@@ -32,10 +18,8 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) => {
   const [searchOpen, setSearchOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const location = useLocation();
-  const dropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Active User Name with Default "Guest"
   const [currentUserName, setCurrentUserName] = useState<string>(() => {
@@ -65,38 +49,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Graceful dropdown dismiss timeout
-  const clearDropdownTimeout = () => {
-    if (dropdownTimeoutRef.current) {
-      clearTimeout(dropdownTimeoutRef.current);
-      dropdownTimeoutRef.current = null;
-    }
-  };
-
-  const closeDropdownWithDelay = () => {
-    clearDropdownTimeout();
-    dropdownTimeoutRef.current = setTimeout(() => {
-      setActiveDropdown(null);
-    }, 150);
-  };
-
-  useEffect(() => {
-    return () => clearDropdownTimeout();
-  }, []);
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('#mainHeader')) {
-        setActiveDropdown(null);
-      }
-    };
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
-
-  // Navigation Items with Android App-style Colorful Badges & Submenus (Single Source of Truth)
+  // Navigation Items with Android App-style Colorful Badges (Single Source of Truth)
   const navTabs = PUBLIC_NAV_TABS;
 
   const isTabActive = (tab: NavTabItem) => {
@@ -186,86 +139,45 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             {/* Desktop Navigation: Equal Width & Uniform Horizontal Distribution (h-[58px]) */}
             <nav
               className="hidden lg:grid grid-cols-6 items-center h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[540px] xl:w-[660px] 2xl:w-[720px]"
-              onMouseLeave={() => {
-                setHoveredTab(null);
-                closeDropdownWithDelay();
-              }}
+              onMouseLeave={() => setHoveredTab(null)}
             >
               {navTabs.map((tab) => {
                 const TabIcon = tab.icon;
                 const isActive = isTabActive(tab);
                 const isHovered = hoveredTab === tab.id;
-                const isOpen = activeDropdown === tab.id;
 
                 return (
                   <div
                     key={tab.id}
                     className="relative h-full w-full flex items-center justify-center"
-                    onMouseEnter={() => {
-                      setHoveredTab(tab.id);
-                      if (tab.isDropdown) {
-                        clearDropdownTimeout();
-                        setActiveDropdown(tab.id);
-                      } else {
-                        setActiveDropdown(null);
-                      }
-                    }}
+                    onMouseEnter={() => setHoveredTab(tab.id)}
                   >
-                    {/* Trigger Button / Link (Icon on top with Android color badge, Name below) - Equal Width & Centered */}
-                    {tab.isDropdown ? (
-                      <button
-                        type="button"
-                        onClick={() => setActiveDropdown(isOpen ? null : tab.id)}
-                        className="relative z-10 w-full h-full px-1 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
-                      >
-                        {/* Android-style Rounded Colorful Icon Badge */}
-                        <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-110 group-hover:-translate-y-0.5 ${isActive
-                            ? tab.color.activeBadgeBg
-                            : tab.color.badgeBg
-                          }`}>
-                          <TabIcon className="w-4 h-4 transition-transform duration-200" />
-                        </div>
+                    {/* Direct Page Navigation Link (Icon on top with Android color badge, Name below) - Equal Width & Centered */}
+                    <Link
+                      to={tab.href}
+                      onClick={() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                      className="relative z-10 w-full h-full px-1 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
+                    >
+                      {/* Android-style Rounded Colorful Icon Badge */}
+                      <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-110 group-hover:-translate-y-0.5 ${isActive
+                          ? tab.color.activeBadgeBg
+                          : tab.color.badgeBg
+                        }`}>
+                        <TabIcon className="w-4 h-4 transition-transform duration-200" />
+                      </div>
 
-                        {/* Menu Label: Equal Width Distribution, Bold & Centered */}
-                        <div className="w-full flex items-center justify-center gap-0.5 mt-0.5 px-0.5">
-                          <span className={`text-[10px] xl:text-[11.5px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${isActive
-                              ? tab.color.activeText
-                              : 'text-slate-700 group-hover:text-slate-950'
-                            }`}>
-                            {tab.label}
-                          </span>
-                          <ChevronDown className={`w-2.5 h-2.5 text-slate-400 transition-transform duration-200 shrink-0 ${isOpen ? 'rotate-180 text-emerald-700' : 'group-hover:text-slate-600'
-                            }`} />
-                        </div>
-                      </button>
-                    ) : (
-                      <Link
-                        to={tab.href}
-                        onClick={() => {
-                          setActiveDropdown(null);
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }}
-                        className="relative z-10 w-full h-full px-1 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
-                      >
-                        {/* Android-style Rounded Colorful Icon Badge */}
-                        <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-110 group-hover:-translate-y-0.5 ${isActive
-                            ? tab.color.activeBadgeBg
-                            : tab.color.badgeBg
+                      {/* Menu Label: Equal Width Distribution, Bold & Centered */}
+                      <div className="w-full text-center px-0.5 mt-0.5">
+                        <span className={`block text-[10px] xl:text-[11.5px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${isActive
+                            ? tab.color.activeText
+                            : 'text-slate-700 group-hover:text-slate-950'
                           }`}>
-                          <TabIcon className="w-4 h-4 transition-transform duration-200" />
-                        </div>
-
-                        {/* Menu Label: Equal Width Distribution, Bold & Centered */}
-                        <div className="w-full text-center px-0.5 mt-0.5">
-                          <span className={`block text-[10px] xl:text-[11.5px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${isActive
-                              ? tab.color.activeText
-                              : 'text-slate-700 group-hover:text-slate-950'
-                            }`}>
-                            {tab.label}
-                          </span>
-                        </div>
-                      </Link>
-                    )}
+                          {tab.label}
+                        </span>
+                      </div>
+                    </Link>
 
                     {/* Fluid Sliding Pill Indicator (Active or Hovered) */}
                     {isHovered && (
@@ -283,112 +195,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                         transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                       />
                     )}
-
-                    {/* Interactive Dropdown Menu Card */}
-                    <AnimatePresence>
-                      {isOpen && (tab.items || tab.sections) && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                          animate={{ opacity: 1, y: 0, scale: 1 }}
-                          exit={{ opacity: 0, y: 8, scale: 0.95 }}
-                          transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                          className={`absolute top-full mt-2.5 z-50 bg-white/95 backdrop-blur-2xl rounded-3xl p-3 shadow-[0_20px_50px_rgba(0,0,0,0.14),0_0_0_1px_rgba(26,107,60,0.08)] border border-emerald-100/90 overflow-hidden ${
-                            tab.sections
-                              ? 'w-[640px] xl:w-[680px] -left-48 xl:-left-40'
-                              : tab.id === 'galeri'
-                              ? 'right-0 w-72'
-                              : 'left-0 w-80'
-                          }`}
-                          onMouseEnter={() => {
-                            clearDropdownTimeout();
-                            setActiveDropdown(tab.id);
-                          }}
-                          onMouseLeave={() => {
-                            closeDropdownWithDelay();
-                          }}
-                        >
-                          {/* Top Golden Accent Trim */}
-                          <div className="absolute top-0 left-6 right-6 h-[2px] bg-gradient-to-r from-transparent via-[#d4af37] to-transparent opacity-80" />
-
-                          {/* Multi-section Mega Menu (for SMART JM) */}
-                          {tab.sections ? (
-                            <div className="grid grid-cols-3 gap-2.5 pt-1">
-                              {tab.sections.map((sec) => {
-                                const SecIcon = sec.icon;
-                                return (
-                                  <div key={sec.title} className="bg-slate-50/70 rounded-2xl p-2.5 border border-slate-100/90 space-y-1.5 flex flex-col">
-                                    <div className="flex items-center gap-1.5 pb-1 border-b border-slate-200/70 px-1">
-                                      <div className="w-5 h-5 rounded-md bg-[#1a6b3c]/10 text-[#1a6b3c] flex items-center justify-center shrink-0">
-                                        <SecIcon className="w-3 h-3" />
-                                      </div>
-                                      <span className="text-[11px] font-black tracking-tight text-slate-800 uppercase">
-                                        {sec.title}
-                                      </span>
-                                    </div>
-
-                                    <div className="space-y-1 flex-1">
-                                      {sec.items.map((subItem) => {
-                                        const SubIcon = subItem.icon;
-                                        return (
-                                          <Link
-                                            key={subItem.href}
-                                            to={subItem.href}
-                                            onClick={() => setActiveDropdown(null)}
-                                            className="flex items-center gap-2 p-1.5 rounded-xl hover:bg-emerald-100/70 transition-all duration-150 group/item relative overflow-hidden"
-                                          >
-                                            <div className="w-6 h-6 rounded-lg bg-white group-hover/item:bg-[#1a6b3c] text-emerald-800 group-hover/item:text-white border border-emerald-200/50 flex items-center justify-center shrink-0 transition-colors shadow-2xs">
-                                              <SubIcon className="w-3 h-3" />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                              <div className="text-[11px] font-bold text-slate-800 group-hover/item:text-[#0d4a28] truncate">
-                                                {subItem.title}
-                                              </div>
-                                              {subItem.desc && (
-                                                <div className="text-[9px] text-slate-500 truncate leading-none mt-0.5">
-                                                  {subItem.desc}
-                                                </div>
-                                              )}
-                                            </div>
-                                          </Link>
-                                        );
-                                      })}
-                                    </div>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            /* Single-Column Dropdown Menu (for JM Center, Program Unggulan, Galeri) */
-                            <div className="space-y-1 pt-1">
-                              {tab.items?.map((subItem) => {
-                                const SubIcon = subItem.icon;
-                                return (
-                                  <Link
-                                    key={subItem.href}
-                                    to={subItem.href}
-                                    onClick={() => setActiveDropdown(null)}
-                                    className="flex items-center gap-3 p-2 rounded-2xl hover:bg-emerald-50/80 transition-all duration-180 group relative overflow-hidden"
-                                  >
-                                    <div className="w-8 h-8 rounded-xl bg-emerald-50/90 group-hover:bg-[#1a6b3c] text-[#1a6b3c] group-hover:text-white border border-emerald-200/60 flex items-center justify-center shrink-0 transition-all duration-200 shadow-2xs group-hover:scale-105">
-                                      <SubIcon className="w-4 h-4 transition-transform duration-200 group-hover:rotate-6" />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                      <div className="text-xs font-bold text-slate-800 group-hover:text-[#0d4a28] flex items-center justify-between">
-                                        <span>{subItem.title}</span>
-                                        <ArrowRight className="w-3 h-3 text-[#d4af37] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
-                                      </div>
-                                      <div className="text-[10px] text-slate-500 group-hover:text-slate-600 truncate">
-                                        {subItem.desc}
-                                      </div>
-                                    </div>
-                                  </Link>
-                                );
-                              })}
-                            </div>
-                          )}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
                   </div>
                 );
               })}
