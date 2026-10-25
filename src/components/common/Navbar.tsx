@@ -227,68 +227,32 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               </span>
             </button>
 
-            {/* Desktop Responsive & Adaptive Search Field (Matching Height: h-[58px], Fills space between Menu and Profile) */}
+            {/* Desktop Responsive Search Field */}
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className="hidden lg:flex items-center h-[58px] flex-1 min-w-[120px] xl:min-w-[140px] max-w-[420px] px-3 xl:px-3.5 rounded-2xl bg-slate-100/90 hover:bg-white text-left border border-slate-200/90 hover:border-emerald-500/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.04),0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md hover:shadow-emerald-900/5 transition-all duration-200 cursor-pointer group select-none relative"
-              title="Cari Berita, Tahfidz, STEM, Galeri (Ctrl+K)"
+              className="hidden lg:flex items-center h-10 xl:h-11 flex-1 min-w-[140px] xl:min-w-[160px] max-w-[360px] px-3.5 rounded-full bg-slate-50 hover:bg-white text-left border border-slate-200/90 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] hover:border-emerald-500/80 transition-all duration-200 cursor-pointer group select-none relative gap-2 shrink mx-2"
+              title="Search for anything... (Ctrl+K)"
               aria-label="Cari Informasi Portal"
             >
-              {/* Android-style Search Icon Squircle */}
-              <div className="w-8 h-8 rounded-xl bg-emerald-50 group-hover:bg-[#1a6b3c] text-[#1a6b3c] group-hover:text-white border border-emerald-200/60 flex items-center justify-center shrink-0 transition-all duration-200 shadow-2xs group-hover:scale-105">
-                <Search className="w-4 h-4 transition-transform duration-200" />
-              </div>
-
-              {/* Adaptive Placeholder & Label */}
-              <div className="flex-1 min-w-0 mx-2.5">
-                <div className="text-[9.5px] uppercase tracking-wider font-extrabold text-slate-400 group-hover:text-[#1a6b3c] transition-colors leading-none">
-                  Pencarian
-                </div>
-                <div className="text-xs xl:text-[13px] font-semibold text-slate-600 group-hover:text-slate-900 truncate mt-0.5 leading-tight">
-                  Ketik topik, berita, hafalan...
-                </div>
-              </div>
+              <Search className="w-4 h-4 text-slate-500 group-hover:text-emerald-700 transition-colors shrink-0" />
+              <span className="text-xs xl:text-[13px] text-slate-400 font-normal truncate flex-1">
+                Search for anything...
+              </span>
+              <kbd className="hidden xl:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-slate-400 bg-slate-100 rounded-md border border-slate-200/80 shrink-0">
+                Ctrl K
+              </kbd>
             </button>
 
-            {/* Right Side: Desktop Profile Button & Mobile 1:1 Reference Controls */}
-            <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 shrink-0">
+            {/* Right Side: Universal Notification Bell & Profile Capsule (General Navbar & Mobile) */}
+            <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 lg:gap-3 shrink-0">
 
-              {/* Desktop Profile Button (Matching Height: h-[58px], with User Name) - Visible only on Desktop (>= lg) */}
-              <Link
-                to="/admin"
-                className="hidden lg:flex items-center h-[58px] px-3.5 xl:px-4 rounded-2xl bg-gradient-to-r from-emerald-50/90 via-white to-emerald-50/80 hover:from-emerald-100 hover:to-emerald-100/90 border border-emerald-300/80 hover:border-emerald-400/90 shadow-[0_2px_10px_rgba(26,107,60,0.08)] transition-all duration-200 group active:scale-95 shrink-0 select-none gap-2.5"
-                title={`Profil Pengguna: ${currentUserName}`}
-              >
-                {/* User Avatar / Squircle with Status Pulse */}
-                <div className="relative w-8 h-8 sm:w-9 sm:h-9 rounded-2xl bg-[#0f5132] text-white flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform">
-                  <User className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-white" />
-                  <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 ring-1 ring-white"></span>
-                  </span>
-                </div>
-
-                {/* Profile Label & User Name */}
-                <div className="flex flex-col text-left">
-                  <span className="text-[10px] uppercase tracking-wider font-extrabold text-emerald-700/90 leading-tight">
-                    Profile
-                  </span>
-                  <span className="text-xs xl:text-sm font-black text-slate-900 leading-tight truncate max-w-[85px] xl:max-w-[130px]">
-                    {currentUserName}
-                  </span>
-                </div>
-
-                {/* Arrow indicator */}
-                <ChevronDown className="w-3.5 h-3.5 text-emerald-600/70 group-hover:text-emerald-800 transition-colors shrink-0" />
-              </Link>
-
-              {/* Mobile Viewport: 1. Notification Bell Button (Matching reference image) */}
-              <div className="relative flex lg:hidden">
+              {/* 1. Notification Bell Button (Universal for All Viewports) */}
+              <div className="relative flex items-center">
                 <button
                   type="button"
                   onClick={() => setNotificationsOpen((prev) => !prev)}
-                  className="w-9 h-9 sm:w-9.5 sm:h-9.5 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 shadow-2xs flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer relative"
+                  className="w-9 h-9 sm:w-9.5 sm:h-9.5 lg:w-10 lg:h-10 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 shadow-2xs flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer relative"
                   aria-label="Notifikasi & Informasi"
                   title="Warta & Informasi Terkini"
                 >
@@ -304,7 +268,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 6, scale: 0.95 }}
                       transition={{ duration: 0.16 }}
-                      className="absolute right-0 top-full mt-2 w-64 sm:w-72 bg-white rounded-2xl shadow-xl border border-slate-200/90 p-3 z-50 text-left select-none"
+                      className="absolute right-0 top-full mt-2 w-64 sm:w-72 lg:w-80 bg-white rounded-2xl shadow-xl border border-slate-200/90 p-3 z-50 text-left select-none"
                     >
                       <div className="flex items-center justify-between pb-2 border-b border-slate-100">
                         <span className="text-xs font-bold text-slate-800">Warta Terkini</span>
@@ -325,14 +289,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                 </AnimatePresence>
               </div>
 
-              {/* Mobile Viewport: 2. Profile Pill Capsule (1:1 with reference image: (Avatar) Michael Admin ⌄) */}
+              {/* 2. Profile Pill Capsule (Universal for All Viewports: (Avatar) Michael Admin ⌄) */}
               <Link
                 to="/admin"
-                className="flex lg:hidden items-center gap-1.5 sm:gap-2 pl-1 pr-2 sm:pr-2.5 py-1 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer select-none shrink-0"
-                title={`Profil: ${currentUserName}`}
+                className="flex items-center gap-1.5 sm:gap-2 pl-1 pr-2.5 sm:pr-3 py-1 lg:py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer select-none shrink-0"
+                title={`Profil Pengguna: ${currentUserName}`}
               >
                 {/* User Portrait Avatar */}
-                <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 lg:w-8 lg:h-8 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
                   <img
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
                     alt="Michael Admin"
@@ -342,10 +306,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
 
                 {/* Name & Role Text Stack */}
                 <div className="flex flex-col text-left leading-tight">
-                  <span className="text-[11px] sm:text-xs font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[48px] xs:max-w-[65px] sm:max-w-[85px]">
+                  <span className="text-[11px] sm:text-xs lg:text-[13px] font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[50px] xs:max-w-[70px] sm:max-w-[90px] lg:max-w-[120px]">
                     Michael
                   </span>
-                  <span className="text-[9px] sm:text-[9.5px] font-medium text-slate-400 leading-none">
+                  <span className="text-[9px] sm:text-[9.5px] lg:text-[10px] font-medium text-slate-400 leading-none">
                     Admin
                   </span>
                 </div>
