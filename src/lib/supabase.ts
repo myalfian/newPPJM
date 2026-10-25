@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
+import { Database } from '../types/database.types';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
@@ -12,10 +13,10 @@ export const isSupabaseConfigured = () => {
   );
 };
 
-// Singleton Supabase Client
-export const supabase = createClient(
-  isSupabaseConfigured() ? supabaseUrl : 'https://placeholder-ppjm.supabase.co',
-  isSupabaseConfigured() ? supabaseAnonKey : 'placeholder'
+// Singleton Typed Supabase Client
+export const supabase = createClient<Database>(
+  isSupabaseConfigured() ? supabaseUrl : 'https://gzijnybcmhectajfkdtd.supabase.co',
+  isSupabaseConfigured() ? supabaseAnonKey : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder'
 );
 
 // TypeScript Types
