@@ -112,8 +112,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 group shrink-0 select-none"
               aria-label="Beranda Pondok Pesantren Jauharul Maknuun"
             >
-              {/* Google Gemini Animated Border Glow Logo Wrapper */}
-              <div className="relative w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full p-[1.5px] xs:p-[2px] flex items-center justify-center group-hover:scale-105 transition-all duration-300 shrink-0">
+              {/* Google Gemini Animated Border Glow Logo Wrapper - Fixed Dimensions Locked */}
+              <div className="relative w-[34px] h-[34px] min-w-[34px] min-h-[34px] max-w-[34px] max-h-[34px] xs:w-[36px] xs:h-[36px] xs:min-w-[36px] xs:min-h-[36px] xs:max-w-[36px] xs:max-h-[36px] sm:w-[40px] sm:h-[40px] sm:min-w-[40px] sm:min-h-[40px] sm:max-w-[40px] sm:max-h-[40px] lg:w-[44px] lg:h-[44px] lg:min-w-[44px] lg:min-h-[44px] lg:max-w-[44px] lg:max-h-[44px] rounded-full p-[1.5px] xs:p-[2px] flex items-center justify-center group-hover:scale-105 transition-all duration-300 shrink-0 flex-none aspect-square">
                 {/* 1. Soft Ambient Halo Aura */}
                 <div className="gemini-ambient-aura rounded-full" aria-hidden="true">
                   <div className="gemini-beam-sweep" />
@@ -125,11 +125,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                 </div>
 
                 {/* 3. Solid White Inner Container with Logo Image */}
-                <div className="relative z-10 w-full h-full rounded-full overflow-hidden bg-white shadow-xs flex items-center justify-center">
+                <div className="relative z-10 w-full h-full min-w-full min-h-full max-w-full max-h-full aspect-square rounded-full overflow-hidden bg-white shadow-xs flex items-center justify-center shrink-0 flex-none">
                   <img
                     src="/logo.jpg"
                     alt="Logo Pondok Pesantren Jauharul Maknuun"
-                    className="w-full h-full object-cover rounded-full"
+                    width="44"
+                    height="44"
+                    loading="eager"
+                    decoding="async"
+                    className="w-full h-full min-w-full min-h-full max-w-full max-h-full object-cover rounded-full block shrink-0 flex-none select-none pointer-events-none"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = '/logo-ppjm.svg';
                     }}
@@ -247,8 +251,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               </kbd>
             </button>
 
-            {/* Right Side: Universal Notification Bell & Profile Capsule (General Navbar & Mobile) */}
-            <div className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 lg:gap-3 shrink-0">
+            {/* Right Side: Fixed Min-Width Container to prevent CLS when Auth is empty/loading */}
+            <div className="flex items-center justify-between gap-1 xs:gap-1.5 sm:gap-2 lg:gap-3 shrink-0 min-w-[105px] xs:min-w-[120px] sm:min-w-[145px] lg:min-w-[170px]">
 
               {/* 1. Notification Bell Button (Universal for All Viewports) */}
               <div className="relative flex items-center">
