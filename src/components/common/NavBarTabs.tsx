@@ -304,14 +304,14 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
                     )}
 
                     {/* Tab Label (Zero-sliding responsive display) */}
-                    <span className="curved-tab-text">
+                    <span className="curved-tab-text font-extrabold tracking-tight">
                       {tab.shortLabel ? (
                         <>
-                          <span className="sm:hidden">{tab.shortLabel}</span>
-                          <span className="hidden sm:inline">{tab.label}</span>
+                          <span className="sm:hidden font-extrabold">{tab.shortLabel}</span>
+                          <span className="hidden sm:inline font-bold">{tab.label}</span>
                         </>
                       ) : (
-                        tab.label
+                        <span className="font-extrabold">{tab.label}</span>
                       )}
                     </span>
 

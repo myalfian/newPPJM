@@ -20,47 +20,27 @@ export interface BottomNavBarTabsProps {
  */
 function renderCategoryMobileLabel(cat: string) {
   if (cat === 'Kitab Kuning / MQK') {
-    return (
-      <>
-        <span className="block font-bold leading-tight">Kitab Kuning</span>
-        <span className="block text-[9.5px] opacity-90 font-medium">(MQK)</span>
-      </>
-    );
+    return <span className="block font-extrabold text-[12px] sm:text-[13px] leading-tight tracking-tight">Kitab Kuning</span>;
   }
   if (cat === 'Tahfidz 30 Juz') {
-    return (
-      <>
-        <span className="block font-bold leading-tight">Tahfidz</span>
-        <span className="block text-[9.5px] opacity-90 font-medium">30 Juz</span>
-      </>
-    );
+    return <span className="block font-extrabold text-[12px] sm:text-[13px] leading-tight tracking-tight">Tahfidz</span>;
   }
   if (cat === 'Robotika / STEM') {
-    return (
-      <>
-        <span className="block font-bold leading-tight">Robotika</span>
-        <span className="block text-[9.5px] opacity-90 font-medium">(STEM)</span>
-      </>
-    );
+    return <span className="block font-extrabold text-[12px] sm:text-[13px] leading-tight tracking-tight">Robotika</span>;
   }
   if (cat === 'Olahraga & Silat') {
-    return (
-      <>
-        <span className="block font-bold leading-tight">Olahraga</span>
-        <span className="block text-[9.5px] opacity-90 font-medium">&amp; Silat</span>
-      </>
-    );
+    return <span className="block font-extrabold text-[12px] sm:text-[13px] leading-tight tracking-tight">Olahraga</span>;
   }
   if (cat.includes('/')) {
     const [p1, ...rest] = cat.split('/');
     return (
       <>
-        <span className="block font-bold leading-tight">{p1.trim()}</span>
-        <span className="block text-[9.5px] opacity-90 font-medium">{rest.join('/').trim()}</span>
+        <span className="block font-extrabold text-[12px] sm:text-[13px] leading-tight tracking-tight">{p1.trim()}</span>
+        <span className="block text-[10px] opacity-90 font-bold">{rest.join('/').trim()}</span>
       </>
     );
   }
-  return <span className="block font-bold leading-tight">{cat}</span>;
+  return <span className="block font-extrabold text-[12px] sm:text-[13px] leading-tight tracking-tight">{cat}</span>;
 }
 
 /**

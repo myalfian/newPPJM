@@ -185,11 +185,11 @@
   color: #fde047; /* Bright gold for active tab text */
 }
 
-/* Adaptive 2-Line Text: No truncation ellipsis, full visibility on mobile */
+/* Adaptive Text: Crisp, enlarged, and bold for supreme mobile legibility */
 .bottom-curved-tab-text {
   font-family: 'Plus Jakarta Sans', 'Ubuntu', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 10.5px;
-  font-weight: 700;
+  font-size: 12.5px;
+  font-weight: 800;
   letter-spacing: -0.2px;
   line-height: 1.15;
   white-space: normal;
@@ -207,15 +207,15 @@
 
 @media (min-width: 640px) {
   .bottom-curved-tab-text {
-    font-size: 11.5px;
+    font-size: 13px;
   }
 }
 
 @media (min-width: 768px) {
   .bottom-curved-tab-text {
-    font-size: 13.5px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.1px;
     line-height: normal;
     white-space: nowrap;
     padding-top: 0px;
@@ -226,8 +226,8 @@
 .bottom-curved-tab-btn.active .bottom-curved-tab-text {
   font-weight: 800;
   color: #facc15;
-  text-shadow: 0 0 16px rgba(250, 204, 21, 0.48);
-  transform: translateY(-2px) scale(1.03);
+  text-shadow: 0 0 16px rgba(250, 204, 21, 0.55), 0 1px 2px rgba(0, 0, 0, 0.25);
+  transform: translateY(-1.5px) scale(1.02);
 }
 
 /* The Curved Cutout Pointer / Notch dipping from BOTTOM border of the card */
