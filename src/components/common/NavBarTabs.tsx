@@ -129,12 +129,9 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentHref: '/smart-jm/stem/materi',
     parentIcon: Cpu,
     tabs: [
-      { id: 'stem-materi', label: 'Materi STEM', shortLabel: 'Materi STEM', href: '/smart-jm/stem/materi', icon: Cpu },
-      { id: 'stem-portofolio', label: 'Portofolio', shortLabel: 'Portofolio', href: '/smart-jm/stem/portofolio', icon: Sparkles },
-      { id: 'mandarin-materi', label: 'Materi Mandarin', shortLabel: 'Mandarin', href: '/smart-jm/mandarin/materi', icon: Globe },
-      { id: 'mandarin-quiz', label: 'Quiz', shortLabel: 'Quiz', href: '/smart-jm/mandarin/quiz', icon: CheckCircle2 },
-      { id: 'read', label: 'Read Quran', shortLabel: 'Quran', href: '/smart-jm/hafidz/read', icon: BookOpen },
-      { id: 'murojaah', label: 'Murojaah', shortLabel: 'Murojaah', href: '/smart-jm/hafidz/murojaah', icon: Volume2 },
+      { id: 'stem', label: 'STEM Area', shortLabel: 'STEM Area', href: '/smart-jm/stem/materi', icon: Cpu },
+      { id: 'mandarin', label: 'Mandarin Class', shortLabel: 'Mandarin Class', href: '/smart-jm/mandarin/materi', icon: Globe },
+      { id: 'hafidz', label: "Hafidz Qur'an", shortLabel: "Hafidz Qur'an", href: '/smart-jm/hafidz/read', icon: BookOpen },
     ],
   },
   'agenda': {
@@ -173,9 +170,6 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
   else if (pathname.includes('/program-unggulan')) detectedCategory = 'program-unggulan';
   else if (pathname.includes('/galeri')) detectedCategory = 'galeri';
   else if (pathname === '/prestasi' || pathname === '/ekskul') detectedCategory = 'prestasi-ekskul';
-  else if (pathname.includes('/smart-jm/hafidz')) detectedCategory = 'smart-jm-hafidz';
-  else if (pathname.includes('/smart-jm/stem')) detectedCategory = 'smart-jm-stem';
-  else if (pathname.includes('/smart-jm/mandarin')) detectedCategory = 'smart-jm-mandarin';
   else if (pathname.includes('/smart-jm')) detectedCategory = 'smart-jm';
 
   const defaultCategory = DEFAULT_CATEGORY_TABS[detectedCategory];
@@ -205,12 +199,23 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
       const subMenuTabs = tabs.filter((t) => t.id !== 'beranda');
       activeTab = subMenuTabs.find((t) => pathname === t.href);
 
-      // 2. Check sub-menu prefix
+      // 2. Specific SMART JM category matching
+      if (!activeTab && pathname.includes('/smart-jm')) {
+        if (pathname.includes('/smart-jm/stem')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'stem');
+        } else if (pathname.includes('/smart-jm/mandarin')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'mandarin');
+        } else if (pathname.includes('/smart-jm/hafidz')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'hafidz');
+        }
+      }
+
+      // 3. Check sub-menu prefix
       if (!activeTab) {
         activeTab = subMenuTabs.find((t) => t.href !== '/' && pathname.startsWith(t.href));
       }
 
-      // 3. Fallback to any matching tab or first
+      // 4. Fallback to any matching tab or first
       if (!activeTab) {
         activeTab = tabs.find((t) => pathname === t.href || (t.href !== '/' && pathname.startsWith(t.href))) || tabs[0];
       }
