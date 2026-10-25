@@ -453,7 +453,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     }
 
     // In mobile view (< 640px): 1 card fit to screen
-    const slideOffset = viewportWidth;
+    const slideOffset = containerRef.current ? containerRef.current.clientWidth : viewportWidth;
     if (absOffset > 1) {
       return {
         transform: `translate(-50%, -50%) translateX(${offset > 0 ? slideOffset * 1.5 : -slideOffset * 1.5}px)`,
@@ -503,7 +503,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
           ? { height: `${desktopHeroHeight}px` } 
           : undefined
       }
-      className="relative w-full pt-2 pb-5 sm:pt-4 sm:pb-6 lg:py-0 lg:h-[calc(100dvh-175px)] bg-[#071526] overflow-hidden select-none outline-none lg:flex lg:flex-col lg:justify-center transition-[height] duration-150"
+      className="relative w-full pt-1.5 pb-2.5 xs:pb-3 sm:pt-4 sm:pb-6 lg:py-0 lg:h-[calc(100dvh-175px)] bg-[#071526] overflow-hidden select-none outline-none lg:flex lg:flex-col lg:justify-center transition-[height] duration-150"
       onMouseEnter={() => {
         isInteractingRef.current = true;
         setIsPaused(true);
@@ -519,26 +519,26 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[250px] bg-amber-500/10 rounded-full blur-[90px] pointer-events-none" />
 
       {/* Admin Quick Speed Control Badge (Discreet on top right) */}
-      <div className="absolute top-3 right-3 sm:right-6 z-40">
+      <div className="absolute top-2 right-2 xs:top-2.5 xs:right-3 sm:top-3 sm:right-6 z-40">
         <button
           type="button"
           onClick={() => setShowAdminSpeedModal(true)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-xs font-semibold backdrop-blur-md shadow-md transition-all cursor-pointer group"
+          className="inline-flex items-center gap-1 xs:gap-1.5 px-2 xs:px-2.5 sm:px-3 py-1 xs:py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-[10px] xs:text-xs font-semibold backdrop-blur-md shadow-md transition-all cursor-pointer group"
           title="Atur Kecepatan Sliding (Pengaturan Admin)"
         >
-          <Settings className="w-3.5 h-3.5 text-[#ffcc00] group-hover:rotate-45 transition-transform" />
-          <span className="text-[11px] font-mono">
+          <Settings className="w-3 h-3 xs:w-3.5 xs:h-3.5 text-[#ffcc00] group-hover:rotate-45 transition-transform" />
+          <span className="text-[10px] xs:text-[11px] font-mono">
             {sliderSettings.isAutoplayEnabled ? `${sliderSettings.autoplayInterval}s` : 'Manual'}
           </span>
         </button>
       </div>
 
-      <div className="w-full max-w-full lg:max-w-[1700px] mx-auto px-0 sm:px-4 relative z-10 lg:h-full lg:flex lg:flex-col lg:justify-between lg:py-2">
+      <div className="w-full max-w-full lg:max-w-[1700px] mx-auto px-2 xs:px-2.5 sm:px-4 relative z-10 lg:h-full lg:flex lg:flex-col lg:justify-between lg:py-2">
         
         {/* Carousel Viewport Container with 3D Perspective */}
         <div 
           ref={containerRef}
-          className="relative w-full h-[230px] xs:h-[270px] sm:h-[370px] md:h-[450px] lg:h-[calc(100%-36px)] overflow-x-hidden flex items-center justify-center cursor-grab active:cursor-grabbing touch-pan-y"
+          className="relative w-full aspect-[16/9] sm:aspect-auto sm:h-[370px] md:h-[450px] lg:h-[calc(100%-36px)] overflow-x-hidden flex items-center justify-center cursor-grab active:cursor-grabbing touch-pan-y"
           style={{ 
             perspective: prefersReducedMotion ? 'none' : '1400px',
             WebkitTapHighlightColor: 'transparent'
@@ -579,7 +579,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                     }
                   }
                 }}
-                className={`absolute top-1/2 left-1/2 w-full sm:w-[600px] md:w-[720px] lg:w-auto lg:h-[94%] max-w-full lg:max-w-[92vw] aspect-[16/9] rounded-none sm:rounded-3xl transform-gpu will-change-transform ${
+                className={`absolute top-1/2 left-1/2 w-full h-full sm:w-[600px] sm:h-auto md:w-[720px] lg:w-auto lg:h-[94%] max-w-full lg:max-w-[92vw] aspect-[16/9] rounded-2xl xs:rounded-3xl transform-gpu will-change-transform ${
                   isActive 
                     ? 'z-30 cursor-pointer' 
                     : 'cursor-pointer hover:brightness-105'
@@ -588,7 +588,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                 {/* 0. Ambient Google Gemini Aura Glow (Behind Active Card) */}
                 {isActive && !prefersReducedMotion && (
                   <div 
-                    className="gemini-ambient-aura-card rounded-none sm:rounded-[32px] pointer-events-none" 
+                    className="gemini-ambient-aura-card rounded-2xl xs:rounded-3xl pointer-events-none" 
                     aria-hidden="true"
                   >
                     <div className="gemini-beam-sweep-slow" />
@@ -596,15 +596,15 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                 )}
 
                 {/* Inner Card Clip Container */}
-                <div className={`relative w-full h-full rounded-none sm:rounded-3xl overflow-hidden ${
+                <div className={`relative w-full h-full rounded-2xl xs:rounded-3xl overflow-hidden ${
                   isActive 
-                    ? 'shadow-[0_25px_60px_rgba(0,0,0,0.85)]' 
+                    ? 'shadow-[0_20px_50px_rgba(0,0,0,0.85)]' 
                     : 'ring-1 ring-white/10 shadow-[0_10px_25px_rgba(0,0,0,0.5)]'
                 }`}>
                   {/* Google Gemini 2px Sharp Animated Border Glow Frame */}
                   {isActive && !prefersReducedMotion && (
                     <div 
-                      className="gemini-border-glow-frame rounded-none sm:rounded-3xl pointer-events-none" 
+                      className="gemini-border-glow-frame rounded-2xl xs:rounded-3xl pointer-events-none" 
                       aria-hidden="true"
                     >
                       <div className="gemini-beam-sweep-slow" />
@@ -628,11 +628,11 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                       decoding="async"
                       onLoad={() => setLoadedImages(prev => ({ ...prev, [slide.id]: true }))}
                       onError={() => setImageErrors(prev => ({ ...prev, [slide.id]: true }))}
-                      className="w-full h-full object-cover rounded-none sm:rounded-3xl select-none pointer-events-none transition-opacity duration-300"
+                      className="w-full h-full object-cover rounded-2xl xs:rounded-3xl select-none pointer-events-none transition-opacity duration-300"
                     />
                   ) : (
                     /* Fallback Dark Islamic Background on Image Error */
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#0b3d21] via-slate-900 to-black flex items-center justify-center p-6 text-center rounded-none sm:rounded-3xl">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#0b3d21] via-slate-900 to-black flex items-center justify-center p-6 text-center rounded-2xl xs:rounded-3xl">
                       <div className="space-y-2">
                         <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center mx-auto text-[#d4af37]">
                           <Sparkles className="w-6 h-6" />
@@ -644,25 +644,25 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
 
                   {/* 3. Subtle Dimming on Inactive Cards */}
                   {!isActive && (
-                    <div className="absolute inset-0 bg-black/45 pointer-events-none rounded-none sm:rounded-3xl transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-black/45 pointer-events-none rounded-2xl xs:rounded-3xl transition-opacity duration-300" />
                   )}
 
                   {/* 4. Title & Badge Overlay Layer - Pojok Kiri Atas */}
                   <div className={`absolute inset-x-0 top-0 pointer-events-none transition-all duration-300 z-10 ${
                     isActive 
-                      ? 'bg-gradient-to-b from-black/85 via-black/45 to-transparent pt-3.5 sm:pt-5 pb-8 sm:pb-12 px-3.5 sm:px-6' 
-                      : 'bg-gradient-to-b from-black/85 via-black/50 to-transparent pt-2.5 sm:pt-4 pb-6 sm:pb-9 px-3 sm:px-4'
+                      ? 'bg-gradient-to-b from-black/85 via-black/40 to-transparent pt-2.5 xs:pt-3.5 sm:pt-5 pb-6 xs:pb-8 sm:pb-12 px-2.5 xs:px-3.5 sm:px-6' 
+                      : 'bg-gradient-to-b from-black/85 via-black/45 to-transparent pt-2 sm:pt-4 pb-5 sm:pb-9 px-2.5 sm:px-4'
                   }`}>
-                    <div className="flex flex-col items-start gap-1 sm:gap-1.5 max-w-[90%] sm:max-w-[80%]">
+                    <div className="flex flex-col items-start gap-0.5 xs:gap-1 sm:gap-1.5 max-w-[92%] sm:max-w-[80%]">
                       {/* Badge Kategori */}
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-bold uppercase tracking-wider shadow-sm backdrop-blur-xs ${
+                      <div className="flex items-center gap-1 xs:gap-1.5 flex-wrap">
+                        <span className={`inline-flex items-center gap-1 px-2 xs:px-2.5 py-0.5 rounded-full text-[9px] xs:text-[10px] sm:text-[11px] font-bold uppercase tracking-wider shadow-sm backdrop-blur-xs ${
                           isActive 
                             ? 'bg-[#1a6b3c]/90 text-emerald-200 border border-emerald-400/40' 
                             : 'bg-black/70 text-amber-300 border border-white/20'
                         }`}>
-                          <Sparkles className="w-3 h-3 text-[#ffcc00]" />
-                          <span className="truncate max-w-[170px] sm:max-w-none">{slide.badge}</span>
+                          <Sparkles className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-[#ffcc00]" />
+                          <span className="truncate max-w-[180px] xs:max-w-[220px] sm:max-w-none">{slide.badge}</span>
                         </span>
                         {isActive && slide.tag && (
                           <span className="hidden sm:inline-block text-[11px] text-amber-300 font-bold bg-amber-950/70 border border-amber-500/30 px-2.5 py-0.5 rounded-full backdrop-blur-xs">
@@ -675,8 +675,8 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                       {slide.title && (
                         <h4 className={`font-black text-white tracking-tight leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] line-clamp-2 ${
                           isActive 
-                            ? 'text-sm sm:text-lg md:text-xl lg:text-2xl' 
-                            : 'text-xs sm:text-sm md:text-base text-gray-200'
+                            ? 'text-xs xs:text-sm sm:text-lg md:text-xl lg:text-2xl' 
+                            : 'text-[11px] xs:text-xs sm:text-sm md:text-base text-gray-200'
                         }`}>
                           {slide.title}
                         </h4>
@@ -691,7 +691,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
 
         {/* Bottom Pagination Indicators (Centered & Minimalist) */}
         {total > 1 && (
-          <div className="flex items-center justify-center pt-2 sm:pt-3 pb-1 lg:py-0">
+          <div className="flex items-center justify-center pt-1.5 xs:pt-2 sm:pt-3 pb-0.5 sm:pb-1 lg:py-0">
             <div className="flex items-center gap-1.5">
               {slides.map((slide, i) => {
                 const isActiveDot = i === current;
