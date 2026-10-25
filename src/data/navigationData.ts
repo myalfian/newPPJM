@@ -18,15 +18,26 @@ import {
   Newspaper,
   Globe,
   Gauge,
-  Image as ImageIcon
+  Image as ImageIcon,
+  CheckCircle2,
+  Volume2,
+  Activity,
+  Palette
 } from 'lucide-react';
 
 export interface NavSubItem {
   title: string;
   href: string;
-  desc: string;
+  desc?: string;
   icon: React.ComponentType<{ className?: string }>;
   badge?: string;
+}
+
+export interface NavSubSection {
+  title: string;
+  icon: React.ComponentType<{ className?: string }>;
+  color?: string;
+  items: NavSubItem[];
 }
 
 export interface TabColorConfig {
@@ -44,6 +55,7 @@ export interface NavTabItem {
   isDropdown: boolean;
   color: TabColorConfig;
   items?: NavSubItem[];
+  sections?: NavSubSection[];
 }
 
 export interface AdminModuleItem {
@@ -60,14 +72,14 @@ export interface AdminModuleItem {
   badge?: string;
 }
 
-// Single Source of Truth for Public Portal Navigation
+// Single Source of Truth for Public Portal Navigation (Synchronized 1:1 with Official Hierarchy)
 export const PUBLIC_NAV_TABS: NavTabItem[] = [
   {
     id: 'jm-center',
     label: 'JM Center',
     icon: Landmark,
     href: '/jm-center',
-    isDropdown: false,
+    isDropdown: true,
     color: {
       badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 group-hover:bg-emerald-100 group-hover:text-emerald-800',
       activeBadgeBg: 'bg-[#0f5132] text-white shadow-md shadow-emerald-900/30 ring-2 ring-emerald-400/60',
@@ -75,10 +87,10 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeDot: 'bg-[#0f5132]',
     },
     items: [
-      { title: 'Sambutan Pengasuh', href: '/jm-center/sambutan', desc: 'Pesan & Arahan Pimpinan Pondok', icon: Compass },
-      { title: 'Visi & Misi', href: '/jm-center/visi-misi', desc: 'Arah & Nilai Luhur Lembaga', icon: HeartHandshake },
-      { title: 'Sejarah Pesantren', href: '/jm-center/sejarah', desc: 'Napak tilas dakwah di Lasem Sidayu', icon: Landmark },
-      { title: 'Badan Otonom & Lembaga', href: '/jm-center/lembaga', desc: 'Struktur kepengurusan & asrama', icon: Layers },
+      { title: 'Sambutan', href: '/jm-center/sambutan', desc: 'Pesan & Arahan Pimpinan Pondok', icon: Compass },
+      { title: 'Sejarah', href: '/jm-center/sejarah', desc: 'Napak tilas dakwah di Lasem Sidayu', icon: Landmark },
+      { title: 'Visi Misi', href: '/jm-center/visi-misi', desc: 'Arah & Nilai Luhur Lembaga', icon: HeartHandshake },
+      { title: 'Lembaga', href: '/jm-center/lembaga', desc: 'Struktur kepengurusan & asrama', icon: Layers },
     ]
   },
   {
@@ -86,7 +98,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     label: 'Program Unggulan',
     icon: BookOpenCheck,
     href: '/program-unggulan',
-    isDropdown: false,
+    isDropdown: true,
     color: {
       badgeBg: 'bg-blue-50 text-blue-700 border-blue-200/80 group-hover:bg-blue-100 group-hover:text-blue-800',
       activeBadgeBg: 'bg-blue-600 text-white shadow-md shadow-blue-600/30 ring-2 ring-blue-400/60',
@@ -94,24 +106,52 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeDot: 'bg-blue-600',
     },
     items: [
-      { title: 'Tahfidz 30 Juz Bersanad', href: '/smart-jm/hafidz/read', desc: "Mutaba'ah harian & sanad mutqin", icon: BookOpen },
-      { title: 'Kurikulum Terpadu & Terakreditasi "A"', href: '/program-unggulan/program-sekolah', desc: 'Pendidikan formal unggulan', icon: GraduationCap },
-      { title: 'Madrasah Diniyah Salafiyah', href: '/program-unggulan/program-madin', desc: 'Metode maknani gandul kitab turats', icon: BookOpenCheck },
       { title: 'Amaliyah Pondok', href: '/program-unggulan/amaliyah-pondok', desc: 'Wirid, ratib & sholat berjamaah', icon: HeartHandshake },
+      { title: 'Program Sekolah', href: '/program-unggulan/program-sekolah', desc: 'Kurikulum formal terakreditasi "A"', icon: GraduationCap },
+      { title: 'Program Madin', href: '/program-unggulan/program-madin', desc: 'Madrasah Diniyah maknani gandul turats', icon: BookOpenCheck },
     ]
   },
   {
-    id: 'ekskul',
-    label: 'Ekstrakurikuler',
-    icon: Sparkles,
-    href: '/ekskul',
-    isDropdown: false,
+    id: 'smart-jm',
+    label: 'SMART JM',
+    icon: Cpu,
+    href: '/smart-jm',
+    isDropdown: true,
     color: {
-      badgeBg: 'bg-purple-50 text-purple-700 border-purple-200/80 group-hover:bg-purple-100 group-hover:text-purple-800',
-      activeBadgeBg: 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-2 ring-purple-400/60',
-      activeText: 'text-purple-800',
-      activeDot: 'bg-purple-600',
+      badgeBg: 'bg-teal-50 text-teal-700 border-teal-200/80 group-hover:bg-teal-100 group-hover:text-teal-800',
+      activeBadgeBg: 'bg-teal-600 text-white shadow-md shadow-teal-600/30 ring-2 ring-teal-400/60',
+      activeText: 'text-teal-900',
+      activeDot: 'bg-teal-600',
     },
+    sections: [
+      {
+        title: 'STEM Area',
+        icon: Cpu,
+        color: 'teal',
+        items: [
+          { title: 'Materi dan Penugasan', href: '/smart-jm/stem/materi', desc: 'Silabus robotika, IoT & sains digital', icon: Cpu },
+          { title: 'Portofolio Siswa', href: '/smart-jm/stem/portofolio', desc: 'Karya inovasi teknologi praktis santri', icon: Sparkles },
+        ]
+      },
+      {
+        title: 'Mandarin Class',
+        icon: Globe,
+        color: 'sky',
+        items: [
+          { title: 'Materi', href: '/smart-jm/mandarin/materi', desc: 'Pinyin audio & kosakata percakapan', icon: Globe },
+          { title: 'Quiz', href: '/smart-jm/mandarin/quiz', desc: 'Kuis interaktif uji hafalan hanzi', icon: CheckCircle2 },
+        ]
+      },
+      {
+        title: 'Hafidz Quran',
+        icon: BookOpen,
+        color: 'emerald',
+        items: [
+          { title: 'Read Quran', href: '/smart-jm/hafidz/read', desc: 'Mushaf Al-Qur’an 30 juz bersanad', icon: BookOpen },
+          { title: 'Murojaah', href: '/smart-jm/hafidz/murojaah', desc: 'Evaluasi bacaan & hafalan santri', icon: Volume2 },
+        ]
+      }
+    ]
   },
   {
     id: 'prestasi',
@@ -127,30 +167,24 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     },
   },
   {
-    id: 'stem',
-    label: 'STEM',
-    icon: Atom,
-    href: '/stem',
+    id: 'ekskul',
+    label: 'Ekskul',
+    icon: Sparkles,
+    href: '/ekskul',
     isDropdown: false,
     color: {
-      badgeBg: 'bg-teal-50 text-teal-700 border-teal-200/80 group-hover:bg-teal-100 group-hover:text-teal-800',
-      activeBadgeBg: 'bg-teal-600 text-white shadow-md shadow-teal-600/30 ring-2 ring-teal-400/60',
-      activeText: 'text-teal-900',
-      activeDot: 'bg-teal-600',
+      badgeBg: 'bg-purple-50 text-purple-700 border-purple-200/80 group-hover:bg-purple-100 group-hover:text-purple-800',
+      activeBadgeBg: 'bg-purple-600 text-white shadow-md shadow-purple-600/30 ring-2 ring-purple-400/60',
+      activeText: 'text-purple-800',
+      activeDot: 'bg-purple-600',
     },
-    items: [
-      { title: 'Silabus STEM Santri', href: '/smart-jm/stem/materi', desc: 'Modul robotika, IoT & sains digital', icon: Cpu },
-      { title: 'Portofolio Riset Santri', href: '/smart-jm/stem/portofolio', desc: 'Karya teknologi dan otomasi praktis', icon: Sparkles },
-      { title: 'Murojaah AI Santri', href: '/smart-jm/hafidz/murojaah', desc: 'Evaluasi lafadz suara AI', icon: BookOpen },
-      { title: 'Mandarin Class', href: '/smart-jm/mandarin/materi', desc: 'Pinyin audio & percakapan interaktif', icon: GraduationCap },
-    ]
   },
   {
     id: 'galeri',
-    label: 'Galeri',
+    label: 'Galeri Sekolah',
     icon: Images,
     href: '/galeri',
-    isDropdown: false,
+    isDropdown: true,
     color: {
       badgeBg: 'bg-rose-50 text-rose-700 border-rose-200/80 group-hover:bg-rose-100 group-hover:text-rose-800',
       activeBadgeBg: 'bg-rose-600 text-white shadow-md shadow-rose-600/30 ring-2 ring-rose-400/60',
@@ -158,8 +192,8 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeDot: 'bg-rose-600',
     },
     items: [
-      { title: 'Galeri Foto Kegiatan', href: '/galeri/foto', desc: 'Dokumentasi asrama & halaqah santri', icon: Camera },
-      { title: 'Galeri Video Profil', href: '/galeri/video', desc: 'Dokumenter resmi & kegiatan hadrah', icon: Video },
+      { title: 'Foto', href: '/galeri/foto', desc: 'Dokumentasi asrama & kegiatan santri', icon: Camera },
+      { title: 'Video', href: '/galeri/video', desc: 'Dokumenter resmi & kegiatan pondok', icon: Video },
     ]
   },
 ];
@@ -201,44 +235,46 @@ export const ADMIN_MODULES: AdminModuleItem[] = [
     icon: Cpu,
     roles: ['super_admin', 'guru_akademik'],
     category: 'academic',
-    publicCategory: 'STEM',
+    publicCategory: 'SMART JM',
     publicHref: '/smart-jm/stem/materi',
+    badge: 'IoT Ready',
   },
   {
     id: 'mandarin',
-    title: 'Kelas Bahasa Mandarin',
-    shortLabel: 'Mandarin Class',
-    desc: 'Modul Pinyin Putonghua & bank soal kuis',
+    title: 'Bahasa Mandarin Santri',
+    shortLabel: 'Mandarin CMS',
+    desc: 'Input bank soal, audio pinyin & kosa kata',
     href: '/admin/mandarin',
     icon: Globe,
     roles: ['super_admin', 'guru_akademik'],
     category: 'academic',
-    publicCategory: 'STEM',
+    publicCategory: 'SMART JM',
     publicHref: '/smart-jm/mandarin/materi',
+    badge: 'Audio HSK',
   },
   {
     id: 'galeri',
-    title: 'Media Foto & Video Resmi',
+    title: 'Media & Galeri Publik',
     shortLabel: 'Galeri Media',
-    desc: 'Katalog dokumentasi WebP & channel video',
+    desc: 'Upload foto kegiatan, dokumenter & album video',
     href: '/admin/galeri',
     icon: ImageIcon,
     roles: ['super_admin', 'pengurus_konten'],
     category: 'media',
-    publicCategory: 'Galeri',
+    publicCategory: 'Galeri Sekolah',
     publicHref: '/galeri/foto',
-    badge: 'WebP',
   },
   {
     id: 'slider',
-    title: 'Konfigurasi Speed Slider',
-    shortLabel: 'Banner Slider',
-    desc: 'Kecepatan transisi & coverflow beranda',
+    title: 'Banner & Pengumuman',
+    shortLabel: 'Hero Slider',
+    desc: 'Atur slide coverflow beranda & kecepatan transisi',
     href: '/admin/slider',
     icon: Gauge,
     roles: ['super_admin', 'pengurus_konten'],
-    category: 'system',
+    category: 'core',
     publicCategory: 'Beranda',
     publicHref: '/',
+    badge: 'Coverflow',
   },
 ];

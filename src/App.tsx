@@ -74,7 +74,7 @@ export const App: React.FC = () => {
           <Route path="jm-center/lembaga" element={<Lembaga />} />
 
           {/* Program Unggulan */}
-          <Route path="program-unggulan" element={<Navigate to="/program-unggulan/program-sekolah" replace />} />
+          <Route path="program-unggulan" element={<Navigate to="/program-unggulan/amaliyah-pondok" replace />} />
           <Route path="program-unggulan/amaliyah-pondok" element={<AmaliyahPondok />} />
           <Route path="program-unggulan/program-sekolah" element={<ProgramSekolah />} />
           <Route path="program-unggulan/program-madin" element={<ProgramMadin />} />
