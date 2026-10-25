@@ -1,32 +1,42 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { ShieldCheck, Lock, Mail, CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { ShieldCheck, Lock, Mail, CheckCircle2, ArrowRight, Sparkles, AlertCircle } from 'lucide-react';
 import { UserRole } from '../../lib/supabase';
+import { useAuth } from '../../context/AuthContext';
 import { EnvAlertBanner } from '../../components/common/EnvAlertBanner';
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { signIn, switchMockRole } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [turnstileVerified, setTurnstileVerified] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const destination = (location.state as any)?.from?.pathname || '/admin';
+
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage(null);
 
-    setTimeout(() => {
-      localStorage.setItem('ppjm_admin_logged_in', 'true');
-      localStorage.setItem('ppjm_admin_role', 'super_admin');
-      setLoading(false);
-      navigate('/admin');
-    }, 600);
+    const { error } = await signIn(email, password);
+    setLoading(false);
+
+    if (error) {
+      setErrorMessage(error.message || 'Gagal masuk. Periksa email dan kata sandi Anda.');
+      return;
+    }
+
+    navigate(destination, { replace: true });
   };
 
   const handleQuickRoleLogin = (role: UserRole) => {
-    localStorage.setItem('ppjm_admin_logged_in', 'true');
-    localStorage.setItem('ppjm_admin_role', role);
-    navigate('/admin');
+    switchMockRole(role);
+    navigate(destination, { replace: true });
   };
 
   return (
@@ -51,6 +61,14 @@ export const Login: React.FC = () => {
             </p>
           </div>
         </div>
+
+        {/* Error Alert */}
+        {errorMessage && (
+          <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2.5">
+            <AlertCircle className="w-4 h-4 shrink-0 text-red-600 mt-0.5" />
+            <span className="font-semibold">{errorMessage}</span>
+          </div>
+        )}
 
         {/* Form Login */}
         <form onSubmit={handleLogin} className="space-y-4">

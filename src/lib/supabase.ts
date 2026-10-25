@@ -20,7 +20,7 @@ export const supabase = createClient<Database>(
 );
 
 // TypeScript Types
-export type UserRole = 'super_admin' | 'pengurus_konten' | 'guru_akademik';
+export type UserRole = 'super_admin' | 'pengurus_konten' | 'guru_akademik' | 'user';
 
 export interface AdminProfile {
   id: string;

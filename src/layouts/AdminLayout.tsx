@@ -26,6 +26,7 @@ import {
   Monitor
 } from 'lucide-react';
 import { UserRole } from '../lib/supabase';
+import { useAuth } from '../context/AuthContext';
 import { ADMIN_MODULES, PUBLIC_NAV_TABS, AdminModuleItem } from '../data/navigationData';
 import { EnvAlertBanner } from '../components/common/EnvAlertBanner';
 
@@ -41,23 +42,18 @@ import { EnvAlertBanner } from '../components/common/EnvAlertBanner';
 export const AdminLayout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { role: activeRole, signOut, switchMockRole } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
-  // Active Role State with localStorage persistence
-  const [activeRole, setActiveRole] = useState<UserRole>(() => {
-    return (localStorage.getItem('ppjm_admin_role') as UserRole) || 'super_admin';
-  });
-
-  const handleRoleChange = (role: UserRole) => {
-    setActiveRole(role);
-    localStorage.setItem('ppjm_admin_role', role);
+  const handleRoleChange = (newRole: UserRole) => {
+    switchMockRole(newRole);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('ppjm_admin_logged_in');
+  const handleLogout = async () => {
+    await signOut();
     navigate('/admin/login');
   };
 

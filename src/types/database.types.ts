@@ -487,9 +487,18 @@ export type Database = {
         Args: { required_role: Database["public"]["Enums"]["user_role"] }
         Returns: boolean
       }
+      get_my_role: {
+        Args: never
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
+      has_role: {
+        Args: { allowed_roles: Database["public"]["Enums"]["user_role"][] }
+        Returns: boolean
+      }
+      is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
-      user_role: "super_admin" | "pengurus_konten" | "guru_akademik"
+      user_role: "super_admin" | "pengurus_konten" | "guru_akademik" | "user"
     }
     CompositeTypes: {
       [_ in never]: never

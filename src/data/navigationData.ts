@@ -58,6 +58,8 @@ export interface NavTabItem {
   sections?: NavSubSection[];
 }
 
+import { UserRole } from '../lib/supabase';
+
 export interface AdminModuleItem {
   id: string;
   title: string;
@@ -65,7 +67,7 @@ export interface AdminModuleItem {
   desc: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
-  roles: ('super_admin' | 'pengurus_konten' | 'guru_akademik')[];
+  roles: UserRole[];
   category: 'core' | 'academic' | 'media' | 'system';
   publicCategory?: string;
   publicHref?: string;

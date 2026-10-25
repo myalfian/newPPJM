@@ -1,6 +1,8 @@
 import React, { useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { RootLayout } from './layouts/RootLayout';
+import { AuthProvider } from './context/AuthContext';
+import { RoleGuard } from './components/auth/RoleGuard';
 
 import { Sparkles } from 'lucide-react';
 
@@ -168,76 +170,92 @@ export const App: React.FC = () => {
   }, [navigate]);
 
   return (
-    <Suspense fallback={<SkeletonLoader />}>
-      <Routes>
-        {/* 1. Public Pages with Root Layout */}
-        <Route path="/" element={<RootLayout />}>
-          <Route index element={<Home />} />
+    <AuthProvider>
+      <Suspense fallback={<SkeletonLoader />}>
+        <Routes>
+          {/* 1. Public Pages with Root Layout */}
+          <Route path="/" element={<RootLayout />}>
+            <Route index element={<Home />} />
 
-          {/* JM Center Hub */}
-          <Route path="jm-center" element={<Navigate to="/jm-center/sambutan" replace />} />
-          <Route path="jm-center/sambutan" element={<Sambutan />} />
-          <Route path="jm-center/sejarah" element={<Sejarah />} />
-          <Route path="jm-center/visi-misi" element={<VisiMisi />} />
-          <Route path="jm-center/lembaga" element={<Lembaga />} />
+            {/* JM Center Hub */}
+            <Route path="jm-center" element={<Navigate to="/jm-center/sambutan" replace />} />
+            <Route path="jm-center/sambutan" element={<Sambutan />} />
+            <Route path="jm-center/sejarah" element={<Sejarah />} />
+            <Route path="jm-center/visi-misi" element={<VisiMisi />} />
+            <Route path="jm-center/lembaga" element={<Lembaga />} />
 
-          {/* Program Unggulan */}
-          <Route path="program-unggulan" element={<Navigate to="/program-unggulan/amaliyah-pondok" replace />} />
-          <Route path="program-unggulan/amaliyah-pondok" element={<AmaliyahPondok />} />
-          <Route path="program-unggulan/program-sekolah" element={<ProgramSekolah />} />
-          <Route path="program-unggulan/program-madin" element={<ProgramMadin />} />
+            {/* Program Unggulan */}
+            <Route path="program-unggulan" element={<Navigate to="/program-unggulan/amaliyah-pondok" replace />} />
+            <Route path="program-unggulan/amaliyah-pondok" element={<AmaliyahPondok />} />
+            <Route path="program-unggulan/program-sekolah" element={<ProgramSekolah />} />
+            <Route path="program-unggulan/program-madin" element={<ProgramMadin />} />
 
-          {/* Smart JM & STEM Modules */}
-          <Route path="stem" element={<Navigate to="/smart-jm/stem/materi" replace />} />
-          <Route path="smart-jm" element={<Navigate to="/smart-jm/stem/materi" replace />} />
-          <Route path="smart-jm/hafidz/read" element={<QuranReadPage />} />
-          <Route path="smart-jm/hafidz/murojaah" element={<MurojaahPage />} />
-          <Route path="smart-jm/stem/materi" element={<StemMateri />} />
-          <Route path="smart-jm/stem/portofolio" element={<StemPortofolio />} />
-          <Route path="smart-jm/mandarin/materi" element={<MandarinMateri />} />
-          <Route path="smart-jm/mandarin/quiz" element={<MandarinQuizPage />} />
+            {/* Smart JM & STEM Modules */}
+            <Route path="stem" element={<Navigate to="/smart-jm/stem/materi" replace />} />
+            <Route path="smart-jm" element={<Navigate to="/smart-jm/stem/materi" replace />} />
+            <Route path="smart-jm/hafidz/read" element={<QuranReadPage />} />
+            <Route path="smart-jm/hafidz/murojaah" element={<MurojaahPage />} />
+            <Route path="smart-jm/stem/materi" element={<StemMateri />} />
+            <Route path="smart-jm/stem/portofolio" element={<StemPortofolio />} />
+            <Route path="smart-jm/mandarin/materi" element={<MandarinMateri />} />
+            <Route path="smart-jm/mandarin/quiz" element={<MandarinQuizPage />} />
 
-          {/* Prestasi & Ekskul */}
-          <Route path="prestasi" element={<Prestasi />} />
-          <Route path="ekskul" element={<Ekskul />} />
+            {/* Prestasi & Ekskul */}
+            <Route path="prestasi" element={<Prestasi />} />
+            <Route path="ekskul" element={<Ekskul />} />
 
-          {/* Agenda Kegiatan Santri (Historical, Current, Future) */}
-          <Route path="agenda" element={<Agenda />} />
+            {/* Agenda Kegiatan Santri (Historical, Current, Future) */}
+            <Route path="agenda" element={<Agenda />} />
 
-          {/* Galeri Sekolah */}
-          <Route path="galeri" element={<Navigate to="/galeri/foto" replace />} />
-          <Route path="galeri/foto" element={<GaleriFoto />} />
-          <Route path="galeri/video" element={<GaleriVideo />} />
-        </Route>
+            {/* Galeri Sekolah */}
+            <Route path="galeri" element={<Navigate to="/galeri/foto" replace />} />
+            <Route path="galeri/foto" element={<GaleriFoto />} />
+            <Route path="galeri/video" element={<GaleriVideo />} />
+          </Route>
 
-        {/* 2. Admin Login Routes */}
-        <Route path="/admin/login" element={<Login />} />
-        <Route path="/login" element={<Login />} />
+          {/* 2. Admin Login Routes */}
+          <Route path="/admin/login" element={<Login />} />
+          <Route path="/login" element={<Login />} />
 
-        {/* 3. Admin CMS Zero-IT-Skill Portal */}
-        <Route path="/admin/*" element={<AdminLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="berita" element={<KelolaBerita />} />
-          <Route path="stem" element={<KelolaStem />} />
-          <Route path="mandarin" element={<KelolaMandarin />} />
-          <Route path="galeri" element={<KelolaGaleri />} />
-          <Route path="slider" element={<KelolaSlider />} />
-          <Route path="hafidz" element={<KelolaHafidz />} />
-          <Route path="prestasi" element={<KelolaPrestasi />} />
-          <Route path="ekskul" element={<KelolaEkskul />} />
-          <Route path="profil" element={<KelolaProfil />} />
-          <Route path="*" element={<Dashboard />} />
-        </Route>
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="*" element={<Dashboard />} />
-        </Route>
+          {/* 3. Admin CMS Zero-IT-Skill Portal Protected by RoleGuard */}
+          <Route
+            path="/admin/*"
+            element={
+              <RoleGuard allowedRoles={['super_admin', 'pengurus_konten', 'guru_akademik']}>
+                <AdminLayout />
+              </RoleGuard>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="berita" element={<KelolaBerita />} />
+            <Route path="stem" element={<KelolaStem />} />
+            <Route path="mandarin" element={<KelolaMandarin />} />
+            <Route path="galeri" element={<KelolaGaleri />} />
+            <Route path="slider" element={<KelolaSlider />} />
+            <Route path="hafidz" element={<KelolaHafidz />} />
+            <Route path="prestasi" element={<KelolaPrestasi />} />
+            <Route path="ekskul" element={<KelolaEkskul />} />
+            <Route path="profil" element={<KelolaProfil />} />
+            <Route path="*" element={<Dashboard />} />
+          </Route>
+          <Route
+            path="/admin"
+            element={
+              <RoleGuard allowedRoles={['super_admin', 'pengurus_konten', 'guru_akademik']}>
+                <AdminLayout />
+              </RoleGuard>
+            }
+          >
+            <Route index element={<Dashboard />} />
+            <Route path="*" element={<Dashboard />} />
+          </Route>
 
-        {/* 4. 404 Fallback to Home */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Suspense>
+          {/* 4. 404 Fallback to Home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
+    </AuthProvider>
   );
 };
 
