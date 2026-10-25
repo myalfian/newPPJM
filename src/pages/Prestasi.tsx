@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Award, Trophy, X, ExternalLink, ChevronRight } from 'lucide-react';
-import { Achievement } from '../lib/supabase';
+import { Achievement, supabase } from '../lib/supabase';
+import { useCachedQuery } from '../lib/queryCache';
 import { NavBarTabs } from '../components/common/NavBarTabs';
 import { BottomNavBarTabs } from '../components/common/BottomNavBarTabs';
 
@@ -47,15 +48,47 @@ const SAMPLE_ACHIEVEMENTS: Achievement[] = [
   }
 ];
 
+const fetchAchievements = async (): Promise<Achievement[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('achievements')
+      .select('*')
+      .order('year', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      return SAMPLE_ACHIEVEMENTS;
+    }
+
+    return data.map((item) => ({
+      id: item.id,
+      title: item.title,
+      category: item.category,
+      year: item.year,
+      winner_name: item.winner_name,
+      medal_type: item.medal_type,
+      certificate_url: item.certificate_url || undefined,
+      description: item.description || undefined,
+    }));
+  } catch {
+    return SAMPLE_ACHIEVEMENTS;
+  }
+};
+
 export const Prestasi: React.FC = () => {
+  const { data: achievements } = useCachedQuery<Achievement[]>(
+    'achievements_list',
+    fetchAchievements,
+    SAMPLE_ACHIEVEMENTS
+  );
+
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [selectedYear, setSelectedYear] = useState<string>('Semua');
   const [activeModalItem, setActiveModalItem] = useState<Achievement | null>(null);
 
   const categories = ['Semua', 'Kitab Kuning / MQK', 'Tahfidz 30 Juz', 'Robotika / STEM', 'Olahraga & Silat'];
-  const years = ['Semua', '2025', '2024'];
+  const years = ['Semua', '2026', '2025', '2024'];
 
-  const filtered = SAMPLE_ACHIEVEMENTS.filter((item) => {
+  const filtered = achievements.filter((item) => {
     const matchCat = selectedCategory === 'Semua' || item.category === selectedCategory;
     const matchYr = selectedYear === 'Semua' || String(item.year) === selectedYear;
     return matchCat && matchYr;

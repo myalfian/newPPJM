@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Image as ImageIcon, Calendar, ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { GalleryItem } from '../../lib/supabase';
+import { GalleryItem, supabase } from '../../lib/supabase';
+import { useCachedQuery } from '../../lib/queryCache';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
 
 const SAMPLE_GALLERIES: GalleryItem[] = [
@@ -47,7 +48,41 @@ const SAMPLE_GALLERIES: GalleryItem[] = [
   }
 ];
 
+const fetchGalleries = async (): Promise<GalleryItem[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('galleries')
+      .select('*, gallery_photos(*)')
+      .eq('category', 'foto')
+      .order('event_date', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      return SAMPLE_GALLERIES;
+    }
+
+    return data.map((item: any) => ({
+      id: item.id,
+      slug: item.slug,
+      title: item.title,
+      category: item.category as 'foto' | 'video',
+      event_date: item.event_date,
+      description: item.description || '',
+      cover_image: item.cover_image || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
+      photos: Array.isArray(item.gallery_photos) && item.gallery_photos.length > 0
+        ? item.gallery_photos.map((p: any) => ({ photo_url: p.photo_url, caption: p.caption || '' }))
+        : (item.cover_image ? [{ photo_url: item.cover_image, caption: item.title }] : undefined)
+    }));
+  } catch {
+    return SAMPLE_GALLERIES;
+  }
+};
+
 export const GaleriFoto: React.FC = () => {
+  const { data: galleries } = useCachedQuery<GalleryItem[]>(
+    'galleries_foto_list',
+    fetchGalleries,
+    SAMPLE_GALLERIES
+  );
   const [selectedAgenda, setSelectedAgenda] = useState<GalleryItem | null>(null);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
@@ -96,7 +131,7 @@ export const GaleriFoto: React.FC = () => {
 
       {/* Grid of Agenda Galleries */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1.5 sm:gap-2.5 lg:gap-3">
-        {SAMPLE_GALLERIES.map((agenda) => (
+        {galleries.map((agenda) => (
           <div
             key={agenda.id}
             onClick={() => openSlider(agenda)}

@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { Play, ExternalLink, X, Film, ChevronRight } from 'lucide-react';
 import { YoutubeIcon, InstagramIcon } from '../../components/common/SocialIcons';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
+import { supabase } from '../../lib/supabase';
+import { useCachedQuery } from '../../lib/queryCache';
 
 interface VideoItem {
   id: string;
@@ -52,7 +54,40 @@ const SAMPLE_VIDEOS: VideoItem[] = [
   }
 ];
 
+const fetchVideos = async (): Promise<VideoItem[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('galleries')
+      .select('*')
+      .eq('category', 'video')
+      .order('event_date', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      return SAMPLE_VIDEOS;
+    }
+
+    return data.map((item) => ({
+      id: item.id,
+      title: item.title,
+      date: item.event_date,
+      duration: '07:30',
+      youtubeId: item.video_url || 'dQw4w9WgXcQ',
+      thumbnail: item.cover_image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+      desc: item.description || '',
+      reelsUrl: 'https://instagram.com/ppjauharulmaknuun',
+      tiktokUrl: 'https://tiktok.com/@ppjauharulmaknuun'
+    }));
+  } catch {
+    return SAMPLE_VIDEOS;
+  }
+};
+
 export const GaleriVideo: React.FC = () => {
+  const { data: videos } = useCachedQuery<VideoItem[]>(
+    'galleries_video_list',
+    fetchVideos,
+    SAMPLE_VIDEOS
+  );
   const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
 
   return (
@@ -85,7 +120,7 @@ export const GaleriVideo: React.FC = () => {
 
       {/* Grid of Videos */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1.5 sm:gap-2.5 lg:gap-3">
-        {SAMPLE_VIDEOS.map((video) => (
+        {videos.map((video) => (
           <div
             key={video.id}
             className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all flex flex-col justify-between"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Cpu,
   PlusCircle,
@@ -14,7 +14,7 @@ import {
   Layers,
   X
 } from 'lucide-react';
-import { StemProject } from '../../lib/supabase';
+import { StemProject, supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 const INITIAL_PROJECTS: StemProject[] = [
   {
@@ -83,6 +83,40 @@ export const KelolaStem: React.FC = () => {
   const [specsText, setSpecsText] = useState('Mikrokontroler: ESP32\nSensor: Digital Sensor\nEfisiensi: Tinggi');
   const [savedAlert, setSavedAlert] = useState(false);
 
+  // Load from Supabase on mount
+  useEffect(() => {
+    const loadFromSupabase = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('stem_projects')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!error && data && data.length > 0) {
+          setProjects(
+            data.map((row) => ({
+              id: row.id,
+              slug: row.slug,
+              title: row.title,
+              category: row.category,
+              description: row.description,
+              specs: (row.specs as Record<string, any>) || undefined,
+              syllabus_url: row.syllabus_url || undefined,
+              assignment_doc_url: row.assignment_doc_url || undefined,
+              cover_image: row.cover_image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+              is_portfolio: Boolean(row.is_portfolio),
+              author_santri: row.author_santri || undefined,
+            }))
+          );
+        }
+      } catch (err) {
+        console.warn('Fallback to local STEM projects:', err);
+      }
+    };
+    loadFromSupabase();
+  }, []);
+
   const resetForm = () => {
     setTitle('');
     setCategory('Internet of Things (IoT)');
@@ -106,13 +140,20 @@ export const KelolaStem: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Apakah Anda yakin ingin menghapus proyek STEM ini?')) {
       setProjects(projects.filter((p) => p.id !== id));
+      if (isSupabaseConfigured() && !id.startsWith('p-') && !id.startsWith('p1') && !id.startsWith('p2') && !id.startsWith('p3')) {
+        try {
+          await supabase.from('stem_projects').delete().eq('id', id);
+        } catch (err) {
+          console.warn('Failed to delete STEM project on Supabase:', err);
+        }
+      }
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !description) return;
 
@@ -125,6 +166,11 @@ export const KelolaStem: React.FC = () => {
       }
     });
 
+    const finalImage = coverImage || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80';
+    const finalAuthor = author || (activeTab === 'materi' ? 'Laboratorium STEM PPJM' : 'Santri Riset PPJM');
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const isPort = activeTab === 'portofolio';
+
     if (editingId) {
       setProjects(
         projects.map((p) =>
@@ -134,34 +180,81 @@ export const KelolaStem: React.FC = () => {
                 title,
                 category,
                 description,
-                author_santri: author || (activeTab === 'materi' ? 'Laboratorium STEM PPJM' : 'Santri Riset PPJM'),
-                cover_image: coverImage || p.cover_image,
+                author_santri: finalAuthor,
+                cover_image: finalImage,
                 specs: specsObj,
-                is_portfolio: activeTab === 'portofolio',
+                is_portfolio: isPort,
               }
             : p
         )
       );
+
+      if (isSupabaseConfigured() && !editingId.startsWith('p-')) {
+        try {
+          await supabase
+            .from('stem_projects')
+            .update({
+              title,
+              category,
+              description,
+              author_santri: finalAuthor,
+              cover_image: finalImage,
+              specs: specsObj,
+              is_portfolio: isPort,
+            })
+            .eq('id', editingId);
+        } catch (err) {
+          console.warn('Failed to update STEM project on Supabase:', err);
+        }
+      }
     } else {
+      let createdId = `p-${Date.now()}`;
+
+      if (isSupabaseConfigured()) {
+        try {
+          const { data } = await supabase
+            .from('stem_projects')
+            .insert({
+              slug,
+              title,
+              category,
+              description,
+              author_santri: finalAuthor,
+              cover_image: finalImage,
+              specs: specsObj,
+              is_portfolio: isPort,
+              syllabus_url: '#unduh-silabus',
+              assignment_doc_url: '#unduh-tugas',
+            })
+            .select()
+            .single();
+
+          if (data?.id) {
+            createdId = data.id;
+          }
+        } catch (err) {
+          console.warn('Failed to insert STEM project on Supabase:', err);
+        }
+      }
+
       const newProj: StemProject = {
-        id: `p-${Date.now()}`,
-        slug: title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+        id: createdId,
+        slug,
         title,
         category,
         description,
-        author_santri: author || (activeTab === 'materi' ? 'Laboratorium STEM PPJM' : 'Santri Riset PPJM'),
-        cover_image: coverImage || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+        author_santri: finalAuthor,
+        cover_image: finalImage,
         syllabus_url: '#unduh-silabus',
         assignment_doc_url: '#unduh-tugas',
         specs: specsObj,
-        is_portfolio: activeTab === 'portofolio',
+        is_portfolio: isPort,
       };
       setProjects([newProj, ...projects]);
     }
 
     setSavedAlert(true);
     resetForm();
-    setTimeout(() => setSavedAlert(false), 2500);
   };
 
   const displayList = projects.filter((p) => {

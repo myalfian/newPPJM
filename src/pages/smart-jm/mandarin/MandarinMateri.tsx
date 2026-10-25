@@ -12,7 +12,8 @@ import {
   Layers,
   Image as ImageIcon
 } from 'lucide-react';
-import { MandarinLesson } from '../../../lib/supabase';
+import { MandarinLesson, supabase } from '../../../lib/supabase';
+import { useCachedQuery } from '../../../lib/queryCache';
 import { NavBarTabs } from '../../../components/common/NavBarTabs';
 import { SmartJmSubNav } from '../../../components/smart-jm/SmartJmSubNav';
 
@@ -70,8 +71,43 @@ const DEFAULT_LESSONS: EnrichedLesson[] = [
   }
 ];
 
+const fetchLessons = async (): Promise<EnrichedLesson[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('mandarin_lessons')
+      .select('*')
+      .order('order_index', { ascending: true });
+
+    if (error || !data || data.length === 0) {
+      return DEFAULT_LESSONS;
+    }
+
+    return data.map((item) => ({
+      id: item.id,
+      order_index: item.order_index,
+      level: item.level,
+      topic: item.topic,
+      hanzi: item.hanzi || '',
+      pinyin: item.pinyin,
+      meaning_id: item.meaning_id,
+      narrative: 'Modul kurikulum bahasa Mandarin santri Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik.',
+      dialog_script: Array.isArray(item.dialog_script) ? (item.dialog_script as any) : undefined,
+      audio_url: item.audio_url || undefined,
+      cover_image: item.cover_image || 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=800&q=80',
+    }));
+  } catch {
+    return DEFAULT_LESSONS;
+  }
+};
+
 export const MandarinMateri: React.FC = () => {
-  const [selectedLesson, setSelectedLesson] = useState<EnrichedLesson>(DEFAULT_LESSONS[0]);
+  const { data: lessons } = useCachedQuery<EnrichedLesson[]>(
+    'mandarin_lessons_list',
+    fetchLessons,
+    DEFAULT_LESSONS
+  );
+  const [selectedLessonId, setSelectedLessonId] = useState<string>(DEFAULT_LESSONS[0].id);
+  const selectedLesson = lessons.find((l) => l.id === selectedLessonId) || lessons[0] || DEFAULT_LESSONS[0];
 
   const speakText = (text: string) => {
     if ('speechSynthesis' in window) {
@@ -124,17 +160,17 @@ export const MandarinMateri: React.FC = () => {
           <div className="text-xs font-bold text-slate-500 uppercase tracking-wider px-1 flex items-center justify-between">
             <span>Daftar Topik Materi:</span>
             <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-bold">
-              {DEFAULT_LESSONS.length} Modul
+              {lessons.length} Modul
             </span>
           </div>
 
           <div className="space-y-1.5">
-            {DEFAULT_LESSONS.map((lesson, idx) => {
+            {lessons.map((lesson, idx) => {
               const active = selectedLesson.id === lesson.id;
               return (
                 <button
                   key={lesson.id}
-                  onClick={() => setSelectedLesson(lesson)}
+                  onClick={() => setSelectedLessonId(lesson.id)}
                   className={`w-full text-left p-3 rounded-2xl border transition-all flex items-center justify-between gap-2.5 ${
                     active
                       ? 'bg-emerald-900 text-white border-emerald-900 shadow-sm'

@@ -10,17 +10,53 @@ import {
 } from 'lucide-react';
 import { SearchModal } from './SearchModal';
 import { PUBLIC_NAV_TABS, NavTabItem } from '../../data/navigationData';
+import { useAuth } from '../../context/AuthContext';
+
+// Helper formatters for Profile Pill
+const DEFAULT_VISITOR_AVATAR = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80';
+
+const getFormattedDisplayName = (fullName?: string, role?: string): string => {
+  if (!fullName || role === 'visitor') return 'Tamu';
+  const trimmed = fullName.trim();
+  if (trimmed.startsWith('KH.')) {
+    const parts = trimmed.split(' ');
+    return parts.slice(0, 2).join(' '); // "KH. Jauharul"
+  }
+  if (trimmed.startsWith('Ustadz')) {
+    const parts = trimmed.replace('Ustadz ', '').split(' ');
+    return `Ust. ${parts[parts.length - 1] || parts[0]}`; // "Ust. Ridlwan", "Ust. Riski"
+  }
+  const parts = trimmed.split(' ');
+  if (parts.length > 1 && parts[0].length <= 5) {
+    return `${parts[0]} ${parts[1]}`; // "Ahmad Zaki"
+  }
+  return parts[0] || 'Akun';
+};
+
+const getRoleDisplayBadge = (role?: string, statusBadge?: string): string => {
+  if (!role || role === 'visitor') return 'Visitor';
+  if (role === 'super_admin') return 'Super Admin';
+  if (role === 'pengurus_konten') return 'Pengurus Konten';
+  if (role === 'guru_akademik') return 'Guru Akademik';
+  if (role === 'user') return 'Santri';
+  return statusBadge || 'Pengurus';
+};
+
 
 interface NavbarProps {
+
   onOpenMobileMenu?: () => void;
   userName?: string;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) => {
+
+  const { profile, role, isAuthenticated } = useAuth();
   const [searchOpen, setSearchOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const location = useLocation();
+
 
   // Active User Name with Default "Guest"
   const [currentUserName, setCurrentUserName] = useState<string>(() => {
@@ -109,11 +145,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             {/* Brand Logo & Title */}
             <Link
               to="/"
-              className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 group shrink-0 select-none"
+              className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 group shrink-0 select-none"
               aria-label="Beranda Pondok Pesantren Jauharul Maknuun"
             >
-              {/* Google Gemini Animated Border Glow Logo Wrapper - Fixed Dimensions Locked */}
-              <div className="relative w-[34px] h-[34px] min-w-[34px] min-h-[34px] max-w-[34px] max-h-[34px] xs:w-[36px] xs:h-[36px] xs:min-w-[36px] xs:min-h-[36px] xs:max-w-[36px] xs:max-h-[36px] sm:w-[40px] sm:h-[40px] sm:min-w-[40px] sm:min-h-[40px] sm:max-w-[40px] sm:max-h-[40px] lg:w-[44px] lg:h-[44px] lg:min-w-[44px] lg:min-h-[44px] lg:max-w-[44px] lg:max-h-[44px] rounded-full p-[1.5px] xs:p-[2px] flex items-center justify-center group-hover:scale-105 transition-all duration-300 shrink-0 flex-none aspect-square">
+              {/* Google Gemini Animated Border Glow Logo Wrapper - Height Matched with Text Block */}
+              <div className="relative w-[38px] h-[38px] min-w-[38px] min-h-[38px] max-w-[38px] max-h-[38px] xs:w-[42px] xs:h-[42px] xs:min-w-[42px] xs:min-h-[42px] xs:max-w-[42px] xs:max-h-[42px] sm:w-[48px] sm:h-[48px] sm:min-w-[48px] sm:min-h-[48px] sm:max-w-[48px] sm:max-h-[48px] lg:w-[52px] lg:h-[52px] lg:min-w-[52px] lg:min-h-[52px] lg:max-w-[52px] lg:max-h-[52px] rounded-full p-[1.5px] xs:p-[2px] flex items-center justify-center group-hover:scale-105 transition-all duration-300 shrink-0 flex-none aspect-square">
                 {/* 1. Soft Ambient Halo Aura */}
                 <div className="gemini-ambient-aura rounded-full" aria-hidden="true">
                   <div className="gemini-beam-sweep" />
@@ -129,8 +165,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                   <img
                     src="/logo.jpg"
                     alt="Logo Pondok Pesantren Jauharul Maknuun"
-                    width="44"
-                    height="44"
+                    width="52"
+                    height="52"
                     loading="eager"
                     decoding="async"
                     className="w-full h-full min-w-full min-h-full max-w-full max-h-full object-cover rounded-full block shrink-0 flex-none select-none pointer-events-none"
@@ -140,22 +176,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                   />
                 </div>
               </div>
-              <div className="flex flex-col">
-                <span className="font-extrabold text-[10px] xs:text-[11px] sm:text-xs tracking-wider text-[#0d4a28] uppercase leading-tight">
+
+              {/* Text Block: Exact Height Lock with Logo (h-[38px] xs:h-[42px] sm:h-[48px] lg:h-[52px]) */}
+              <div className="h-[38px] xs:h-[42px] sm:h-[48px] lg:h-[52px] flex flex-col justify-between py-[0.5px] sm:py-[1px] select-none leading-none">
+                <span className="font-extrabold text-[9.5px] xs:text-[10px] sm:text-[11px] lg:text-[11.5px] tracking-wider text-[#0d4a28] uppercase leading-none block">
                   PONDOK PESANTREN
                 </span>
-                <span className="font-black text-[14px] xs:text-[15px] sm:text-lg lg:text-xl tracking-tight text-[#d4af37] leading-tight whitespace-nowrap">
+                <span className="font-black text-[14.5px] xs:text-[16px] sm:text-[18.5px] lg:text-[20.5px] tracking-tight text-[#d4af37] leading-none whitespace-nowrap block">
                   JAUHARUL MAKNUUN
                 </span>
-                <span className="text-[11px] sm:text-xs text-slate-500 font-semibold hidden sm:block">
+                <span className="text-[9.5px] xs:text-[10px] sm:text-[10.5px] lg:text-[11px] text-slate-500 font-semibold leading-none hidden sm:block">
                   Lasem Sidayu Gresik - Jawa Timur
                 </span>
               </div>
             </Link>
 
+
             {/* Desktop Navigation: Equal Width & Uniform Horizontal Distribution (h-[58px]) */}
             <nav
-              className="hidden lg:grid grid-cols-6 items-center h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[540px] xl:w-[660px] 2xl:w-[720px]"
+              className="hidden lg:grid grid-cols-6 items-center h-[56px] xl:h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[530px] xl:w-[650px] 2xl:w-[710px]"
               onMouseLeave={() => setHoveredTab(null)}
             >
               {navTabs.map((tab) => {
@@ -169,28 +208,34 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                     className="relative h-full w-full flex items-center justify-center"
                     onMouseEnter={() => setHoveredTab(tab.id)}
                   >
-                    {/* Direct Page Navigation Link (Icon on top with Android color badge, Name below) - Equal Width & Centered */}
+                    {/* Direct Page Navigation Link: Both Icon Badge and Menu Label Fit Comfortably Inside Container */}
                     <Link
                       to={tab.href}
                       onClick={() => {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }}
-                      className="relative z-10 w-full h-full px-1 py-1 rounded-2xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
+                      className="relative z-10 w-full h-full px-1 py-1 rounded-xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
                     >
-                      {/* Android-style Rounded Colorful Icon Badge */}
-                      <div className={`w-7.5 h-7.5 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center border transition-all duration-200 group-hover:scale-110 group-hover:-translate-y-0.5 ${isActive
-                          ? tab.color.activeBadgeBg
-                          : tab.color.badgeBg
-                        }`}>
-                        <TabIcon className="w-4 h-4 transition-transform duration-200" />
+                      {/* Compact Android-style Colorful Icon Badge */}
+                      <div
+                        className={`w-6 h-6 xl:w-6.5 xl:h-6.5 rounded-lg flex items-center justify-center border transition-all duration-200 group-hover:scale-105 shrink-0 ${
+                          isActive
+                            ? tab.color.activeBadgeBg
+                            : tab.color.badgeBg
+                        }`}
+                      >
+                        <TabIcon className="w-3.5 h-3.5 xl:w-3.5 xl:h-3.5 transition-transform duration-200 shrink-0" />
                       </div>
 
-                      {/* Menu Label: Equal Width Distribution, Bold & Centered (Larger font size for readability) */}
-                      <div className="w-full text-center px-0.5 mt-0.5">
-                        <span className={`block text-[13px] xl:text-[14px] 2xl:text-[15px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${isActive
-                            ? tab.color.activeText
-                            : 'text-slate-700 group-hover:text-slate-950'
-                          }`}>
+                      {/* Menu Label: Centered, Bold & Crisp Inside the Capsule Card */}
+                      <div className="w-full text-center px-0.5 mt-1 leading-none">
+                        <span
+                          className={`block text-[11px] xl:text-[12px] 2xl:text-[12.5px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${
+                            isActive
+                              ? tab.color.activeText
+                              : 'text-slate-700 group-hover:text-slate-950'
+                          }`}
+                        >
                           {tab.label}
                         </span>
                       </div>
@@ -200,7 +245,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                     {isHovered && (
                       <motion.div
                         layoutId="nav-capsule-indicator"
-                        className="absolute inset-0 rounded-2xl bg-white shadow-[0_2px_12px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.04)] border border-slate-200/90 z-0 pointer-events-none"
+                        className="absolute inset-0.5 rounded-xl bg-white shadow-[0_2px_12px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.04)] border border-slate-200/90 z-0 pointer-events-none"
                         transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                       />
                     )}
@@ -208,7 +253,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                     {isActive && !isHovered && !hoveredTab && (
                       <motion.div
                         layoutId="nav-capsule-indicator"
-                        className="absolute inset-0 rounded-2xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-200/80 z-0 pointer-events-none"
+                        className="absolute inset-0.5 rounded-xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-200/80 z-0 pointer-events-none"
                         transition={{ type: 'spring', stiffness: 450, damping: 32 }}
                       />
                     )}
@@ -216,6 +261,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                 );
               })}
             </nav>
+
 
             {/* Mobile Viewport: Rounded Pill Search Bar (1:1 with reference image: 🔍 Search for anything...) */}
             <button
@@ -298,36 +344,52 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
 
               {/* 2. Profile Pill Capsule (Universal for All Viewports - Fixed Locked Dimensions) */}
               <Link
-                to="/admin"
-                className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 pl-0.5 xs:pl-1 pr-1.5 xs:pr-2.5 sm:pr-3 py-0.5 xs:py-1 lg:py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer select-none shrink-0 flex-none h-8 xs:h-8.5 sm:h-9 lg:h-10 max-h-10"
-                title={`Profil Pengguna: ${currentUserName}`}
+                to="/profil"
+                className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 pl-0.5 xs:pl-1 pr-1.5 xs:pr-2.5 sm:pr-3 py-0.5 xs:py-1 lg:py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer select-none shrink-0 flex-none h-8 xs:h-8.5 sm:h-9 lg:h-10 max-h-10 group"
+                title={`Profil Pengguna: ${profile?.full_name || 'Tamu / Pengunjung'} (${getRoleDisplayBadge(role, profile?.status_badge)})`}
               >
                 {/* User Portrait Avatar - Strictly Dimension Locked */}
-                <div className="w-[26px] h-[26px] min-w-[26px] min-h-[26px] max-w-[26px] max-h-[26px] xs:w-[28px] xs:h-[28px] xs:min-w-[28px] xs:min-h-[28px] xs:max-w-[28px] xs:max-h-[28px] sm:w-[30px] sm:h-[30px] sm:min-w-[30px] sm:min-h-[30px] sm:max-w-[30px] sm:max-h-[30px] lg:w-[32px] lg:h-[32px] lg:min-w-[32px] lg:min-h-[32px] lg:max-w-[32px] lg:max-h-[32px] rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0 flex-none aspect-square">
+                <div className="relative w-[26px] h-[26px] min-w-[26px] min-h-[26px] max-w-[26px] max-h-[26px] xs:w-[28px] xs:h-[28px] xs:min-w-[28px] xs:min-h-[28px] xs:max-w-[28px] xs:max-h-[28px] sm:w-[30px] sm:h-[30px] sm:min-w-[30px] sm:min-h-[30px] sm:max-w-[30px] sm:max-h-[30px] lg:w-[32px] lg:h-[32px] lg:min-w-[32px] lg:min-h-[32px] lg:max-w-[32px] lg:max-h-[32px] rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0 flex-none aspect-square">
                   <img
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
-                    alt="Michael Admin"
+                    src={profile?.avatar_url || DEFAULT_VISITOR_AVATAR}
+                    alt={profile?.full_name || 'Avatar Profil'}
                     width="32"
                     height="32"
                     loading="eager"
                     decoding="async"
                     className="w-full h-full min-w-full min-h-full max-w-full max-h-full object-cover rounded-full block shrink-0 flex-none select-none pointer-events-none"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = DEFAULT_VISITOR_AVATAR;
+                    }}
+                  />
+                  {/* Status Indicator Dot */}
+                  <span
+                    className={`absolute bottom-0 right-0 w-2 h-2 rounded-full border border-white ring-1 ${
+                      isAuthenticated
+                        ? 'bg-emerald-500 ring-emerald-300'
+                        : 'bg-slate-400 ring-slate-200'
+                    }`}
                   />
                 </div>
 
                 {/* Name & Role Text Stack */}
                 <div className="flex flex-col text-left leading-tight shrink-0">
-                  <span className="text-[10px] xs:text-[11px] sm:text-xs lg:text-[13px] font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[38px] xs:max-w-[60px] sm:max-w-[85px] lg:max-w-[120px]">
-                    Michael
+                  <span className="text-[10px] xs:text-[11px] sm:text-xs lg:text-[13px] font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[42px] xs:max-w-[65px] sm:max-w-[90px] lg:max-w-[125px]">
+                    {getFormattedDisplayName(profile?.full_name, role)}
                   </span>
-                  <span className="text-[7.5px] xs:text-[8.5px] sm:text-[9.5px] lg:text-[10px] font-medium text-slate-400 leading-none">
-                    Admin
+                  <span
+                    className={`text-[7.5px] xs:text-[8.5px] sm:text-[9.5px] lg:text-[10px] font-medium leading-none capitalize ${
+                      isAuthenticated ? 'text-emerald-700' : 'text-slate-500'
+                    }`}
+                  >
+                    {getRoleDisplayBadge(role, profile?.status_badge)}
                   </span>
                 </div>
 
                 {/* Dropdown Chevron */}
-                <ChevronDown className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-slate-400 shrink-0 ml-0.2 xs:ml-0.5" />
+                <ChevronDown className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-slate-400 shrink-0 ml-0.2 xs:ml-0.5 group-hover:text-slate-600 transition-colors" />
               </Link>
+
 
             </div>
 

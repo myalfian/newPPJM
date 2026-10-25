@@ -55,6 +55,13 @@ export type Database = {
           full_name: string
           id: string
           role: Database["public"]["Enums"]["user_role"]
+          phone: string | null
+          bio: string | null
+          department: string | null
+          nis_or_nip: string | null
+          status_badge: string | null
+          must_change_password: boolean | null
+          last_password_change: string | null
           updated_at: string
         }
         Insert: {
@@ -63,6 +70,13 @@ export type Database = {
           full_name: string
           id: string
           role?: Database["public"]["Enums"]["user_role"]
+          phone?: string | null
+          bio?: string | null
+          department?: string | null
+          nis_or_nip?: string | null
+          status_badge?: string | null
+          must_change_password?: boolean | null
+          last_password_change?: string | null
           updated_at?: string
         }
         Update: {
@@ -71,6 +85,13 @@ export type Database = {
           full_name?: string
           id?: string
           role?: Database["public"]["Enums"]["user_role"]
+          phone?: string | null
+          bio?: string | null
+          department?: string | null
+          nis_or_nip?: string | null
+          status_badge?: string | null
+          must_change_password?: boolean | null
+          last_password_change?: string | null
           updated_at?: string
         }
         Relationships: []

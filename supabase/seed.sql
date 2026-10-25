@@ -79,7 +79,11 @@ INSERT INTO public.programs (slug, category, title, schedule, target_audience, d
     'https://images.unsplash.com/photo-1532012164546-f432f2e3777a?auto=format&fit=crop&w=800&q=80',
     '["Tingkat Ula: Jurumiyah, Tijan Darori, Safinatun Najah, Aqidatul Awam", "Tingkat Wustho: Al-Imrithi, Fathul Qorib, Ta''limul Muta''allim, Waroqot", "Tingkat Ulya: Alfiyah Ibnu Malik, Fathul Mu''in, Al-Jauharul Maknuun, Ushul Fiqih"]'::jsonb
 )
-ON CONFLICT (slug) DO NOTHING;
+ON CONFLICT (slug) DO UPDATE SET
+    title = EXCLUDED.title,
+    category = EXCLUDED.category,
+    schedule = EXCLUDED.schedule,
+    description = EXCLUDED.description;
 
 -- 3. STEM PROJECTS (Materi & Portofolio Siswa)
 INSERT INTO public.stem_projects (slug, title, category, description, specs, syllabus_url, assignment_doc_url, cover_image, is_portfolio, author_santri) VALUES
@@ -119,7 +123,10 @@ INSERT INTO public.stem_projects (slug, title, category, description, specs, syl
     false,
     'Ustadz Riski, S.T. (Guru Pembina STEM)'
 )
-ON CONFLICT (slug) DO NOTHING;
+ON CONFLICT (slug) DO UPDATE SET
+    title = EXCLUDED.title,
+    category = EXCLUDED.category,
+    description = EXCLUDED.description;
 
 -- 4. MANDARIN LESSONS & QUIZZES
 INSERT INTO public.mandarin_lessons (id, order_index, level, topic, hanzi, pinyin, meaning_id, audio_url, cover_image, dialog_script) VALUES
@@ -147,38 +154,52 @@ INSERT INTO public.mandarin_lessons (id, order_index, level, topic, hanzi, pinyi
     'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80',
     '[{"speaker": "Ustadz", "hanzi": "你们在学什么？", "pinyin": "Nǐmen zài xué shénme?", "arti": "Kalian sedang belajar apa?"}, {"speaker": "Santri", "hanzi": "我们在读古兰经。", "pinyin": "Wǒmen zài dú gǔlánjīng.", "arti": "Kami sedang membaca Al-Qur''an."}]'::jsonb
 )
-ON CONFLICT DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET
+    topic = EXCLUDED.topic,
+    hanzi = EXCLUDED.hanzi,
+    pinyin = EXCLUDED.pinyin,
+    meaning_id = EXCLUDED.meaning_id;
 
-INSERT INTO public.mandarin_quizzes (lesson_id, question, question_type, options, correct_index, explanation) VALUES
-(
+-- Insert quizzes if not exists
+INSERT INTO public.mandarin_quizzes (lesson_id, question, question_type, options, correct_index, explanation)
+SELECT 
     'a1b2c3d4-0001-0000-0000-000000000001',
     'Apa arti dari sapaan "Nǐ hǎo" (你好) dalam Bahasa Indonesia?',
     'choice',
     '["Selamat tinggal", "Halo / Selamat Sejahtera", "Terima kasih banyak", "Sama-sama"]'::jsonb,
     1,
     '你好 (Nǐ hǎo) adalah sapaan paling umum dalam bahasa Mandarin yang berarti Halo atau Selamat Sejahtera.'
-),
-(
+WHERE NOT EXISTS (
+    SELECT 1 FROM public.mandarin_quizzes WHERE lesson_id = 'a1b2c3d4-0001-0000-0000-000000000001' AND question LIKE '%Nǐ hǎo%'
+);
+
+INSERT INTO public.mandarin_quizzes (lesson_id, question, question_type, options, correct_index, explanation)
+SELECT 
     'a1b2c3d4-0001-0000-0000-000000000001',
     'Manakah pinyin yang benar untuk karakter "谢谢" (Terima kasih)?',
     'pinyin',
     '["Zàijiàn", "Duìbuqǐ", "Xièxiè", "Bùkèqì"]'::jsonb,
     2,
     '谢谢 dilafalkan sebagai Xièxiè (nada ke-4) yang berarti Terima kasih.'
-),
-(
+WHERE NOT EXISTS (
+    SELECT 1 FROM public.mandarin_quizzes WHERE lesson_id = 'a1b2c3d4-0001-0000-0000-000000000001' AND question LIKE '%谢谢%'
+);
+
+INSERT INTO public.mandarin_quizzes (lesson_id, question, question_type, options, correct_index, explanation)
+SELECT 
     'a1b2c3d4-0002-0000-0000-000000000002',
     'Karakter "古兰经" (Gǔlánjīng) memiliki makna apa dalam konteks pesantren?',
     'choice',
     '["Kitab Fiqih", "Al-Qur''anul Karim", "Kamus Bahasa", "Pena & Buku"]'::jsonb,
     1,
     '古兰经 (Gǔlánjīng) adalah terjemahan fonetik bahasa Mandarin untuk Al-Qur''an.'
-)
-ON CONFLICT DO NOTHING;
+WHERE NOT EXISTS (
+    SELECT 1 FROM public.mandarin_quizzes WHERE lesson_id = 'a1b2c3d4-0002-0000-0000-000000000002' AND question LIKE '%古兰经%'
+);
 
 -- 5. PRESTASI SANTRI
-INSERT INTO public.achievements (title, category, year, winner_name, medal_type, certificate_url, description) VALUES
-(
+INSERT INTO public.achievements (title, category, year, winner_name, medal_type, certificate_url, description)
+SELECT 
     'Juara 1 Musabaqah Qira''atil Kutub (MQK) Tingkat Provinsi Jawa Timur',
     'Kitab Kuning / MQK',
     2025,
@@ -186,8 +207,12 @@ INSERT INTO public.achievements (title, category, year, winner_name, medal_type,
     'Emas / Juara 1',
     'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=600&q=80',
     'Meraih medali emas dalam cabang Fathul Qorib wustho pada perhelatan akbar MQK se-Jawa Timur.'
-),
-(
+WHERE NOT EXISTS (
+    SELECT 1 FROM public.achievements WHERE title LIKE '%Musabaqah Qira''atil Kutub%'
+);
+
+INSERT INTO public.achievements (title, category, year, winner_name, medal_type, certificate_url, description)
+SELECT 
     'Juara 2 Lomba Tahfidzul Qur''an 30 Juz Golongan Remaja',
     'Tahfidz 30 Juz',
     2025,
@@ -195,8 +220,12 @@ INSERT INTO public.achievements (title, category, year, winner_name, medal_type,
     'Perak / Juara 2',
     'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=600&q=80',
     'Prestasi membanggakan santriwati dalam melafalkan dan menguasai hafalan 30 juz mutqin.'
-),
-(
+WHERE NOT EXISTS (
+    SELECT 1 FROM public.achievements WHERE title LIKE '%Tahfidzul Qur''an 30 Juz%'
+);
+
+INSERT INTO public.achievements (title, category, year, winner_name, medal_type, certificate_url, description)
+SELECT 
     'Juara 1 Kontes Robotika & IoT Santri Nusantara',
     'Robotika / STEM',
     2024,
@@ -204,16 +233,26 @@ INSERT INTO public.achievements (title, category, year, winner_name, medal_type,
     'Emas / Juara 1',
     'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=600&q=80',
     'Inovasi robot pemilah sampah otomatis dan smart hydroponic garden di lingkungan pesantren.'
-)
-ON CONFLICT DO NOTHING;
+WHERE NOT EXISTS (
+    SELECT 1 FROM public.achievements WHERE title LIKE '%Kontes Robotika%'
+);
 
 -- 6. EKSKUL SANTRI
-INSERT INTO public.extracurriculars (name, icon_name, schedule, mentor_name, description, cover_image) VALUES
-('Hadrah Al-Banjari PPJM', 'Music', 'Malam Rabu & Malam Ahad', 'Ust. M. Ridlwan', 'Pelatihan seni tabuh terbang banjari, vokal sholawat, dan pembacaan kasidah.', 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80'),
-('Pencak Silat Pagar Nusa', 'Shield', 'Jumat Pagi & Selasa Sore', 'Pendekar Syamsul Hadi', 'Penggemblengan fisik, bela diri tradisional pencak silat, dan penanaman budi pekerti luhur santri.', 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=600&q=80'),
-('Klub Robotika & IoT', 'Cpu', 'Sabtu Siang (13.30 - 16.00)', 'Ustadz Riski, S.T.', 'Praktik mikrokontroler, pemrograman sensor, dan rancang bangun purwarupa teknologi santri.', 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=600&q=80'),
-('Klub Bahasa Arab & Mandarin', 'Globe', 'Senin & Kamis Malam', 'Lao Shi Chen & Ust. Fauzan', 'Percakapan harian interaktif, pidato (muhadharah), dan pengenalan kaligrafi.', 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=600&q=80')
-ON CONFLICT DO NOTHING;
+INSERT INTO public.extracurriculars (name, icon_name, schedule, mentor_name, description, cover_image)
+SELECT 'Hadrah Al-Banjari PPJM', 'Music', 'Malam Rabu & Malam Ahad', 'Ust. M. Ridlwan', 'Pelatihan seni tabuh terbang banjari, vokal sholawat, dan pembacaan kasidah.', 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80'
+WHERE NOT EXISTS (SELECT 1 FROM public.extracurriculars WHERE name = 'Hadrah Al-Banjari PPJM');
+
+INSERT INTO public.extracurriculars (name, icon_name, schedule, mentor_name, description, cover_image)
+SELECT 'Pencak Silat Pagar Nusa', 'Shield', 'Jumat Pagi & Selasa Sore', 'Pendekar Syamsul Hadi', 'Penggemblengan fisik, bela diri tradisional pencak silat, dan penanaman budi pekerti luhur santri.', 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=600&q=80'
+WHERE NOT EXISTS (SELECT 1 FROM public.extracurriculars WHERE name = 'Pencak Silat Pagar Nusa');
+
+INSERT INTO public.extracurriculars (name, icon_name, schedule, mentor_name, description, cover_image)
+SELECT 'Klub Robotika & IoT', 'Cpu', 'Sabtu Siang (13.30 - 16.00)', 'Ustadz Riski, S.T.', 'Praktik mikrokontroler, pemrograman sensor, dan rancang bangun purwarupa teknologi santri.', 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=600&q=80'
+WHERE NOT EXISTS (SELECT 1 FROM public.extracurriculars WHERE name = 'Klub Robotika & IoT');
+
+INSERT INTO public.extracurriculars (name, icon_name, schedule, mentor_name, description, cover_image)
+SELECT 'Klub Bahasa Arab & Mandarin', 'Globe', 'Senin & Kamis Malam', 'Lao Shi Chen & Ust. Fauzan', 'Percakapan harian interaktif, pidato (muhadharah), dan pengenalan kaligrafi.', 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=600&q=80'
+WHERE NOT EXISTS (SELECT 1 FROM public.extracurriculars WHERE name = 'Klub Bahasa Arab & Mandarin');
 
 -- 7. GALERI AGENDA
 INSERT INTO public.galleries (slug, title, category, event_date, description, cover_image, video_url) VALUES
@@ -244,4 +283,67 @@ INSERT INTO public.galleries (slug, title, category, event_date, description, co
     'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80',
     'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
 )
-ON CONFLICT (slug) DO NOTHING;
+ON CONFLICT (slug) DO UPDATE SET
+    title = EXCLUDED.title,
+    description = EXCLUDED.description;
+
+-- 8. AGENDAS (Historical, Current & Future)
+INSERT INTO public.agendas (title, timeline_status, date_display, time_display, month, year, category, location, target_audience, description, coordinator, badge, rundown, image)
+SELECT 
+    'Kajian Akbar & Peringatan Maulid Nabi SAW',
+    'historical',
+    '15 September 2024',
+    '19.30 - 22.00 WIB',
+    'September',
+    '2024',
+    'Peringatan Hari Besar Islam',
+    'Masjid Utama PPJM Lasem',
+    'Seluruh Santri, Alumni, dan Masyarakat Umum',
+    'Pembacaan Maulid Simtudduror kolosal dan tausiyah kebangsaan oleh para habaib dan masyayikh.',
+    'Ustadz Fauzan & Panitia PHBI',
+    'Terlaksana',
+    '[{"waktu": "19.30", "agenda": "Sholat Isya Berjamaah & Ratib Al-Haddad"}, {"waktu": "20.15", "agenda": "Pembacaan Maulid Simtudduror"}, {"waktu": "21.00", "agenda": "Mauidhoh Hasanah & Doa Penutup"}]'::jsonb,
+    'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80'
+WHERE NOT EXISTS (
+    SELECT 1 FROM public.agendas WHERE title LIKE '%Peringatan Maulid Nabi%'
+);
+
+INSERT INTO public.agendas (title, timeline_status, date_display, time_display, month, year, category, location, target_audience, description, coordinator, badge, rundown, image)
+SELECT 
+    'Ujian Komprehensif Kitab Salaf & Tahfidz Triwulan',
+    'current',
+    '24 - 30 Oktober 2026',
+    '08.00 - 16.00 WIB',
+    'Oktober',
+    '2026',
+    'Evaluasi Akademik',
+    'Aula Gedung Madrasah Diniyah',
+    'Santri Tingkat Ula, Wustho, dan Takhassus Tahfidz',
+    'Evaluasi hafalan matan kitab Fathul Qorib, Imrithi, Alfiyah, serta setoran kelancaran tahfidz 5-30 juz secara berhadapan di depan dewan penguji.',
+    'Lembaga Madin & Markaz Tahfidz',
+    'Sedang Berlangsung',
+    '[{"waktu": "08.00 - 11.30", "agenda": "Sesi Ujian Lisan Kitab Fiqih & Nahwu"}, {"waktu": "13.00 - 16.00", "agenda": "Sesi Setoran Murojaah Tahfidz Mutqin"}]'::jsonb,
+    'https://images.unsplash.com/photo-1532012164546-f432f2e3777a?auto=format&fit=crop&w=800&q=80'
+WHERE NOT EXISTS (
+    SELECT 1 FROM public.agendas WHERE title LIKE '%Ujian Komprehensif Kitab Salaf%'
+);
+
+INSERT INTO public.agendas (title, timeline_status, date_display, time_display, month, year, category, location, target_audience, description, coordinator, badge, rundown, image)
+SELECT 
+    'Pameran STEM Santri & Olimpiade Sains Antar Pesantren',
+    'future',
+    '18 November 2026',
+    '08.30 - 15.00 WIB',
+    'November',
+    '2026',
+    'Inovasi & Riset Santri',
+    'Gedung Laboratorium STEM & Lapangan Utama',
+    'Santri, Pelajar Se-Jawa Timur, dan Pengunjung Edukasi',
+    'Eksibisi puluhan purwarupa Internet of Things (IoT), robotika pertanian hidroponik, dan kompetisi koding santri pemula tingkat Jawa Timur.',
+    'Ustadz Riski & Tim Lab STEM',
+    'Mendatang',
+    '[{"waktu": "08.30", "agenda": "Opening Ceremony & Keynote Address"}, {"waktu": "09.30 - 13.00", "agenda": "Demonstrasi Proyek IoT Santri & Penjurian"}, {"waktu": "14.00", "agenda": "Penganugerahan Juara Inovasi"}]'::jsonb,
+    'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80'
+WHERE NOT EXISTS (
+    SELECT 1 FROM public.agendas WHERE title LIKE '%Pameran STEM Santri%'
+);

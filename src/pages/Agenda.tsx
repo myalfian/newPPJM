@@ -20,6 +20,8 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { NavBarTabs } from '../components/common/NavBarTabs';
+import { supabase } from '../lib/supabase';
+import { useCachedQuery } from '../lib/queryCache';
 
 export type AgendaTimelineStatus = 'all' | 'current' | 'future' | 'historical';
 
@@ -284,7 +286,46 @@ const CATEGORIES_LIST = [
   'Sosial & Dakwah'
 ];
 
+const fetchAgendas = async (): Promise<AgendaItem[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('agendas')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      return AGENDA_DATA;
+    }
+
+    return data.map((row) => ({
+      id: row.id,
+      title: row.title,
+      timelineStatus: (row.timeline_status as 'historical' | 'current' | 'future') || 'current',
+      date: row.date_display || '',
+      time: row.time_display || '',
+      month: row.month || 'Oktober',
+      year: row.year || '2026',
+      category: (row.category as any) || 'Tahfidz',
+      location: row.location || 'Pondok Pesantren Jauharul Maknuun',
+      targetAudience: row.target_audience || 'Seluruh Santri',
+      description: row.description || '',
+      coordinator: row.coordinator || 'Pengurus PPJM',
+      badge: row.badge || undefined,
+      rundown: Array.isArray(row.rundown) ? (row.rundown as any) : undefined,
+      image: row.image || undefined,
+    }));
+  } catch {
+    return AGENDA_DATA;
+  }
+};
+
 export const Agenda: React.FC = () => {
+  const { data: agendaList } = useCachedQuery<AgendaItem[]>(
+    'agendas_live_list',
+    fetchAgendas,
+    AGENDA_DATA
+  );
+
   const [timelineFilter, setTimelineFilter] = useState<AgendaTimelineStatus>('current');
   const [selectedMonth, setSelectedMonth] = useState<string>('Semua Bulan');
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua Kategori');
@@ -293,7 +334,7 @@ export const Agenda: React.FC = () => {
 
   // Filter Logic
   const filteredAgendas = useMemo(() => {
-    return AGENDA_DATA.filter((item) => {
+    return agendaList.filter((item) => {
       // Timeline filter
       if (timelineFilter !== 'all' && item.timelineStatus !== timelineFilter) {
         return false;
@@ -317,12 +358,12 @@ export const Agenda: React.FC = () => {
       }
       return true;
     });
-  }, [timelineFilter, selectedMonth, selectedCategory, searchQuery]);
+  }, [agendaList, timelineFilter, selectedMonth, selectedCategory, searchQuery]);
 
   // Status counts for badge indicators
-  const currentCount = useMemo(() => AGENDA_DATA.filter(a => a.timelineStatus === 'current').length, []);
-  const futureCount = useMemo(() => AGENDA_DATA.filter(a => a.timelineStatus === 'future').length, []);
-  const historicalCount = useMemo(() => AGENDA_DATA.filter(a => a.timelineStatus === 'historical').length, []);
+  const currentCount = useMemo(() => agendaList.filter(a => a.timelineStatus === 'current').length, [agendaList]);
+  const futureCount = useMemo(() => agendaList.filter(a => a.timelineStatus === 'future').length, [agendaList]);
+  const historicalCount = useMemo(() => agendaList.filter(a => a.timelineStatus === 'historical').length, [agendaList]);
 
   // 1-Click WhatsApp Reminder for Senior / Wali Santri
   const handleShareWA = (item: AgendaItem) => {

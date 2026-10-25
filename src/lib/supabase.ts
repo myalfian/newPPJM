@@ -19,15 +19,22 @@ export const supabase = createClient<Database>(
   isSupabaseConfigured() ? supabaseAnonKey : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder'
 );
 
-// TypeScript Types
-export type UserRole = 'super_admin' | 'pengurus_konten' | 'guru_akademik' | 'user';
+export type UserRole = 'super_admin' | 'pengurus_konten' | 'guru_akademik' | 'user' | 'visitor';
 
 export interface AdminProfile {
   id: string;
   full_name: string;
   role: UserRole;
   avatar_url?: string;
+  phone?: string;
+  bio?: string;
+  department?: string;
+  nis_or_nip?: string;
+  status_badge?: string;
+  must_change_password?: boolean;
+  last_password_change?: string;
   created_at: string;
+  updated_at?: string;
 }
 
 export interface JMCenterPage {

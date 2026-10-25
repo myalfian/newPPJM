@@ -42,7 +42,7 @@ import { EnvAlertBanner } from '../components/common/EnvAlertBanner';
 export const AdminLayout: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { role: activeRole, signOut, switchMockRole } = useAuth();
+  const { role: activeRole, profile, signOut, switchMockRole } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -215,16 +215,35 @@ export const AdminLayout: React.FC = () => {
                 <option value="super_admin">Super Admin</option>
                 <option value="pengurus_konten">Pengurus Konten</option>
                 <option value="guru_akademik">Guru Akademik</option>
+                <option value="user">Santri / User</option>
               </select>
               <ChevronDown className="w-3 h-3 text-zinc-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
 
             {/* User Profile Avatar & Logout */}
             <div className="flex items-center gap-2 pl-1 border-l border-zinc-200 dark:border-zinc-800 shrink-0 flex-none">
-              <div className="w-8 h-8 min-w-[32px] min-h-[32px] max-w-[32px] max-h-[32px] rounded-full bg-gradient-to-tr from-[#007acc] to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-xs relative shrink-0 flex-none aspect-square">
-                <span>AD</span>
-                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-zinc-900" />
-              </div>
+              <Link
+                to="/admin/akun"
+                className="flex items-center gap-2 group p-1 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                title={`Profil Akun: ${profile?.full_name || 'Admin PPJM'}`}
+              >
+                <div className="w-8 h-8 min-w-[32px] min-h-[32px] max-w-[32px] max-h-[32px] rounded-full overflow-hidden bg-gradient-to-tr from-[#007acc] to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-xs relative shrink-0 flex-none aspect-square border border-white/40">
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <span>{profile?.full_name?.substring(0, 2).toUpperCase() || 'AD'}</span>
+                  )}
+                  <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-zinc-900" />
+                </div>
+                <div className="hidden xl:flex flex-col text-left leading-tight">
+                  <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 truncate max-w-[110px]">
+                    {profile?.full_name?.split(' ')[0] || 'Admin'}
+                  </span>
+                  <span className="text-[10px] text-zinc-400 capitalize">
+                    {profile?.status_badge || activeRole.replace('_', ' ')}
+                  </span>
+                </div>
+              </Link>
               <button
                 onClick={handleLogout}
                 className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors"

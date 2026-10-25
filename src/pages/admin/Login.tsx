@@ -136,28 +136,58 @@ export const Login: React.FC = () => {
 
         {/* Demo Fast Login per Role (Memudahkan Pengurus Pondok / Penilai) */}
         <div className="space-y-3 pt-4 border-t border-slate-100">
-          <div className="text-[11px] font-bold text-slate-400 uppercase text-center tracking-wider">
-            Atau Masuk Cepat Sesuai Tugas:
+          <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+            <span>Uji Coba Masuk Cepat (4 Peran):</span>
+            <span className="text-emerald-700 font-mono text-[10px]">Autofill</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <button
-              onClick={() => handleQuickRoleLogin('super_admin')}
-              className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-950 text-xs font-bold transition-all text-center border border-emerald-200"
+              type="button"
+              onClick={() => {
+                setEmail('admin@ppjauharulmaknuun.sch.id');
+                setPassword('PPJM_SuperAdmin2026!');
+              }}
+              className="p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-950 text-xs font-bold transition-all text-left border border-amber-200"
             >
-              Super Admin
+              <div className="text-[10px] text-amber-700 font-medium">Root Access</div>
+              <div>Super Admin</div>
             </button>
+
             <button
-              onClick={() => handleQuickRoleLogin('pengurus_konten')}
-              className="p-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-950 text-xs font-bold transition-all text-center border border-amber-200"
+              type="button"
+              onClick={() => {
+                setEmail('konten@ppjauharulmaknuun.sch.id');
+                setPassword('PPJM_KontenMedia2026!');
+              }}
+              className="p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-950 text-xs font-bold transition-all text-left border border-emerald-200"
             >
-              Pengurus Konten
+              <div className="text-[10px] text-emerald-700 font-medium">Media & Humas</div>
+              <div>Pengurus Konten</div>
             </button>
+
             <button
-              onClick={() => handleQuickRoleLogin('guru_akademik')}
-              className="p-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-950 text-xs font-bold transition-all text-center border border-sky-200"
+              type="button"
+              onClick={() => {
+                setEmail('akademik@ppjauharulmaknuun.sch.id');
+                setPassword('PPJM_GuruAkademik2026!');
+              }}
+              className="p-2.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-950 text-xs font-bold transition-all text-left border border-sky-200"
             >
-              Guru STEM
+              <div className="text-[10px] text-sky-700 font-medium">STEM & Mandarin</div>
+              <div>Guru Akademik</div>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('santri@ppjauharulmaknuun.sch.id');
+                setPassword('PPJM_SantriMaju2026!');
+              }}
+              className="p-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-purple-950 text-xs font-bold transition-all text-left border border-purple-200"
+            >
+              <div className="text-[10px] text-purple-700 font-medium">Portal Santri</div>
+              <div>Santri / User</div>
             </button>
           </div>
         </div>

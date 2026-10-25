@@ -17,6 +17,7 @@ import {
   saveSliderSettings, 
   DEFAULT_SLIDER_SETTINGS 
 } from '../lib/sliderSettings';
+import { useAuth } from '../context/AuthContext';
 
 interface HeroSliderProps {
   slides?: HeroSlide[];
@@ -47,14 +48,12 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
   const [showAdminSpeedModal, setShowAdminSpeedModal] = useState(false);
   const [saveSuccessMsg, setSaveSuccessMsg] = useState(false);
 
-  // Check if admin is currently logged in or dev
-  const [isAdmin, setIsAdmin] = useState(false);
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const loggedIn = localStorage.getItem('ppjm_admin_logged_in') === 'true';
-      setIsAdmin(loggedIn);
-    }
-  }, []);
+  // Check if admin is currently logged in via RBAC profile
+  const { profile, role, isAuthenticated, hasRole } = useAuth();
+  const isAdmin = Boolean(
+    isAuthenticated && 
+    (hasRole(['super_admin', 'pengurus_konten']) || role === 'super_admin' || role === 'pengurus_konten' || profile?.role === 'super_admin' || profile?.role === 'pengurus_konten')
+  );
 
   // Sync settings when external changes occur (custom event or prop)
   useEffect(() => {
@@ -518,20 +517,22 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[250px] bg-amber-500/10 rounded-full blur-[90px] pointer-events-none" />
 
-      {/* Admin Quick Speed Control Badge (Discreet on top right) */}
-      <div className="absolute top-2 right-2 xs:top-2.5 xs:right-3 sm:top-3 sm:right-6 z-40">
-        <button
-          type="button"
-          onClick={() => setShowAdminSpeedModal(true)}
-          className="inline-flex items-center gap-1 xs:gap-1.5 px-2 xs:px-2.5 sm:px-3 py-1 xs:py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-[10px] xs:text-xs font-semibold backdrop-blur-md shadow-md transition-all cursor-pointer group"
-          title="Atur Kecepatan Sliding (Pengaturan Admin)"
-        >
-          <Settings className="w-3 h-3 xs:w-3.5 xs:h-3.5 text-[#ffcc00] group-hover:rotate-45 transition-transform" />
-          <span className="text-[10px] xs:text-[11px] font-mono">
-            {sliderSettings.isAutoplayEnabled ? `${sliderSettings.autoplayInterval}s` : 'Manual'}
-          </span>
-        </button>
-      </div>
+      {/* Admin Quick Speed Control Badge (Discreet on top right - Only visible to Admin) */}
+      {isAdmin && (
+        <div className="absolute top-2 right-2 xs:top-2.5 xs:right-3 sm:top-3 sm:right-6 z-40">
+          <button
+            type="button"
+            onClick={() => setShowAdminSpeedModal(true)}
+            className="inline-flex items-center gap-1 xs:gap-1.5 px-2 xs:px-2.5 sm:px-3 py-1 xs:py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-[10px] xs:text-xs font-semibold backdrop-blur-md shadow-md transition-all cursor-pointer group"
+            title="Atur Kecepatan Sliding (Pengaturan Admin)"
+          >
+            <Settings className="w-3 h-3 xs:w-3.5 xs:h-3.5 text-[#ffcc00] group-hover:rotate-45 transition-transform" />
+            <span className="text-[10px] xs:text-[11px] font-mono">
+              {sliderSettings.isAutoplayEnabled ? `${sliderSettings.autoplayInterval}s` : 'Manual'}
+            </span>
+          </button>
+        </div>
+      )}
 
       <div className="w-full max-w-full lg:max-w-[1700px] mx-auto px-2 xs:px-2.5 sm:px-4 relative z-10 lg:h-full lg:flex lg:flex-col lg:justify-between lg:py-2">
         
@@ -730,7 +731,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       </div>
 
       {/* ================= ADMIN QUICK SPEED CONTROLLER MODAL ================= */}
-      {showAdminSpeedModal && (
+      {isAdmin && showAdminSpeedModal && (
         <div 
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150"
           onClick={() => setShowAdminSpeedModal(false)}

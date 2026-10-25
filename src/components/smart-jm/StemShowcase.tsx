@@ -14,7 +14,8 @@ import {
   Tag,
   Eye
 } from 'lucide-react';
-import { StemProject } from '../../lib/supabase';
+import { StemProject, supabase } from '../../lib/supabase';
+import { useCachedQuery } from '../../lib/queryCache';
 
 interface StemShowcaseProps {
   mode: 'materi' | 'portofolio';
@@ -115,15 +116,51 @@ const DEFAULT_PROJECTS: StemProject[] = [
   }
 ];
 
-export const StemShowcase: React.FC<StemShowcaseProps> = ({ mode, projects = DEFAULT_PROJECTS }) => {
+const fetchStemProjects = async (): Promise<StemProject[]> => {
+  try {
+    const { data, error } = await supabase
+      .from('stem_projects')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error || !data || data.length === 0) {
+      return DEFAULT_PROJECTS;
+    }
+
+    return data.map((item) => ({
+      id: item.id,
+      slug: item.slug,
+      title: item.title,
+      category: item.category,
+      description: item.description,
+      specs: (item.specs as Record<string, any>) || undefined,
+      syllabus_url: item.syllabus_url || undefined,
+      assignment_doc_url: item.assignment_doc_url || undefined,
+      cover_image: item.cover_image || undefined,
+      is_portfolio: Boolean(item.is_portfolio),
+      author_santri: item.author_santri || undefined,
+    }));
+  } catch {
+    return DEFAULT_PROJECTS;
+  }
+};
+
+export const StemShowcase: React.FC<StemShowcaseProps> = ({ mode, projects }) => {
+  const { data: cachedProjects } = useCachedQuery<StemProject[]>(
+    'stem_projects_list',
+    fetchStemProjects,
+    DEFAULT_PROJECTS
+  );
+
+  const activeProjects = projects || cachedProjects;
   const [selectedProject, setSelectedProject] = useState<StemProject | null>(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [santriName, setSantriName] = useState('');
   const [santriClass, setSantriClass] = useState('');
 
   const displayList = mode === 'portofolio' 
-    ? projects.filter(p => p.is_portfolio) 
-    : projects;
+    ? activeProjects.filter(p => p.is_portfolio) 
+    : activeProjects;
 
   const handleSimulateSubmit = (e: React.FormEvent) => {
     e.preventDefault();

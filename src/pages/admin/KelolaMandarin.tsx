@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Globe,
   PlusCircle,
@@ -12,6 +12,7 @@ import {
   HelpCircle,
   X
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 interface MandarinLessonItem {
   id: string;
@@ -109,6 +110,37 @@ export const KelolaMandarin: React.FC = () => {
   const [jawabanBenar, setJawabanBenar] = useState(0);
   const [pembahasan, setPembahasan] = useState('');
 
+  // Load from Supabase on mount
+  useEffect(() => {
+    const loadFromSupabase = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('mandarin_lessons')
+          .select('*')
+          .order('order_index', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          setLessons(
+            data.map((row) => ({
+              id: row.id,
+              topic: row.topic,
+              level: row.level,
+              hanzi: row.hanzi || '',
+              pinyin: row.pinyin,
+              meaning: row.meaning_id,
+              narrative: 'Modul kurikulum Mandarin santri PPJM.',
+              coverImage: row.cover_image || 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=800&q=80',
+            }))
+          );
+        }
+      } catch (err) {
+        console.warn('Fallback to local lessons:', err);
+      }
+    };
+    loadFromSupabase();
+  }, []);
+
   const resetForm = () => {
     setTopik('');
     setLevel('Dasar 1');
@@ -141,9 +173,16 @@ export const KelolaMandarin: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDeleteLesson = (id: string) => {
+  const handleDeleteLesson = async (id: string) => {
     if (confirm('Hapus materi pelajaran Mandarin ini?')) {
       setLessons(lessons.filter((l) => l.id !== id));
+      if (isSupabaseConfigured() && !id.startsWith('ml-')) {
+        try {
+          await supabase.from('mandarin_lessons').delete().eq('id', id);
+        } catch (err) {
+          console.warn('Failed to delete lesson on Supabase:', err);
+        }
+      }
     }
   };
 
@@ -168,9 +207,11 @@ export const KelolaMandarin: React.FC = () => {
     }
   };
 
-  const handleSubmitLesson = (e: React.FormEvent) => {
+  const handleSubmitLesson = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!topik || !hanzi) return;
+
+    const finalImage = coverImage || 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=800&q=80';
 
     if (editingId) {
       setLessons(
@@ -184,21 +225,65 @@ export const KelolaMandarin: React.FC = () => {
                 pinyin,
                 meaning: arti,
                 narrative: narasi,
-                coverImage: coverImage || l.coverImage,
+                coverImage: finalImage,
               }
             : l
         )
       );
+
+      if (isSupabaseConfigured() && !editingId.startsWith('ml-')) {
+        try {
+          await supabase
+            .from('mandarin_lessons')
+            .update({
+              topic: topik,
+              level,
+              hanzi,
+              pinyin,
+              meaning_id: arti,
+              cover_image: finalImage,
+            })
+            .eq('id', editingId);
+        } catch (err) {
+          console.warn('Failed to update mandarin lesson on Supabase:', err);
+        }
+      }
     } else {
+      let createdId = `ml-${Date.now()}`;
+
+      if (isSupabaseConfigured()) {
+        try {
+          const { data } = await supabase
+            .from('mandarin_lessons')
+            .insert({
+              topic: topik,
+              level,
+              hanzi,
+              pinyin,
+              meaning_id: arti,
+              cover_image: finalImage,
+              order_index: lessons.length + 1,
+            })
+            .select()
+            .single();
+
+          if (data?.id) {
+            createdId = data.id;
+          }
+        } catch (err) {
+          console.warn('Failed to insert mandarin lesson on Supabase:', err);
+        }
+      }
+
       const newLes: MandarinLessonItem = {
-        id: `ml-${Date.now()}`,
+        id: createdId,
         topic: topik,
         level,
         hanzi,
         pinyin,
         meaning: arti,
         narrative: narasi,
-        coverImage: coverImage || 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=800&q=80',
+        coverImage: finalImage,
       };
       setLessons([newLes, ...lessons]);
     }

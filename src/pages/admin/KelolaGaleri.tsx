@@ -3,6 +3,7 @@ import { Image as ImageIcon, PlusCircle, CheckCircle2, Upload } from 'lucide-rea
 import { YoutubeIcon } from '../../components/common/SocialIcons';
 import { compressImageToWebP } from '../../lib/imageCompressor';
 import type { CompressionResult } from '../../lib/imageCompressor';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 export const KelolaGaleri: React.FC = () => {
   const [tab, setTab] = useState<'foto' | 'video'>('foto');
@@ -27,8 +28,44 @@ export const KelolaGaleri: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (tab === 'foto' && judulAgenda) {
+      if (isSupabaseConfigured()) {
+        try {
+          const slug = judulAgenda.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          await supabase.from('galleries').insert({
+            category: 'foto',
+            title: judulAgenda,
+            slug: `${slug}-${Date.now()}`,
+            event_date: tanggal || new Date().toISOString().split('T')[0],
+            description: deskripsi,
+            cover_image: compResult?.previewUrl || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
+          });
+        } catch (err) {
+          console.warn('Failed to insert gallery foto to Supabase:', err);
+        }
+      }
+    } else if (tab === 'video' && judulVideo) {
+      if (isSupabaseConfigured()) {
+        try {
+          const slug = judulVideo.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          await supabase.from('galleries').insert({
+            category: 'video',
+            title: judulVideo,
+            slug: `${slug}-${Date.now()}`,
+            event_date: new Date().toISOString().split('T')[0],
+            description: videoDesc,
+            video_url: youtubeUrl || 'dQw4w9WgXcQ',
+            cover_image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+          });
+        } catch (err) {
+          console.warn('Failed to insert gallery video to Supabase:', err);
+        }
+      }
+    }
+
     setSaved(true);
     setTimeout(() => {
       setSaved(false);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Sparkles,
   PlusCircle,
@@ -12,6 +12,7 @@ import {
   Activity,
   X
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 interface EkskulItem {
   id: string;
@@ -87,6 +88,38 @@ export const KelolaEkskul: React.FC = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [savedAlert, setSavedAlert] = useState(false);
 
+  // Load from Supabase on mount
+  useEffect(() => {
+    const loadFromSupabase = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('extracurriculars')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          setItems(
+            data.map((row) => ({
+              id: row.id,
+              name: row.name,
+              category: row.icon_name || 'Ekstrakurikuler',
+              coach: row.mentor_name || 'Pembina PPJM',
+              schedule: row.schedule,
+              location: 'Kompleks Ponpes Jauharul Maknuun',
+              description: row.description,
+              imageUrl: row.cover_image || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80',
+              isActive: true,
+            }))
+          );
+        }
+      } catch (err) {
+        console.warn('Fallback to local ekskul:', err);
+      }
+    };
+    loadFromSupabase();
+  }, []);
+
   const resetForm = () => {
     setName('');
     setCategory('Teknologi & Sains');
@@ -110,9 +143,16 @@ export const KelolaEkskul: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Apakah Anda yakin ingin menghapus data ekstrakurikuler ini?')) {
       setItems(items.filter((item) => item.id !== id));
+      if (isSupabaseConfigured() && !id.startsWith('ek-')) {
+        try {
+          await supabase.from('extracurriculars').delete().eq('id', id);
+        } catch (err) {
+          console.warn('Failed to delete extracurricular on Supabase:', err);
+        }
+      }
     }
   };
 
@@ -122,9 +162,11 @@ export const KelolaEkskul: React.FC = () => {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !coach) return;
+
+    const finalImage = imageUrl || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80';
 
     if (editingId) {
       setItems(
@@ -138,21 +180,64 @@ export const KelolaEkskul: React.FC = () => {
                 schedule,
                 location,
                 description,
-                imageUrl: imageUrl || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
+                imageUrl: finalImage,
               }
             : it
         )
       );
+
+      if (isSupabaseConfigured() && !editingId.startsWith('ek-')) {
+        try {
+          await supabase
+            .from('extracurriculars')
+            .update({
+              name,
+              schedule,
+              mentor_name: coach,
+              description,
+              cover_image: finalImage,
+              icon_name: category,
+            })
+            .eq('id', editingId);
+        } catch (err) {
+          console.warn('Failed to update extracurricular on Supabase:', err);
+        }
+      }
     } else {
+      let createdId = `ek-${Date.now()}`;
+
+      if (isSupabaseConfigured()) {
+        try {
+          const { data } = await supabase
+            .from('extracurriculars')
+            .insert({
+              name,
+              schedule,
+              mentor_name: coach,
+              description,
+              cover_image: finalImage,
+              icon_name: category,
+            })
+            .select()
+            .single();
+
+          if (data?.id) {
+            createdId = data.id;
+          }
+        } catch (err) {
+          console.warn('Failed to insert extracurricular on Supabase:', err);
+        }
+      }
+
       const newItem: EkskulItem = {
-        id: `ek-${Date.now()}`,
+        id: createdId,
         name,
         category,
         coach,
         schedule,
         location,
         description,
-        imageUrl: imageUrl || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
+        imageUrl: finalImage,
         isActive: true,
       };
       setItems([newItem, ...items]);

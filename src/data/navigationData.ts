@@ -22,7 +22,8 @@ import {
   CheckCircle2,
   Volume2,
   Activity,
-  Palette
+  Palette,
+  User
 } from 'lucide-react';
 
 export interface NavSubItem {
@@ -328,5 +329,18 @@ export const ADMIN_MODULES: AdminModuleItem[] = [
     category: 'core',
     publicCategory: 'JM Center',
     publicHref: '/jm-center/sambutan',
+  },
+  {
+    id: 'akun',
+    title: 'Profil Akun & Keamanan',
+    shortLabel: 'Profil Saya',
+    desc: 'Edit data personal, ganti kata sandi & hak akses role',
+    href: '/admin/akun',
+    icon: User,
+    roles: ['super_admin', 'pengurus_konten', 'guru_akademik'],
+    category: 'system',
+    publicCategory: 'Akun',
+    publicHref: '/profil',
+    badge: 'Auth',
   },
 ];

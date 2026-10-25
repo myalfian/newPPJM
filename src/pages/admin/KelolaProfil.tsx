@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Landmark,
   Compass,
@@ -10,6 +10,7 @@ import {
   Save,
   Edit3
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 export const KelolaProfil: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'sambutan' | 'sejarah' | 'visi-misi' | 'program'>('sambutan');
@@ -39,8 +40,73 @@ export const KelolaProfil: React.FC = () => {
 
   const [savedAlert, setSavedAlert] = useState(false);
 
-  const handleSave = (e: React.FormEvent) => {
+  // Load from Supabase on mount
+  useEffect(() => {
+    const loadFromSupabase = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data: pages } = await supabase.from('jm_center_pages').select('*');
+        if (pages && pages.length > 0) {
+          pages.forEach((p) => {
+            if (p.slug === 'sambutan') {
+              if (p.content) setTeksSambutan(p.content);
+              if (p.quotes) setNamaPimpinan(p.quotes);
+            } else if (p.slug === 'sejarah' && p.content) {
+              setSejarahTeks(p.content);
+            } else if (p.slug === 'visi-misi' && p.content) {
+              setVisiTeks(p.content);
+            }
+          });
+        }
+
+        const { data: progs } = await supabase.from('programs').select('*');
+        if (progs && progs.length > 0) {
+          progs.forEach((pr) => {
+            if (pr.slug === 'amaliyah-pondok' && pr.description) {
+              setAmaliyahTeks(pr.description);
+            } else if (pr.slug === 'program-madin' && pr.description) {
+              setMadinTeks(pr.description);
+            }
+          });
+        }
+      } catch (err) {
+        console.warn('Fallback to local profile data:', err);
+      }
+    };
+    loadFromSupabase();
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isSupabaseConfigured()) {
+      try {
+        if (activeTab === 'sambutan') {
+          await supabase
+            .from('jm_center_pages')
+            .update({ content: teksSambutan, quotes: namaPimpinan, updated_at: new Date().toISOString() })
+            .eq('slug', 'sambutan');
+        } else if (activeTab === 'sejarah') {
+          await supabase
+            .from('jm_center_pages')
+            .update({ content: sejarahTeks, updated_at: new Date().toISOString() })
+            .eq('slug', 'sejarah');
+        } else if (activeTab === 'visi-misi') {
+          await supabase
+            .from('jm_center_pages')
+            .update({ content: visiTeks, updated_at: new Date().toISOString() })
+            .eq('slug', 'visi-misi');
+        } else if (activeTab === 'program') {
+          await Promise.all([
+            supabase.from('programs').update({ description: amaliyahTeks, updated_at: new Date().toISOString() }).eq('slug', 'amaliyah-pondok'),
+            supabase.from('programs').update({ description: madinTeks, updated_at: new Date().toISOString() }).eq('slug', 'program-madin'),
+          ]);
+        }
+      } catch (err) {
+        console.warn('Failed to save to Supabase:', err);
+      }
+    }
+
     setSavedAlert(true);
     setTimeout(() => setSavedAlert(false), 2500);
   };

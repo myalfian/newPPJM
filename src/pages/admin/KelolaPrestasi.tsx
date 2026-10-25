@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Trophy,
   PlusCircle,
@@ -12,6 +12,7 @@ import {
   Sparkles,
   X
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 interface PrestasiItem {
   id: string;
@@ -88,6 +89,38 @@ export const KelolaPrestasi: React.FC = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [savedAlert, setSavedAlert] = useState(false);
 
+  // Load from Supabase on mount
+  useEffect(() => {
+    const loadFromSupabase = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('achievements')
+          .select('*')
+          .order('year', { ascending: false });
+
+        if (!error && data && data.length > 0) {
+          setItems(
+            data.map((row) => ({
+              id: row.id,
+              title: row.title,
+              santriName: row.winner_name,
+              category: row.category,
+              level: 'Nasional',
+              year: String(row.year),
+              description: row.description || '',
+              imageUrl: row.certificate_url || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+              isPublished: true,
+            }))
+          );
+        }
+      } catch (err) {
+        console.warn('Fallback to local prestasi items:', err);
+      }
+    };
+    loadFromSupabase();
+  }, []);
+
   const resetForm = () => {
     setTitle('');
     setSantriName('');
@@ -111,9 +144,16 @@ export const KelolaPrestasi: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Apakah Anda yakin ingin menghapus data prestasi santri ini?')) {
       setItems(items.filter((item) => item.id !== id));
+      if (isSupabaseConfigured() && !id.startsWith('pr-')) {
+        try {
+          await supabase.from('achievements').delete().eq('id', id);
+        } catch (err) {
+          console.warn('Failed to delete on Supabase:', err);
+        }
+      }
     }
   };
 
@@ -123,9 +163,12 @@ export const KelolaPrestasi: React.FC = () => {
     );
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title || !santriName) return;
+
+    const parsedYear = parseInt(year, 10) || 2026;
+    const finalImage = imageUrl || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80';
 
     if (editingId) {
       setItems(
@@ -139,21 +182,65 @@ export const KelolaPrestasi: React.FC = () => {
                 level,
                 year,
                 description,
-                imageUrl: imageUrl || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+                imageUrl: finalImage,
               }
             : it
         )
       );
+
+      if (isSupabaseConfigured() && !editingId.startsWith('pr-')) {
+        try {
+          await supabase
+            .from('achievements')
+            .update({
+              title,
+              winner_name: santriName,
+              category,
+              year: parsedYear,
+              description,
+              certificate_url: finalImage,
+            })
+            .eq('id', editingId);
+        } catch (err) {
+          console.warn('Failed to update achievement in Supabase:', err);
+        }
+      }
     } else {
+      let createdId = `pr-${Date.now()}`;
+
+      if (isSupabaseConfigured()) {
+        try {
+          const { data } = await supabase
+            .from('achievements')
+            .insert({
+              title,
+              winner_name: santriName,
+              category,
+              year: parsedYear,
+              description,
+              medal_type: 'Juara / Medali',
+              certificate_url: finalImage,
+            })
+            .select()
+            .single();
+
+          if (data?.id) {
+            createdId = data.id;
+          }
+        } catch (err) {
+          console.warn('Failed to insert achievement in Supabase:', err);
+        }
+      }
+
       const newItem: PrestasiItem = {
-        id: `pr-${Date.now()}`,
+        id: createdId,
         title,
         santriName,
         category,
         level,
         year,
         description,
-        imageUrl: imageUrl || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+        imageUrl: finalImage,
         isPublished: true,
       };
       setItems([newItem, ...items]);

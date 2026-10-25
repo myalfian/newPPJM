@@ -24,3 +24,7 @@ dist
 *.njsproj
 *.sln
 *.sw?
+
+# Agent IDE artifacts
+.agents/
+skills-lock.json

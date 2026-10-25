@@ -158,6 +158,7 @@ const KelolaHafidz = lazy(() => import('./pages/admin/KelolaHafidz').then(m => (
 const KelolaPrestasi = lazy(() => import('./pages/admin/KelolaPrestasi').then(m => ({ default: m.KelolaPrestasi })));
 const KelolaEkskul = lazy(() => import('./pages/admin/KelolaEkskul').then(m => ({ default: m.KelolaEkskul })));
 const KelolaProfil = lazy(() => import('./pages/admin/KelolaProfil').then(m => ({ default: m.KelolaProfil })));
+const UserProfilePage = lazy(() => import('./pages/profile/UserProfilePage').then(m => ({ default: m.UserProfilePage })));
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
@@ -211,6 +212,10 @@ export const App: React.FC = () => {
             <Route path="galeri" element={<Navigate to="/galeri/foto" replace />} />
             <Route path="galeri/foto" element={<GaleriFoto />} />
             <Route path="galeri/video" element={<GaleriVideo />} />
+
+            {/* Profile Akun Pengguna / Santri */}
+            <Route path="profil" element={<UserProfilePage />} />
+            <Route path="profile" element={<Navigate to="/profil" replace />} />
           </Route>
 
           {/* 2. Admin Login Routes */}
@@ -237,6 +242,8 @@ export const App: React.FC = () => {
             <Route path="prestasi" element={<KelolaPrestasi />} />
             <Route path="ekskul" element={<KelolaEkskul />} />
             <Route path="profil" element={<KelolaProfil />} />
+            <Route path="akun" element={<UserProfilePage />} />
+            <Route path="profile" element={<Navigate to="/admin/akun" replace />} />
             <Route path="*" element={<Dashboard />} />
           </Route>
           <Route
