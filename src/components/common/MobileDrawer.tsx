@@ -47,7 +47,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
       ],
     },
     {
-      title: '2. Program Unggulan',
+      title: '2. Program',
       icon: GraduationCap,
       items: [
         { label: 'Amaliyah Pondok', to: '/program-unggulan/amaliyah-pondok' },
@@ -91,7 +91,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
       ],
     },
     {
-      title: '6. Galeri Sekolah',
+      title: '6. Galeri',
       icon: Images,
       items: [
         { label: 'Foto', to: '/galeri/foto' },

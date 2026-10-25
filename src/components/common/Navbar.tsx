@@ -137,13 +137,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                 </div>
               </div>
               <div className="flex flex-col">
-                <span className="font-extrabold text-[8px] xs:text-[9px] sm:text-[10px] tracking-wider text-[#0d4a28] uppercase leading-tight">
+                <span className="font-extrabold text-[8.5px] xs:text-[9.5px] sm:text-[10.5px] tracking-wider text-[#0d4a28] uppercase leading-tight">
                   PONDOK PESANTREN
                 </span>
-                <span className="font-black text-[11px] xs:text-[12.5px] sm:text-base lg:text-lg tracking-tight text-[#d4af37] leading-tight whitespace-nowrap">
+                <span className="font-black text-[12px] xs:text-[13px] sm:text-base lg:text-lg tracking-tight text-[#d4af37] leading-tight whitespace-nowrap">
                   JAUHARUL MAKNUUN
                 </span>
-                <span className="text-[9px] sm:text-[10px] text-slate-500 font-medium hidden sm:block">
+                <span className="text-[9.5px] sm:text-[10.5px] text-slate-500 font-medium hidden sm:block">
                   Lasem Sidayu Gresik - Jawa Timur
                 </span>
               </div>
@@ -181,9 +181,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                         <TabIcon className="w-4 h-4 transition-transform duration-200" />
                       </div>
 
-                      {/* Menu Label: Equal Width Distribution, Bold & Centered */}
+                      {/* Menu Label: Equal Width Distribution, Bold & Centered (Larger font size) */}
                       <div className="w-full text-center px-0.5 mt-0.5">
-                        <span className={`block text-[10px] xl:text-[11.5px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${isActive
+                        <span className={`block text-[11.5px] xl:text-[13px] 2xl:text-[13.5px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${isActive
                             ? tab.color.activeText
                             : 'text-slate-700 group-hover:text-slate-950'
                           }`}>

@@ -30,7 +30,7 @@ export const QuickMenu: React.FC = () => {
       id: 'jm-center',
       label: 'JM Center',
       icon: Building2,
-      cardTheme: 'bg-gradient-to-br from-[#f8faff] via-[#eff6ff] to-[#dbeafe]/90 border-blue-200/90 hover:border-blue-400 dark:from-slate-800/90 dark:via-blue-950/40 dark:to-blue-900/30 dark:border-blue-900/50',
+      cardTheme: 'bg-gradient-to-br from-[#f8faff] via-[#eff6ff] to-[#dbeafe]/95 border-2 border-blue-300/90 hover:border-blue-500 shadow-xs dark:from-slate-800/95 dark:via-blue-950/50 dark:to-blue-900/40 dark:border-blue-600/70',
       pillTheme: 'bg-gradient-to-br from-blue-100 to-blue-200/80 border border-blue-300/70 dark:from-blue-900/60 dark:to-blue-800/60 dark:border-blue-700/60',
       iconColor: 'text-blue-700 dark:text-blue-300',
       glowTheme: 'group-hover:bg-blue-400/20',
@@ -39,9 +39,9 @@ export const QuickMenu: React.FC = () => {
     },
     {
       id: 'program-unggulan',
-      label: 'Program Unggulan',
+      label: 'Program',
       icon: GraduationCap,
-      cardTheme: 'bg-gradient-to-br from-[#faf7ff] via-[#f5f3ff] to-[#ede9fe]/90 border-violet-200/90 hover:border-violet-400 dark:from-slate-800/90 dark:via-violet-950/40 dark:to-violet-900/30 dark:border-violet-900/50',
+      cardTheme: 'bg-gradient-to-br from-[#faf7ff] via-[#f5f3ff] to-[#ede9fe]/95 border-2 border-violet-300/90 hover:border-violet-500 shadow-xs dark:from-slate-800/95 dark:via-violet-950/50 dark:to-violet-900/40 dark:border-violet-600/70',
       pillTheme: 'bg-gradient-to-br from-violet-100 to-violet-200/80 border border-violet-300/70 dark:from-violet-900/60 dark:to-violet-800/60 dark:border-violet-700/60',
       iconColor: 'text-violet-700 dark:text-violet-300',
       glowTheme: 'group-hover:bg-violet-400/20',
@@ -52,7 +52,7 @@ export const QuickMenu: React.FC = () => {
       id: 'smart-jm',
       label: 'SMART JM',
       icon: Cpu,
-      cardTheme: 'bg-gradient-to-br from-[#f2fcf7] via-[#ecfdf5] to-[#d1fae5]/90 border-emerald-200/90 hover:border-emerald-400 dark:from-slate-800/90 dark:via-emerald-950/40 dark:to-emerald-900/30 dark:border-emerald-900/50',
+      cardTheme: 'bg-gradient-to-br from-[#f2fcf7] via-[#ecfdf5] to-[#d1fae5]/95 border-2 border-emerald-300/90 hover:border-emerald-500 shadow-xs dark:from-slate-800/95 dark:via-emerald-950/50 dark:to-emerald-900/40 dark:border-emerald-600/70',
       pillTheme: 'bg-gradient-to-br from-emerald-100 to-emerald-200/80 border border-emerald-300/70 dark:from-emerald-900/60 dark:to-emerald-800/60 dark:border-emerald-700/60',
       iconColor: 'text-emerald-700 dark:text-emerald-300',
       glowTheme: 'group-hover:bg-emerald-400/20',
@@ -63,7 +63,7 @@ export const QuickMenu: React.FC = () => {
       id: 'prestasi',
       label: 'Prestasi',
       icon: Trophy,
-      cardTheme: 'bg-gradient-to-br from-[#fefef0] via-[#fefce8] to-[#fef9c3]/90 border-amber-200/90 hover:border-amber-400 dark:from-slate-800/90 dark:via-amber-950/40 dark:to-amber-900/30 dark:border-amber-900/50',
+      cardTheme: 'bg-gradient-to-br from-[#fefef0] via-[#fefce8] to-[#fef9c3]/95 border-2 border-amber-300/90 hover:border-amber-500 shadow-xs dark:from-slate-800/95 dark:via-amber-950/50 dark:to-amber-900/40 dark:border-amber-600/70',
       pillTheme: 'bg-gradient-to-br from-amber-100 to-amber-200/80 border border-amber-300/70 dark:from-amber-900/60 dark:to-amber-800/60 dark:border-amber-700/60',
       iconColor: 'text-amber-700 dark:text-amber-300',
       glowTheme: 'group-hover:bg-amber-400/20',
@@ -74,7 +74,7 @@ export const QuickMenu: React.FC = () => {
       id: 'ekskul',
       label: 'Ekstrakurikuler',
       icon: Palette,
-      cardTheme: 'bg-gradient-to-br from-[#fffaf5] via-[#fff7ed] to-[#ffedd5]/90 border-orange-200/90 hover:border-orange-400 dark:from-slate-800/90 dark:via-orange-950/40 dark:to-orange-900/30 dark:border-orange-900/50',
+      cardTheme: 'bg-gradient-to-br from-[#fffaf5] via-[#fff7ed] to-[#ffedd5]/95 border-2 border-orange-300/90 hover:border-orange-500 shadow-xs dark:from-slate-800/95 dark:via-orange-950/50 dark:to-orange-900/40 dark:border-orange-600/70',
       pillTheme: 'bg-gradient-to-br from-orange-100 to-orange-200/80 border border-orange-300/70 dark:from-orange-900/60 dark:to-orange-800/60 dark:border-orange-700/60',
       iconColor: 'text-orange-700 dark:text-orange-300',
       glowTheme: 'group-hover:bg-orange-400/20',
@@ -83,9 +83,9 @@ export const QuickMenu: React.FC = () => {
     },
     {
       id: 'galeri-sekolah',
-      label: 'Galeri Sekolah',
+      label: 'Galeri',
       icon: Images,
-      cardTheme: 'bg-gradient-to-br from-[#fff5f6] via-[#fff1f2] to-[#ffe4e6]/90 border-rose-200/90 hover:border-rose-400 dark:from-slate-800/90 dark:via-rose-950/40 dark:to-rose-900/30 dark:border-rose-900/50',
+      cardTheme: 'bg-gradient-to-br from-[#fff5f6] via-[#fff1f2] to-[#ffe4e6]/95 border-2 border-rose-300/90 hover:border-rose-500 shadow-xs dark:from-slate-800/95 dark:via-rose-950/50 dark:to-rose-900/40 dark:border-rose-600/70',
       pillTheme: 'bg-gradient-to-br from-rose-100 to-rose-200/80 border border-rose-300/70 dark:from-rose-900/60 dark:to-rose-800/60 dark:border-rose-700/60',
       iconColor: 'text-rose-700 dark:text-rose-300',
       glowTheme: 'group-hover:bg-rose-400/20',
@@ -109,7 +109,7 @@ export const QuickMenu: React.FC = () => {
                 key={item.id}
                 onClick={() => navigate(item.route)}
                 type="button"
-                className={`group relative flex items-center text-left p-2 xs:p-2.5 sm:p-3 rounded-2xl sm:rounded-3xl border transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-md active:scale-[0.97] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs min-h-[56px] xs:min-h-[60px] sm:min-h-[64px] ${item.cardTheme} ${item.hoverShadow}`}
+                className={`group relative flex items-center text-left p-2.5 xs:p-3 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-md active:scale-[0.97] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs min-h-[58px] xs:min-h-[62px] sm:min-h-[66px] ${item.cardTheme} ${item.hoverShadow}`}
                 title={item.label}
               >
                 {/* Subtle Glass Highlight */}
@@ -123,9 +123,9 @@ export const QuickMenu: React.FC = () => {
                   <Icon className={`relative z-10 w-4.5 h-4.5 xs:w-5 xs:h-5 ${item.iconColor} stroke-[2.3] transition-transform duration-300 group-hover:scale-105`} />
                 </div>
 
-                {/* Card Label: Bold & Highly Readable */}
+                {/* Card Label: Bold & Highly Readable (Larger font size) */}
                 <div className="flex-1 min-w-0 ml-2 xs:ml-2.5 sm:ml-3">
-                  <span className="block text-[11.5px] xs:text-[12px] sm:text-[13px] md:text-sm font-black text-slate-800 dark:text-slate-100 tracking-tight leading-snug group-hover:text-black dark:group-hover:text-white transition-colors line-clamp-2">
+                  <span className="block text-[13px] xs:text-[14px] sm:text-[15px] md:text-base font-black text-slate-900 dark:text-slate-100 tracking-tight leading-snug group-hover:text-black dark:group-hover:text-white transition-colors line-clamp-2">
                     {item.label}
                   </span>
                 </div>

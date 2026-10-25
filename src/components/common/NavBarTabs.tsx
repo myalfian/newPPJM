@@ -67,7 +67,7 @@ const DEFAULT_CATEGORY_TABS: Record<
     ],
   },
   'program-unggulan': {
-    parentLabel: 'Program Unggulan',
+    parentLabel: 'Program',
     parentHref: '/program-unggulan/amaliyah-pondok',
     parentIcon: GraduationCap,
     tabs: [
@@ -77,7 +77,7 @@ const DEFAULT_CATEGORY_TABS: Record<
     ],
   },
   'galeri': {
-    parentLabel: 'Galeri Sekolah',
+    parentLabel: 'Galeri',
     parentHref: '/galeri/foto',
     parentIcon: ImageIcon,
     tabs: [

@@ -95,7 +95,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
   },
   {
     id: 'programs',
-    label: 'Program Unggulan',
+    label: 'Program',
     icon: BookOpenCheck,
     href: '/program-unggulan',
     isDropdown: false,
@@ -181,7 +181,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
   },
   {
     id: 'galeri',
-    label: 'Galeri Sekolah',
+    label: 'Galeri',
     icon: Images,
     href: '/galeri',
     isDropdown: false,
@@ -261,7 +261,7 @@ export const ADMIN_MODULES: AdminModuleItem[] = [
     icon: ImageIcon,
     roles: ['super_admin', 'pengurus_konten'],
     category: 'media',
-    publicCategory: 'Galeri Sekolah',
+    publicCategory: 'Galeri',
     publicHref: '/galeri/foto',
   },
   {
