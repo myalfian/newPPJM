@@ -44,7 +44,7 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Main Footer Container with Slim Padding & Mobile Bottom Nav Safe Clearance */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-24 md:pt-4 md:pb-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-3 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] md:pt-4 md:pb-6">
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3.5 lg:gap-5 items-start">
 
