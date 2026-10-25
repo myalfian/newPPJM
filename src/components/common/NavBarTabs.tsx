@@ -246,7 +246,7 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
                     aria-current={isActive ? 'page' : undefined}
                     className={`curved-tab-link ${isActive ? 'active' : ''}`}
                   >
-                    {/* Animated Sliding Notch Pointer & Floating Dot (Smooth & Precise CodePen Style) */}
+                    {/* Animated Sliding Notch Pointer & Radiant Floating Gold Jewel */}
                     {isActive && (
                       <motion.div
                         layoutId="curvedCutoutPointer"
@@ -254,9 +254,9 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
                         className="curved-pointer"
                         transition={{
                           type: 'spring',
-                          stiffness: 350,
-                          damping: 27,
-                          mass: 0.65,
+                          stiffness: 420,
+                          damping: 28,
+                          mass: 0.58,
                         }}
                       >
                         <svg
@@ -268,11 +268,37 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
                           xmlns="http://www.w3.org/2000/svg"
                           aria-hidden="true"
                         >
+                          <defs>
+                            <radialGradient id="topNotchDotGrad" cx="35%" cy="35%" r="65%">
+                              <stop offset="0%" stopColor="#fffbeb" />
+                              <stop offset="35%" stopColor="#fde047" />
+                              <stop offset="75%" stopColor="#d97706" />
+                              <stop offset="100%" stopColor="#92400e" />
+                            </radialGradient>
+                          </defs>
                           <path
                             d="M 0 -3 L 74 -3 L 74 0 C 58 0, 52 18, 37 18 C 22 18, 16 0, 0 0 Z"
                             className="curved-notch-surface"
+                            stroke="none"
                           />
-                          <circle cx="37" cy="5.5" r="4" className="curved-notch-dot" />
+                          {/* Radiant Jewel Gold Floating Indicator */}
+                          <circle
+                            cx="37"
+                            cy="5.5"
+                            r="4.8"
+                            fill="url(#topNotchDotGrad)"
+                            className="curved-notch-dot"
+                            stroke="none"
+                          />
+                          {/* Specular Gem Reflection */}
+                          <circle
+                            cx="35.5"
+                            cy="4"
+                            r="1.4"
+                            fill="#ffffff"
+                            opacity="0.85"
+                            stroke="none"
+                          />
                         </svg>
                       </motion.div>
                     )}

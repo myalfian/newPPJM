@@ -91,13 +91,13 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
       {/* 1. Mobile-Only Year Filter Pill: Positioned at Top Right (Separate from Category Bar) */}
       {hasYears && (
         <div className="flex items-center justify-end w-full mb-1.5 px-0.5 md:hidden">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border-0 shadow-sm text-xs font-bold text-slate-700 dark:text-slate-200">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border-0 outline-none ring-0 shadow-sm text-xs font-bold text-slate-700 dark:text-slate-200">
             <Calendar className="w-3.5 h-3.5 text-emerald-700 dark:text-gold-400 shrink-0" />
             <span className="text-[11px] font-semibold text-slate-400 uppercase">{yearLabel}:</span>
             <select
               value={selectedYear}
               onChange={(e) => onSelectYear!(e.target.value)}
-              className="bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none cursor-pointer border-0"
+              className="bg-transparent text-xs font-bold text-slate-800 dark:text-white focus:outline-none focus:ring-0 cursor-pointer border-0 outline-none ring-0"
               aria-label="Filter Tahun Mobile"
             >
               {years!.map((y) => (
@@ -129,7 +129,7 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                     aria-pressed={isActive}
                     className={`bottom-curved-tab-btn w-full md:w-auto ${isActive ? 'active' : ''}`}
                   >
-                    {/* Animated Sliding Notch Pointer & Floating Dot at the BOTTOM */}
+                    {/* Animated Sliding Notch Pointer & Radiant Floating Gold Jewel at the BOTTOM */}
                     {isActive && (
                       <motion.div
                         layoutId="bottomCurvedCutoutPointer"
@@ -137,9 +137,9 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                         className="bottom-curved-pointer"
                         transition={{
                           type: 'spring',
-                          stiffness: 350,
-                          damping: 27,
-                          mass: 0.65,
+                          stiffness: 420,
+                          damping: 28,
+                          mass: 0.58,
                         }}
                       >
                         <svg
@@ -151,11 +151,37 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                           xmlns="http://www.w3.org/2000/svg"
                           aria-hidden="true"
                         >
+                          <defs>
+                            <radialGradient id="bottomNotchDotGrad" cx="35%" cy="35%" r="65%">
+                              <stop offset="0%" stopColor="#fffbeb" />
+                              <stop offset="35%" stopColor="#fde047" />
+                              <stop offset="75%" stopColor="#d97706" />
+                              <stop offset="100%" stopColor="#92400e" />
+                            </radialGradient>
+                          </defs>
                           <path
                             d="M 0 25 L 74 25 L 74 22 C 58 22, 52 4, 37 4 C 22 4, 16 22, 0 22 Z"
                             className="bottom-curved-notch-surface"
+                            stroke="none"
                           />
-                          <circle cx="37" cy="16.5" r="4" className="bottom-curved-notch-dot" />
+                          {/* Radiant Jewel Gold Floating Indicator */}
+                          <circle
+                            cx="37"
+                            cy="16.5"
+                            r="4.8"
+                            fill="url(#bottomNotchDotGrad)"
+                            className="bottom-curved-notch-dot"
+                            stroke="none"
+                          />
+                          {/* Specular Gem Reflection */}
+                          <circle
+                            cx="35.5"
+                            cy="15"
+                            r="1.4"
+                            fill="#ffffff"
+                            opacity="0.85"
+                            stroke="none"
+                          />
                         </svg>
                       </motion.div>
                     )}
