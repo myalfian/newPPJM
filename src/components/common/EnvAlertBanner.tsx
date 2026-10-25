@@ -1,25 +1,30 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, Link } from 'react-router-dom';
 import { isSupabaseConfigured } from '../../lib/supabase';
 import { Database, X, ChevronRight, Copy, Check, Sparkles, ShieldCheck } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const EnvAlertBanner: React.FC = () => {
+  const location = useLocation();
   const configured = isSupabaseConfigured();
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  // Pastikan peringatan HANYA aktif pada window / route Admin saja
+  const isAdminWindow = location.pathname.startsWith('/admin') || location.pathname.startsWith('/login');
+
   useEffect(() => {
-    if (!configured) {
+    if (!configured && isAdminWindow) {
       // Periksa apakah notifikasi telah ditutup dalam sesi browser ini
       const dismissed = sessionStorage.getItem('ppjm_dataset_alert_dismissed') === 'true';
       if (!dismissed) {
         setIsOpen(true);
       }
     }
-  }, [configured]);
+  }, [configured, isAdminWindow]);
 
-  if (configured) return null;
+  // Jika bukan di window Admin atau Supabase sudah terkonfigurasi, jangan render apapun
+  if (!isAdminWindow || configured) return null;
 
   const handleClose = () => {
     setIsOpen(false);
@@ -36,13 +41,13 @@ export const EnvAlertBanner: React.FC = () => {
 
   return (
     <>
-      {/* Floating Pill Trigger (Tampil di pojok bawah saat modal tertutup agar tetap bisa diakses kapan saja) */}
+      {/* Floating Pill Trigger (Tampil di pojok bawah window Admin saat modal tertutup) */}
       {!isOpen && (
         <motion.div
           initial={{ opacity: 0, scale: 0.9, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.9, y: 10 }}
-          className="fixed bottom-24 md:bottom-6 left-4 z-40 pointer-events-auto select-none"
+          className="fixed bottom-20 md:bottom-6 left-4 z-50 pointer-events-auto select-none"
         >
           <button
             type="button"
@@ -129,7 +134,7 @@ export const EnvAlertBanner: React.FC = () => {
               {/* Content Description */}
               <div className="mt-3.5 space-y-2.5 text-xs sm:text-[13px] text-slate-600 dark:text-slate-300 leading-relaxed">
                 <p>
-                  Platform berjalan lancar dengan dataset awal pesantren terpasang secara mandiri. Semua halaman informasi, kurikulum, galeri, dan modul STEM siap digunakan.
+                  Platform berjalan lancar dengan dataset awal pesantren terpasang secara mandiri. Semua modul admin, kurikulum, galeri, dan modul STEM siap dikelola.
                 </p>
                 <p>
                   Untuk menghubungkan sinkronisasi database live (Supabase), pasang kredensial proyek Anda di file <code className="px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-900 dark:text-amber-200 font-mono text-[11px] font-bold">.env</code>:
@@ -169,12 +174,12 @@ VITE_SUPABASE_ANON_KEY=your-anon-key`}
               {/* Action Buttons */}
               <div className="mt-5 flex flex-col sm:flex-row items-center gap-2.5">
                 <Link
-                  to="/admin"
+                  to="/admin/berita"
                   onClick={handleClose}
                   className="w-full sm:flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-white font-extrabold text-xs shadow-md shadow-amber-600/25 transition-all duration-200 cursor-pointer"
                 >
                   <Sparkles className="w-3.5 h-3.5" />
-                  <span>Panduan Setup Admin</span>
+                  <span>Kelola Konten Admin</span>
                   <ChevronRight className="w-3.5 h-3.5 ml-auto sm:ml-0" />
                 </Link>
                 <button

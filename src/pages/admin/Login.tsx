@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ShieldCheck, Lock, Mail, CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
 import { UserRole } from '../../lib/supabase';
+import { EnvAlertBanner } from '../../components/common/EnvAlertBanner';
 
 export const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -150,6 +151,9 @@ export const Login: React.FC = () => {
         </div>
 
       </div>
+
+      {/* Supabase Dataset Warning Modal (Admin Window) */}
+      <EnvAlertBanner />
     </div>
   );
 };

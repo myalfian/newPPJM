@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { UserRole } from '../lib/supabase';
 import { ADMIN_MODULES, PUBLIC_NAV_TABS, AdminModuleItem } from '../data/navigationData';
+import { EnvAlertBanner } from '../components/common/EnvAlertBanner';
 
 /**
  * Modern Lux Project Management Dashboard Layout
@@ -572,6 +573,9 @@ export const AdminLayout: React.FC = () => {
           <span className="mt-0.5">Menu</span>
         </button>
       </nav>
+
+      {/* Supabase Dataset Warning Modal (Tampil Khusus di Window Admin) */}
+      <EnvAlertBanner />
     </div>
   );
 };
