@@ -103,17 +103,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
         id="mainHeader"
         className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-[0_4px_25px_rgba(0,0,0,0.03)] transition-all duration-300"
       >
-        <div className="max-w-[1536px] mx-auto px-3 sm:px-6 lg:px-6 xl:px-8">
-          <div className="flex items-center justify-between gap-3.5 lg:gap-5 xl:gap-7 2xl:gap-9 py-2 sm:py-2.5 min-h-[4rem] sm:min-h-[4.5rem]">
+        <div className="w-full max-w-[1536px] mx-auto px-2 xs:px-3 sm:px-5 lg:px-6 xl:px-8">
+          <div className="flex items-center justify-between gap-1.5 xs:gap-2 sm:gap-3 lg:gap-5 xl:gap-7 2xl:gap-9 py-1.5 xs:py-2 sm:py-2.5 min-h-[3.5rem] xs:min-h-[3.75rem] sm:min-h-[4.25rem] lg:min-h-[4.5rem]">
 
             {/* Brand Logo & Title */}
             <Link
               to="/"
-              className="flex items-center gap-2.5 sm:gap-3 group shrink-0 select-none"
+              className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 group shrink-0 select-none"
               aria-label="Beranda Pondok Pesantren Jauharul Maknuun"
             >
               {/* Google Gemini Animated Border Glow Logo Wrapper */}
-              <div className="relative w-10 h-10 sm:w-11 sm:h-11 rounded-full p-[2px] flex items-center justify-center group-hover:scale-105 transition-all duration-300 shrink-0">
+              <div className="relative w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 lg:w-11 lg:h-11 rounded-full p-[1.5px] xs:p-[2px] flex items-center justify-center group-hover:scale-105 transition-all duration-300 shrink-0">
                 {/* 1. Soft Ambient Halo Aura */}
                 <div className="gemini-ambient-aura rounded-full" aria-hidden="true">
                   <div className="gemini-beam-sweep" />
@@ -137,10 +137,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                 </div>
               </div>
               <div className="flex flex-col">
-                <span className="font-extrabold text-[9px] sm:text-[10px] tracking-widest text-[#0d4a28] uppercase leading-tight">
+                <span className="font-extrabold text-[8px] xs:text-[9px] sm:text-[10px] tracking-wider text-[#0d4a28] uppercase leading-tight">
                   PONDOK PESANTREN
                 </span>
-                <span className="font-black text-xs sm:text-base lg:text-lg tracking-tight text-[#d4af37] leading-tight">
+                <span className="font-black text-[11px] xs:text-[12.5px] sm:text-base lg:text-lg tracking-tight text-[#d4af37] leading-tight whitespace-nowrap">
                   JAUHARUL MAKNUUN
                 </span>
                 <span className="text-[9px] sm:text-[10px] text-slate-500 font-medium hidden sm:block">
@@ -217,13 +217,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className="flex lg:hidden items-center h-9 sm:h-9.5 flex-1 min-w-[70px] max-w-[190px] xs:max-w-[240px] sm:max-w-[340px] px-3 rounded-full bg-slate-50/90 hover:bg-white text-left border border-slate-200/90 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] hover:border-emerald-500/70 transition-all duration-200 cursor-pointer group select-none gap-2 shrink mx-1 xs:mx-2"
+              className="flex lg:hidden items-center h-8.5 xs:h-9 sm:h-9.5 flex-1 min-w-0 max-w-[170px] xs:max-w-[220px] sm:max-w-[320px] px-2 xs:px-2.5 sm:px-3 rounded-full bg-slate-50/90 hover:bg-white text-left border border-slate-200/90 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] hover:border-emerald-500/70 transition-all duration-200 cursor-pointer group select-none gap-1.5 xs:gap-2 shrink"
               title="Search for anything... (Ctrl+K)"
               aria-label="Cari Informasi Portal"
             >
               <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-700 stroke-[2.2] shrink-0" />
-              <span className="text-[11px] sm:text-xs text-slate-400 font-normal truncate tracking-tight">
+              <span className="hidden xs:inline text-[11px] sm:text-xs text-slate-400 font-normal truncate tracking-tight">
                 Search for anything...
+              </span>
+              <span className="inline xs:hidden text-[10px] text-slate-400 font-normal truncate tracking-tight">
+                Search...
               </span>
             </button>
 
@@ -245,19 +248,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             </button>
 
             {/* Right Side: Universal Notification Bell & Profile Capsule (General Navbar & Mobile) */}
-            <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 lg:gap-3 shrink-0">
+            <div className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 lg:gap-3 shrink-0">
 
               {/* 1. Notification Bell Button (Universal for All Viewports) */}
               <div className="relative flex items-center">
                 <button
                   type="button"
                   onClick={() => setNotificationsOpen((prev) => !prev)}
-                  className="w-9 h-9 sm:w-9.5 sm:h-9.5 lg:w-10 lg:h-10 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 shadow-2xs flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer relative"
+                  className="w-8 h-8 xs:w-8.5 xs:h-8.5 sm:w-9 sm:h-9 lg:w-10 lg:h-10 rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 shadow-2xs flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer relative"
                   aria-label="Notifikasi & Informasi"
                   title="Warta & Informasi Terkini"
                 >
-                  <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-slate-700 stroke-[2.2]" />
-                  <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 ring-1 ring-white" />
+                  <Bell className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-4.5 sm:h-4.5 text-slate-700 stroke-[2.2]" />
+                  <span className="absolute top-1 xs:top-1.5 right-1 xs:right-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 ring-1 ring-white" />
                 </button>
 
                 {/* Notifications Dropdown Popover */}
@@ -292,11 +295,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               {/* 2. Profile Pill Capsule (Universal for All Viewports: (Avatar) Michael Admin ⌄) */}
               <Link
                 to="/admin"
-                className="flex items-center gap-1.5 sm:gap-2 pl-1 pr-2.5 sm:pr-3 py-1 lg:py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer select-none shrink-0"
+                className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 pl-0.5 xs:pl-1 pr-1.5 xs:pr-2.5 sm:pr-3 py-0.5 xs:py-1 lg:py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer select-none shrink-0"
                 title={`Profil Pengguna: ${currentUserName}`}
               >
                 {/* User Portrait Avatar */}
-                <div className="w-7 h-7 sm:w-7.5 sm:h-7.5 lg:w-8 lg:h-8 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
+                <div className="w-6.5 h-6.5 xs:w-7 xs:h-7 sm:w-7.5 sm:h-7.5 lg:w-8 lg:h-8 rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0">
                   <img
                     src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
                     alt="Michael Admin"
@@ -306,16 +309,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
 
                 {/* Name & Role Text Stack */}
                 <div className="flex flex-col text-left leading-tight">
-                  <span className="text-[11px] sm:text-xs lg:text-[13px] font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[50px] xs:max-w-[70px] sm:max-w-[90px] lg:max-w-[120px]">
+                  <span className="text-[10px] xs:text-[11px] sm:text-xs lg:text-[13px] font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[38px] xs:max-w-[60px] sm:max-w-[85px] lg:max-w-[120px]">
                     Michael
                   </span>
-                  <span className="text-[9px] sm:text-[9.5px] lg:text-[10px] font-medium text-slate-400 leading-none">
+                  <span className="text-[7.5px] xs:text-[8.5px] sm:text-[9.5px] lg:text-[10px] font-medium text-slate-400 leading-none">
                     Admin
                   </span>
                 </div>
 
                 {/* Dropdown Chevron */}
-                <ChevronDown className="w-3 h-3 text-slate-400 shrink-0 ml-0.5" />
+                <ChevronDown className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-slate-400 shrink-0 ml-0.2 xs:ml-0.5" />
               </Link>
 
             </div>
