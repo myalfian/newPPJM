@@ -121,10 +121,10 @@ export const QuickMenu: React.FC = () => {
   return (
     <section
       aria-label="Menu Navigasi Cepat Portal"
-      className="relative z-30 -mt-2 sm:-mt-3.5 bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-t-3xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-6px_25px_rgba(0,0,0,0.05)] dark:shadow-[0_-6px_25px_rgba(0,0,0,0.3)] pt-1.5 pb-2 sm:pt-2.5 sm:pb-3 lg:hidden transition-colors duration-200 overflow-hidden"
+      className="relative z-30 -mt-2 sm:-mt-3.5 bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-t-3xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-6px_25px_rgba(0,0,0,0.05)] dark:shadow-[0_-6px_25px_rgba(0,0,0,0.3)] pt-1 pb-1.5 xs:pt-1.5 xs:pb-2 sm:pt-2.5 sm:pb-3 lg:hidden transition-colors duration-200 overflow-hidden"
     >
-      <div className="w-full max-w-7xl mx-auto px-2 xs:px-2.5 sm:px-4">
-        {/* Layout QuickMenu: 2 Kolom x 4 Baris di Mobile Viewport */}
+      <div className="w-full max-w-7xl mx-auto px-1.5 xs:px-2.5 sm:px-4">
+        {/* Layout QuickMenu: 2 Kolom x 4 Baris di Mobile Viewport (Responsive 5 Inch) */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 xs:gap-1.5 sm:gap-2 md:gap-2.5">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -133,7 +133,7 @@ export const QuickMenu: React.FC = () => {
                 key={item.id}
                 onClick={() => navigate(item.route)}
                 type="button"
-                className={`group relative flex items-center text-left px-2 xs:px-2.5 sm:px-3 rounded-lg xs:rounded-xl sm:rounded-2xl border transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xs active:scale-[0.97] focus:outline-hidden focus-visible:ring-1.5 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs h-[34px] xs:h-[37px] sm:h-[44px] select-none ${item.cardTheme} ${item.hoverShadow}`}
+                className={`group relative flex items-center text-left px-1.5 xs:px-2 sm:px-3 rounded-lg xs:rounded-xl sm:rounded-2xl border transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xs active:scale-[0.97] focus:outline-hidden focus-visible:ring-1.5 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs h-8 xs:h-9 sm:h-[42px] select-none ${item.cardTheme} ${item.hoverShadow}`}
                 title={item.label}
               >
                 {/* Subtle Glass Highlight */}
@@ -141,7 +141,7 @@ export const QuickMenu: React.FC = () => {
 
                 {/* Animated Icon Badge */}
                 <div
-                  className={`relative shrink-0 w-6 h-6 xs:w-6.5 xs:h-6.5 sm:w-7.5 sm:h-7.5 rounded-md xs:rounded-lg sm:rounded-xl overflow-hidden flex items-center justify-center transition-all duration-200 ease-out group-hover:scale-105 shadow-2xs ${item.pillTheme}`}
+                  className={`relative shrink-0 w-5.5 h-5.5 xs:w-6.5 xs:h-6.5 sm:w-7.5 sm:h-7.5 rounded-md xs:rounded-lg sm:rounded-xl overflow-hidden flex items-center justify-center transition-all duration-200 ease-out group-hover:scale-105 shadow-2xs ${item.pillTheme}`}
                 >
                   <div className={`absolute -inset-1 rounded-md xs:rounded-lg transition-all duration-200 blur-xs ${item.glowTheme}`} />
                   <Icon className={`relative z-10 w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 ${item.iconColor} stroke-[2.2] transition-transform duration-200 group-hover:scale-105`} />
@@ -149,7 +149,7 @@ export const QuickMenu: React.FC = () => {
 
                 {/* Card Label: Compact, Bold & Highly Readable Single Line */}
                 <div className="flex-1 min-w-0 ml-1.5 xs:ml-2 sm:ml-2.5 overflow-hidden">
-                  <span className="block text-[11px] xs:text-[12px] sm:text-[13.5px] md:text-sm font-black text-slate-900 dark:text-slate-100 tracking-tight leading-none group-hover:text-black dark:group-hover:text-white transition-colors truncate">
+                  <span className="block text-[10.5px] xs:text-[11.5px] sm:text-[13px] md:text-sm font-black text-slate-900 dark:text-slate-100 tracking-tight leading-none group-hover:text-black dark:group-hover:text-white transition-colors truncate">
                     {item.label}
                   </span>
                 </div>
