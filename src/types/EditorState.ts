@@ -53,6 +53,32 @@ export interface QuickMenuItem {
   isVisible: boolean;
 }
 
+export interface OsisMemberItem {
+  id: string;
+  nama: string;
+  jabatan: string;
+  divisi: string;
+  lencana: string;
+  isVisible: boolean;
+}
+
+export interface GaleriItem {
+  id: string;
+  title: string;
+  category: string;
+  imageUrl: string;
+  isVisible: boolean;
+}
+
+export interface AgendaItem {
+  id: string;
+  title: string;
+  date: string;
+  location: string;
+  category: string;
+  isVisible: boolean;
+}
+
 export interface SectionMeta<T = any> {
   id: string;
   title: string;
@@ -96,6 +122,22 @@ export interface PageEditorState {
     ekskul: SectionMeta<{
       headline: string;
       items: EkskulItem[];
+    }>;
+    osis: SectionMeta<{
+      headline: string;
+      subheadline: string;
+      kabinetName: string;
+      items: OsisMemberItem[];
+    }>;
+    agenda: SectionMeta<{
+      headline: string;
+      subheadline: string;
+      items: AgendaItem[];
+    }>;
+    galeri: SectionMeta<{
+      headline: string;
+      subheadline: string;
+      items: GaleriItem[];
     }>;
     footer: SectionMeta<{
       alamat: string;
@@ -317,12 +359,62 @@ export const INITIAL_EDITOR_STATE: PageEditorState = {
         ]
       }
     },
+    osis: {
+      id: 'osis',
+      title: 'Organisasi Santri (OSIS / OPJM)',
+      description: 'Struktur kepengurusan santri putra & putri dan 6 divisi kerja',
+      isVisible: true,
+      order: 9,
+      data: {
+        headline: 'Kepemimpinan Santri (OSIS / OPJM)',
+        subheadline: 'Wadah Pengabdian, Disiplin, dan Karakter Santri Mandiri',
+        kabinetName: 'Kabinet Al-Fatih 2026/2027',
+        items: [
+          { id: 'osis-1', nama: 'Ahmad Faizur Rahman', jabatan: 'Ketua Umum OSIS Putra', divisi: 'BPH Inti', lencana: 'Presidium', isVisible: true },
+          { id: 'osis-2', nama: 'Fatimah Az-Zahra', jabatan: 'Ketua Umum OSIS Putri', divisi: 'BPH Inti', lencana: 'Presidium', isVisible: true },
+          { id: 'osis-3', nama: 'M. Zaidan Al-Farisi', jabatan: 'Koordinator Qismul Amni', divisi: 'Kedisiplinan & Keamanan', lencana: 'Keamanan', isVisible: true },
+          { id: 'osis-4', nama: 'Rian Hidayatullah', jabatan: 'Koordinator Eco-Pesantren', divisi: 'Kebersihan & Lingkungan', lencana: 'Lingkungan', isVisible: true }
+        ]
+      }
+    },
+    agenda: {
+      id: 'agenda',
+      title: 'Agenda & Kalender Pesantren',
+      description: 'Jadwal pengajian akbar, wisuda tahfidz, dan kalender pendidikan',
+      isVisible: true,
+      order: 10,
+      data: {
+        headline: 'Agenda & Kalender Kegiatan',
+        subheadline: 'Jadwal Terjadwal Santri & Khidmah Ma\'had Barokah',
+        items: [
+          { id: 'ag-1', title: 'Haflah Khotmil Qur\'an 30 Juz & Wisuda Purna Studi', date: '20 Juni 2026', location: 'Halaman Utama PPJM', category: 'Akbar', isVisible: true },
+          { id: 'ag-2', title: 'Roan Akbar & Kerja Bakti Kebersihan Pesantren', date: 'Tiap Jumat Pagi', location: 'Komplek Asrama Santri', category: 'Rutin', isVisible: true },
+          { id: 'ag-3', title: 'Kajian Rutin Ihya Ulumiddin Bersama Pengasuh', date: 'Malam Ahad Kliwon', location: 'Masjid Jauharul Maknuun', category: 'Kajian', isVisible: true }
+        ]
+      }
+    },
+    galeri: {
+      id: 'galeri',
+      title: 'Galeri Dokumentasi & Video Santri',
+      description: 'Dokumentasi foto kegiatan asrama, laboratorium & video liputan',
+      isVisible: true,
+      order: 11,
+      data: {
+        headline: 'Dokumentasi Visual & Kegiatan',
+        subheadline: 'Rekaman Momen Inspiratif Aktivitas Harian Santri',
+        items: [
+          { id: 'gal-1', title: 'Khotmil Qur\'an Bil Ghoib 30 Juz', category: 'Tahfidz', imageUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80', isVisible: true },
+          { id: 'gal-2', title: 'Praktikum Robotika IoT Pertanian Santri', category: 'Lab STEM', imageUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80', isVisible: true },
+          { id: 'gal-3', title: 'Sorogan Kitab Kuning Bersama Ustadz', category: 'Diniyah', imageUrl: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80', isVisible: true }
+        ]
+      }
+    },
     footer: {
       id: 'footer',
       title: 'Footer & Informasi Kontak',
       description: 'Alamat resmi, call center, tautan cepat dan hak cipta',
       isVisible: true,
-      order: 9,
+      order: 12,
       data: {
         alamat: 'Desa Lasem, Kec. Sidayu, Kabupaten Gresik, Jawa Timur 61153',
         whatsapp: '+62 812-3456-7890',

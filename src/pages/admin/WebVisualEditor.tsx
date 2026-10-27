@@ -78,7 +78,7 @@ export const WebVisualEditor: React.FC = () => {
 
   // Section item toggle visibility
   const toggleItemVisibility = (
-    sectionKey: 'beritaTerkini' | 'programUnggulan' | 'quickMenu' | 'prestasi' | 'ekskul',
+    sectionKey: 'beritaTerkini' | 'programUnggulan' | 'quickMenu' | 'prestasi' | 'ekskul' | 'osis' | 'agenda' | 'galeri',
     itemId: string
   ) => {
     setEditorState((prev) => {
@@ -887,7 +887,198 @@ export const WebVisualEditor: React.FC = () => {
         </EditorSectionWrapper>
 
         {/* ============================================================ */}
-        {/* 8. FOOTER RESMI PESANTREN */}
+        {/* 8. ORGANISASI SANTRI (OSIS / OPJM) */}
+        {/* ============================================================ */}
+        {editorState.sections.osis && (
+          <EditorSectionWrapper
+            id="osis"
+            title="Kepengurusan Santri (OSIS / OPJM)"
+            description="Struktur presidium santri & pengurus divisi organisasi"
+            isVisible={editorState.sections.osis.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('osis')}
+            onEditContent={() =>
+              setEditingSection({
+                id: 'osis',
+                title: 'Kepengurusan Santri (OSIS / OPJM)',
+                data: editorState.sections.osis.data
+              })
+            }
+          >
+            <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-2">
+              <div className="text-center max-w-2xl mx-auto space-y-1 mb-3">
+                <span className="text-xs sm:text-sm font-bold text-amber-700 uppercase tracking-widest">
+                  {editorState.sections.osis.data.kabinetName}
+                </span>
+                <h3 className="text-xl sm:text-2xl font-black text-emerald-950">
+                  {editorState.sections.osis.data.headline}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 font-medium">
+                  {editorState.sections.osis.data.subheadline}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                {editorState.sections.osis.data.items.map((member) => (
+                  <EditorItemWrapper
+                    key={member.id}
+                    itemId={member.id}
+                    itemTitle={member.nama}
+                    isVisible={member.isVisible}
+                    isPublicPreview={isPublicPreview}
+                    onToggleVisibility={() => toggleItemVisibility('osis', member.id)}
+                  >
+                    <div className="p-3 rounded-2xl bg-white border border-slate-200/90 shadow-xs flex flex-col justify-between h-full">
+                      <div className="space-y-1">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          {member.lencana}
+                        </span>
+                        <h4 className="font-extrabold text-sm text-emerald-950 mt-1">
+                          {member.nama}
+                        </h4>
+                        <p className="text-xs font-semibold text-emerald-700">{member.jabatan}</p>
+                        <p className="text-[11px] text-slate-500">{member.divisi}</p>
+                      </div>
+                    </div>
+                  </EditorItemWrapper>
+                ))}
+              </div>
+            </section>
+          </EditorSectionWrapper>
+        )}
+
+        {/* ============================================================ */}
+        {/* 9. AGENDA & KALENDER PESANTREN */}
+        {/* ============================================================ */}
+        {editorState.sections.agenda && (
+          <EditorSectionWrapper
+            id="agenda"
+            title="Agenda & Kalender Pesantren"
+            description="Jadwal pengajian, wisuda tahfidz & roan akbar"
+            isVisible={editorState.sections.agenda.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('agenda')}
+            onEditContent={() =>
+              setEditingSection({
+                id: 'agenda',
+                title: 'Agenda & Kalender Pesantren',
+                data: editorState.sections.agenda.data
+              })
+            }
+          >
+            <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-2">
+              <div className="flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
+                <div>
+                  <span className="text-xs font-bold text-amber-700 uppercase tracking-widest">
+                    Kalender Kegiatan
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-black text-emerald-950">
+                    {editorState.sections.agenda.data.headline}
+                  </h3>
+                </div>
+                <Link to="/agenda" className="text-xs font-bold text-emerald-800 hover:underline">
+                  Lihat Semua Agenda &rarr;
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {editorState.sections.agenda.data.items.map((ag) => (
+                  <EditorItemWrapper
+                    key={ag.id}
+                    itemId={ag.id}
+                    itemTitle={ag.title}
+                    isVisible={ag.isVisible}
+                    isPublicPreview={isPublicPreview}
+                    onToggleVisibility={() => toggleItemVisibility('agenda', ag.id)}
+                  >
+                    <div className="p-3.5 rounded-2xl bg-white border border-slate-200 shadow-xs space-y-1.5 h-full">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
+                        {ag.category}
+                      </span>
+                      <h4 className="font-extrabold text-xs sm:text-sm text-emerald-950 leading-snug">
+                        {ag.title}
+                      </h4>
+                      <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                        <Calendar className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                        <span>{ag.date}</span>
+                      </div>
+                      <p className="text-[11px] text-slate-600 font-medium truncate">📍 {ag.location}</p>
+                    </div>
+                  </EditorItemWrapper>
+                ))}
+              </div>
+            </section>
+          </EditorSectionWrapper>
+        )}
+
+        {/* ============================================================ */}
+        {/* 10. GALERI DOKUMENTASI VISUAL & VIDEO */}
+        {/* ============================================================ */}
+        {editorState.sections.galeri && (
+          <EditorSectionWrapper
+            id="galeri"
+            title="Galeri Foto & Dokumentasi"
+            description="Sorotan foto kegiatan santri, tahfidz & laboratorium STEM"
+            isVisible={editorState.sections.galeri.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('galeri')}
+            onEditContent={() =>
+              setEditingSection({
+                id: 'galeri',
+                title: 'Galeri Foto & Dokumentasi',
+                data: editorState.sections.galeri.data
+              })
+            }
+          >
+            <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-2">
+              <div className="flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
+                <div>
+                  <span className="text-xs font-bold text-amber-700 uppercase tracking-widest">
+                    Galeri Santri
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-black text-emerald-950">
+                    {editorState.sections.galeri.data.headline}
+                  </h3>
+                </div>
+                <Link to="/galeri/foto" className="text-xs font-bold text-emerald-800 hover:underline">
+                  Buka Galeri Lengkap &rarr;
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {editorState.sections.galeri.data.items.map((gal) => (
+                  <EditorItemWrapper
+                    key={gal.id}
+                    itemId={gal.id}
+                    itemTitle={gal.title}
+                    isVisible={gal.isVisible}
+                    isPublicPreview={isPublicPreview}
+                    onToggleVisibility={() => toggleItemVisibility('galeri', gal.id)}
+                  >
+                    <div className="rounded-2xl overflow-hidden border border-slate-200 bg-white shadow-xs group h-full">
+                      <div className="relative aspect-video overflow-hidden bg-slate-100">
+                        <img
+                          src={gal.imageUrl}
+                          alt={gal.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <span className="absolute top-2 left-2 bg-emerald-900/90 text-[#ffd700] text-[10px] font-bold px-2 py-0.5 rounded-full">
+                          {gal.category}
+                        </span>
+                      </div>
+                      <div className="p-2.5">
+                        <p className="text-xs font-bold text-emerald-950 truncate">{gal.title}</p>
+                      </div>
+                    </div>
+                  </EditorItemWrapper>
+                ))}
+              </div>
+            </section>
+          </EditorSectionWrapper>
+        )}
+
+        {/* ============================================================ */}
+        {/* 11. FOOTER RESMI PESANTREN */}
         {/* ============================================================ */}
         <EditorSectionWrapper
           id="footer"
