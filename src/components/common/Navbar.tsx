@@ -6,7 +6,9 @@ import {
   Search,
   Bell,
   ChevronDown,
-  User
+  User,
+  Menu,
+  ArrowRight
 } from 'lucide-react';
 import { SearchModal } from './SearchModal';
 import { PUBLIC_NAV_TABS, NavTabItem } from '../../data/navigationData';
@@ -108,6 +110,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
     if (tab.id === 'prestasi') return location.pathname === '/prestasi';
     if (tab.id === 'ekskul') return location.pathname === '/ekskul';
     if (tab.id === 'galeri') return location.pathname.startsWith('/galeri');
+    if (tab.id === 'agenda') return location.pathname.startsWith('/agenda');
     return false;
   };
 
@@ -192,93 +195,209 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             </Link>
 
 
-            {/* Desktop Navigation: Equal Width & Uniform Horizontal Distribution (h-[58px]) */}
-            <nav
-              className="hidden lg:grid grid-cols-6 items-center h-[56px] xl:h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[530px] xl:w-[650px] 2xl:w-[710px]"
-              onMouseLeave={() => setHoveredTab(null)}
-            >
-              {navTabs.map((tab) => {
-                const TabIcon = tab.icon;
-                const isActive = isTabActive(tab);
-                const isHovered = hoveredTab === tab.id;
+            {/* Desktop Navigation: 7 Pillars Equal Width & Uniform Horizontal Distribution (h-[58px]) */}
+            <div className="relative hidden lg:block" onMouseLeave={() => setHoveredTab(null)}>
+              <nav
+                className="grid grid-cols-7 items-center h-[56px] xl:h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[590px] xl:w-[710px] 2xl:w-[790px]"
+              >
+                {navTabs.map((tab) => {
+                  const TabIcon = tab.icon;
+                  const isActive = isTabActive(tab);
+                  const isHovered = hoveredTab === tab.id;
 
-                return (
-                  <div
-                    key={tab.id}
-                    className="relative h-full w-full flex items-center justify-center"
-                    onMouseEnter={() => setHoveredTab(tab.id)}
-                  >
-                    {/* Direct Page Navigation Link: Both Icon Badge and Menu Label Fit Comfortably Inside Container */}
-                    <Link
-                      to={tab.href}
-                      onClick={() => {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                      }}
-                      className="relative z-10 w-full h-full px-1 py-1 rounded-xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
+                  return (
+                    <div
+                      key={tab.id}
+                      className="relative h-full w-full flex items-center justify-center"
+                      onMouseEnter={() => setHoveredTab(tab.id)}
                     >
-                      {/* Compact Android-style Colorful Icon Badge */}
-                      <div
-                        className={`w-6 h-6 xl:w-6.5 xl:h-6.5 rounded-lg flex items-center justify-center border transition-all duration-200 group-hover:scale-105 shrink-0 ${
-                          isActive
-                            ? tab.color.activeBadgeBg
-                            : tab.color.badgeBg
-                        }`}
+                      {/* Direct Page Navigation Link: Both Icon Badge and Menu Label Fit Comfortably Inside Container */}
+                      <Link
+                        to={tab.href}
+                        onClick={() => {
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                          setHoveredTab(null);
+                        }}
+                        className="relative z-10 w-full h-full px-1 py-1 rounded-xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
                       >
-                        <TabIcon className="w-3.5 h-3.5 xl:w-3.5 xl:h-3.5 transition-transform duration-200 shrink-0" />
-                      </div>
-
-                      {/* Menu Label: Centered, Bold & Crisp Inside the Capsule Card */}
-                      <div className="w-full text-center px-0.5 mt-1 leading-none">
-                        <span
-                          className={`block text-[11px] xl:text-[12px] 2xl:text-[12.5px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${
+                        {/* Compact Android-style Colorful Icon Badge */}
+                        <div
+                          className={`w-6 h-6 xl:w-6.5 xl:h-6.5 rounded-lg flex items-center justify-center border transition-all duration-200 group-hover:scale-105 shrink-0 ${
                             isActive
-                              ? tab.color.activeText
-                              : 'text-slate-700 group-hover:text-slate-950'
+                              ? tab.color.activeBadgeBg
+                              : tab.color.badgeBg
                           }`}
                         >
-                          {tab.label}
-                        </span>
+                          <TabIcon className="w-3.5 h-3.5 xl:w-3.5 xl:h-3.5 transition-transform duration-200 shrink-0" />
+                        </div>
+
+                        {/* Menu Label: Centered, Bold & Crisp Inside the Capsule Card */}
+                        <div className="w-full text-center px-0.5 mt-1 leading-none">
+                          <span
+                            className={`block text-[11px] xl:text-[12px] 2xl:text-[12.5px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${
+                              isActive
+                                ? tab.color.activeText
+                                : 'text-slate-700 group-hover:text-slate-950'
+                            }`}
+                          >
+                            {tab.label}
+                          </span>
+                        </div>
+                      </Link>
+
+                      {/* Fluid Sliding Pill Indicator (Active or Hovered) */}
+                      {isHovered && (
+                        <motion.div
+                          layoutId="nav-capsule-indicator"
+                          className="absolute inset-0.5 rounded-xl bg-white shadow-[0_2px_12px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.04)] border border-slate-200/90 z-0 pointer-events-none"
+                          transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                        />
+                      )}
+
+                      {isActive && !isHovered && !hoveredTab && (
+                        <motion.div
+                          layoutId="nav-capsule-indicator"
+                          className="absolute inset-0.5 rounded-xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-200/80 z-0 pointer-events-none"
+                          transition={{ type: 'spring', stiffness: 450, damping: 32 }}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </nav>
+
+              {/* Desktop Megamenu Popover Dropdown on Hover */}
+              <AnimatePresence>
+                {hoveredTab && (() => {
+                  const activeHoverTab = navTabs.find((t) => t.id === hoveredTab);
+                  if (!activeHoverTab || (!activeHoverTab.items && !activeHoverTab.sections)) return null;
+
+                  return (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                      transition={{ duration: 0.16, ease: 'easeOut' }}
+                      className="absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-2xl rounded-2xl shadow-[0_20px_45px_rgba(0,0,0,0.12),0_4px_16px_rgba(15,81,50,0.06)] border border-slate-200/90 p-3.5 z-50 text-left select-none min-w-[340px] max-w-[560px]"
+                      onMouseEnter={() => setHoveredTab(hoveredTab)}
+                      onMouseLeave={() => setHoveredTab(null)}
+                    >
+                      {/* Dropdown Header */}
+                      <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100">
+                        <div className="flex items-center gap-2">
+                          <div className={`w-6 h-6 rounded-md flex items-center justify-center border text-xs ${activeHoverTab.color.badgeBg}`}>
+                            {React.createElement(activeHoverTab.icon, { className: 'w-3.5 h-3.5' })}
+                          </div>
+                          <span className="text-xs font-black text-slate-800 tracking-tight">
+                            Eksplorasi {activeHoverTab.label}
+                          </span>
+                        </div>
+                        <Link
+                          to={activeHoverTab.href}
+                          onClick={() => setHoveredTab(null)}
+                          className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 group"
+                        >
+                          <span>Buka Halaman</span>
+                          <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+                        </Link>
                       </div>
-                    </Link>
 
-                    {/* Fluid Sliding Pill Indicator (Active or Hovered) */}
-                    {isHovered && (
-                      <motion.div
-                        layoutId="nav-capsule-indicator"
-                        className="absolute inset-0.5 rounded-xl bg-white shadow-[0_2px_12px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.04)] border border-slate-200/90 z-0 pointer-events-none"
-                        transition={{ type: 'spring', stiffness: 450, damping: 32 }}
-                      />
-                    )}
+                      {/* Sections Layout (SMART JM) */}
+                      {activeHoverTab.sections && (
+                        <div className="grid grid-cols-3 gap-2.5">
+                          {activeHoverTab.sections.map((sec) => {
+                            const SecIcon = sec.icon;
+                            return (
+                              <div key={sec.title} className="p-2 rounded-xl bg-slate-50/80 border border-slate-200/60">
+                                <div className="flex items-center gap-1.5 mb-2">
+                                  <SecIcon className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                                  <span className="text-[11px] font-black text-slate-800 truncate">{sec.title}</span>
+                                </div>
+                                <div className="space-y-1">
+                                  {sec.items.map((sub) => (
+                                    <Link
+                                      key={sub.href}
+                                      to={sub.href}
+                                      onClick={() => setHoveredTab(null)}
+                                      className="block p-1.5 rounded-lg hover:bg-white text-slate-700 hover:text-emerald-800 text-[11px] font-bold transition-all shadow-2xs hover:shadow-xs"
+                                    >
+                                      <span className="block truncate">{sub.title}</span>
+                                    </Link>
+                                  ))}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
 
-                    {isActive && !isHovered && !hoveredTab && (
-                      <motion.div
-                        layoutId="nav-capsule-indicator"
-                        className="absolute inset-0.5 rounded-xl bg-white shadow-[0_2px_10px_rgba(0,0,0,0.06)] border border-slate-200/80 z-0 pointer-events-none"
-                        transition={{ type: 'spring', stiffness: 450, damping: 32 }}
-                      />
-                    )}
-                  </div>
-                );
-              })}
-            </nav>
+                      {/* Items Grid Layout */}
+                      {activeHoverTab.items && (
+                        <div className="grid grid-cols-2 gap-2">
+                          {activeHoverTab.items.map((item) => {
+                            const ItemIcon = item.icon;
+                            return (
+                              <Link
+                                key={item.href}
+                                to={item.href}
+                                onClick={() => setHoveredTab(null)}
+                                className="flex items-start gap-2.5 p-2 rounded-xl bg-slate-50/70 hover:bg-emerald-50/80 border border-slate-200/50 hover:border-emerald-300 transition-all group"
+                              >
+                                <div className="w-7 h-7 rounded-lg bg-white shadow-2xs border border-slate-200/60 flex items-center justify-center text-slate-700 group-hover:text-emerald-700 shrink-0 mt-0.5">
+                                  <ItemIcon className="w-3.5 h-3.5" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <p className="text-[11.5px] font-black text-slate-800 group-hover:text-emerald-900 truncate">
+                                    {item.title}
+                                  </p>
+                                  {item.desc && (
+                                    <p className="text-[10px] text-slate-500 line-clamp-1 mt-0.5 leading-snug">
+                                      {item.desc}
+                                    </p>
+                                  )}
+                                </div>
+                              </Link>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </motion.div>
+                  );
+                })()}
+              </AnimatePresence>
+            </div>
 
 
-            {/* Mobile Viewport: Rounded Pill Search Bar (1:1 with reference image: 🔍 Search for anything...) */}
-            <button
-              type="button"
-              onClick={() => setSearchOpen(true)}
-              className="flex lg:hidden items-center h-8.5 xs:h-9 sm:h-9.5 flex-1 min-w-0 max-w-[170px] xs:max-w-[220px] sm:max-w-[320px] px-2 xs:px-2.5 sm:px-3 rounded-full bg-slate-50/90 hover:bg-white text-left border border-slate-200/90 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] hover:border-emerald-500/70 transition-all duration-200 cursor-pointer group select-none gap-1.5 xs:gap-2 shrink"
-              title="Search for anything... (Ctrl+K)"
-              aria-label="Cari Informasi Portal"
-            >
-              <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-700 stroke-[2.2] shrink-0" />
-              <span className="hidden xs:inline text-[11px] sm:text-xs text-slate-400 font-normal truncate tracking-tight">
-                Search for anything...
-              </span>
-              <span className="inline xs:hidden text-[10px] text-slate-400 font-normal truncate tracking-tight">
-                Search...
-              </span>
-            </button>
+            {/* Mobile Viewport: Hamburger Drawer Trigger + Rounded Pill Search Bar */}
+            <div className="flex lg:hidden items-center gap-1.5 xs:gap-2 flex-1 min-w-0 max-w-[210px] xs:max-w-[270px] sm:max-w-[360px]">
+              {/* Hamburger Button: Opens Full Mobile Drawer Menu */}
+              <button
+                type="button"
+                onClick={onOpenMobileMenu}
+                className="flex items-center justify-center w-8 h-8 xs:w-8.5 xs:h-8.5 sm:w-9.5 sm:h-9.5 rounded-full bg-slate-50 hover:bg-emerald-50 active:bg-emerald-100 text-slate-700 hover:text-[#0d4a28] border border-slate-200/90 shadow-2xs transition-all active:scale-95 cursor-pointer shrink-0"
+                aria-label="Buka Menu Navigasi Lengkap"
+                title="Buka Menu Lengkap"
+              >
+                <Menu className="w-4 h-4 xs:w-4.5 xs:h-4.5 sm:w-5 sm:h-5 stroke-[2.3]" />
+              </button>
+
+              {/* Pill Search Bar */}
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                className="flex items-center h-8 xs:h-8.5 sm:h-9.5 flex-1 min-w-0 px-2 xs:px-2.5 sm:px-3 rounded-full bg-slate-50/90 hover:bg-white text-left border border-slate-200/90 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] hover:border-emerald-500/70 transition-all duration-200 cursor-pointer group select-none gap-1.5 xs:gap-2 shrink"
+                title="Search for anything... (Ctrl+K)"
+                aria-label="Cari Informasi Portal"
+              >
+                <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-700 stroke-[2.2] shrink-0" />
+                <span className="hidden xs:inline text-[11px] sm:text-xs text-slate-400 font-normal truncate tracking-tight">
+                  Search...
+                </span>
+                <span className="inline xs:hidden text-[10px] text-slate-400 font-normal truncate tracking-tight">
+                  Cari...
+                </span>
+              </button>
+            </div>
 
             {/* Desktop Responsive Search Field */}
             <button

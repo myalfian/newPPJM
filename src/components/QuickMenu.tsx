@@ -7,7 +7,9 @@ import {
   Trophy,
   Palette,
   Images,
-  ArrowUpRight
+  ArrowUpRight,
+  CalendarDays,
+  Sparkles
 } from 'lucide-react';
 
 interface MenuItem {
@@ -91,6 +93,28 @@ export const QuickMenu: React.FC = () => {
       glowTheme: 'group-hover:bg-rose-400/20',
       hoverShadow: 'hover:shadow-rose-500/20',
       route: '/galeri/foto'
+    },
+    {
+      id: 'agenda-pesantren',
+      label: 'Agenda',
+      icon: CalendarDays,
+      cardTheme: 'bg-gradient-to-br from-[#f0fdf4] via-[#ecfdf5] to-[#d1fae5]/95 border-2 border-emerald-300/90 hover:border-emerald-500 shadow-xs dark:from-slate-900 dark:via-emerald-950/40 dark:to-slate-900 dark:border-emerald-600/60 dark:hover:border-emerald-400/80',
+      pillTheme: 'bg-gradient-to-br from-emerald-100 to-emerald-200/80 border border-emerald-300/70 dark:from-emerald-950 dark:to-emerald-900/60 dark:border-emerald-600/60',
+      iconColor: 'text-[#0d4a28] dark:text-emerald-300',
+      glowTheme: 'group-hover:bg-emerald-400/20',
+      hoverShadow: 'hover:shadow-emerald-500/20',
+      route: '/agenda'
+    },
+    {
+      id: 'ppdb-online',
+      label: 'PPDB 2026/27',
+      icon: GraduationCap,
+      cardTheme: 'bg-gradient-to-br from-[#f5f3ff] via-[#ede9fe] to-[#ddd6fe]/95 border-2 border-indigo-300/90 hover:border-indigo-500 shadow-xs dark:from-slate-900 dark:via-indigo-950/40 dark:to-slate-900 dark:border-indigo-600/60 dark:hover:border-indigo-400/80',
+      pillTheme: 'bg-gradient-to-br from-indigo-100 to-indigo-200/80 border border-indigo-300/70 dark:from-indigo-950 dark:to-indigo-900/60 dark:border-indigo-600/60',
+      iconColor: 'text-indigo-700 dark:text-indigo-300',
+      glowTheme: 'group-hover:bg-indigo-400/20',
+      hoverShadow: 'hover:shadow-indigo-500/20',
+      route: '/program-unggulan/program-sekolah'
     }
   ];
 
@@ -100,8 +124,8 @@ export const QuickMenu: React.FC = () => {
       className="relative z-30 -mt-2 sm:-mt-3 bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-t-4xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.35)] pt-2.5 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:pt-3.5 sm:pb-4 lg:hidden transition-colors duration-200 overflow-hidden"
     >
       <div className="w-full max-w-7xl mx-auto px-2.5 sm:px-4">
-        {/* Layout Menu: Grid 3x2 (3 Baris x 2 Kolom) Responsive di Mobile Viewport */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-2.5 md:gap-3">
+        {/* Layout Menu: Grid 4x2 Responsive di Mobile (4 Baris x 2 Kolom di Phone, 2 Baris x 4 Kolom di Tablet) */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 md:gap-3">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (

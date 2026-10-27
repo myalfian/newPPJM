@@ -23,7 +23,8 @@ import {
   Volume2,
   Activity,
   Palette,
-  User
+  User,
+  CalendarDays
 } from 'lucide-react';
 
 export interface NavSubItem {
@@ -197,6 +198,22 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     items: [
       { title: 'Foto', href: '/galeri/foto', desc: 'Dokumentasi asrama & kegiatan santri', icon: Camera },
       { title: 'Video', href: '/galeri/video', desc: 'Dokumenter resmi & kegiatan pondok', icon: Video },
+    ]
+  },
+  {
+    id: 'agenda',
+    label: 'Agenda',
+    icon: CalendarDays,
+    href: '/agenda',
+    isDropdown: false,
+    color: {
+      badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 group-hover:bg-emerald-100 group-hover:text-emerald-800',
+      activeBadgeBg: 'bg-[#0f5132] text-[#d4af37] shadow-md shadow-emerald-950/30 ring-2 ring-[#d4af37]/70',
+      activeText: 'text-[#073b22]',
+      activeDot: 'bg-[#d4af37]',
+    },
+    items: [
+      { title: 'Agenda Bulanan', href: '/agenda', desc: 'Jadwal & kalender kegiatan santri', icon: CalendarDays },
     ]
   },
 ];
