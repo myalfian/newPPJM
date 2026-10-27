@@ -20,6 +20,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { NavBarTabs } from '../components/common/NavBarTabs';
+import { BottomNavBarTabs } from '../components/common/BottomNavBarTabs';
 import { supabase } from '../lib/supabase';
 import { useCachedQuery } from '../lib/queryCache';
 
@@ -327,16 +328,31 @@ export const Agenda: React.FC = () => {
   );
 
   const [timelineFilter, setTimelineFilter] = useState<AgendaTimelineStatus>('current');
+  const [selectedYear, setSelectedYear] = useState<string>('Semua');
   const [selectedMonth, setSelectedMonth] = useState<string>('Semua Bulan');
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua Kategori');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedDetailModal, setSelectedDetailModal] = useState<AgendaItem | null>(null);
+
+  // Dynamic available years from agenda data
+  const availableYears = useMemo(() => {
+    const set = new Set<string>();
+    agendaList.forEach((a) => {
+      if (a.year) set.add(a.year);
+    });
+    const sorted = Array.from(set).sort((a, b) => Number(b) - Number(a));
+    return ['Semua', ...sorted];
+  }, [agendaList]);
 
   // Filter Logic
   const filteredAgendas = useMemo(() => {
     return agendaList.filter((item) => {
       // Timeline filter
       if (timelineFilter !== 'all' && item.timelineStatus !== timelineFilter) {
+        return false;
+      }
+      // Year filter
+      if (selectedYear !== 'Semua' && item.year !== selectedYear) {
         return false;
       }
       // Month filter
@@ -358,7 +374,7 @@ export const Agenda: React.FC = () => {
       }
       return true;
     });
-  }, [agendaList, timelineFilter, selectedMonth, selectedCategory, searchQuery]);
+  }, [agendaList, timelineFilter, selectedYear, selectedMonth, selectedCategory, searchQuery]);
 
   // Status counts for badge indicators
   const currentCount = useMemo(() => agendaList.filter(a => a.timelineStatus === 'current').length, [agendaList]);
@@ -420,93 +436,29 @@ export const Agenda: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Segmented Timeline Buttons (Current, Future, Historical, All) */}
-      <div className="bg-white rounded-2xl p-2 sm:p-2.5 shadow-sm border border-slate-200">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-1.5 sm:gap-2">
-          {/* CURRENT TAB */}
-          <button
-            type="button"
-            onClick={() => setTimelineFilter('current')}
-            className={`flex items-center justify-center gap-2 p-3 sm:p-3.5 rounded-xl font-black text-sm sm:text-base transition-all cursor-pointer ${
-              timelineFilter === 'current'
-                ? 'bg-emerald-900 text-white shadow-md ring-2 ring-emerald-600/30'
-                : 'bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900'
-            }`}
-          >
-            <span className="relative flex h-2.5 w-2.5">
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                timelineFilter === 'current' ? 'bg-gold-400' : 'bg-emerald-500'
-              }`} />
-              <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${
-                timelineFilter === 'current' ? 'bg-gold-400' : 'bg-emerald-600'
-              }`} />
-            </span>
-            <span>Bulan Ini (Current)</span>
-            <span className={`ml-1 text-xs px-2 py-0.5 rounded-full font-bold ${
-              timelineFilter === 'current' ? 'bg-gold-400 text-emerald-950' : 'bg-emerald-100 text-emerald-800'
-            }`}>
-              {currentCount}
-            </span>
-          </button>
-
-          {/* FUTURE TAB */}
-          <button
-            type="button"
-            onClick={() => setTimelineFilter('future')}
-            className={`flex items-center justify-center gap-2 p-3 sm:p-3.5 rounded-xl font-black text-sm sm:text-base transition-all cursor-pointer ${
-              timelineFilter === 'future'
-                ? 'bg-emerald-900 text-white shadow-md ring-2 ring-emerald-600/30'
-                : 'bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900'
-            }`}
-          >
-            <Clock3 className="w-4 h-4 text-amber-500" />
-            <span>Mendatang (Future)</span>
-            <span className={`ml-1 text-xs px-2 py-0.5 rounded-full font-bold ${
-              timelineFilter === 'future' ? 'bg-gold-400 text-emerald-950' : 'bg-slate-200 text-slate-700'
-            }`}>
-              {futureCount}
-            </span>
-          </button>
-
-          {/* HISTORICAL TAB */}
-          <button
-            type="button"
-            onClick={() => setTimelineFilter('historical')}
-            className={`flex items-center justify-center gap-2 p-3 sm:p-3.5 rounded-xl font-black text-sm sm:text-base transition-all cursor-pointer ${
-              timelineFilter === 'historical'
-                ? 'bg-emerald-900 text-white shadow-md ring-2 ring-emerald-600/30'
-                : 'bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900'
-            }`}
-          >
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-            <span>Arsip (Historical)</span>
-            <span className={`ml-1 text-xs px-2 py-0.5 rounded-full font-bold ${
-              timelineFilter === 'historical' ? 'bg-gold-400 text-emerald-950' : 'bg-slate-200 text-slate-700'
-            }`}>
-              {historicalCount}
-            </span>
-          </button>
-
-          {/* ALL TAB */}
-          <button
-            type="button"
-            onClick={() => setTimelineFilter('all')}
-            className={`flex items-center justify-center gap-2 p-3 sm:p-3.5 rounded-xl font-black text-sm sm:text-base transition-all cursor-pointer ${
-              timelineFilter === 'all'
-                ? 'bg-emerald-900 text-white shadow-md ring-2 ring-emerald-600/30'
-                : 'bg-slate-50 hover:bg-emerald-50 text-slate-700 hover:text-emerald-900'
-            }`}
-          >
-            <Layers className="w-4 h-4" />
-            <span>Semua Agenda</span>
-            <span className={`ml-1 text-xs px-2 py-0.5 rounded-full font-bold ${
-              timelineFilter === 'all' ? 'bg-gold-400 text-emerald-950' : 'bg-slate-200 text-slate-700'
-            }`}>
-              {AGENDA_DATA.length}
-            </span>
-          </button>
-        </div>
-      </div>
+      {/* 3. BottomNavBarTabs Signature Curved Notch Bar with Spring Physics */}
+      <BottomNavBarTabs
+        categories={['Bulan Ini', 'Mendatang', 'Arsip', 'Semua Agenda']}
+        selectedCategory={
+          timelineFilter === 'current'
+            ? 'Bulan Ini'
+            : timelineFilter === 'future'
+            ? 'Mendatang'
+            : timelineFilter === 'historical'
+            ? 'Arsip'
+            : 'Semua Agenda'
+        }
+        onSelectCategory={(cat) => {
+          if (cat === 'Bulan Ini') setTimelineFilter('current');
+          else if (cat === 'Mendatang') setTimelineFilter('future');
+          else if (cat === 'Arsip') setTimelineFilter('historical');
+          else setTimelineFilter('all');
+        }}
+        years={availableYears}
+        selectedYear={selectedYear}
+        onSelectYear={setSelectedYear}
+        yearLabel="Tahun"
+      />
 
       {/* 4. Controls Bar: Search & Dropdowns (Bulan & Kategori) */}
       <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-sm border border-slate-200 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
@@ -574,6 +526,7 @@ export const Agenda: React.FC = () => {
             <button
               onClick={() => {
                 setTimelineFilter('all');
+                setSelectedYear('Semua');
                 setSelectedMonth('Semua Bulan');
                 setSelectedCategory('Semua Kategori');
                 setSearchQuery('');
