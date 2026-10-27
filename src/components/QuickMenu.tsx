@@ -121,11 +121,11 @@ export const QuickMenu: React.FC = () => {
   return (
     <section
       aria-label="Menu Navigasi Cepat Portal"
-      className="relative z-30 -mt-2 sm:-mt-3.5 bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-t-3xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-6px_25px_rgba(0,0,0,0.05)] dark:shadow-[0_-6px_25px_rgba(0,0,0,0.3)] pt-1 pb-1.5 xs:pt-1.5 xs:pb-2 sm:pt-2.5 sm:pb-3 lg:hidden transition-colors duration-200 overflow-hidden"
+      className="relative z-30 -mt-2 sm:-mt-3.5 bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-t-3xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-6px_25px_rgba(0,0,0,0.05)] dark:shadow-[0_-6px_25px_rgba(0,0,0,0.3)] pt-2 pb-2.5 sm:pt-3 sm:pb-4 lg:hidden transition-colors duration-200 overflow-hidden"
     >
-      <div className="w-full max-w-7xl mx-auto px-1.5 xs:px-2.5 sm:px-4">
-        {/* Layout QuickMenu: 2 Kolom x 4 Baris di Mobile Viewport (Responsive 5 Inch) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 xs:gap-1.5 sm:gap-2 md:gap-2.5">
+      <div className="w-full max-w-7xl mx-auto px-2 xs:px-3 sm:px-4">
+        {/* Layout QuickMenu: 2 Kolom x 4 Baris di Mobile Viewport */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 xs:gap-2 sm:gap-2.5 md:gap-3">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -133,30 +133,30 @@ export const QuickMenu: React.FC = () => {
                 key={item.id}
                 onClick={() => navigate(item.route)}
                 type="button"
-                className={`group relative flex items-center text-left px-1.5 xs:px-2 sm:px-3 rounded-lg xs:rounded-xl sm:rounded-2xl border transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xs active:scale-[0.97] focus:outline-hidden focus-visible:ring-1.5 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs h-8 xs:h-9 sm:h-[42px] select-none ${item.cardTheme} ${item.hoverShadow}`}
+                className={`group relative flex items-center text-left px-2.5 xs:px-3 sm:px-3.5 rounded-xl sm:rounded-2xl border-2 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-sm active:scale-[0.97] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs h-11 xs:h-12 sm:h-[52px] select-none ${item.cardTheme} ${item.hoverShadow}`}
                 title={item.label}
               >
                 {/* Subtle Glass Highlight */}
-                <div className="absolute inset-x-0 top-0 h-1/2 bg-white/40 dark:bg-white/5 pointer-events-none rounded-t-lg xs:rounded-t-xl sm:rounded-t-2xl overflow-hidden" />
+                <div className="absolute inset-x-0 top-0 h-1/2 bg-white/40 dark:bg-white/5 pointer-events-none rounded-t-xl sm:rounded-t-2xl overflow-hidden" />
 
                 {/* Animated Icon Badge */}
                 <div
-                  className={`relative shrink-0 w-5.5 h-5.5 xs:w-6.5 xs:h-6.5 sm:w-7.5 sm:h-7.5 rounded-md xs:rounded-lg sm:rounded-xl overflow-hidden flex items-center justify-center transition-all duration-200 ease-out group-hover:scale-105 shadow-2xs ${item.pillTheme}`}
+                  className={`relative shrink-0 w-7.5 h-7.5 xs:w-8.5 xs:h-8.5 sm:w-9 sm:h-9 rounded-lg xs:rounded-xl sm:rounded-2xl overflow-hidden flex items-center justify-center transition-all duration-200 ease-out group-hover:scale-105 shadow-2xs ${item.pillTheme}`}
                 >
-                  <div className={`absolute -inset-1 rounded-md xs:rounded-lg transition-all duration-200 blur-xs ${item.glowTheme}`} />
-                  <Icon className={`relative z-10 w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 ${item.iconColor} stroke-[2.2] transition-transform duration-200 group-hover:scale-105`} />
+                  <div className={`absolute -inset-1 rounded-xl transition-all duration-200 blur-xs ${item.glowTheme}`} />
+                  <Icon className={`relative z-10 w-4 h-4 xs:w-4.5 xs:h-4.5 sm:w-5 sm:h-5 ${item.iconColor} stroke-[2.3] transition-transform duration-200 group-hover:scale-105`} />
                 </div>
 
-                {/* Card Label: Compact, Bold & Highly Readable Single Line */}
-                <div className="flex-1 min-w-0 ml-1.5 xs:ml-2 sm:ml-2.5 overflow-hidden">
-                  <span className="block text-[10.5px] xs:text-[11.5px] sm:text-[13px] md:text-sm font-black text-slate-900 dark:text-slate-100 tracking-tight leading-none group-hover:text-black dark:group-hover:text-white transition-colors truncate">
+                {/* Card Label: Larger, Extra Bold & High Contrast */}
+                <div className="flex-1 min-w-0 ml-2 xs:ml-2.5 sm:ml-3 overflow-hidden">
+                  <span className="block text-[13px] xs:text-[14px] sm:text-[15px] md:text-base font-black text-slate-900 dark:text-slate-100 tracking-tight leading-snug group-hover:text-black dark:group-hover:text-white transition-colors truncate">
                     {item.label}
                   </span>
                 </div>
 
                 {/* Sub-action Indicator Pill */}
-                <div className="hidden sm:flex shrink-0 items-center justify-center w-4.5 h-4.5 rounded-full bg-white/70 dark:bg-slate-800/70 text-slate-400 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-white group-hover:translate-x-0.5 transition-all shadow-2xs overflow-hidden">
-                  <ArrowUpRight className="w-2.5 h-2.5 stroke-[2.5]" />
+                <div className="hidden xs:flex shrink-0 items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/70 dark:bg-slate-800/70 text-slate-400 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-white group-hover:translate-x-0.5 transition-all shadow-2xs overflow-hidden">
+                  <ArrowUpRight className="w-3 h-3 stroke-[2.5]" />
                 </div>
               </button>
             );
