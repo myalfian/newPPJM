@@ -8,9 +8,9 @@ import {
   Palette,
   Images,
   ArrowUpRight,
-  CalendarDays,
-  Sparkles
+  CalendarDays
 } from 'lucide-react';
+import { OsisIcon } from '../data/navigationData';
 
 interface MenuItem {
   id: string;
@@ -84,15 +84,15 @@ export const QuickMenu: React.FC = () => {
       route: '/ekskul'
     },
     {
-      id: 'galeri-sekolah',
-      label: 'Galeri',
-      icon: Images,
-      cardTheme: 'bg-gradient-to-br from-[#fff5f6] via-[#fff1f2] to-[#ffe4e6]/95 border-2 border-rose-300/90 hover:border-rose-500 shadow-xs dark:from-slate-900 dark:via-rose-950/40 dark:to-slate-900 dark:border-rose-600/60 dark:hover:border-rose-400/80',
-      pillTheme: 'bg-gradient-to-br from-rose-100 to-rose-200/80 border border-rose-300/70 dark:from-rose-950 dark:to-rose-900/60 dark:border-rose-600/60',
-      iconColor: 'text-rose-700 dark:text-rose-300',
-      glowTheme: 'group-hover:bg-rose-400/20',
-      hoverShadow: 'hover:shadow-rose-500/20',
-      route: '/galeri/foto'
+      id: 'osis',
+      label: 'OSIS',
+      icon: OsisIcon,
+      cardTheme: 'bg-gradient-to-br from-[#f8faff] via-[#eef2ff] to-[#e0e7ff]/95 border-2 border-indigo-300/90 hover:border-indigo-500 shadow-xs dark:from-slate-900 dark:via-indigo-950/40 dark:to-slate-900 dark:border-indigo-600/60 dark:hover:border-indigo-400/80',
+      pillTheme: 'bg-white/95 dark:bg-slate-800/90 border border-indigo-200/80 dark:border-indigo-700/60 shadow-2xs',
+      iconColor: 'text-indigo-700 dark:text-indigo-300',
+      glowTheme: 'group-hover:bg-indigo-400/20',
+      hoverShadow: 'hover:shadow-indigo-500/20',
+      route: '/osis'
     },
     {
       id: 'agenda-pesantren',
@@ -106,26 +106,26 @@ export const QuickMenu: React.FC = () => {
       route: '/agenda'
     },
     {
-      id: 'ppdb-online',
-      label: 'PPDB 2026/27',
-      icon: GraduationCap,
-      cardTheme: 'bg-gradient-to-br from-[#f5f3ff] via-[#ede9fe] to-[#ddd6fe]/95 border-2 border-indigo-300/90 hover:border-indigo-500 shadow-xs dark:from-slate-900 dark:via-indigo-950/40 dark:to-slate-900 dark:border-indigo-600/60 dark:hover:border-indigo-400/80',
-      pillTheme: 'bg-gradient-to-br from-indigo-100 to-indigo-200/80 border border-indigo-300/70 dark:from-indigo-950 dark:to-indigo-900/60 dark:border-indigo-600/60',
-      iconColor: 'text-indigo-700 dark:text-indigo-300',
-      glowTheme: 'group-hover:bg-indigo-400/20',
-      hoverShadow: 'hover:shadow-indigo-500/20',
-      route: '/program-unggulan/program-sekolah'
+      id: 'galeri-sekolah',
+      label: 'Galeri',
+      icon: Images,
+      cardTheme: 'bg-gradient-to-br from-[#fff5f6] via-[#fff1f2] to-[#ffe4e6]/95 border-2 border-rose-300/90 hover:border-rose-500 shadow-xs dark:from-slate-900 dark:via-rose-950/40 dark:to-slate-900 dark:border-rose-600/60 dark:hover:border-rose-400/80',
+      pillTheme: 'bg-gradient-to-br from-rose-100 to-rose-200/80 border border-rose-300/70 dark:from-rose-950 dark:to-rose-900/60 dark:border-rose-600/60',
+      iconColor: 'text-rose-700 dark:text-rose-300',
+      glowTheme: 'group-hover:bg-rose-400/20',
+      hoverShadow: 'hover:shadow-rose-500/20',
+      route: '/galeri/foto'
     }
   ];
 
   return (
     <section
       aria-label="Menu Navigasi Cepat Portal"
-      className="relative z-30 -mt-2 sm:-mt-3 bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-t-4xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-8px_30px_rgba(0,0,0,0.06)] dark:shadow-[0_-8px_30px_rgba(0,0,0,0.35)] pt-2.5 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:pt-3.5 sm:pb-4 lg:hidden transition-colors duration-200 overflow-hidden"
+      className="relative z-30 -mt-2.5 sm:-mt-3.5 bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-t-3xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-6px_25px_rgba(0,0,0,0.05)] dark:shadow-[0_-6px_25px_rgba(0,0,0,0.3)] pt-2 pb-2 sm:pt-3 sm:pb-3.5 lg:hidden transition-colors duration-200 overflow-hidden"
     >
-      <div className="w-full max-w-7xl mx-auto px-2.5 sm:px-4">
+      <div className="w-full max-w-7xl mx-auto px-2 xs:px-2.5 sm:px-4">
         {/* Layout Menu: Grid 4x2 Responsive di Mobile (4 Baris x 2 Kolom di Phone, 2 Baris x 4 Kolom di Tablet) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-2.5 md:gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 xs:gap-2 sm:gap-2.5 md:gap-3">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -133,30 +133,30 @@ export const QuickMenu: React.FC = () => {
                 key={item.id}
                 onClick={() => navigate(item.route)}
                 type="button"
-                className={`group relative flex items-center text-left p-2.5 xs:p-3 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-md active:scale-[0.97] focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs min-h-[58px] xs:min-h-[62px] sm:min-h-[66px] select-none ${item.cardTheme} ${item.hoverShadow}`}
+                className={`group relative flex items-center text-left px-2 xs:px-2.5 sm:px-3 rounded-xl sm:rounded-2xl border transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xs active:scale-[0.97] focus:outline-hidden focus-visible:ring-1.5 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs h-10 xs:h-[42px] sm:h-[48px] select-none ${item.cardTheme} ${item.hoverShadow}`}
                 title={item.label}
               >
                 {/* Subtle Glass Highlight */}
-                <div className="absolute inset-x-0 top-0 h-1/2 bg-white/45 dark:bg-white/5 pointer-events-none rounded-t-2xl sm:rounded-t-3xl overflow-hidden" />
+                <div className="absolute inset-x-0 top-0 h-1/2 bg-white/40 dark:bg-white/5 pointer-events-none rounded-t-xl sm:rounded-t-2xl overflow-hidden" />
 
                 {/* Animated Icon Badge */}
                 <div
-                  className={`relative shrink-0 w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl overflow-hidden flex items-center justify-center transition-all duration-300 ease-out group-hover:scale-110 group-hover:rotate-2 shadow-xs ${item.pillTheme}`}
+                  className={`relative shrink-0 w-7 h-7 xs:w-7.5 xs:h-7.5 sm:w-8.5 sm:h-8.5 rounded-lg sm:rounded-xl overflow-hidden flex items-center justify-center transition-all duration-200 ease-out group-hover:scale-105 shadow-2xs ${item.pillTheme}`}
                 >
-                  <div className={`absolute -inset-1 rounded-2xl transition-all duration-300 blur-xs ${item.glowTheme}`} />
-                  <Icon className={`relative z-10 w-4.5 h-4.5 xs:w-5 xs:h-5 ${item.iconColor} stroke-[2.3] transition-transform duration-300 group-hover:scale-105`} />
+                  <div className={`absolute -inset-1 rounded-xl transition-all duration-200 blur-xs ${item.glowTheme}`} />
+                  <Icon className={`relative z-10 w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-4.5 sm:h-4.5 ${item.iconColor} stroke-[2.2] transition-transform duration-200 group-hover:scale-105`} />
                 </div>
 
-                {/* Card Label: Extra Large, Bold & Highly Readable for Elderly */}
-                <div className="flex-1 min-w-0 ml-2 xs:ml-2.5 sm:ml-3 overflow-hidden">
-                  <span className="block text-[14.5px] xs:text-[15.5px] sm:text-[16.5px] md:text-lg font-black text-slate-900 dark:text-slate-100 tracking-tight leading-snug group-hover:text-black dark:group-hover:text-white transition-colors line-clamp-2">
+                {/* Card Label: Compact, Bold & Highly Readable Single Line */}
+                <div className="flex-1 min-w-0 ml-1.5 xs:ml-2 sm:ml-2.5 overflow-hidden">
+                  <span className="block text-[12px] xs:text-[13px] sm:text-[14px] md:text-base font-black text-slate-900 dark:text-slate-100 tracking-tight leading-tight group-hover:text-black dark:group-hover:text-white transition-colors truncate">
                     {item.label}
                   </span>
                 </div>
 
                 {/* Sub-action Indicator Pill */}
-                <div className="hidden xs:flex shrink-0 items-center justify-center w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/70 dark:bg-slate-800/70 text-slate-400 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-white group-hover:translate-x-0.5 transition-all shadow-2xs overflow-hidden">
-                  <ArrowUpRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[2.5]" />
+                <div className="hidden sm:flex shrink-0 items-center justify-center w-5 h-5 rounded-full bg-white/70 dark:bg-slate-800/70 text-slate-400 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-white group-hover:translate-x-0.5 transition-all shadow-2xs overflow-hidden">
+                  <ArrowUpRight className="w-3 h-3 stroke-[2.5]" />
                 </div>
               </button>
             );
