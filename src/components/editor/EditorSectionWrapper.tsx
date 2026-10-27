@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Eye, EyeOff, Sliders, ArrowUp, ArrowDown, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Eye, EyeOff, Sliders, ArrowUp, ArrowDown, Sparkles } from 'lucide-react';
 
 interface EditorSectionWrapperProps {
   id: string;
@@ -42,19 +42,19 @@ export const EditorSectionWrapper: React.FC<EditorSectionWrapperProps> = ({
     <section
       id={id}
       aria-label={`Editor Section: ${title}`}
-      className={`relative group/sec transition-all duration-300 rounded-2xl my-2 ${
+      className={`relative group/sec transition-all duration-300 ${
         isVisible
-          ? 'border-2 border-transparent hover:border-emerald-500/50 hover:shadow-[0_0_25px_rgba(16,185,129,0.12)]'
-          : 'border-2 border-dashed border-amber-400/60 bg-amber-50/20 dark:bg-amber-950/20 p-2 sm:p-3'
+          ? 'hover:ring-2 hover:ring-emerald-500/50 hover:shadow-[0_0_30px_rgba(16,185,129,0.12)]'
+          : 'ring-2 ring-dashed ring-amber-400/80 bg-amber-50/15 dark:bg-amber-950/20 p-2 sm:p-3 my-2 rounded-2xl'
       }`}
     >
-      {/* SECTION HOVER CONTROL BAR (FLOATING BADGE) */}
-      <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-40 flex items-center gap-1 sm:gap-1.5 rounded-full bg-slate-900/90 dark:bg-zinc-900/95 px-2.5 sm:px-3 py-1 sm:py-1.5 backdrop-blur-md border border-white/15 shadow-xl transition-all duration-200 opacity-90 sm:opacity-0 group-hover/sec:opacity-100 scale-95 group-hover/sec:scale-100">
+      {/* SECTION HOVER CONTROL BAR (FLOATING LUXURY BADGE) */}
+      <div className="absolute top-2 right-2 sm:top-3 sm:right-4 z-40 flex items-center gap-1 sm:gap-1.5 rounded-full bg-slate-900/90 dark:bg-zinc-900/95 px-2.5 sm:px-3 py-1 sm:py-1.5 backdrop-blur-md border border-white/15 shadow-xl transition-all duration-200 opacity-90 sm:opacity-0 group-hover/sec:opacity-100 scale-95 group-hover/sec:scale-100">
         
         {/* Section Label */}
-        <div className="flex items-center gap-1.5 pr-1 border-r border-white/10">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[10px] sm:text-[11px] font-black text-white tracking-wide truncate max-w-[120px] sm:max-w-none">
+        <div className="flex items-center gap-1.5 pr-1.5 border-r border-white/10 select-none">
+          <span className={`w-1.5 h-1.5 rounded-full ${isVisible ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+          <span className="text-[10.5px] sm:text-[11.5px] font-black text-white tracking-wide truncate max-w-[130px] sm:max-w-none">
             {title}
           </span>
         </div>
@@ -111,17 +111,17 @@ export const EditorSectionWrapper: React.FC<EditorSectionWrapperProps> = ({
             type="button"
             onClick={onEditContent}
             title="Konfigurasi & Edit Isi Section Ini"
-            className="flex items-center gap-1 p-1 sm:px-2 sm:py-0.5 rounded-full text-slate-200 hover:text-white bg-white/10 hover:bg-emerald-600/40 transition cursor-pointer"
+            className="flex items-center gap-1 p-1 sm:px-2.5 sm:py-1 rounded-full text-slate-200 hover:text-white bg-white/10 hover:bg-emerald-600/50 transition cursor-pointer"
           >
-            <Sliders className="w-3 h-3" />
-            <span className="hidden sm:inline text-[10px] font-semibold">Edit</span>
+            <Sliders className="w-3 h-3 text-emerald-300" />
+            <span className="hidden sm:inline text-[10px] font-bold">Edit</span>
           </button>
         )}
       </div>
 
       {/* HIDDEN WATERMARK OVERLAY WHEN SECTION IS INACTIVE */}
       {!isVisible && (
-        <div className="mb-2 p-2 rounded-xl bg-amber-500/10 border border-amber-400/40 flex items-center justify-between text-xs text-amber-900 dark:text-amber-200 font-medium">
+        <div className="mb-2 p-2.5 rounded-xl bg-amber-500/10 border border-amber-400/40 flex items-center justify-between text-xs text-amber-900 dark:text-amber-200 font-medium">
           <div className="flex items-center gap-2">
             <EyeOff className="w-4 h-4 text-amber-500 shrink-0" />
             <span>Section ini berstatus <strong>Draft / Disembunyikan</strong> dari Pengunjung Publik.</span>
@@ -143,4 +143,3 @@ export const EditorSectionWrapper: React.FC<EditorSectionWrapperProps> = ({
     </section>
   );
 };
-
