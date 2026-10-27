@@ -121,11 +121,11 @@ export const QuickMenu: React.FC = () => {
   return (
     <section
       aria-label="Menu Navigasi Cepat Portal"
-      className="relative z-30 -mt-2.5 sm:-mt-3.5 bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-t-3xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-6px_25px_rgba(0,0,0,0.05)] dark:shadow-[0_-6px_25px_rgba(0,0,0,0.3)] pt-2 pb-2 sm:pt-3 sm:pb-3.5 lg:hidden transition-colors duration-200 overflow-hidden"
+      className="relative z-30 -mt-2 sm:-mt-3.5 bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-t-3xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-6px_25px_rgba(0,0,0,0.05)] dark:shadow-[0_-6px_25px_rgba(0,0,0,0.3)] pt-1.5 pb-2 sm:pt-2.5 sm:pb-3 lg:hidden transition-colors duration-200 overflow-hidden"
     >
       <div className="w-full max-w-7xl mx-auto px-2 xs:px-2.5 sm:px-4">
-        {/* Layout Menu: Grid 4x2 Responsive di Mobile (4 Baris x 2 Kolom di Phone, 2 Baris x 4 Kolom di Tablet) */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 xs:gap-2 sm:gap-2.5 md:gap-3">
+        {/* Layout QuickMenu: 2 Kolom x 4 Baris di Mobile Viewport */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1 xs:gap-1.5 sm:gap-2 md:gap-2.5">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
@@ -133,30 +133,30 @@ export const QuickMenu: React.FC = () => {
                 key={item.id}
                 onClick={() => navigate(item.route)}
                 type="button"
-                className={`group relative flex items-center text-left px-2 xs:px-2.5 sm:px-3 rounded-xl sm:rounded-2xl border transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xs active:scale-[0.97] focus:outline-hidden focus-visible:ring-1.5 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs h-10 xs:h-[42px] sm:h-[48px] select-none ${item.cardTheme} ${item.hoverShadow}`}
+                className={`group relative flex items-center text-left px-2 xs:px-2.5 sm:px-3 rounded-lg xs:rounded-xl sm:rounded-2xl border transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-xs active:scale-[0.97] focus:outline-hidden focus-visible:ring-1.5 focus-visible:ring-[#1a6b3c] cursor-pointer overflow-hidden backdrop-blur-xs h-[34px] xs:h-[37px] sm:h-[44px] select-none ${item.cardTheme} ${item.hoverShadow}`}
                 title={item.label}
               >
                 {/* Subtle Glass Highlight */}
-                <div className="absolute inset-x-0 top-0 h-1/2 bg-white/40 dark:bg-white/5 pointer-events-none rounded-t-xl sm:rounded-t-2xl overflow-hidden" />
+                <div className="absolute inset-x-0 top-0 h-1/2 bg-white/40 dark:bg-white/5 pointer-events-none rounded-t-lg xs:rounded-t-xl sm:rounded-t-2xl overflow-hidden" />
 
                 {/* Animated Icon Badge */}
                 <div
-                  className={`relative shrink-0 w-7 h-7 xs:w-7.5 xs:h-7.5 sm:w-8.5 sm:h-8.5 rounded-lg sm:rounded-xl overflow-hidden flex items-center justify-center transition-all duration-200 ease-out group-hover:scale-105 shadow-2xs ${item.pillTheme}`}
+                  className={`relative shrink-0 w-6 h-6 xs:w-6.5 xs:h-6.5 sm:w-7.5 sm:h-7.5 rounded-md xs:rounded-lg sm:rounded-xl overflow-hidden flex items-center justify-center transition-all duration-200 ease-out group-hover:scale-105 shadow-2xs ${item.pillTheme}`}
                 >
-                  <div className={`absolute -inset-1 rounded-xl transition-all duration-200 blur-xs ${item.glowTheme}`} />
-                  <Icon className={`relative z-10 w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-4.5 sm:h-4.5 ${item.iconColor} stroke-[2.2] transition-transform duration-200 group-hover:scale-105`} />
+                  <div className={`absolute -inset-1 rounded-md xs:rounded-lg transition-all duration-200 blur-xs ${item.glowTheme}`} />
+                  <Icon className={`relative z-10 w-3 h-3 xs:w-3.5 xs:h-3.5 sm:w-4 sm:h-4 ${item.iconColor} stroke-[2.2] transition-transform duration-200 group-hover:scale-105`} />
                 </div>
 
                 {/* Card Label: Compact, Bold & Highly Readable Single Line */}
                 <div className="flex-1 min-w-0 ml-1.5 xs:ml-2 sm:ml-2.5 overflow-hidden">
-                  <span className="block text-[12px] xs:text-[13px] sm:text-[14px] md:text-base font-black text-slate-900 dark:text-slate-100 tracking-tight leading-tight group-hover:text-black dark:group-hover:text-white transition-colors truncate">
+                  <span className="block text-[11px] xs:text-[12px] sm:text-[13.5px] md:text-sm font-black text-slate-900 dark:text-slate-100 tracking-tight leading-none group-hover:text-black dark:group-hover:text-white transition-colors truncate">
                     {item.label}
                   </span>
                 </div>
 
                 {/* Sub-action Indicator Pill */}
-                <div className="hidden sm:flex shrink-0 items-center justify-center w-5 h-5 rounded-full bg-white/70 dark:bg-slate-800/70 text-slate-400 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-white group-hover:translate-x-0.5 transition-all shadow-2xs overflow-hidden">
-                  <ArrowUpRight className="w-3 h-3 stroke-[2.5]" />
+                <div className="hidden sm:flex shrink-0 items-center justify-center w-4.5 h-4.5 rounded-full bg-white/70 dark:bg-slate-800/70 text-slate-400 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-white group-hover:translate-x-0.5 transition-all shadow-2xs overflow-hidden">
+                  <ArrowUpRight className="w-2.5 h-2.5 stroke-[2.5]" />
                 </div>
               </button>
             );
