@@ -13,6 +13,7 @@ import {
   ChevronRight,
   ChevronDown,
   User,
+  Users,
   GraduationCap,
   MessageCircle,
   ExternalLink,
@@ -25,7 +26,8 @@ import {
   Compass,
   CheckCircle2,
   Volume2,
-  Newspaper
+  Newspaper,
+  ShieldCheck
 } from 'lucide-react';
 
 interface MobileDrawerProps {
@@ -171,6 +173,24 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
       ],
     },
     {
+      id: 'osis',
+      title: 'OSIS Santri',
+      subtitle: 'Organisasi Kepemimpinan Santri',
+      href: '/osis',
+      icon: ShieldCheck,
+      color: {
+        badgeBg: 'bg-indigo-50',
+        iconColor: 'text-indigo-700',
+        border: 'border-indigo-200/80',
+        activeBg: 'bg-indigo-600',
+      },
+      items: [
+        { title: 'Bagan Kepengurusan BPH', href: '/osis', desc: 'Struktur kabinet santri putra & putri', icon: Users },
+        { title: '6 Divisi & Program Kerja', href: '/osis', desc: 'Departemen kepemimpinan & bakat', icon: ShieldCheck },
+        { title: 'Kotak Aspirasi Santri', href: '/osis', desc: 'Suara santri untuk kemajuan pondok', icon: HeartHandshake },
+      ],
+    },
+    {
       id: 'jm-news',
       title: 'JM News',
       subtitle: 'Warta Terkini & Kabar Pesantren',
@@ -227,6 +247,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
     if (categoryHref === '/agenda') return location.pathname.startsWith('/agenda');
     if (categoryHref === '/prestasi') return location.pathname === '/prestasi';
     if (categoryHref === '/ekskul') return location.pathname === '/ekskul';
+    if (categoryHref === '/osis') return location.pathname === '/osis';
     if (categoryHref === '/#warta-berita') return location.hash === '#warta-berita';
     if (categoryHref === '/galeri') return location.pathname.startsWith('/galeri');
     if (categoryHref === '/jm-center') return location.pathname.startsWith('/jm-center');
@@ -301,12 +322,12 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
                   Menu Navigasi Portal
                 </span>
                 <span className="text-[10px] uppercase font-bold text-[#ffd700] tracking-wider">
-                  8 Pilar Terpadu
+                  9 Pilar Terpadu
                 </span>
               </div>
             </div>
 
-            {/* Menu List: 8 Harmonized Pillars */}
+            {/* Menu List: 9 Harmonized Pillars */}
             <div className="flex-1 overflow-y-auto p-3.5 space-y-2.5">
               {categories.map((cat) => {
                 const Icon = cat.icon;

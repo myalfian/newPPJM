@@ -24,7 +24,9 @@ import {
   Activity,
   Palette,
   User,
-  CalendarDays
+  Users,
+  CalendarDays,
+  ShieldCheck
 } from 'lucide-react';
 
 export interface NavSubItem {
@@ -182,6 +184,24 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeText: 'text-purple-800',
       activeDot: 'bg-purple-600',
     },
+  },
+  {
+    id: 'osis',
+    label: 'OSIS',
+    icon: ShieldCheck,
+    href: '/osis',
+    isDropdown: false,
+    color: {
+      badgeBg: 'bg-indigo-50 text-indigo-700 border-indigo-200/80 group-hover:bg-indigo-100 group-hover:text-indigo-800',
+      activeBadgeBg: 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 ring-2 ring-indigo-400/60',
+      activeText: 'text-indigo-900',
+      activeDot: 'bg-indigo-600',
+    },
+    items: [
+      { title: 'Bagan BPH', href: '/osis', desc: 'Struktur kabinet santri putra & putri', icon: Users },
+      { title: 'Divisi & Proker', href: '/osis', desc: '6 departemen kepemimpinan santri', icon: ShieldCheck },
+      { title: 'Kotak Aspirasi', href: '/osis', desc: 'Suara santri untuk kemajuan pesantren', icon: HeartHandshake },
+    ]
   },
   {
     id: 'jm-news',

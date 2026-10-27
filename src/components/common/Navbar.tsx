@@ -109,6 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
     if (tab.id === 'smart-jm') return location.pathname.startsWith('/smart-jm') || location.pathname.startsWith('/stem');
     if (tab.id === 'prestasi') return location.pathname === '/prestasi';
     if (tab.id === 'ekskul') return location.pathname === '/ekskul';
+    if (tab.id === 'osis') return location.pathname === '/osis';
     if (tab.id === 'jm-news') return location.hash === '#warta-berita';
     if (tab.id === 'galeri') return location.pathname.startsWith('/galeri');
     if (tab.id === 'agenda') return location.pathname.startsWith('/agenda');
@@ -196,10 +197,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             </Link>
 
 
-            {/* Desktop Navigation: 8 Pillars Equal Width & Uniform Horizontal Distribution (h-[58px]) */}
+            {/* Desktop Navigation: 9 Pillars Equal Width & Uniform Horizontal Distribution (h-[58px]) */}
             <div className="relative hidden lg:block" onMouseLeave={() => setHoveredTab(null)}>
               <nav
-                className="grid grid-cols-8 items-center h-[56px] xl:h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[640px] xl:w-[760px] 2xl:w-[840px]"
+                className="grid grid-cols-9 items-center h-[56px] xl:h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-0.5 xl:gap-1 shrink-0 w-[690px] xl:w-[810px] 2xl:w-[890px]"
               >
                 {navTabs.map((tab) => {
                   const TabIcon = tab.icon;

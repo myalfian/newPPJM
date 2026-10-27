@@ -21,7 +21,9 @@ import {
   Layers3,
   CalendarDays,
   CalendarCheck2,
-  Clock3
+  Clock3,
+  ShieldCheck,
+  Users
 } from 'lucide-react';
 import './NavBarTabs.css';
 
@@ -144,6 +146,16 @@ const DEFAULT_CATEGORY_TABS: Record<
       { id: 'agenda-historical', label: 'Arsip Program', shortLabel: 'Historical', href: '/agenda', icon: CheckCircle2 },
     ],
   },
+  'osis': {
+    parentLabel: 'OSIS',
+    parentHref: '/osis',
+    parentIcon: ShieldCheck,
+    tabs: [
+      { id: 'osis-kabinet', label: 'Bagan BPH', shortLabel: 'Kabinet', href: '/osis', icon: Users },
+      { id: 'osis-divisi', label: '6 Divisi & Proker', shortLabel: 'Divisi', href: '/osis', icon: ShieldCheck },
+      { id: 'osis-aspirasi', label: 'Kotak Aspirasi', shortLabel: 'Aspirasi', href: '/osis', icon: HeartHandshake },
+    ],
+  },
 };
 
 /**
@@ -166,6 +178,7 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
   // Auto-detect hub category if tabs are not provided explicitly
   let detectedCategory = '';
   if (pathname.includes('/agenda')) detectedCategory = 'agenda';
+  else if (pathname.includes('/osis')) detectedCategory = 'osis';
   else if (pathname.includes('/jm-center')) detectedCategory = 'jm-center';
   else if (pathname.includes('/program-unggulan')) detectedCategory = 'program-unggulan';
   else if (pathname.includes('/galeri')) detectedCategory = 'galeri';
