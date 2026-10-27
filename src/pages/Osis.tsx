@@ -213,9 +213,21 @@ export const Osis: React.FC = () => {
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
 
         <div className="max-w-7xl mx-auto relative z-10 text-center space-y-3.5">
+          {/* Official OSIS Emblem Badge */}
+          <div className="flex justify-center mb-1">
+            <div className="relative w-16 h-20 sm:w-20 sm:h-24 p-2 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_30px_rgba(0,0,0,0.25)] flex items-center justify-center group hover:scale-105 transition-transform duration-300">
+              <div className="absolute inset-0 bg-[#ffd700]/25 rounded-2xl blur-lg pointer-events-none" />
+              <img
+                src="/logo-osis.png"
+                alt="Lambang Resmi OSIS"
+                className="relative z-10 w-full h-full object-contain filter drop-shadow-md select-none"
+              />
+            </div>
+          </div>
+
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-[#d4af37]/40 text-[#ffd700] text-xs font-black tracking-wider uppercase shadow-xs">
-            <ShieldCheck className="w-4 h-4 text-[#ffd700]" />
+            <img src="/logo-osis.png" alt="OSIS" className="w-4 h-4 object-contain inline-block" />
             <span>Organisasi Santri Intra Ma'had (OPJM / OSIS)</span>
           </div>
 

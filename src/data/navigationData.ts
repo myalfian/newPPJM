@@ -37,6 +37,15 @@ export interface NavSubItem {
   badge?: string;
 }
 
+// Custom OSIS Badge Icon using official emblem image
+export const OsisIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) =>
+  React.createElement('img', {
+    src: '/logo-osis.png',
+    alt: 'Logo OSIS',
+    className: `object-contain block shrink-0 select-none ${className}`,
+    loading: 'eager'
+  });
+
 export interface NavSubSection {
   title: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -188,18 +197,18 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
   {
     id: 'osis',
     label: 'OSIS',
-    icon: ShieldCheck,
+    icon: OsisIcon,
     href: '/osis',
     isDropdown: false,
     color: {
-      badgeBg: 'bg-indigo-50 text-indigo-700 border-indigo-200/80 group-hover:bg-indigo-100 group-hover:text-indigo-800',
-      activeBadgeBg: 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 ring-2 ring-indigo-400/60',
-      activeText: 'text-indigo-900',
-      activeDot: 'bg-indigo-600',
+      badgeBg: 'bg-amber-50 text-amber-800 border-amber-200/80 group-hover:bg-amber-100 group-hover:text-amber-900',
+      activeBadgeBg: 'bg-amber-500 text-white shadow-md shadow-amber-900/30 ring-2 ring-amber-300/80',
+      activeText: 'text-amber-950',
+      activeDot: 'bg-amber-500',
     },
     items: [
       { title: 'Bagan BPH', href: '/osis', desc: 'Struktur kabinet santri putra & putri', icon: Users },
-      { title: 'Divisi & Proker', href: '/osis', desc: '6 departemen kepemimpinan santri', icon: ShieldCheck },
+      { title: 'Divisi & Proker', href: '/osis', desc: '6 departemen kepemimpinan santri', icon: OsisIcon },
       { title: 'Kotak Aspirasi', href: '/osis', desc: 'Suara santri untuk kemajuan pesantren', icon: HeartHandshake },
     ]
   },

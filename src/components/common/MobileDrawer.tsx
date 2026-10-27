@@ -29,6 +29,7 @@ import {
   Newspaper,
   ShieldCheck
 } from 'lucide-react';
+import { OsisIcon } from '../../data/navigationData';
 
 interface MobileDrawerProps {
   isOpen: boolean;
@@ -177,16 +178,16 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
       title: 'OSIS Santri',
       subtitle: 'Organisasi Kepemimpinan Santri',
       href: '/osis',
-      icon: ShieldCheck,
+      icon: OsisIcon,
       color: {
-        badgeBg: 'bg-indigo-50',
-        iconColor: 'text-indigo-700',
-        border: 'border-indigo-200/80',
-        activeBg: 'bg-indigo-600',
+        badgeBg: 'bg-amber-50',
+        iconColor: 'text-amber-700',
+        border: 'border-amber-200/80',
+        activeBg: 'bg-amber-500',
       },
       items: [
         { title: 'Bagan Kepengurusan BPH', href: '/osis', desc: 'Struktur kabinet santri putra & putri', icon: Users },
-        { title: '6 Divisi & Program Kerja', href: '/osis', desc: 'Departemen kepemimpinan & bakat', icon: ShieldCheck },
+        { title: '6 Divisi & Program Kerja', href: '/osis', desc: 'Departemen kepemimpinan & bakat', icon: OsisIcon },
         { title: 'Kotak Aspirasi Santri', href: '/osis', desc: 'Suara santri untuk kemajuan pondok', icon: HeartHandshake },
       ],
     },

@@ -25,6 +25,7 @@ import {
   ShieldCheck,
   Users
 } from 'lucide-react';
+import { OsisIcon } from '../../data/navigationData';
 import './NavBarTabs.css';
 
 export interface NavTabItem {
@@ -149,10 +150,10 @@ const DEFAULT_CATEGORY_TABS: Record<
   'osis': {
     parentLabel: 'OSIS',
     parentHref: '/osis',
-    parentIcon: ShieldCheck,
+    parentIcon: OsisIcon,
     tabs: [
       { id: 'osis-kabinet', label: 'Bagan BPH', shortLabel: 'Kabinet', href: '/osis', icon: Users },
-      { id: 'osis-divisi', label: '6 Divisi & Proker', shortLabel: 'Divisi', href: '/osis', icon: ShieldCheck },
+      { id: 'osis-divisi', label: '6 Divisi & Proker', shortLabel: 'Divisi', href: '/osis', icon: OsisIcon },
       { id: 'osis-aspirasi', label: 'Kotak Aspirasi', shortLabel: 'Aspirasi', href: '/osis', icon: HeartHandshake },
     ],
   },
