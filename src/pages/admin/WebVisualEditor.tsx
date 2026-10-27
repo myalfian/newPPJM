@@ -158,8 +158,8 @@ export const WebVisualEditor: React.FC = () => {
   };
 
   // Handle Publish Action
-  const handlePublish = () => {
-    const res = publishEditorState(editorState);
+  const handlePublish = async () => {
+    const res = await publishEditorState(editorState);
     if (res.success) {
       setPublishSuccessMsg(true);
       setTimeout(() => setPublishSuccessMsg(false), 3500);

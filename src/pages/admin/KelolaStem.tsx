@@ -15,6 +15,7 @@ import {
   X
 } from 'lucide-react';
 import { StemProject, supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { invalidateCache } from '../../lib/queryCache';
 
 const INITIAL_PROJECTS: StemProject[] = [
   {
@@ -150,6 +151,9 @@ export const KelolaStem: React.FC = () => {
           console.warn('Failed to delete STEM project on Supabase:', err);
         }
       }
+      invalidateCache('stem_projects_list');
+      invalidateCache('admin_dashboard_metrics');
+      invalidateCache('admin_dashboard_feed');
     }
   };
 
@@ -255,6 +259,9 @@ export const KelolaStem: React.FC = () => {
 
     setSavedAlert(true);
     resetForm();
+    invalidateCache('stem_projects_list');
+    invalidateCache('admin_dashboard_metrics');
+    invalidateCache('admin_dashboard_feed');
   };
 
   const displayList = projects.filter((p) => {

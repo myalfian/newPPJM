@@ -24,7 +24,7 @@ export const ProgramSekolah: React.FC = () => {
             <span>Pendidikan Formal Terpadu</span>
           </div>
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
-            Pendidikan Sekolah Berkarakter Islami
+            {progData?.title || 'Pendidikan Sekolah Berkarakter Islami'}
           </h1>
           <p className="text-xs sm:text-sm text-emerald-200/90 max-w-2xl">
             Kurikulum nasional terakreditasi yang diintegrasikan secara holistik dengan nilai-nilai kesantrian dan riset teknologi.

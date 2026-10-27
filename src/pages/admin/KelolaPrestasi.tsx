@@ -13,6 +13,7 @@ import {
   X
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { invalidateCache } from '../../lib/queryCache';
 
 interface PrestasiItem {
   id: string;
@@ -154,6 +155,8 @@ export const KelolaPrestasi: React.FC = () => {
           console.warn('Failed to delete on Supabase:', err);
         }
       }
+      invalidateCache('achievements_list');
+      invalidateCache('admin_dashboard_metrics');
     }
   };
 
@@ -248,6 +251,8 @@ export const KelolaPrestasi: React.FC = () => {
 
     setSavedAlert(true);
     resetForm();
+    invalidateCache('achievements_list');
+    invalidateCache('admin_dashboard_metrics');
     setTimeout(() => setSavedAlert(false), 2500);
   };
 

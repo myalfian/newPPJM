@@ -1,15 +1,13 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Sparkles,
   BookOpen,
   Cpu,
   Globe,
-  Award,
   ChevronRight,
   Share2,
   Calendar,
-  CheckCircle2,
   ArrowUpRight
 } from 'lucide-react';
 import { HeroSlider } from '../components/HeroSlider';
@@ -18,6 +16,8 @@ import { generateWhatsAppBroadcastUrl } from '../lib/waFormatter';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useCachedQuery } from '../lib/queryCache';
 import { INITIAL_NEWS } from '../data/newsData';
+import { fetchPublishedEditorState, getPublishedEditorState } from '../lib/editorStorage';
+import { PageEditorState } from '../types/EditorState';
 
 export interface HomeNewsItem {
   id: string;
@@ -91,6 +91,27 @@ const fetchHomeNews = async (): Promise<HomeNewsItem[]> => {
 };
 
 export const Home: React.FC = () => {
+  const [editorConfig, setEditorConfig] = useState<PageEditorState>(getPublishedEditorState);
+
+  useEffect(() => {
+    // 1. Fetch remote published config from Supabase site_settings if available
+    fetchPublishedEditorState().then((cfg) => {
+      setEditorConfig(cfg);
+    });
+
+    // 2. Listen to real-time custom event dispatched from WebVisualEditor
+    const handlePublished = (e: CustomEvent<PageEditorState>) => {
+      if (e.detail) {
+        setEditorConfig(e.detail);
+      }
+    };
+
+    window.addEventListener('ppjm-editor-published', handlePublished as EventListener);
+    return () => {
+      window.removeEventListener('ppjm-editor-published', handlePublished as EventListener);
+    };
+  }, []);
+
   const { data: newsItems = [] } = useCachedQuery<HomeNewsItem[]>(
     'home-news-items',
     fetchHomeNews
@@ -107,229 +128,232 @@ export const Home: React.FC = () => {
     window.open(url, '_blank');
   };
 
+  const sambutan = editorConfig.sections.sambutan;
+  const programUnggulan = editorConfig.sections.programUnggulan;
+  const visiblePilarItems = programUnggulan?.data?.items?.filter((it) => it.isVisible !== false) || [];
+
   return (
     <div className="space-y-2 sm:space-y-3 pb-4">
-      
       {/* 1. HERO SLIDER (3D Coverflow Carousel) */}
-      <HeroSlider />
+      {editorConfig.sections.heroSlider?.isVisible !== false && <HeroSlider />}
 
       {/* 2. QUICK MENU (Hanya tampil di Mobile & Tablet, tersembunyi di Desktop) */}
-      <QuickMenu />
+      {editorConfig.sections.quickMenu?.isVisible !== false && <QuickMenu />}
 
       {/* Divider Spacing Halus untuk Desktop */}
       <div className="hidden lg:block h-1" />
 
-
       {/* 2. SAMBUTAN SINGKAT PENGASUH KH. M. JAUHARUL MAKNUUN */}
-      <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-0.5">
-        <div className="bg-white rounded-2xl p-2.5 sm:p-3.5 lg:p-4 shadow-m3-1 border border-slate-200/90 relative overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-3.5 items-center">
-            
-            <div className="lg:col-span-4 flex justify-center">
-              <div className="relative">
-                <div className="w-40 h-48 sm:w-52 sm:h-60 rounded-xl sm:rounded-2xl overflow-hidden shadow-lg border-4 border-emerald-50 bg-slate-100">
-                  <img
-                    src="https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80"
-                    alt="Pengasuh PP Jauharul Maknuun"
-                    className="w-full h-full object-cover"
-                  />
+      {sambutan?.isVisible !== false && (
+        <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-0.5">
+          <div className="bg-white rounded-2xl p-2.5 sm:p-3.5 lg:p-4 shadow-m3-1 border border-slate-200/90 relative overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-3.5 items-center">
+              <div className="lg:col-span-4 flex justify-center">
+                <div className="relative">
+                  <div className="w-40 h-48 sm:w-52 sm:h-60 rounded-xl sm:rounded-2xl overflow-hidden shadow-lg border-4 border-emerald-50 bg-slate-100">
+                    <img
+                      src={sambutan?.data?.imageUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80'}
+                      alt="Pengasuh PP Jauharul Maknuun"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="absolute -bottom-3.5 left-1/2 -translate-x-1/2 bg-emerald-900 text-gold-300 px-3.5 py-1 rounded-full text-[11px] font-bold shadow-md whitespace-nowrap">
+                    {sambutan?.data?.title || 'Pengasuh Pondok Pesantren'}
+                  </div>
                 </div>
-                <div className="absolute -bottom-3.5 left-1/2 -translate-x-1/2 bg-emerald-900 text-gold-300 px-3.5 py-1 rounded-full text-[11px] font-bold shadow-md whitespace-nowrap">
-                  Pengasuh Pondok Pesantren
+              </div>
+
+              <div className="lg:col-span-8 space-y-2.5 text-center lg:text-left">
+                <span className="text-xs sm:text-sm font-bold text-gold-700 tracking-wider uppercase bg-gold-50 px-3 py-1 rounded-full border border-gold-200">
+                  Kalam Hikmah & Ma'had Barokah
+                </span>
+                <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-950">
+                  {sambutan?.data?.pengasuhName || 'KH. M. Jauharul Maknuun'}
+                </h2>
+                <p className="text-sm sm:text-base font-bold text-emerald-800">
+                  Mudir & Pengasuh Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik
+                </p>
+                <blockquote className="text-sm sm:text-base lg:text-lg text-slate-800 font-medium italic leading-relaxed sm:leading-loose border-l-0 lg:border-l-4 lg:border-emerald-700 lg:pl-4">
+                  “{sambutan?.data?.kalam || 'Pesantren bukan hanya tempat menuntut ilmu fiqih dan nahwu, melainkan kawah candradimuka pembentukan akhlaqul karimah, ketajaman spiritual, serta ketangguhan menjawab kemajuan zaman. Santri kami bekali dengan kemurnian turats, hafalan al-Qur\'an, dan sains teknologi aplikatif agar senantiasa menjadi suluh penerang di tengah umat.'}”
+                </blockquote>
+                <div className="pt-2">
+                  <Link
+                    to="/jm-center/sambutan"
+                    className="inline-flex items-center gap-1.5 text-sm sm:text-base font-extrabold text-emerald-800 hover:text-emerald-950 underline underline-offset-4"
+                  >
+                    <span>Baca Selengkapnya Sambutan Pengasuh</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
                 </div>
               </div>
             </div>
-
-            <div className="lg:col-span-8 space-y-2.5 text-center lg:text-left">
-              <span className="text-xs sm:text-sm font-bold text-gold-700 tracking-wider uppercase bg-gold-50 px-3 py-1 rounded-full border border-gold-200">
-                Kalam Hikmah & Ma'had Barokah
-              </span>
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-950">
-                KH. M. Jauharul Maknuun
-              </h2>
-              <p className="text-sm sm:text-base font-bold text-emerald-800">
-                Mudir & Pengasuh Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik
-              </p>
-              <blockquote className="text-sm sm:text-base lg:text-lg text-slate-800 font-medium italic leading-relaxed sm:leading-loose border-l-0 lg:border-l-4 lg:border-emerald-700 lg:pl-4">
-                “Pesantren bukan hanya tempat menuntut ilmu fiqih dan nahwu, melainkan kawah candradimuka pembentukan akhlaqul karimah, ketajaman spiritual, serta ketangguhan menjawab kemajuan zaman. Santri kami bekali dengan kemurnian turats, hafalan al-Qur'an, dan sains teknologi aplikatif agar senantiasa menjadi suluh penerang di tengah umat.”
-              </blockquote>
-              <div className="pt-2">
-                <Link
-                  to="/jm-center/sambutan"
-                  className="inline-flex items-center gap-1.5 text-sm sm:text-base font-extrabold text-emerald-800 hover:text-emerald-950 underline underline-offset-4"
-                >
-                  <span>Baca Selengkapnya Sambutan Pengasuh</span>
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 3. 4 PILAR KEUNGGULAN PESANTREN */}
-      <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-2 sm:space-y-3">
-        <div className="text-center max-w-2xl mx-auto space-y-1">
-          <span className="text-xs sm:text-sm font-bold text-gold-700 uppercase tracking-widest">
-            Karakteristik & Keistimewaan
-          </span>
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950">
-            Empat Pilar Pendidikan PPJM
-          </h2>
-          <p className="text-sm sm:text-base text-slate-700 font-medium">
-            Integrasi harmonis antara pendidikan keagamaan tradisional dan kompetensi sains modern berstandar internasional.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
-          {/* Pilar 1 */}
-          <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all group flex flex-col justify-between">
-            <div className="space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center group-hover:bg-emerald-800 group-hover:text-white transition-colors">
-                <BookOpen className="w-5 h-5" />
-              </div>
-              <h3 className="font-black text-base sm:text-lg text-emerald-950">Turats & Kitab Salaf</h3>
-              <p className="text-sm text-slate-700 leading-relaxed font-normal">
-                Kajian kitab kuning berjenjang (Jurumiyah, Imrithi, Alfiyah, Fathul Qorib) bersanad muttashil hingga musonnif.
-              </p>
-            </div>
-            <Link to="/program-unggulan/program-madin" className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950">
-              <span>Rincian Jenjang</span>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          {/* Pilar 2 */}
-          <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all group flex flex-col justify-between">
-            <div className="space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-gold-50 text-gold-700 flex items-center justify-center group-hover:bg-gold-500 group-hover:text-emerald-950 transition-colors">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <h3 className="font-black text-base sm:text-lg text-emerald-950">Tahfidz 30 Juz & AI</h3>
-              <p className="text-sm text-slate-700 leading-relaxed font-normal">
-                Bimbingan ziyadah hafalan Al-Qur'an intensif didukung asisten evaluasi suara Murojaah AI mandiri.
-              </p>
-            </div>
-            <Link to="/smart-jm/hafidz/read" className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950">
-              <span>Buka Mushaf 30 Juz</span>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          {/* Pilar 3 */}
-          <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all group flex flex-col justify-between">
-            <div className="space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center group-hover:bg-emerald-800 group-hover:text-white transition-colors">
-                <Cpu className="w-5 h-5" />
-              </div>
-              <h3 className="font-black text-base sm:text-lg text-emerald-950">Laboratorium STEM</h3>
-              <p className="text-sm text-slate-700 leading-relaxed font-normal">
-                Riset teknologi mikrokontroler, robotika, IoT pertanian hidroponik, dan rekayasa filtrasi air santri.
-              </p>
-            </div>
-            <Link to="/smart-jm/stem/portofolio" className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950">
-              <span>Lihat Portofolio</span>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          {/* Pilar 4 */}
-          <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all group flex flex-col justify-between">
-            <div className="space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-gold-50 text-gold-700 flex items-center justify-center group-hover:bg-gold-500 group-hover:text-emerald-950 transition-colors">
-                <Globe className="w-5 h-5" />
-              </div>
-              <h3 className="font-black text-base sm:text-lg text-emerald-950">Mandarin & Arab</h3>
-              <p className="text-sm text-slate-700 leading-relaxed font-normal">
-                Pusat bahasa penutur asli untuk pembekalan dakwah internasional santri ke universitas terkemuka dunia.
-              </p>
-            </div>
-            <Link to="/smart-jm/mandarin/materi" className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950">
-              <span>Kelas Mandarin</span>
-              <ChevronRight className="w-4 h-4" />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. WARTA & BERITA TERKINI DENGAN 1-KLIK WHATSAPP WALI SANTRI */}
-      <section id="warta-berita" className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-2 sm:space-y-3 scroll-mt-24">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5 border-b border-slate-200 pb-2">
-          <div>
+      {programUnggulan?.isVisible !== false && (
+        <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-2 sm:space-y-3">
+          <div className="text-center max-w-2xl mx-auto space-y-1">
             <span className="text-xs sm:text-sm font-bold text-gold-700 uppercase tracking-widest">
-              Kabar Pesantren
+              Karakteristik & Keistimewaan
             </span>
             <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950">
-              Warta & Agenda Terkini
+              {programUnggulan?.data?.headline || 'Empat Pilar Pendidikan PPJM'}
             </h2>
+            <p className="text-sm sm:text-base text-slate-700 font-medium">
+              {programUnggulan?.data?.subheadline || 'Integrasi harmonis antara pendidikan keagamaan tradisional dan kompetensi sains modern berstandar internasional.'}
+            </p>
           </div>
-          <Link
-            to="/berita"
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950"
-          >
-            <span>Semua Warta Berita</span>
-            <ArrowUpRight className="w-4 h-4" />
-          </Link>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3.5 lg:gap-4">
-          {newsItems.map((news) => (
-            <div
-              key={news.id}
-              className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-m3-2 border border-slate-200 transition-all flex flex-col justify-between group"
-            >
-              <div>
-                <div className="relative h-36 sm:h-44 overflow-hidden bg-slate-100">
-                  <img
-                    src={news.image}
-                    alt={news.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-emerald-900/90 backdrop-blur-md text-gold-300 text-xs font-bold shadow">
-                    {news.category}
-                  </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+            {visiblePilarItems.map((item, idx) => {
+              // Map default or custom icons and links
+              let Icon = BookOpen;
+              let link = '/program-unggulan/program-madin';
+              let linkText = 'Rincian Jenjang';
+              let isGold = false;
+
+              if (item.id === 'p1' || item.name.toLowerCase().includes('turats')) {
+                Icon = BookOpen;
+                link = '/program-unggulan/program-madin';
+                linkText = 'Rincian Jenjang';
+              } else if (item.id === 'p2' || item.name.toLowerCase().includes('tahfidz')) {
+                Icon = Sparkles;
+                link = '/smart-jm/hafidz/read';
+                linkText = 'Buka Mushaf 30 Juz';
+                isGold = true;
+              } else if (item.id === 'p3' || item.name.toLowerCase().includes('stem')) {
+                Icon = Cpu;
+                link = '/smart-jm/stem/portofolio';
+                linkText = 'Lihat Portofolio';
+              } else if (item.id === 'p4' || item.name.toLowerCase().includes('mandarin') || item.name.toLowerCase().includes('arab')) {
+                Icon = Globe;
+                link = '/smart-jm/mandarin/materi';
+                linkText = 'Kelas Mandarin';
+                isGold = true;
+              }
+
+              return (
+                <div
+                  key={item.id || idx}
+                  className="bg-white rounded-2xl p-3 sm:p-4 shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all group flex flex-col justify-between"
+                >
+                  <div className="space-y-2">
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
+                        isGold
+                          ? 'bg-gold-50 text-gold-700 group-hover:bg-gold-500 group-hover:text-emerald-950'
+                          : 'bg-emerald-50 text-emerald-800 group-hover:bg-emerald-800 group-hover:text-white'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    {item.tag && (
+                      <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        {item.tag}
+                      </span>
+                    )}
+                    <h3 className="font-black text-base sm:text-lg text-emerald-950">
+                      {item.name}
+                    </h3>
+                    <p className="text-sm text-slate-700 leading-relaxed font-normal">
+                      {item.desc}
+                    </p>
+                  </div>
+                  <Link
+                    to={link}
+                    className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950"
+                  >
+                    <span>{linkText}</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
                 </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
-                <div className="p-3 sm:p-4 space-y-2">
-                  <div className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 font-semibold">
-                    <Calendar className="w-4 h-4 text-emerald-700" />
-                    <span>{news.date}</span>
+      {/* 4. WARTA & BERITA TERKINI DENGAN 1-KLIK WHATSAPP WALI SANTRI */}
+      {editorConfig.sections.beritaTerkini?.isVisible !== false && (
+        <section id="warta-berita" className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-2 sm:space-y-3 scroll-mt-24">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5 border-b border-slate-200 pb-2">
+            <div>
+              <span className="text-xs sm:text-sm font-bold text-gold-700 uppercase tracking-widest">
+                Kabar Pesantren
+              </span>
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950">
+                {editorConfig.sections.beritaTerkini?.data?.headline || 'Warta & Agenda Terkini'}
+              </h2>
+            </div>
+            <Link
+              to="/berita"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950"
+            >
+              <span>Semua Warta Berita</span>
+              <ArrowUpRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3.5 lg:gap-4">
+            {newsItems.map((news) => (
+              <div
+                key={news.id}
+                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-m3-2 border border-slate-200 transition-all flex flex-col justify-between group"
+              >
+                <div>
+                  <div className="relative h-36 sm:h-44 overflow-hidden bg-slate-100">
+                    <img
+                      src={news.image}
+                      alt={news.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-emerald-900/90 backdrop-blur-md text-gold-300 text-xs font-bold shadow">
+                      {news.category}
+                    </span>
                   </div>
 
-                  <h3 className="font-black text-base sm:text-lg text-emerald-950 group-hover:text-emerald-700 transition-colors line-clamp-2 leading-snug">
-                    <Link to={news.link}>{news.title}</Link>
-                  </h3>
+                  <div className="p-3 sm:p-4 space-y-2">
+                    <div className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 font-semibold">
+                      <Calendar className="w-4 h-4 text-emerald-700" />
+                      <span>{news.date}</span>
+                    </div>
 
-                  <p className="text-sm text-slate-700 line-clamp-3 leading-relaxed font-normal">
-                    {news.excerpt}
-                  </p>
+                    <h3 className="font-black text-base sm:text-lg text-emerald-950 group-hover:text-emerald-700 transition-colors line-clamp-2 leading-snug">
+                      <Link to={news.link}>{news.title}</Link>
+                    </h3>
+
+                    <p className="text-sm text-slate-700 line-clamp-3 leading-relaxed font-normal">
+                      {news.excerpt}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 1-Click WhatsApp Broadcast Button */}
+                <div className="p-3 sm:p-4 pt-0 border-t border-slate-100 flex items-center justify-between gap-2 mt-2">
+                  <Link
+                    to={news.link}
+                    className="text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950 hover:underline flex items-center gap-1"
+                  >
+                    <span>Baca Rincian</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </Link>
+
+                  <button
+                    onClick={() => handleShareWA(news)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors cursor-pointer"
+                    title="Bagikan Teks Pengumuman ke WhatsApp Wali Santri"
+                  >
+                    <Share2 className="w-3.5 h-3.5 text-emerald-700" />
+                    <span>Kirim ke WhatsApp</span>
+                  </button>
                 </div>
               </div>
-
-              {/* 1-Click WhatsApp Broadcast Button */}
-              <div className="p-3 sm:p-4 pt-0 border-t border-slate-100 flex items-center justify-between gap-2 mt-2">
-                <Link
-                  to={news.link}
-                  className="text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950 hover:underline flex items-center gap-1"
-                >
-                  <span>Baca Rincian</span>
-                  <ChevronRight className="w-4 h-4" />
-                </Link>
-
-                <button
-                  onClick={() => handleShareWA(news)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
-                  title="Bagikan Teks Pengumuman ke WhatsApp Wali Santri"
-                >
-                  <Share2 className="w-3.5 h-3.5 text-emerald-700" />
-                  <span>Kirim ke WhatsApp</span>
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* 5. CTA PENERIMAAN SANTRI BARU */}
       <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6">
@@ -364,7 +388,6 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
-
     </div>
   );
 };

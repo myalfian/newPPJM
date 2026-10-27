@@ -7,14 +7,14 @@ import {
   ArrowLeft,
   Newspaper,
   Sparkles,
-  ChevronRight,
-  Clock
+  ChevronRight
 } from 'lucide-react';
 import { NavBarTabs } from '../components/common/NavBarTabs';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useCachedQuery } from '../lib/queryCache';
 import { NewsItem, INITIAL_NEWS } from '../data/newsData';
 import { generateWhatsAppBroadcastUrl } from '../lib/waFormatter';
+import { SafeRichContent } from '../components/common/SafeRichContent';
 
 const fetchNewsBySlug = async (slug?: string): Promise<{ article: NewsItem | null; related: NewsItem[] }> => {
   if (!slug) return { article: null, related: [] };
@@ -210,12 +210,8 @@ export const DetailBerita: React.FC = () => {
           )}
 
           {/* Article Body */}
-          <div className="prose prose-emerald max-w-none text-slate-800 leading-relaxed sm:leading-loose text-base sm:text-lg space-y-4">
-            {article.content.split('\n\n').map((paragraph, idx) => (
-              <p key={idx} className="whitespace-pre-line">
-                {paragraph}
-              </p>
-            ))}
+          <div className="prose prose-emerald max-w-none text-slate-800 leading-relaxed sm:leading-loose text-base sm:text-lg">
+            <SafeRichContent content={article.content} />
           </div>
 
           {/* Bottom WhatsApp Broadcast Card */}

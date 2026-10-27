@@ -21,6 +21,7 @@ import {
   Layers3
 } from 'lucide-react';
 import { NavBarTabs } from '../components/common/NavBarTabs';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface PengurusItem {
   id: string;
@@ -189,14 +190,42 @@ export const Osis: React.FC = () => {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.pesan.trim()) return;
+
+    const record = {
+      id: `asp-${Date.now()}`,
+      nama: formData.nama || 'Anonim',
+      kategori: formData.kategori,
+      pesan: formData.pesan,
+      created_at: new Date().toISOString()
+    };
+
+    // 1. Local persistence backup
+    try {
+      const stored = JSON.parse(localStorage.getItem('ppjm_student_aspirations') || '[]');
+      stored.unshift(record);
+      localStorage.setItem('ppjm_student_aspirations', JSON.stringify(stored.slice(0, 50)));
+    } catch (err) {
+      console.warn('Failed to store aspiration locally:', err);
+    }
+
+    // 2. Supabase persistence
+    if (isSupabaseConfigured()) {
+      try {
+        await (supabase as any).from('aspirations').insert({
+          name: record.nama,
+          category: record.kategori,
+          message: record.pesan,
+          created_at: record.created_at
+        });
+      } catch (err) {
+        console.warn('Supabase aspirations table sync note:', err);
+      }
+    }
+
     setIsSubmitted(true);
-    setTimeout(() => {
-      setFormData({ nama: '', kategori: 'Program Belajar', pesan: '' });
-      setIsSubmitted(false);
-    }, 4500);
   };
 
   return (
@@ -517,12 +546,24 @@ export const Osis: React.FC = () => {
                 </div>
 
                 {isSubmitted ? (
-                  <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-2 animate-fadeIn">
+                  <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-200 text-center space-y-3 animate-fadeIn">
                     <CheckCircle2 className="w-10 h-10 text-emerald-700 mx-auto animate-bounce" />
                     <h3 className="font-black text-base text-emerald-950">Aspirasi Berhasil Terkirim!</h3>
-                    <p className="text-xs text-emerald-800">
-                      Jazakumullah khairan. Usulan Anda akan dibahas dalam sidang pleno mingguan BPH OSIS bersama ustadz pembina.
+                    <p className="text-xs text-emerald-800 leading-relaxed max-w-sm mx-auto">
+                      Jazakumullah khairan. Usulan Anda tersimpan aman dan akan dibahas dalam sidang pleno mingguan BPH OSIS bersama ustadz pembina.
                     </p>
+                    <div className="pt-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFormData({ nama: '', kategori: 'Program Belajar', pesan: '' });
+                          setIsSubmitted(false);
+                        }}
+                        className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-sm transition-all cursor-pointer"
+                      >
+                        Kirim Aspirasi Lainnya
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">

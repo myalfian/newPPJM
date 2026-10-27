@@ -181,6 +181,8 @@ export const KelolaBerita: React.FC = () => {
     setNewsList((prev) => prev.filter((item) => item.id !== id));
     invalidateCache('public-news-list');
     invalidateCache('home-news-items');
+    invalidateCache('admin_dashboard_metrics');
+    invalidateCache('admin_dashboard_feed');
 
     if (isSupabaseConfigured() && !id.startsWith('news-')) {
       try {
@@ -306,6 +308,8 @@ export const KelolaBerita: React.FC = () => {
 
     invalidateCache('public-news-list');
     invalidateCache('home-news-items');
+    invalidateCache('admin_dashboard_metrics');
+    invalidateCache('admin_dashboard_feed');
     setPublished(true);
 
     // Generate Instant WhatsApp Broadcast Link with matching slug

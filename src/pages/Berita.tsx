@@ -6,8 +6,6 @@ import {
   Search,
   Share2,
   ChevronRight,
-  Filter,
-  ArrowRight,
   Sparkles,
   User
 } from 'lucide-react';
@@ -69,7 +67,7 @@ const fetchPublicNews = async (): Promise<NewsItem[]> => {
 };
 
 export const Berita: React.FC = () => {
-  const { data: newsItems = INITIAL_NEWS, isLoading } = useCachedQuery<NewsItem[]>(
+  const { data: newsItems = INITIAL_NEWS } = useCachedQuery<NewsItem[]>(
     'public-news-list',
     fetchPublicNews
   );

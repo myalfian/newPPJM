@@ -1,4 +1,5 @@
 import { PageEditorState, INITIAL_EDITOR_STATE } from '../types/EditorState';
+import { supabase, isSupabaseConfigured } from './supabase';
 
 const EDITOR_STORAGE_KEY = 'ppjm_live_editor_state_v1';
 const EDITOR_PUBLISHED_KEY = 'ppjm_published_public_state_v1';
@@ -26,6 +27,69 @@ export const loadEditorState = (): PageEditorState => {
   }
 };
 
+export const getPublishedEditorState = (): PageEditorState => {
+  try {
+    const raw = localStorage.getItem(EDITOR_PUBLISHED_KEY);
+    if (!raw) return loadEditorState();
+    const parsed = JSON.parse(raw);
+    return {
+      ...INITIAL_EDITOR_STATE,
+      ...parsed,
+      meta: {
+        ...INITIAL_EDITOR_STATE.meta,
+        ...(parsed.meta || {})
+      },
+      sections: {
+        ...INITIAL_EDITOR_STATE.sections,
+        ...(parsed.sections || {})
+      }
+    };
+  } catch {
+    return INITIAL_EDITOR_STATE;
+  }
+};
+
+export const fetchPublishedEditorState = async (): Promise<PageEditorState> => {
+  const localFallback = getPublishedEditorState();
+
+  if (!isSupabaseConfigured()) {
+    return localFallback;
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('value')
+      .eq('key', 'home_sections_config')
+      .maybeSingle();
+
+    if (!error && data && data.value) {
+      const remoteVal = data.value as any;
+      const merged: PageEditorState = {
+        ...INITIAL_EDITOR_STATE,
+        ...remoteVal,
+        meta: {
+          ...INITIAL_EDITOR_STATE.meta,
+          ...(remoteVal.meta || {})
+        },
+        sections: {
+          ...INITIAL_EDITOR_STATE.sections,
+          ...(remoteVal.sections || {})
+        }
+      };
+      // Backup to localStorage
+      try {
+        localStorage.setItem(EDITOR_PUBLISHED_KEY, JSON.stringify(merged));
+      } catch {}
+      return merged;
+    }
+  } catch (err) {
+    console.warn('[EditorStorage] Failed to fetch remote published config, using local cache:', err);
+  }
+
+  return localFallback;
+};
+
 export const saveEditorDraft = (state: PageEditorState): void => {
   try {
     localStorage.setItem(EDITOR_STORAGE_KEY, JSON.stringify(state));
@@ -34,7 +98,7 @@ export const saveEditorDraft = (state: PageEditorState): void => {
   }
 };
 
-export const publishEditorState = (state: PageEditorState): { success: boolean; timestamp: string } => {
+export const publishEditorState = async (state: PageEditorState): Promise<{ success: boolean; timestamp: string }> => {
   const publishedAt = new Date().toISOString();
   const updatedState: PageEditorState = {
     ...state,
@@ -49,9 +113,28 @@ export const publishEditorState = (state: PageEditorState): { success: boolean; 
     localStorage.setItem(EDITOR_STORAGE_KEY, JSON.stringify(updatedState));
     localStorage.setItem(EDITOR_PUBLISHED_KEY, JSON.stringify(updatedState));
 
-    // Dispatch custom event so public website can react in real time
+    // 2. Dispatch custom event so public website reacts immediately
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('ppjm-editor-published', { detail: updatedState }));
+    }
+
+    // 3. Save to Supabase site_settings with key 'home_sections_config'
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase
+          .from('site_settings')
+          .upsert(
+            {
+              key: 'home_sections_config',
+              value: updatedState as any,
+              description: 'Konfigurasi visual layout beranda publik',
+              updated_at: publishedAt
+            },
+            { onConflict: 'key' }
+          );
+      } catch (cloudErr) {
+        console.warn('[EditorStorage] Supabase cloud sync failed, local persistence active:', cloudErr);
+      }
     }
 
     return { success: true, timestamp: publishedAt };
@@ -70,4 +153,3 @@ export const resetEditorStateToDefault = (): PageEditorState => {
   }
   return INITIAL_EDITOR_STATE;
 };
-

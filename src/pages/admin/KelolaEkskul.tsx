@@ -13,6 +13,7 @@ import {
   X
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { invalidateCache } from '../../lib/queryCache';
 
 interface EkskulItem {
   id: string;
@@ -153,6 +154,7 @@ export const KelolaEkskul: React.FC = () => {
           console.warn('Failed to delete extracurricular on Supabase:', err);
         }
       }
+      invalidateCache('ekskul_list');
     }
   };
 
@@ -245,6 +247,7 @@ export const KelolaEkskul: React.FC = () => {
 
     setSavedAlert(true);
     resetForm();
+    invalidateCache('ekskul_list');
     setTimeout(() => setSavedAlert(false), 2500);
   };
 

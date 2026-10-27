@@ -211,6 +211,7 @@ export const KelolaAgenda: React.FC = () => {
     if (!confirm('Hapus agenda kegiatan santri ini?')) return;
     setAgendas((prev) => prev.filter((a) => a.id !== id));
     invalidateCache('agendas_live_list');
+    invalidateCache('admin_dashboard_feed');
 
     if (isSupabaseConfigured() && !id.startsWith('cur-') && !id.startsWith('his-') && !id.startsWith('fut-')) {
       try {
@@ -319,6 +320,7 @@ export const KelolaAgenda: React.FC = () => {
     }
 
     invalidateCache('agendas_live_list');
+    invalidateCache('admin_dashboard_feed');
     resetForm();
     setActiveTab('list');
     setTimeout(() => setSavedAlert(null), 3000);

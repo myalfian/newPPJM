@@ -1,5 +1,4 @@
-import React from 'react';
-import { BookOpen, Clock, Moon, Sun, Heart, CheckCircle2 } from 'lucide-react';
+import { BookOpen, Clock, Moon, Sun, Heart } from 'lucide-react';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
 import { useCachedQuery } from '../../lib/queryCache';
 import { fetchProgram } from '../../lib/profileQueries';

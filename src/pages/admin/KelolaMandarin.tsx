@@ -202,6 +202,7 @@ export const KelolaMandarin: React.FC = () => {
           console.warn('Failed to delete lesson on Supabase:', err);
         }
       }
+      invalidateCache('mandarin_lessons_list');
     }
   };
 
@@ -317,6 +318,7 @@ export const KelolaMandarin: React.FC = () => {
 
     setSavedAlert(true);
     resetForm();
+    invalidateCache('mandarin_lessons_list');
     setTimeout(() => setSavedAlert(false), 2500);
   };
 

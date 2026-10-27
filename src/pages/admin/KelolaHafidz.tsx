@@ -1,20 +1,13 @@
 import React, { useState, useRef } from 'react';
 import {
   BookOpen,
-  Volume2,
   CheckCircle2,
   Play,
   Pause,
   Square,
   Clock,
-  User,
-  Award,
   Search,
-  MessageSquare,
-  Send,
-  PlusCircle,
-  FileCheck2,
-  AlertCircle
+  FileCheck2
 } from 'lucide-react';
 
 interface SetoranRecord {
