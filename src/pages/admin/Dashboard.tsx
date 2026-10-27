@@ -174,6 +174,14 @@ export const Dashboard: React.FC = () => {
           </div>
 
           <Link
+            to="/admin/editor"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-emerald-700 hover:bg-emerald-600 active:scale-[0.98] shadow-sm shadow-emerald-700/25 transition-all select-none"
+          >
+            <Sparkles className="w-4 h-4 text-[#ffd700]" />
+            <span>Live Web Editor</span>
+          </Link>
+
+          <Link
             to="/admin/berita"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-[#007acc] hover:bg-[#006bb3] active:scale-[0.98] shadow-sm shadow-[#007acc]/25 transition-all select-none"
           >

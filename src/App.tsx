@@ -159,6 +159,7 @@ const KelolaHafidz = lazy(() => import('./pages/admin/KelolaHafidz').then(m => (
 const KelolaPrestasi = lazy(() => import('./pages/admin/KelolaPrestasi').then(m => ({ default: m.KelolaPrestasi })));
 const KelolaEkskul = lazy(() => import('./pages/admin/KelolaEkskul').then(m => ({ default: m.KelolaEkskul })));
 const KelolaProfil = lazy(() => import('./pages/admin/KelolaProfil').then(m => ({ default: m.KelolaProfil })));
+const WebVisualEditor = lazy(() => import('./pages/admin/WebVisualEditor').then(m => ({ default: m.WebVisualEditor })));
 const UserProfilePage = lazy(() => import('./pages/profile/UserProfilePage').then(m => ({ default: m.UserProfilePage })));
 
 export const App: React.FC = () => {
@@ -224,6 +225,24 @@ export const App: React.FC = () => {
           <Route path="/admin/login" element={<Login />} />
           <Route path="/login" element={<Login />} />
 
+          {/* Dedicated In-Context Visual Web Editor (Full-screen Canvas) */}
+          <Route
+            path="/admin/editor"
+            element={
+              <RoleGuard allowedRoles={['super_admin', 'pengurus_konten', 'guru_akademik']}>
+                <WebVisualEditor />
+              </RoleGuard>
+            }
+          />
+          <Route
+            path="/editor"
+            element={
+              <RoleGuard allowedRoles={['super_admin', 'pengurus_konten', 'guru_akademik']}>
+                <WebVisualEditor />
+              </RoleGuard>
+            }
+          />
+
           {/* 3. Admin CMS Zero-IT-Skill Portal Protected by RoleGuard */}
           <Route
             path="/admin/*"
@@ -235,6 +254,7 @@ export const App: React.FC = () => {
           >
             <Route index element={<Dashboard />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="editor" element={<WebVisualEditor />} />
             <Route path="berita" element={<KelolaBerita />} />
             <Route path="stem" element={<KelolaStem />} />
             <Route path="mandarin" element={<KelolaMandarin />} />

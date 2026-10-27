@@ -26,7 +26,8 @@ import {
   User,
   Users,
   CalendarDays,
-  ShieldCheck
+  ShieldCheck,
+  Monitor
 } from 'lucide-react';
 
 export interface NavSubItem {
@@ -267,6 +268,19 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
 
 // Single Source of Truth for Admin CMS Modules (Hierarchically aligned with Public Website)
 export const ADMIN_MODULES: AdminModuleItem[] = [
+  {
+    id: 'editor',
+    title: 'Live Visual Web Editor',
+    shortLabel: 'Live Editor',
+    desc: 'In-Context visual sandbox, modular per-section & granular per-item',
+    href: '/admin/editor',
+    icon: Monitor,
+    roles: ['super_admin', 'pengurus_konten'],
+    category: 'core',
+    publicCategory: 'Beranda',
+    publicHref: '/',
+    badge: 'WYSIWYG',
+  },
   {
     id: 'dashboard',
     title: 'Executive Dashboard',
