@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   Sparkles,
-  Search,
-  Bell,
   ChevronDown,
   User,
   Menu
 } from 'lucide-react';
-import { SearchModal } from './SearchModal';
 import { PUBLIC_NAV_TABS, NavTabItem } from '../../data/navigationData';
 import { useAuth } from '../../context/AuthContext';
 
@@ -51,13 +48,9 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) => {
-
   const { profile, role, isAuthenticated } = useAuth();
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const location = useLocation();
-
 
   // Active User Name with Default "Guest"
   const [currentUserName, setCurrentUserName] = useState<string>(() => {
@@ -74,30 +67,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
       setCurrentUserName(userName);
     }
   }, [userName]);
-
-  // Listen for Ctrl+K or Cmd+K
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        setSearchOpen(prev => !prev);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
-
-  // Close notifications on outside click
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('#mainHeader')) {
-        setNotificationsOpen(false);
-      }
-    };
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
 
   // Navigation Items with Android App-style Colorful Badges (Single Source of Truth)
   const navTabs = PUBLIC_NAV_TABS;
@@ -196,10 +165,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             </Link>
 
 
-            {/* Desktop Navigation: 9 Pillars Equal Width & Uniform Horizontal Distribution (h-[58px]) */}
+            {/* Desktop Navigation: 9 Pillars Equal Width & Uniform Horizontal Distribution */}
             <div className="relative hidden lg:block" onMouseLeave={() => setHoveredTab(null)}>
               <nav
-                className="grid grid-cols-9 items-center h-[56px] xl:h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-0.5 xl:gap-1 shrink-0 w-[690px] xl:w-[810px] 2xl:w-[890px]"
+                className="grid grid-cols-9 items-center h-[56px] xl:h-[60px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[720px] xl:w-[850px] 2xl:w-[940px]"
               >
                 {navTabs.map((tab) => {
                   const TabIcon = tab.icon;
@@ -231,23 +200,23 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                           }
                           setHoveredTab(null);
                         }}
-                        className="relative z-10 w-full h-full px-0.5 py-1 rounded-xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
+                        className="relative z-10 w-full h-full px-1 py-1 rounded-xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
                       >
                         {/* Compact Android-style Colorful Icon Badge */}
                         <div
-                          className={`w-5.5 h-5.5 xl:w-6 xl:h-6 rounded-lg flex items-center justify-center border transition-all duration-200 group-hover:scale-105 shrink-0 ${
+                          className={`w-6 h-6 xl:w-6.5 xl:h-6.5 rounded-lg flex items-center justify-center border transition-all duration-200 group-hover:scale-105 shrink-0 ${
                             isActive
                               ? tab.color.activeBadgeBg
                               : tab.color.badgeBg
                           }`}
                         >
-                          <TabIcon className="w-3 h-3 xl:w-3.5 xl:h-3.5 transition-transform duration-200 shrink-0" />
+                          <TabIcon className="w-3.5 h-3.5 xl:w-4 xl:h-4 transition-transform duration-200 shrink-0" />
                         </div>
 
                         {/* Menu Label: Centered, Bold & Crisp Inside the Capsule Card */}
                         <div className="w-full text-center px-0.5 mt-1 leading-none">
                           <span
-                            className={`block text-[10px] xl:text-[11px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${
+                            className={`block text-[10.5px] xl:text-[11.5px] 2xl:text-[12.5px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${
                               isActive
                                 ? tab.color.activeText
                                 : 'text-slate-700 group-hover:text-slate-950'
@@ -280,107 +249,26 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               </nav>
             </div>
 
-
-            {/* Mobile Viewport: Hamburger Drawer Trigger + Rounded Pill Search Bar */}
-            <div className="flex lg:hidden items-center gap-1.5 xs:gap-2 flex-1 min-w-0 max-w-[210px] xs:max-w-[270px] sm:max-w-[360px]">
-              {/* Hamburger Button: Opens Full Mobile Drawer Menu */}
+            {/* Right Side: Profile Pill Capsule & Mobile Drawer Trigger */}
+            <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 shrink-0">
+              {/* Mobile Hamburger Drawer Trigger Button */}
               <button
                 type="button"
                 onClick={onOpenMobileMenu}
-                className="flex items-center justify-center w-8 h-8 xs:w-8.5 xs:h-8.5 sm:w-9.5 sm:h-9.5 rounded-full bg-slate-50 hover:bg-emerald-50 active:bg-emerald-100 text-slate-700 hover:text-[#0d4a28] border border-slate-200/90 shadow-2xs transition-all active:scale-95 cursor-pointer shrink-0"
+                className="flex lg:hidden items-center justify-center w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-full bg-slate-50 hover:bg-emerald-50 active:bg-emerald-100 text-slate-700 hover:text-[#0d4a28] border border-slate-200/90 shadow-2xs transition-all active:scale-95 cursor-pointer shrink-0"
                 aria-label="Buka Menu Navigasi Lengkap"
                 title="Buka Menu Lengkap"
               >
-                <Menu className="w-4 h-4 xs:w-4.5 xs:h-4.5 sm:w-5 sm:h-5 stroke-[2.3]" />
+                <Menu className="w-4.5 h-4.5 xs:w-5 xs:h-5 stroke-[2.3]" />
               </button>
 
-              {/* Pill Search Bar */}
-              <button
-                type="button"
-                onClick={() => setSearchOpen(true)}
-                className="flex items-center h-8 xs:h-8.5 sm:h-9.5 flex-1 min-w-0 px-2 xs:px-2.5 sm:px-3 rounded-full bg-slate-50/90 hover:bg-white text-left border border-slate-200/90 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] hover:border-emerald-500/70 transition-all duration-200 cursor-pointer group select-none gap-1.5 xs:gap-2 shrink"
-                title="Search for anything... (Ctrl+K)"
-                aria-label="Cari Informasi Portal"
-              >
-                <Search className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-700 stroke-[2.2] shrink-0" />
-                <span className="hidden xs:inline text-[11px] sm:text-xs text-slate-400 font-normal truncate tracking-tight">
-                  Search...
-                </span>
-                <span className="inline xs:hidden text-[10px] text-slate-400 font-normal truncate tracking-tight">
-                  Cari...
-                </span>
-              </button>
-            </div>
-
-            {/* Desktop Responsive Search Field */}
-            <button
-              type="button"
-              onClick={() => setSearchOpen(true)}
-              className="hidden lg:flex items-center h-10 xl:h-11 flex-1 min-w-[140px] xl:min-w-[160px] max-w-[360px] px-3.5 rounded-full bg-slate-50 hover:bg-white text-left border border-slate-200/90 shadow-[inset_0_1px_2px_rgba(0,0,0,0.03)] hover:border-emerald-500/80 transition-all duration-200 cursor-pointer group select-none relative gap-2 shrink mx-2"
-              title="Search for anything... (Ctrl+K)"
-              aria-label="Cari Informasi Portal"
-            >
-              <Search className="w-4 h-4 text-slate-500 group-hover:text-emerald-700 transition-colors shrink-0" />
-              <span className="text-xs xl:text-[13px] text-slate-400 font-normal truncate flex-1">
-                Search for anything...
-              </span>
-              <kbd className="hidden xl:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-slate-400 bg-slate-100 rounded-md border border-slate-200/80 shrink-0">
-                Ctrl K
-              </kbd>
-            </button>
-
-            {/* Right Side: Fixed Min-Width Container to prevent CLS when Auth is empty/loading */}
-            <div className="flex items-center justify-between gap-1 xs:gap-1.5 sm:gap-2 lg:gap-3 shrink-0 min-w-[105px] xs:min-w-[120px] sm:min-w-[145px] lg:min-w-[170px]">
-
-              {/* 1. Notification Bell Button (Universal for All Viewports - Fixed Locked Dimensions) */}
-              <div className="relative flex items-center shrink-0 flex-none">
-                <button
-                  type="button"
-                  onClick={() => setNotificationsOpen((prev) => !prev)}
-                  className="w-8 h-8 min-w-[32px] min-h-[32px] max-w-[32px] max-h-[32px] xs:w-8.5 xs:h-8.5 xs:min-w-[34px] xs:min-h-[34px] xs:max-w-[34px] xs:max-h-[34px] sm:w-9 sm:h-9 sm:min-w-[36px] sm:min-h-[36px] sm:max-w-[36px] sm:max-h-[36px] lg:w-10 lg:h-10 lg:min-w-[40px] lg:min-h-[40px] lg:max-w-[40px] lg:max-h-[40px] rounded-full bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 shadow-2xs flex items-center justify-center transition-all duration-200 active:scale-95 cursor-pointer relative shrink-0 flex-none aspect-square"
-                  aria-label="Notifikasi & Informasi"
-                  title="Warta & Informasi Terkini"
-                >
-                  <Bell className="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-4.5 sm:h-4.5 text-slate-700 stroke-[2.2] shrink-0" />
-                  <span className="absolute top-1 xs:top-1.5 right-1 xs:right-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 ring-1 ring-white" />
-                </button>
-
-                {/* Notifications Dropdown Popover */}
-                <AnimatePresence>
-                  {notificationsOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 8, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 6, scale: 0.95 }}
-                      transition={{ duration: 0.16 }}
-                      className="absolute right-0 top-full mt-2 w-64 sm:w-72 lg:w-80 bg-white rounded-2xl shadow-xl border border-slate-200/90 p-3 z-50 text-left select-none"
-                    >
-                      <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-                        <span className="text-xs font-bold text-slate-800">Warta Terkini</span>
-                        <span className="text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/60">Aktif</span>
-                      </div>
-                      <div className="space-y-1.5 pt-2">
-                        <div className="p-2 rounded-xl bg-slate-50 hover:bg-emerald-50/50 transition-colors">
-                          <p className="font-bold text-slate-800 text-[11px] leading-tight">PPDB TP 2026/2027 Dibuka</p>
-                          <p className="text-[10px] text-slate-500 mt-0.5 leading-snug">Pendaftaran santri baru jalur reguler & tahfidz resmi dibuka.</p>
-                        </div>
-                        <div className="p-2 rounded-xl bg-slate-50 hover:bg-emerald-50/50 transition-colors">
-                          <p className="font-bold text-slate-800 text-[11px] leading-tight">Akreditasi "A" BAN-PDM</p>
-                          <p className="text-[10px] text-slate-500 mt-0.5 leading-snug">Raihan predikat Unggul untuk kurikulum terpadu.</p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {/* 2. Profile Pill Capsule (Universal for All Viewports - Fixed Locked Dimensions) */}
+              {/* Profile Pill Capsule (Universal for All Viewports) */}
               <Link
                 to="/profil"
                 className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 pl-0.5 xs:pl-1 pr-1.5 xs:pr-2.5 sm:pr-3 py-0.5 xs:py-1 lg:py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer select-none shrink-0 flex-none h-8 xs:h-8.5 sm:h-9 lg:h-10 max-h-10 group"
                 title={`Profil Pengguna: ${profile?.full_name || 'Tamu / Pengunjung'} (${getRoleDisplayBadge(role, profile?.status_badge)})`}
               >
-                {/* User Portrait Avatar - Strictly Dimension Locked */}
+                {/* User Portrait Avatar */}
                 <div className="relative w-[26px] h-[26px] min-w-[26px] min-h-[26px] max-w-[26px] max-h-[26px] xs:w-[28px] xs:h-[28px] xs:min-w-[28px] xs:min-h-[28px] xs:max-w-[28px] xs:max-h-[28px] sm:w-[30px] sm:h-[30px] sm:min-w-[30px] sm:min-h-[30px] sm:max-w-[30px] sm:max-h-[30px] lg:w-[32px] lg:h-[32px] lg:min-w-[32px] lg:min-h-[32px] lg:max-w-[32px] lg:max-h-[32px] rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0 flex-none aspect-square">
                   <img
                     src={profile?.avatar_url || DEFAULT_VISITOR_AVATAR}
@@ -406,7 +294,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
 
                 {/* Name & Role Text Stack */}
                 <div className="flex flex-col text-left leading-tight shrink-0">
-                  <span className="text-[10px] xs:text-[11px] sm:text-xs lg:text-[13px] font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[42px] xs:max-w-[65px] sm:max-w-[90px] lg:max-w-[125px]">
+                  <span className="text-[10px] xs:text-[11px] sm:text-xs lg:text-[13px] font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[50px] xs:max-w-[70px] sm:max-w-[95px] lg:max-w-[130px]">
                     {getFormattedDisplayName(profile?.full_name, role)}
                   </span>
                   <span
@@ -421,16 +309,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                 {/* Dropdown Chevron */}
                 <ChevronDown className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-slate-400 shrink-0 ml-0.2 xs:ml-0.5 group-hover:text-slate-600 transition-colors" />
               </Link>
-
-
             </div>
 
           </div>
         </div>
       </header>
-
-      {/* 3. SEARCH MODAL */}
-      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 };
