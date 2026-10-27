@@ -34,6 +34,7 @@ export const BottomNav: React.FC = () => {
   if (showMedsosModal) {
     activeTab = 'center';
   } else if (
+    location.pathname.startsWith('/berita') ||
     location.pathname.startsWith('/galeri') ||
     location.pathname.startsWith('/prestasi') ||
     location.pathname.startsWith('/ekskul')
@@ -142,10 +143,10 @@ export const BottomNav: React.FC = () => {
               </span>
             </button>
 
-            {/* 2. JM News / Galeri */}
+            {/* 2. JM News */}
             <button
               type="button"
-              onClick={() => navigate('/galeri/foto')}
+              onClick={() => navigate('/berita')}
               className="flex flex-col items-center justify-center h-full relative cursor-pointer group py-1"
               aria-label="JM News"
               title="JM News"

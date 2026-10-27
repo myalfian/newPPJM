@@ -1,9 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Compass, Building2, BookOpen, Sparkles, Cpu, Globe, Users, ChevronRight } from 'lucide-react';
+import { Building2, BookOpen, Sparkles, Cpu, Globe, Users, ChevronRight } from 'lucide-react';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
+import { useCachedQuery } from '../../lib/queryCache';
+import { fetchJmPage } from '../../lib/profileQueries';
 
 export const Lembaga: React.FC = () => {
+  const { data: pageData } = useCachedQuery(
+    'jm-center-lembaga',
+    () => fetchJmPage('lembaga')
+  );
   const lembagaList = [
     {
       title: 'Madrasah Diniyah Salafiyah (Madin)',
@@ -62,13 +68,19 @@ export const Lembaga: React.FC = () => {
             <span>Struktur Badan Otonom</span>
           </div>
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
-            Badan Otonom & Unit Lembaga PPJM
+            {pageData?.title || 'Badan Otonom & Unit Lembaga PPJM'}
           </h1>
           <p className="text-xs sm:text-sm text-emerald-200/90 max-w-2xl">
-            Sinergi unit pelaksana pendidikan, riset, dan dakwah di bawah naungan Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik.
+            {pageData?.subtitle || 'Sinergi unit pelaksana pendidikan, riset, dan dakwah di bawah naungan Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik.'}
           </p>
         </div>
       </div>
+
+      {pageData?.content && (
+        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-m3-1 border border-slate-200 text-slate-700 leading-relaxed text-xs sm:text-sm">
+          <p className="whitespace-pre-line">{pageData.content}</p>
+        </div>
+      )}
 
       {/* Lembaga Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1.5 sm:gap-2.5 lg:gap-3">

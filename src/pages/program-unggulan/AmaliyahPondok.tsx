@@ -1,8 +1,16 @@
 import React from 'react';
 import { BookOpen, Clock, Moon, Sun, Heart, CheckCircle2 } from 'lucide-react';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
+import { useCachedQuery } from '../../lib/queryCache';
+import { fetchProgram } from '../../lib/profileQueries';
 
 export const AmaliyahPondok: React.FC = () => {
+  const { data: progData } = useCachedQuery(
+    'program-amaliyah',
+    () => fetchProgram('amaliyah-pondok')
+  );
+
+  const customDesc = progData?.description;
   const dailySchedules = [
     {
       time: '03.30 - 04.30 WIB',
@@ -62,6 +70,12 @@ export const AmaliyahPondok: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {customDesc && (
+        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-m3-1 border border-slate-200 text-slate-700 leading-relaxed text-xs sm:text-sm">
+          <p className="whitespace-pre-line">{customDesc}</p>
+        </div>
+      )}
 
       {/* Jadwal Harian Rutin */}
       <div className="bg-white rounded-2xl p-2.5 sm:p-3.5 shadow-m3-1 border border-slate-200 space-y-2">

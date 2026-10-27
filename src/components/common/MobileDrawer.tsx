@@ -195,7 +195,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
       id: 'jm-news',
       title: 'JM News',
       subtitle: 'Warta Terkini & Kabar Pesantren',
-      href: '/#warta-berita',
+      href: '/berita',
       icon: Newspaper,
       color: {
         badgeBg: 'bg-sky-50',
@@ -204,7 +204,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
         activeBg: 'bg-sky-600',
       },
       items: [
-        { title: 'Warta Terkini', href: '/#warta-berita', desc: 'Kabar & rilis resmi aktivitas pesantren', icon: Newspaper },
+        { title: 'Warta Terkini', href: '/berita', desc: 'Kabar & rilis resmi aktivitas pesantren', icon: Newspaper },
         { title: 'Kabar Prestasi', href: '/prestasi', desc: 'Liputan kejuaraan santri', icon: Trophy },
         { title: 'Dokumentasi Galeri', href: '/galeri/foto', desc: 'Arsip foto & liputan video', icon: Images },
       ],

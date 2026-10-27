@@ -74,6 +74,36 @@ export function getCachedValue<T>(key: string, fallback: T): T {
 }
 
 /**
+ * Invalidate cache untuk single key atau seluruh cache
+ */
+export function invalidateCache(key?: string): void {
+  if (key) {
+    memoryCache.delete(key);
+    inFlightRequests.delete(key);
+    try {
+      sessionStorage.removeItem(`ppjm_swr_${key}`);
+    } catch {
+      // Ignore storage errors
+    }
+  } else {
+    memoryCache.clear();
+    inFlightRequests.clear();
+    try {
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const k = sessionStorage.key(i);
+        if (k?.startsWith('ppjm_swr_')) {
+          keysToRemove.push(k);
+        }
+      }
+      keysToRemove.forEach((k) => sessionStorage.removeItem(k));
+    } catch {
+      // Ignore storage errors
+    }
+  }
+}
+
+/**
  * Hook useCachedQuery untuk React Component
  * Menjamin render instan tanpa flicker skeleton loading jika data sudah tersedia di cache
  */
@@ -81,9 +111,25 @@ export function useCachedQuery<T>(
   key: string,
   fetcher: () => Promise<T>,
   fallbackData: T,
+  staleTime?: number
+): { data: T; loading: boolean; isLoading: boolean; isRevalidating: boolean; error: Error | null; refetch: () => Promise<void> };
+
+export function useCachedQuery<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  fallbackData?: T,
+  staleTime?: number
+): { data: T | undefined; loading: boolean; isLoading: boolean; isRevalidating: boolean; error: Error | null; refetch: () => Promise<void> };
+
+export function useCachedQuery<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  fallbackData?: T,
   staleTime = DEFAULT_STALE_TIME
-): { data: T; loading: boolean; isRevalidating: boolean; error: Error | null; refetch: () => Promise<void> } {
-  const [data, setData] = useState<T>(() => getCachedValue(key, fallbackData));
+): { data: T | undefined; loading: boolean; isLoading: boolean; isRevalidating: boolean; error: Error | null; refetch: () => Promise<void> } {
+  const [data, setData] = useState<T | undefined>(() =>
+    fallbackData !== undefined ? getCachedValue(key, fallbackData) : memoryCache.get(key)?.data
+  );
   const [loading, setLoading] = useState<boolean>(() => !memoryCache.has(key));
   const [isRevalidating, setIsRevalidating] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
@@ -114,6 +160,18 @@ export function useCachedQuery<T>(
 
   useEffect(() => {
     isMountedRef.current = true;
+    // Sinkronisasi data awal saat parameter key berganti
+    const cached = memoryCache.get(key)?.data;
+    if (cached !== undefined) {
+      setData(cached);
+      setLoading(false);
+    } else if (fallbackData !== undefined) {
+      setData(getCachedValue(key, fallbackData));
+      setLoading(false);
+    } else {
+      setData(undefined);
+      setLoading(true);
+    }
     executeFetch();
 
     return () => {
@@ -124,6 +182,7 @@ export function useCachedQuery<T>(
   return {
     data,
     loading,
+    isLoading: loading,
     isRevalidating,
     error,
     refetch: () => executeFetch(true),

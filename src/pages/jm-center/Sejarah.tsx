@@ -1,8 +1,16 @@
 import React from 'react';
 import { Compass, Milestone, Calendar, MapPin, Flag } from 'lucide-react';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
+import { useCachedQuery } from '../../lib/queryCache';
+import { fetchJmPage } from '../../lib/profileQueries';
 
 export const Sejarah: React.FC = () => {
+  const { data: pageData } = useCachedQuery(
+    'jm-center-sejarah',
+    () => fetchJmPage('sejarah')
+  );
+
+  const customContent = pageData?.content;
   const milestones = [
     {
       year: '1998',
@@ -62,12 +70,22 @@ export const Sejarah: React.FC = () => {
         <h2 className="text-lg sm:text-xl font-black text-emerald-950">
           Kilas Balik: Dari Langgar Sederhana Menuju Sentra Keilmuan
         </h2>
-        <p>
-          Kecamatan Sidayu di pesisir utara Kabupaten Gresik dikenal sebagai salah satu wilayah yang sarat akan warisan sejarah keislaman dan perjuangan para ulama. Di sinilah, tepatnya di Desa Lasem, benih dakwah <strong className="text-emerald-950 font-black">Pondok Pesantren Jauharul Maknuun</strong> disemaikan dengan penuh keikhlasan.
-        </p>
-        <p>
-          Filosofi nama <em className="text-emerald-950 font-bold">“Jauharul Maknuun”</em> diambil dari permata ilmu balaghah, dengan harapan bahwa setiap santri yang menimba ilmu di tempat ini akan ditempa menjadi permata yang tersimpan indah, memancarkan kearifan, adab budi pekerti, dan kemaslahatan nyata bagi umat manusia.
-        </p>
+        {customContent ? (
+          customContent.split('\n\n').map((par, i) => (
+            <p key={i} className="whitespace-pre-line">
+              {par}
+            </p>
+          ))
+        ) : (
+          <>
+            <p>
+              Kecamatan Sidayu di pesisir utara Kabupaten Gresik dikenal sebagai salah satu wilayah yang sarat akan warisan sejarah keislaman dan perjuangan para ulama. Di sinilah, tepatnya di Desa Lasem, benih dakwah <strong className="text-emerald-950 font-black">Pondok Pesantren Jauharul Maknuun</strong> disemaikan dengan penuh keikhlasan.
+            </p>
+            <p>
+              Filosofi nama <em className="text-emerald-950 font-bold">“Jauharul Maknuun”</em> diambil dari permata ilmu balaghah, dengan harapan bahwa setiap santri yang menimba ilmu di tempat ini akan ditempa menjadi permata yang tersimpan indah, memancarkan kearifan, adab budi pekerti, dan kemaslahatan nyata bagi umat manusia.
+            </p>
+          </>
+        )}
       </div>
 
       {/* Interactive Milestone Timeline (Android M3 Style) */}

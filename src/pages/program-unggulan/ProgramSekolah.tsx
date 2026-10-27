@@ -1,8 +1,16 @@
 import React from 'react';
 import { Building2, CheckCircle2, GraduationCap, Award, BookOpen } from 'lucide-react';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
+import { useCachedQuery } from '../../lib/queryCache';
+import { fetchProgram } from '../../lib/profileQueries';
 
 export const ProgramSekolah: React.FC = () => {
+  const { data: progData } = useCachedQuery(
+    'program-sekolah',
+    () => fetchProgram('program-sekolah')
+  );
+
+  const customDesc = progData?.description;
   return (
     <div className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2 space-y-1.5 sm:space-y-2">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
@@ -30,9 +38,13 @@ export const ProgramSekolah: React.FC = () => {
           <h2 className="text-base sm:text-lg font-bold text-emerald-950">
             Harmoni Akademik Formal & Ruhaniyyah Pesantren
           </h2>
-          <p>
-            Di Pondok Pesantren Jauharul Maknuun Lasem, pendidikan formal tidak diposisikan sebagai hal yang terpisah dari ketarbiyahan santri. Kami mendesain jadwal dan materi belajar agar para santri dapat berprestasi tinggi dalam mata pelajaran sains, matematika, dan literasi nasional tanpa mengorbankan waktu nderes al-Qur’an dan kajian kitab kuning.
-          </p>
+          {customDesc ? (
+            <p className="whitespace-pre-line">{customDesc}</p>
+          ) : (
+            <p>
+              Di Pondok Pesantren Jauharul Maknuun Lasem, pendidikan formal tidak diposisikan sebagai hal yang terpisah dari ketarbiyahan santri. Kami mendesain jadwal dan materi belajar agar para santri dapat berprestasi tinggi dalam mata pelajaran sains, matematika, dan literasi nasional tanpa mengorbankan waktu nderes al-Qur’an dan kajian kitab kuning.
+            </p>
+          )}
 
           <div className="p-2.5 sm:p-3 rounded-xl bg-emerald-50 border border-emerald-100 space-y-1.5">
             <h3 className="font-extrabold text-emerald-950 text-xs sm:text-sm">

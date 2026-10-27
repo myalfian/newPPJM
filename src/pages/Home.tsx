@@ -15,39 +15,88 @@ import {
 import { HeroSlider } from '../components/HeroSlider';
 import { QuickMenu } from '../components/QuickMenu';
 import { generateWhatsAppBroadcastUrl } from '../lib/waFormatter';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { useCachedQuery } from '../lib/queryCache';
+import { INITIAL_NEWS } from '../data/newsData';
+
+export interface HomeNewsItem {
+  id: string;
+  title: string;
+  date: string;
+  category: string;
+  excerpt: string;
+  image: string;
+  link: string;
+}
+
+const fetchHomeNews = async (): Promise<HomeNewsItem[]> => {
+  if (!isSupabaseConfigured()) {
+    return INITIAL_NEWS.map((n) => ({
+      id: n.id,
+      title: n.title,
+      date: n.date_display || 'Terbaru',
+      category: n.category,
+      excerpt: n.summary,
+      image: n.thumbnail,
+      link: `/berita/${n.slug}`
+    }));
+  }
+  try {
+    const { data, error } = await supabase
+      .from('news')
+      .select('*')
+      .eq('is_published', true)
+      .order('is_pinned', { ascending: false })
+      .order('created_at', { ascending: false })
+      .limit(3);
+
+    if (error || !data || data.length === 0) {
+      return INITIAL_NEWS.map((n) => ({
+        id: n.id,
+        title: n.title,
+        date: n.date_display || 'Terbaru',
+        category: n.category,
+        excerpt: n.summary,
+        image: n.thumbnail,
+        link: `/berita/${n.slug}`
+      }));
+    }
+
+    return data.map((row) => ({
+      id: row.id,
+      title: row.title,
+      date: row.created_at
+        ? new Date(row.created_at).toLocaleDateString('id-ID', {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+          })
+        : 'Terbaru',
+      category: row.category || 'Warta Pondok',
+      excerpt: row.summary || (row.content ? row.content.substring(0, 140) + '...' : ''),
+      image: row.thumbnail || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
+      link: `/berita/${row.slug}`
+    }));
+  } catch {
+    return INITIAL_NEWS.map((n) => ({
+      id: n.id,
+      title: n.title,
+      date: n.date_display || 'Terbaru',
+      category: n.category,
+      excerpt: n.summary,
+      image: n.thumbnail,
+      link: `/berita/${n.slug}`
+    }));
+  }
+};
 
 export const Home: React.FC = () => {
-  const newsItems = [
-    {
-      id: 'news-1',
-      title: 'Haflah Khotmil Qur’an 30 Juz & Wisuda Purna Studi PPJM 2025',
-      date: '20 Juni 2025',
-      category: 'Agenda Akbar',
-      excerpt: 'Momen khidmat pelepasan santri purna studi dan wisuda khotmil qur’an 30 juz dihadiri para masyayikh dan ribuan wali santri di halaman utama pesantren.',
-      image: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
-      link: '/galeri/foto'
-    },
-    {
-      id: 'news-2',
-      title: 'Santri PPJM Juara 1 Musabaqah Qira’atil Kutub Tingkat Provinsi',
-      date: '12 Maret 2025',
-      category: 'Prestasi',
-      excerpt: 'Prestasi membanggakan diraih santri PPJM dalam membaca dan memahami kitab kuning Fathul Qorib pada ajang MQK se-Jawa Timur.',
-      image: 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=800&q=80',
-      link: '/prestasi'
-    },
-    {
-      id: 'news-3',
-      title: 'Peluncuran Laboratorium Robotika & Otomasi IoT Santri Lasem',
-      date: '10 Januari 2025',
-      category: 'Inovasi STEM',
-      excerpt: 'Pesantren meresmikan pusat riset teknologi aplikatif guna melatih santri menciptakan solusi otomasi hidroponik dan sistem tenaga surya.',
-      image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
-      link: '/smart-jm/stem/portofolio'
-    }
-  ];
+  const { data: newsItems = [] } = useCachedQuery<HomeNewsItem[]>(
+    'home-news-items',
+    fetchHomeNews
+  );
 
-  const handleShareWA = (news: typeof newsItems[0]) => {
+  const handleShareWA = (news: HomeNewsItem) => {
     const url = generateWhatsAppBroadcastUrl({
       title: news.title,
       category: news.category,
@@ -216,10 +265,10 @@ export const Home: React.FC = () => {
             </h2>
           </div>
           <Link
-            to="/galeri/foto"
+            to="/berita"
             className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950"
           >
-            <span>Semua Agenda Galeri</span>
+            <span>Semua Warta Berita</span>
             <ArrowUpRight className="w-4 h-4" />
           </Link>
         </div>

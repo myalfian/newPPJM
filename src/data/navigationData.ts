@@ -217,7 +217,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     id: 'jm-news',
     label: 'JM News',
     icon: Newspaper,
-    href: '/#warta-berita',
+    href: '/berita',
     isDropdown: false,
     color: {
       badgeBg: 'bg-sky-50 text-sky-700 border-sky-200/80 group-hover:bg-sky-100 group-hover:text-sky-800',
@@ -226,7 +226,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeDot: 'bg-sky-600',
     },
     items: [
-      { title: 'Warta Terkini', href: '/#warta-berita', desc: 'Kabar resmi & agenda terhangat PPJM', icon: Newspaper },
+      { title: 'Warta Terkini', href: '/berita', desc: 'Kabar resmi & agenda terhangat PPJM', icon: Newspaper },
       { title: 'Kabar Prestasi', href: '/prestasi', desc: 'Liputan kejuaraan & rekam jejak juara', icon: Trophy },
       { title: 'Dokumentasi Galeri', href: '/galeri/foto', desc: 'Arsip foto & liputan video santri', icon: Images },
     ]
@@ -303,8 +303,8 @@ export const ADMIN_MODULES: AdminModuleItem[] = [
     icon: Newspaper,
     roles: ['super_admin', 'pengurus_konten'],
     category: 'core',
-    publicCategory: 'JM Center',
-    publicHref: '/',
+    publicCategory: 'JM News',
+    publicHref: '/berita',
     badge: 'WA Ready',
   },
   {
@@ -383,6 +383,19 @@ export const ADMIN_MODULES: AdminModuleItem[] = [
     publicCategory: 'Prestasi',
     publicHref: '/prestasi',
     badge: 'Juara',
+  },
+  {
+    id: 'agenda',
+    title: 'Manajemen Agenda Santri',
+    shortLabel: 'Agenda Santri',
+    desc: 'Atur jadwal kegiatan, waktu, rundown acara & status timeline',
+    href: '/admin/agenda',
+    icon: CalendarDays,
+    roles: ['super_admin', 'pengurus_konten'],
+    category: 'core',
+    publicCategory: 'Agenda',
+    publicHref: '/agenda',
+    badge: 'Jadwal',
   },
   {
     id: 'ekskul',

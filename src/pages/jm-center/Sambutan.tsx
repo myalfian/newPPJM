@@ -1,8 +1,17 @@
 import React from 'react';
 import { Compass, Quote, CheckCircle2, Share2 } from 'lucide-react';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
+import { useCachedQuery } from '../../lib/queryCache';
+import { fetchJmPage } from '../../lib/profileQueries';
 
 export const Sambutan: React.FC = () => {
+  const { data: pageData } = useCachedQuery(
+    'jm-center-sambutan',
+    () => fetchJmPage('sambutan')
+  );
+
+  const leaderName = pageData?.quotes || 'KH. M. Jauharul Maknuun';
+  const customContent = pageData?.content;
   return (
     <div className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2 space-y-1.5 sm:space-y-2">
       {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
@@ -38,7 +47,7 @@ export const Sambutan: React.FC = () => {
             </div>
             <div className="text-center space-y-0.5">
               <h3 className="font-extrabold text-sm sm:text-base text-emerald-950">
-                KH. M. Jauharul Maknuun
+                {leaderName}
               </h3>
               <p className="text-xs font-semibold text-gold-700">
                 Mudir & Pengasuh Pondok Pesantren
@@ -71,17 +80,27 @@ export const Sambutan: React.FC = () => {
             Assalamu’alaikum Warahmatullahi Wabarakatuh,
           </p>
 
-          <p>
-            Segala puji bagi Allah Subhanahu wa Ta’ala, Dzat yang telah melimpahkan anugerah taufiq, hidayah, dan inayah-Nya kepada kita semua. Shalawat serta salam semoga senantiasa tercurah ke haribaan Baginda Agung Nabi Muhammad SAW, beserta keluarga, para sahabat, dan pengikut beliau hingga akhir zaman.
-          </p>
+          {customContent ? (
+            customContent.split('\n\n').map((par, i) => (
+              <p key={i} className="whitespace-pre-line">
+                {par}
+              </p>
+            ))
+          ) : (
+            <>
+              <p>
+                Segala puji bagi Allah Subhanahu wa Ta’ala, Dzat yang telah melimpahkan anugerah taufiq, hidayah, dan inayah-Nya kepada kita semua. Shalawat serta salam semoga senantiasa tercurah ke haribaan Baginda Agung Nabi Muhammad SAW, beserta keluarga, para sahabat, dan pengikut beliau hingga akhir zaman.
+              </p>
 
-          <p>
-            Selamat datang di media informasi resmi <strong className="text-emerald-950 font-black">Pondok Pesantren Jauharul Maknuun Lasem, Sidayu, Gresik</strong>. Di era disrupsi digital yang bergerak begitu cepat, pesantren kami terus berikhtiar mempertahankan nilai-nilai salafus sholih yang luhur seraya membuka diri terhadap kemaslahatan inovasi teknologi modern.
-          </p>
+              <p>
+                Selamat datang di media informasi resmi <strong className="text-emerald-950 font-black">Pondok Pesantren Jauharul Maknuun Lasem, Sidayu, Gresik</strong>. Di era disrupsi digital yang bergerak begitu cepat, pesantren kami terus berikhtiar mempertahankan nilai-nilai salafus sholih yang luhur seraya membuka diri terhadap kemaslahatan inovasi teknologi modern.
+              </p>
 
-          <p>
-            Nama <em className="text-emerald-950 font-bold">“Jauharul Maknuun”</em> (Permata yang Tersimpan Indah) terinspirasi dari kitab masyhur ilmu Balaghah karangan Syaikh Abdurrahman al-Akhdhari. Kami bertekad membimbing putra-putri santri agar bertransformasi menjadi mutiara-mutiara ilmu yang memancarkan akhlaqul karimah, ketajaman akal fikiran, serta keteguhan jiwa di manapun kelak mereka berkhidmat.
-          </p>
+              <p>
+                Nama <em className="text-emerald-950 font-bold">“Jauharul Maknuun”</em> (Permata yang Tersimpan Indah) terinspirasi dari kitab masyhur ilmu Balaghah karangan Syaikh Abdurrahman al-Akhdhari. Kami bertekad membimbing putra-putri santri agar bertransformasi menjadi mutiara-mutiara ilmu yang memancarkan akhlaqul karimah, ketajaman akal fikiran, serta keteguhan jiwa di manapun kelak mereka berkhidmat.
+              </p>
+            </>
+          )}
 
           <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50/50 border-l-4 border-emerald-700 space-y-2.5 text-base sm:text-lg">
             <div className="font-black text-emerald-950">Fokus Tarbiyah Pesantren:</div>

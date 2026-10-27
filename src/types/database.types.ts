@@ -353,30 +353,39 @@ export type Database = {
           created_at: string
           explanation: string | null
           id: string
-          lesson_id: string
+          lesson_id: string | null
           options: Json
           question: string
           question_type: string | null
+          topic_name: string | null
+          hanzi: string | null
+          pinyin: string | null
         }
         Insert: {
           correct_index: number
           created_at?: string
           explanation?: string | null
           id?: string
-          lesson_id: string
+          lesson_id?: string | null
           options: Json
           question: string
           question_type?: string | null
+          topic_name?: string | null
+          hanzi?: string | null
+          pinyin?: string | null
         }
         Update: {
           correct_index?: number
           created_at?: string
           explanation?: string | null
           id?: string
-          lesson_id?: string
+          lesson_id?: string | null
           options?: Json
           question?: string
           question_type?: string | null
+          topic_name?: string | null
+          hanzi?: string | null
+          pinyin?: string | null
         }
         Relationships: [
           {
@@ -387,6 +396,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      news: {
+        Row: {
+          author: string | null
+          category: string
+          content: string
+          created_at: string
+          id: string
+          is_pinned: boolean | null
+          is_published: boolean | null
+          slug: string
+          summary: string | null
+          thumbnail: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author?: string | null
+          category?: string
+          content: string
+          created_at?: string
+          id?: string
+          is_pinned?: boolean | null
+          is_published?: boolean | null
+          slug: string
+          summary?: string | null
+          thumbnail?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string | null
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_pinned?: boolean | null
+          is_published?: boolean | null
+          slug?: string
+          summary?: string | null
+          thumbnail?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       programs: {
         Row: {

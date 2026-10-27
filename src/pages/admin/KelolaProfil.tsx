@@ -3,14 +3,12 @@ import {
   Landmark,
   Compass,
   HeartHandshake,
-  Layers,
   GraduationCap,
-  BookOpenCheck,
   CheckCircle2,
-  Save,
-  Edit3
+  Save
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { invalidateCache } from '../../lib/queryCache';
 
 export const KelolaProfil: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'sambutan' | 'sejarah' | 'visi-misi' | 'program'>('sambutan');
@@ -86,21 +84,26 @@ export const KelolaProfil: React.FC = () => {
             .from('jm_center_pages')
             .update({ content: teksSambutan, quotes: namaPimpinan, updated_at: new Date().toISOString() })
             .eq('slug', 'sambutan');
+          invalidateCache('jm-center-sambutan');
         } else if (activeTab === 'sejarah') {
           await supabase
             .from('jm_center_pages')
             .update({ content: sejarahTeks, updated_at: new Date().toISOString() })
             .eq('slug', 'sejarah');
+          invalidateCache('jm-center-sejarah');
         } else if (activeTab === 'visi-misi') {
           await supabase
             .from('jm_center_pages')
             .update({ content: visiTeks, updated_at: new Date().toISOString() })
             .eq('slug', 'visi-misi');
+          invalidateCache('jm-center-visi-misi');
         } else if (activeTab === 'program') {
           await Promise.all([
             supabase.from('programs').update({ description: amaliyahTeks, updated_at: new Date().toISOString() }).eq('slug', 'amaliyah-pondok'),
             supabase.from('programs').update({ description: madinTeks, updated_at: new Date().toISOString() }).eq('slug', 'program-madin'),
           ]);
+          invalidateCache('program-amaliyah');
+          invalidateCache('program-madin');
         }
       } catch (err) {
         console.warn('Failed to save to Supabase:', err);

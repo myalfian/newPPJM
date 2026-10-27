@@ -77,7 +77,7 @@ export const AvatarPickerModal: React.FC<Props> = ({
       setIsCompressing(true);
       const compressed = await compressImageToWebP(file, 600, 600, 0.85);
       setCompressionInfo(compressed);
-      setSelectedUrl(compressed.previewUrl);
+      setSelectedUrl(compressed.dataUrl);
     } catch (err) {
       console.error('Gagal mengompres gambar:', err);
       alert('Gagal memproses gambar. Pastikan format file PNG, JPG, atau WebP.');

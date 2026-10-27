@@ -15,6 +15,8 @@ import {
   Award,
   Play
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { useCachedQuery } from '../../lib/queryCache';
 
 export interface QuizQuestion {
   id: string;
@@ -237,7 +239,69 @@ const QUIZ_TOPICS: QuizTopic[] = [
   }
 ];
 
+const fetchMandarinQuizzes = async (): Promise<QuizTopic[]> => {
+  if (!isSupabaseConfigured()) {
+    return QUIZ_TOPICS;
+  }
+  try {
+    const { data, error } = await supabase
+      .from('mandarin_quizzes')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error || !data || data.length === 0) {
+      return QUIZ_TOPICS;
+    }
+
+    const topicsMap = new Map<string, QuizTopic>();
+
+    QUIZ_TOPICS.forEach((t) => {
+      topicsMap.set(t.title.toLowerCase(), { ...t, questions: [...t.questions] });
+    });
+
+    data.forEach((row) => {
+      const topicName = row.topic_name || 'Salam & Sapaan Santri';
+      const key = topicName.toLowerCase();
+      const questionItem: QuizQuestion = {
+        id: row.id,
+        hanzi: row.hanzi || undefined,
+        pinyin: row.pinyin || undefined,
+        question: row.question,
+        options: Array.isArray(row.options) ? (row.options as unknown as string[]) : [],
+        correctIndex: typeof row.correct_index === 'number' ? row.correct_index : 0,
+        explanation: row.explanation || ''
+      };
+
+      if (topicsMap.has(key)) {
+        const topic = topicsMap.get(key)!;
+        if (!topic.questions.some((q) => q.id === row.id)) {
+          topic.questions.push(questionItem);
+        }
+      } else {
+        topicsMap.set(key, {
+          id: `topic-${row.id}`,
+          title: topicName,
+          chineseTitle: row.hanzi || '测验 (Cèyàn)',
+          level: 'Kuis Admin PPJM',
+          description: `Kumpulan butir soal kuis untuk topik ${topicName}.`,
+          coverImage: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=800&q=80',
+          questions: [questionItem]
+        });
+      }
+    });
+
+    return Array.from(topicsMap.values());
+  } catch {
+    return QUIZ_TOPICS;
+  }
+};
+
 export const MandarinQuiz: React.FC = () => {
+  const { data: topics = QUIZ_TOPICS } = useCachedQuery<QuizTopic[]>(
+    'mandarin-quiz-topics',
+    fetchMandarinQuizzes
+  );
+
   // Navigation State: null = List of Topics, otherwise = active topic questions
   const [selectedTopic, setSelectedTopic] = useState<QuizTopic | null>(null);
 
@@ -334,13 +398,13 @@ export const MandarinQuiz: React.FC = () => {
 
           <div className="flex items-center gap-2 bg-emerald-900/60 border border-emerald-700/60 rounded-xl px-3 py-2 text-xs text-gold-300 font-bold self-start sm:self-center">
             <GraduationCap className="w-4 h-4 text-gold-400" />
-            <span>Tersedia {QUIZ_TOPICS.length} Modul Ujian</span>
+            <span>Tersedia {topics.length} Modul Ujian</span>
           </div>
         </div>
 
         {/* List of Quiz Topics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-          {QUIZ_TOPICS.map((topic, index) => (
+          {topics.map((topic, index) => (
             <div
               key={topic.id}
               onClick={() => handleStartTopicQuiz(topic)}

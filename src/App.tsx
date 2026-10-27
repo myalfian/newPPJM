@@ -146,11 +146,14 @@ const Agenda = lazy(() => import('./pages/Agenda').then(m => ({ default: m.Agend
 const Osis = lazy(() => import('./pages/Osis').then(m => ({ default: m.Osis })));
 const GaleriFoto = lazy(() => import('./pages/galeri/GaleriFoto').then(m => ({ default: m.GaleriFoto })));
 const GaleriVideo = lazy(() => import('./pages/galeri/GaleriVideo').then(m => ({ default: m.GaleriVideo })));
+const Berita = lazy(() => import('./pages/Berita').then(m => ({ default: m.Berita })));
+const DetailBerita = lazy(() => import('./pages/DetailBerita').then(m => ({ default: m.DetailBerita })));
 
 // Admin CMS Pages (Route-level code splitting with React.lazy)
 const Login = lazy(() => import('./pages/admin/Login').then(m => ({ default: m.Login })));
 const Dashboard = lazy(() => import('./pages/admin/Dashboard').then(m => ({ default: m.Dashboard })));
 const KelolaBerita = lazy(() => import('./pages/admin/KelolaBerita').then(m => ({ default: m.KelolaBerita })));
+const KelolaAgenda = lazy(() => import('./pages/admin/KelolaAgenda').then(m => ({ default: m.KelolaAgenda })));
 const KelolaStem = lazy(() => import('./pages/admin/KelolaStem').then(m => ({ default: m.KelolaStem })));
 const KelolaMandarin = lazy(() => import('./pages/admin/KelolaMandarin').then(m => ({ default: m.KelolaMandarin })));
 const KelolaGaleri = lazy(() => import('./pages/admin/KelolaGaleri').then(m => ({ default: m.KelolaGaleri })));
@@ -211,6 +214,10 @@ export const App: React.FC = () => {
             {/* Agenda Kegiatan Santri (Historical, Current, Future) */}
             <Route path="agenda" element={<Agenda />} />
 
+            {/* Warta & Kabar Pesantren */}
+            <Route path="berita" element={<Berita />} />
+            <Route path="berita/:slug" element={<DetailBerita />} />
+
             {/* Galeri Sekolah */}
             <Route path="galeri" element={<Navigate to="/galeri/foto" replace />} />
             <Route path="galeri/foto" element={<GaleriFoto />} />
@@ -256,6 +263,7 @@ export const App: React.FC = () => {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="editor" element={<WebVisualEditor />} />
             <Route path="berita" element={<KelolaBerita />} />
+            <Route path="agenda" element={<KelolaAgenda />} />
             <Route path="stem" element={<KelolaStem />} />
             <Route path="mandarin" element={<KelolaMandarin />} />
             <Route path="galeri" element={<KelolaGaleri />} />

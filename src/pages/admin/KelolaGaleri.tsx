@@ -41,7 +41,7 @@ export const KelolaGaleri: React.FC = () => {
             slug: `${slug}-${Date.now()}`,
             event_date: tanggal || new Date().toISOString().split('T')[0],
             description: deskripsi,
-            cover_image: compResult?.previewUrl || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
+            cover_image: compResult?.dataUrl || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
           });
         } catch (err) {
           console.warn('Failed to insert gallery foto to Supabase:', err);

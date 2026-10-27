@@ -5,14 +5,12 @@ import {
   CheckCircle2,
   Trash2,
   Edit3,
-  Search,
   Sparkles,
-  Volume2,
   BookOpen,
-  HelpCircle,
   X
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { invalidateCache } from '../../lib/queryCache';
 
 interface MandarinLessonItem {
   id: string;
@@ -134,8 +132,29 @@ export const KelolaMandarin: React.FC = () => {
             }))
           );
         }
+
+        // Load Quizzes
+        const { data: quizData, error: quizError } = await supabase
+          .from('mandarin_quizzes')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!quizError && quizData && quizData.length > 0) {
+          setQuizzes(
+            quizData.map((row) => ({
+              id: row.id,
+              topicName: row.topic_name || 'Salam & Sapaan Santri',
+              hanzi: row.hanzi || '',
+              pinyin: row.pinyin || '',
+              question: row.question,
+              options: Array.isArray(row.options) ? (row.options as unknown as string[]) : ['A', 'B', 'C', 'D'],
+              correctIndex: typeof row.correct_index === 'number' ? row.correct_index : 0,
+              explanation: row.explanation || ''
+            }))
+          );
+        }
       } catch (err) {
-        console.warn('Fallback to local lessons:', err);
+        console.warn('Fallback to local lessons and quizzes:', err);
       }
     };
     loadFromSupabase();
@@ -201,9 +220,17 @@ export const KelolaMandarin: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDeleteQuiz = (id: string) => {
+  const handleDeleteQuiz = async (id: string) => {
     if (confirm('Hapus butir soal kuis Mandarin ini?')) {
       setQuizzes(quizzes.filter((q) => q.id !== id));
+      invalidateCache('mandarin_quizzes_all');
+      if (isSupabaseConfigured() && !id.startsWith('mq-')) {
+        try {
+          await supabase.from('mandarin_quizzes').delete().eq('id', id);
+        } catch (err) {
+          console.warn('Failed to delete mandarin quiz on Supabase:', err);
+        }
+      }
     }
   };
 
@@ -293,9 +320,21 @@ export const KelolaMandarin: React.FC = () => {
     setTimeout(() => setSavedAlert(false), 2500);
   };
 
-  const handleSubmitQuiz = (e: React.FormEvent) => {
+  const handleSubmitQuiz = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!soal || !opsiA || !opsiB) return;
+
+    const optionsArray = [opsiA, opsiB, opsiC, opsiD].filter(Boolean);
+    const quizPayload = {
+      topic_name: topikKuis,
+      hanzi: hanziKuis || null,
+      pinyin: pinyinKuis || null,
+      question: soal,
+      options: optionsArray,
+      correct_index: jawabanBenar,
+      explanation: pembahasan,
+      question_type: 'choice'
+    };
 
     if (editingId) {
       setQuizzes(
@@ -307,27 +346,56 @@ export const KelolaMandarin: React.FC = () => {
                 hanzi: hanziKuis,
                 pinyin: pinyinKuis,
                 question: soal,
-                options: [opsiA, opsiB, opsiC, opsiD],
+                options: optionsArray,
                 correctIndex: jawabanBenar,
                 explanation: pembahasan,
               }
             : q
         )
       );
+
+      if (isSupabaseConfigured() && !editingId.startsWith('mq-')) {
+        try {
+          await supabase
+            .from('mandarin_quizzes')
+            .update(quizPayload)
+            .eq('id', editingId);
+        } catch (err) {
+          console.warn('Failed to update mandarin quiz on Supabase:', err);
+        }
+      }
     } else {
+      let createdId = `mq-${Date.now()}`;
+      if (isSupabaseConfigured()) {
+        try {
+          const { data, error } = await supabase
+            .from('mandarin_quizzes')
+            .insert(quizPayload)
+            .select()
+            .single();
+
+          if (!error && data?.id) {
+            createdId = data.id;
+          }
+        } catch (err) {
+          console.warn('Failed to insert mandarin quiz on Supabase:', err);
+        }
+      }
+
       const newQ: QuizItem = {
-        id: `mq-${Date.now()}`,
+        id: createdId,
         topicName: topikKuis,
         hanzi: hanziKuis,
         pinyin: pinyinKuis,
         question: soal,
-        options: [opsiA, opsiB, opsiC, opsiD],
+        options: optionsArray,
         correctIndex: jawabanBenar,
         explanation: pembahasan,
       };
       setQuizzes([newQ, ...quizzes]);
     }
 
+    invalidateCache('mandarin_quizzes_all');
     setSavedAlert(true);
     resetForm();
     setTimeout(() => setSavedAlert(false), 2500);

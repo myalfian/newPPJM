@@ -1,8 +1,16 @@
 import React from 'react';
 import { Compass, Target, Eye, Sparkles, Shield, HeartHandshake, Award } from 'lucide-react';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
+import { useCachedQuery } from '../../lib/queryCache';
+import { fetchJmPage } from '../../lib/profileQueries';
 
 export const VisiMisi: React.FC = () => {
+  const { data: pageData } = useCachedQuery(
+    'jm-center-visi-misi',
+    () => fetchJmPage('visi-misi')
+  );
+
+  const customVisi = pageData?.content;
   const misiItems = [
     {
       number: '01',
@@ -69,7 +77,7 @@ export const VisiMisi: React.FC = () => {
         </div>
 
         <blockquote className="text-base sm:text-lg lg:text-xl font-bold text-emerald-900 leading-relaxed sm:leading-loose italic border-l-4 border-gold-500 pl-4 py-1">
-          “Menjadi pusat keunggulan pendidikan Islam salaf-modern yang melahirkan ulama amilin, cendekiawan berakhlak mulia, penghafal Al-Qur’an, dan pelopor inovasi teknologi yang berdaya saing global.”
+          {customVisi ? `“${customVisi}”` : "“Menjadi pusat keunggulan pendidikan Islam salaf-modern yang melahirkan ulama amilin, cendekiawan berakhlak mulia, penghafal Al-Qur’an, dan pelopor inovasi teknologi yang berdaya saing global.”"}
         </blockquote>
       </div>
 

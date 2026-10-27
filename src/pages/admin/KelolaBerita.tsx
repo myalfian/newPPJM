@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Newspaper,
   Upload,
@@ -11,26 +12,90 @@ import {
   AlignLeft,
   ArrowRight,
   Send,
-  Eye
+  Eye,
+  PlusCircle,
+  Trash2,
+  Edit3,
+  Search,
+  Filter,
+  Calendar,
+  X
 } from 'lucide-react';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { generateWhatsAppBroadcastUrl } from '../../lib/waFormatter';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { invalidateCache } from '../../lib/queryCache';
+import { NewsItem, INITIAL_NEWS } from '../../data/newsData';
 
 export const KelolaBerita: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<'list' | 'editor'>('list');
+  const [newsList, setNewsList] = useState<NewsItem[]>(INITIAL_NEWS);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  // Form states
   const [judul, setJudul] = useState('');
   const [kategori, setKategori] = useState('Warta Pondok');
   const [ringkasan, setRingkasan] = useState('');
   const [isiBerita, setIsiBerita] = useState('');
+  const [customThumbnail, setCustomThumbnail] = useState('');
+  const [author, setAuthor] = useState('Humas & Media PPJM');
   const [isHeadline, setIsHeadline] = useState(false);
+  const [isPublished, setIsPublished] = useState(true);
+
+  // Filter & Search
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Auto WebP Compression State
   const [compressionResult, setCompressionResult] = useState<CompressionResult | null>(null);
   const [compressing, setCompressing] = useState(false);
   const [published, setPublished] = useState(false);
   const [waLink, setWaLink] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  // Load from Supabase on mount
+  const loadNews = async () => {
+    if (!isSupabaseConfigured()) return;
+    try {
+      const { data, error } = await supabase
+        .from('news')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (!error && data && data.length > 0) {
+        setNewsList(
+          data.map((row) => ({
+            id: row.id,
+            title: row.title,
+            slug: row.slug,
+            category: row.category,
+            summary: row.summary || '',
+            content: row.content,
+            thumbnail: row.thumbnail || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
+            is_pinned: row.is_pinned ?? false,
+            is_published: row.is_published ?? true,
+            author: row.author || 'Tim Media PPJM',
+            created_at: row.created_at,
+            date_display: row.created_at
+              ? new Date(row.created_at).toLocaleDateString('id-ID', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric'
+                })
+              : 'Terbaru'
+          }))
+        );
+      }
+    } catch (err) {
+      console.warn('Fallback to local news:', err);
+    }
+  };
+
+  useEffect(() => {
+    loadNews();
+  }, []);
 
   // Auto generate friendly slug from title
   const autoSlug = judul
@@ -49,6 +114,7 @@ export const KelolaBerita: React.FC = () => {
     try {
       const res = await compressImageToWebP(file);
       setCompressionResult(res);
+      setCustomThumbnail(res.dataUrl);
     } catch (e: any) {
       alert('Gagal mengompres gambar: ' + e.message);
     } finally {
@@ -63,7 +129,6 @@ export const KelolaBerita: React.FC = () => {
     }
   };
 
-  // Simple WhatsApp/Word style format tools
   const insertFormat = (tag: string) => {
     if (!textareaRef.current) return;
     const textarea = textareaRef.current;
@@ -80,25 +145,186 @@ export const KelolaBerita: React.FC = () => {
     setIsiBerita(newText);
   };
 
-  const handlePublish = (e: React.FormEvent) => {
+  const resetForm = () => {
+    setJudul('');
+    setKategori('Warta Pondok');
+    setRingkasan('');
+    setIsiBerita('');
+    setCustomThumbnail('');
+    setAuthor('Humas & Media PPJM');
+    setIsHeadline(false);
+    setIsPublished(true);
+    setCompressionResult(null);
+    setEditingId(null);
+    setPublished(false);
+    setWaLink(null);
+  };
+
+  const handleStartEdit = (news: NewsItem) => {
+    setEditingId(news.id);
+    setJudul(news.title);
+    setKategori(news.category);
+    setRingkasan(news.summary);
+    setIsiBerita(news.content);
+    setCustomThumbnail(news.thumbnail);
+    setAuthor(news.author || 'Humas & Media PPJM');
+    setIsHeadline(!!news.is_pinned);
+    setIsPublished(news.is_published ?? true);
+    setCompressionResult(null);
+    setActiveTab('editor');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleDeleteNews = async (id: string) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus warta berita ini?')) return;
+
+    setNewsList((prev) => prev.filter((item) => item.id !== id));
+    invalidateCache('public-news-list');
+    invalidateCache('home-news-items');
+
+    if (isSupabaseConfigured() && !id.startsWith('news-')) {
+      try {
+        await supabase.from('news').delete().eq('id', id);
+        setStatusMessage('Berita berhasil dihapus dari sistem.');
+        setTimeout(() => setStatusMessage(null), 3000);
+      } catch (err) {
+        console.warn('Failed to delete news from Supabase:', err);
+      }
+    }
+  };
+
+  const handlePublish = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!judul || !isiBerita) {
       alert('Mohon lengkapi judul dan isi berita terlebih dahulu.');
       return;
     }
 
+    const baseSlug = autoSlug || `berita-${Date.now()}`;
+    const generatedUniqueSlug = `${baseSlug}-${Date.now().toString().slice(-4)}`;
+    const finalThumbnail =
+      customThumbnail ||
+      compressionResult?.dataUrl ||
+      'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80';
+
+    let effectiveSlug = generatedUniqueSlug;
+
+    if (editingId) {
+      const existing = newsList.find((n) => n.id === editingId);
+      effectiveSlug = existing?.slug || baseSlug;
+
+      // Update existing
+      setNewsList((prev) =>
+        prev.map((item) =>
+          item.id === editingId
+            ? {
+                ...item,
+                title: judul,
+                slug: effectiveSlug,
+                category: kategori,
+                summary: ringkasan || isiBerita.substring(0, 160) + '...',
+                content: isiBerita,
+                thumbnail: finalThumbnail,
+                author,
+                is_pinned: isHeadline,
+                is_published: isPublished
+              }
+            : item
+        )
+      );
+
+      if (isSupabaseConfigured() && !editingId.startsWith('news-')) {
+        try {
+          await supabase
+            .from('news')
+            .update({
+              title: judul,
+              category: kategori,
+              summary: ringkasan || isiBerita.substring(0, 160) + '...',
+              content: isiBerita,
+              thumbnail: finalThumbnail,
+              author,
+              is_pinned: isHeadline,
+              is_published: isPublished,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', editingId);
+        } catch (err) {
+          console.warn('Failed to update news on Supabase:', err);
+        }
+      }
+    } else {
+      // Create new
+      let createdId = `news-${Date.now()}`;
+
+      if (isSupabaseConfigured()) {
+        try {
+          const { data, error } = await supabase
+            .from('news')
+            .insert({
+              title: judul,
+              slug: generatedUniqueSlug,
+              category: kategori,
+              summary: ringkasan || isiBerita.substring(0, 160) + '...',
+              content: isiBerita,
+              thumbnail: finalThumbnail,
+              author,
+              is_pinned: isHeadline,
+              is_published: isPublished
+            })
+            .select()
+            .single();
+
+          if (!error && data?.id) {
+            createdId = data.id;
+            if (data.slug) {
+              effectiveSlug = data.slug;
+            }
+          }
+        } catch (err) {
+          console.warn('Failed to insert news to Supabase:', err);
+        }
+      }
+
+      const newItem: NewsItem = {
+        id: createdId,
+        title: judul,
+        slug: effectiveSlug,
+        category: kategori,
+        summary: ringkasan || isiBerita.substring(0, 160) + '...',
+        content: isiBerita,
+        thumbnail: finalThumbnail,
+        author,
+        is_pinned: isHeadline,
+        is_published: isPublished,
+        created_at: new Date().toISOString(),
+        date_display: 'Hari ini'
+      };
+
+      setNewsList([newItem, ...newsList]);
+    }
+
+    invalidateCache('public-news-list');
+    invalidateCache('home-news-items');
     setPublished(true);
 
-    // Generate Instant WhatsApp Broadcast Link
+    // Generate Instant WhatsApp Broadcast Link with matching slug
     const broadcastUrl = generateWhatsAppBroadcastUrl({
       title: judul,
       category: kategori,
       excerpt: ringkasan || isiBerita.substring(0, 160) + '...',
-      targetUrl: `https://ppjauharulmaknuun.sch.id/berita/${autoSlug || 'warta'}`
+      targetUrl: `${window.location.origin}/berita/${effectiveSlug}`
     });
 
     setWaLink(broadcastUrl);
   };
+
+  const filteredNews = newsList.filter(
+    (item) =>
+      !searchQuery ||
+      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="space-y-6">
@@ -106,17 +332,135 @@ export const KelolaBerita: React.FC = () => {
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-2">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider">
           <Newspaper className="w-3.5 h-3.5 text-emerald-800" />
-          <span>Editor Warta Santri Ramah Gaptek</span>
+          <span>Manajemen Warta & Berita Terpadu</span>
         </div>
         <h1 className="text-xl sm:text-2xl font-black text-emerald-950">
-          Formulir Tulis Berita & Pengumuman Pondok
+          Kelola Warta & Pengumuman Santri
         </h1>
         <p className="text-xs sm:text-sm text-slate-500">
-          Semua gambar otomatis dioptimalkan ke format WebP super ringan, dan Anda dapat menyebarkannya ke WhatsApp wali santri dalam 1 kali klik.
+          Buat, ubah, dan terbitkan warta pesantren langsung ke Supabase dengan kompresi WebP otomatis dan broadcast WhatsApp 1-klik.
         </p>
       </div>
 
-      {published ? (
+      {statusMessage && (
+        <div className="p-4 rounded-2xl bg-emerald-100 border border-emerald-200 text-emerald-900 font-bold text-xs flex items-center gap-2">
+          <CheckCircle2 className="w-5 h-5 text-emerald-700" />
+          <span>{statusMessage}</span>
+        </div>
+      )}
+
+      {/* Tabs */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => { setActiveTab('list'); resetForm(); }}
+          className={`px-5 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 ${
+            activeTab === 'list'
+              ? 'bg-emerald-800 text-white shadow-sm'
+              : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+          }`}
+        >
+          <Newspaper className="w-4 h-4" />
+          <span>Daftar Warta ({newsList.length})</span>
+        </button>
+        <button
+          onClick={() => { setActiveTab('editor'); resetForm(); }}
+          className={`px-5 py-2.5 rounded-2xl text-xs font-bold transition-all flex items-center gap-2 ${
+            activeTab === 'editor'
+              ? 'bg-emerald-800 text-white shadow-sm'
+              : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+          }`}
+        >
+          <PlusCircle className="w-4 h-4" />
+          <span>{editingId ? 'Edit Warta' : 'Tulis Warta Baru'}</span>
+        </button>
+      </div>
+
+      {activeTab === 'list' ? (
+        /* List View */
+        <div className="space-y-4">
+          <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center justify-between gap-3">
+            <div className="relative w-full sm:w-80">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+              <input
+                type="text"
+                placeholder="Cari judul atau kategori..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600"
+              />
+            </div>
+            <span className="text-xs text-slate-500 font-bold">
+              Total: {filteredNews.length} Berita
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredNews.map((news) => (
+              <div
+                key={news.id}
+                className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:shadow-m3-1 transition-all flex flex-col justify-between space-y-3"
+              >
+                <div className="space-y-2.5">
+                  <div className="h-36 rounded-xl overflow-hidden bg-slate-100 relative">
+                    <img
+                      src={news.thumbnail}
+                      alt={news.title}
+                      className="w-full h-full object-cover"
+                    />
+                    <span className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full bg-emerald-900/90 text-gold-300 text-[11px] font-bold">
+                      {news.category}
+                    </span>
+                    {news.is_pinned && (
+                      <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-gold-400 text-emerald-950 text-[10px] font-black">
+                        Utama
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex items-center gap-2 text-[11px] text-slate-400">
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>{news.date_display || 'Terbaru'}</span>
+                  </div>
+
+                  <h3 className="font-bold text-sm text-emerald-950 line-clamp-2">
+                    {news.title}
+                  </h3>
+                  <p className="text-xs text-slate-600 line-clamp-2">
+                    {news.summary}
+                  </p>
+                </div>
+
+                <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                  <Link
+                    to={`/berita/${news.slug}`}
+                    target="_blank"
+                    className="p-2 rounded-xl text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 transition-colors"
+                    title="Pratinjau Halaman Publik"
+                  >
+                    <Eye className="w-4 h-4" />
+                  </Link>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => handleStartEdit(news)}
+                      className="p-2 rounded-xl text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 transition-colors"
+                      title="Edit Berita"
+                    >
+                      <Edit3 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteNews(news.id)}
+                      className="p-2 rounded-xl text-rose-500 hover:text-rose-700 hover:bg-rose-50 transition-colors"
+                      title="Hapus Berita"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : published ? (
         /* Success Screen with WhatsApp Broadcast */
         <div className="bg-white rounded-3xl p-8 sm:p-12 border border-emerald-200 shadow-m3-2 text-center space-y-6">
           <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto">
@@ -128,7 +472,7 @@ export const KelolaBerita: React.FC = () => {
               Alhamdulillah! Warta Berhasil Diterbitkan
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto">
-              Berita berjudul <strong>"{judul}"</strong> telah aktif di portal dan siap dibaca oleh wali santri dan masyarakat luas.
+              Berita berjudul <strong>"{judul}"</strong> telah tersimpan di Supabase dan aktif di portal berita publik.
             </p>
           </div>
 
@@ -152,16 +496,19 @@ export const KelolaBerita: React.FC = () => {
             </div>
           )}
 
-          <div className="pt-4">
+          <div className="pt-4 flex justify-center gap-3">
             <button
               onClick={() => {
-                setPublished(false);
-                setJudul('');
-                setRingkasan('');
-                setIsiBerita('');
-                setCompressionResult(null);
+                setActiveTab('list');
+                resetForm();
               }}
               className="px-6 py-2.5 rounded-full text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors"
+            >
+              Lihat Semua Warta
+            </button>
+            <button
+              onClick={resetForm}
+              className="px-6 py-2.5 rounded-full text-xs font-bold text-white bg-emerald-800 hover:bg-emerald-700 transition-colors"
             >
               Tulis Berita Lainnya
             </button>
@@ -170,7 +517,21 @@ export const KelolaBerita: React.FC = () => {
       ) : (
         /* Form Inputs */
         <form onSubmit={handlePublish} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
-          
+          <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+            <h3 className="font-bold text-base text-emerald-950">
+              {editingId ? 'Edit Formulir Warta' : 'Formulir Warta Baru'}
+            </h3>
+            {editingId && (
+              <button
+                type="button"
+                onClick={resetForm}
+                className="text-xs text-rose-600 font-bold hover:underline"
+              >
+                Batal Edit
+              </button>
+            )}
+          </div>
+
           {/* Judul Berita */}
           <div className="space-y-1">
             <label className="text-xs font-bold text-slate-700">
@@ -191,8 +552,8 @@ export const KelolaBerita: React.FC = () => {
             )}
           </div>
 
-          {/* Kategori & Opsi Headline */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Kategori, Author & Headline */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-1">
               <label className="text-xs font-bold text-slate-700">Kategori Kabar:</label>
               <select
@@ -203,29 +564,64 @@ export const KelolaBerita: React.FC = () => {
                 <option value="Warta Pondok">Warta Pondok</option>
                 <option value="Agenda Akbar">Agenda Akbar</option>
                 <option value="Prestasi Santri">Prestasi Santri</option>
+                <option value="Inovasi STEM">Inovasi STEM</option>
                 <option value="Pengumuman PSB">Pengumuman PSB</option>
                 <option value="Kegiatan Diniyah">Kegiatan Diniyah</option>
               </select>
             </div>
 
-            <div className="flex items-center gap-3 pt-6">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-slate-700">Penulis / Sumber:</label>
               <input
-                type="checkbox"
-                id="headlineCheck"
-                checked={isHeadline}
-                onChange={(e) => setIsHeadline(e.target.checked)}
-                className="w-4 h-4 text-emerald-800 rounded border-slate-300 focus:ring-emerald-700"
+                type="text"
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
+                placeholder="Humas & Media PPJM"
+                className="w-full px-4 py-2 text-xs rounded-xl border border-slate-200"
               />
-              <label htmlFor="headlineCheck" className="text-xs font-bold text-slate-700 cursor-pointer">
-                Jadikan Berita Utama di Beranda Depan
+            </div>
+
+            <div className="flex items-center gap-4 pt-6">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isHeadline}
+                  onChange={(e) => setIsHeadline(e.target.checked)}
+                  className="w-4 h-4 text-emerald-800 rounded border-slate-300 focus:ring-emerald-700"
+                />
+                <span className="text-xs font-bold text-slate-700">Headline</span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isPublished}
+                  onChange={(e) => setIsPublished(e.target.checked)}
+                  className="w-4 h-4 text-emerald-800 rounded border-slate-300 focus:ring-emerald-700"
+                />
+                <span className="text-xs font-bold text-slate-700">Terbitkan</span>
               </label>
             </div>
+          </div>
+
+          {/* Ringkasan Singkat */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-slate-700">
+              Ringkasan / Sinopsis (Tampil di kartu & pesan WhatsApp):
+            </label>
+            <textarea
+              rows={2}
+              placeholder="Ringkasan 1-2 kalimat untuk preview pesan WhatsApp..."
+              value={ringkasan}
+              onChange={(e) => setRingkasan(e.target.value)}
+              className="w-full p-3 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600"
+            />
           </div>
 
           {/* Drag & Drop Photo Uploader with Auto WebP Compressor */}
           <div className="space-y-2">
             <label className="text-xs font-bold text-slate-700">
-              Foto Utama (Seret & Lepas Foto di Sini):
+              Foto Utama (Otomatis WebP Super Ringan):
             </label>
 
             <div
@@ -261,7 +657,7 @@ export const KelolaBerita: React.FC = () => {
               <div className="p-4 rounded-2xl bg-emerald-100/70 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                 <div className="flex items-center gap-3">
                   <img
-                    src={compressionResult.previewUrl}
+                    src={compressionResult.dataUrl}
                     alt="Preview"
                     className="w-14 h-14 object-cover rounded-xl border border-emerald-300 flex-shrink-0"
                   />
@@ -333,7 +729,7 @@ export const KelolaBerita: React.FC = () => {
           {/* Submit Action Bar */}
           <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <span className="text-xs text-slate-400">
-              Setelah terbit, tombol WhatsApp akan otomatis muncul.
+              Setelah disimpan, link WhatsApp untuk wali santri akan langsung siap dibagikan.
             </span>
 
             <button
@@ -341,7 +737,7 @@ export const KelolaBerita: React.FC = () => {
               className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold text-sm shadow-md transition-all min-h-[48px]"
             >
               <Send className="w-4 h-4" />
-              <span>Terbitkan Sekarang</span>
+              <span>{editingId ? 'Simpan Perubahan' : 'Terbitkan Sekarang'}</span>
             </button>
           </div>
 

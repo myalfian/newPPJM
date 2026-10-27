@@ -1,8 +1,16 @@
 import React from 'react';
 import { BookOpen, Layers, CheckCircle2, Bookmark, Award } from 'lucide-react';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
+import { useCachedQuery } from '../../lib/queryCache';
+import { fetchProgram } from '../../lib/profileQueries';
 
 export const ProgramMadin: React.FC = () => {
+  const { data: progData } = useCachedQuery(
+    'program-madin',
+    () => fetchProgram('program-madin')
+  );
+
+  const customDesc = progData?.description;
   const levels = [
     {
       level: 'Tingkat Ula (Dasar / Matan Al-Ajurumiyah)',
@@ -68,9 +76,13 @@ export const ProgramMadin: React.FC = () => {
         <h2 className="text-base sm:text-lg font-bold text-emerald-950">
           Metode Sorogan, Bandongan & Musyawarah Bahsul Masail
         </h2>
-        <p>
-          Madrasah Diniyah Salafiyah di PP Jauharul Maknuun Lasem memelihara metode pembelajaran klasik yang telah teruji ratusan tahun melahirkan ulama-ulama besar. Setiap santri diwajibkan menyetorkan bacaan kitab gundul (sorogan) langsung di hadapan asatidz untuk memastikan ketepatan harakat dan kedalaman pemahaman ibarat kitab.
-        </p>
+        {customDesc ? (
+          <p className="whitespace-pre-line">{customDesc}</p>
+        ) : (
+          <p>
+            Madrasah Diniyah Salafiyah di PP Jauharul Maknuun Lasem memelihara metode pembelajaran klasik yang telah teruji ratusan tahun melahirkan ulama-ulama besar. Setiap santri diwajibkan menyetorkan bacaan kitab gundul (sorogan) langsung di hadapan asatidz untuk memastikan ketepatan harakat dan kedalaman pemahaman ibarat kitab.
+          </p>
+        )}
       </div>
 
       {/* Levels Showcase */}
