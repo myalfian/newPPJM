@@ -84,7 +84,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     id: 'jm-center',
     label: 'JM Center',
     icon: Landmark,
-    href: '/jm-center',
+    href: '/jm-center/sambutan',
     isDropdown: false,
     color: {
       badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 group-hover:bg-emerald-100 group-hover:text-emerald-800',
@@ -103,7 +103,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     id: 'programs',
     label: 'Program',
     icon: BookOpenCheck,
-    href: '/program-unggulan',
+    href: '/program-unggulan/amaliyah-pondok',
     isDropdown: false,
     color: {
       badgeBg: 'bg-blue-50 text-blue-700 border-blue-200/80 group-hover:bg-blue-100 group-hover:text-blue-800',
@@ -121,7 +121,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     id: 'smart-jm',
     label: 'SMART JM',
     icon: Cpu,
-    href: '/smart-jm',
+    href: '/smart-jm/stem/materi',
     isDropdown: false,
     color: {
       badgeBg: 'bg-teal-50 text-teal-700 border-teal-200/80 group-hover:bg-teal-100 group-hover:text-teal-800',
@@ -225,7 +225,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     id: 'galeri',
     label: 'Galeri',
     icon: Images,
-    href: '/galeri',
+    href: '/galeri/foto',
     isDropdown: false,
     color: {
       badgeBg: 'bg-rose-50 text-rose-700 border-rose-200/80 group-hover:bg-rose-100 group-hover:text-rose-800',

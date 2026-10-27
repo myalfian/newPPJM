@@ -7,8 +7,7 @@ import {
   Bell,
   ChevronDown,
   User,
-  Menu,
-  ArrowRight
+  Menu
 } from 'lucide-react';
 import { SearchModal } from './SearchModal';
 import { PUBLIC_NAV_TABS, NavTabItem } from '../../data/navigationData';
@@ -279,106 +278,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                   );
                 })}
               </nav>
-
-              {/* Desktop Megamenu Popover Dropdown on Hover */}
-              <AnimatePresence>
-                {hoveredTab && (() => {
-                  const activeHoverTab = navTabs.find((t) => t.id === hoveredTab);
-                  if (!activeHoverTab || (!activeHoverTab.items && !activeHoverTab.sections)) return null;
-
-                  return (
-                    <motion.div
-                      initial={{ opacity: 0, y: 8, scale: 0.98 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 6, scale: 0.98 }}
-                      transition={{ duration: 0.16, ease: 'easeOut' }}
-                      className="absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur-2xl rounded-2xl shadow-[0_20px_45px_rgba(0,0,0,0.12),0_4px_16px_rgba(15,81,50,0.06)] border border-slate-200/90 p-3.5 z-50 text-left select-none min-w-[340px] max-w-[560px]"
-                      onMouseEnter={() => setHoveredTab(hoveredTab)}
-                      onMouseLeave={() => setHoveredTab(null)}
-                    >
-                      {/* Dropdown Header */}
-                      <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-slate-100">
-                        <div className="flex items-center gap-2">
-                          <div className={`w-6 h-6 rounded-md flex items-center justify-center border text-xs ${activeHoverTab.color.badgeBg}`}>
-                            {React.createElement(activeHoverTab.icon, { className: 'w-3.5 h-3.5' })}
-                          </div>
-                          <span className="text-xs font-black text-slate-800 tracking-tight">
-                            Eksplorasi {activeHoverTab.label}
-                          </span>
-                        </div>
-                        <Link
-                          to={activeHoverTab.href}
-                          onClick={() => setHoveredTab(null)}
-                          className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1 group"
-                        >
-                          <span>Buka Halaman</span>
-                          <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-                        </Link>
-                      </div>
-
-                      {/* Sections Layout (SMART JM) */}
-                      {activeHoverTab.sections && (
-                        <div className="grid grid-cols-3 gap-2.5">
-                          {activeHoverTab.sections.map((sec) => {
-                            const SecIcon = sec.icon;
-                            return (
-                              <div key={sec.title} className="p-2 rounded-xl bg-slate-50/80 border border-slate-200/60">
-                                <div className="flex items-center gap-1.5 mb-2">
-                                  <SecIcon className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                                  <span className="text-[11px] font-black text-slate-800 truncate">{sec.title}</span>
-                                </div>
-                                <div className="space-y-1">
-                                  {sec.items.map((sub) => (
-                                    <Link
-                                      key={sub.href}
-                                      to={sub.href}
-                                      onClick={() => setHoveredTab(null)}
-                                      className="block p-1.5 rounded-lg hover:bg-white text-slate-700 hover:text-emerald-800 text-[11px] font-bold transition-all shadow-2xs hover:shadow-xs"
-                                    >
-                                      <span className="block truncate">{sub.title}</span>
-                                    </Link>
-                                  ))}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      )}
-
-                      {/* Items Grid Layout */}
-                      {activeHoverTab.items && (
-                        <div className="grid grid-cols-2 gap-2">
-                          {activeHoverTab.items.map((item) => {
-                            const ItemIcon = item.icon;
-                            return (
-                              <Link
-                                key={item.href}
-                                to={item.href}
-                                onClick={() => setHoveredTab(null)}
-                                className="flex items-start gap-2.5 p-2 rounded-xl bg-slate-50/70 hover:bg-emerald-50/80 border border-slate-200/50 hover:border-emerald-300 transition-all group"
-                              >
-                                <div className="w-7 h-7 rounded-lg bg-white shadow-2xs border border-slate-200/60 flex items-center justify-center text-slate-700 group-hover:text-emerald-700 shrink-0 mt-0.5">
-                                  <ItemIcon className="w-3.5 h-3.5" />
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                  <p className="text-[11.5px] font-black text-slate-800 group-hover:text-emerald-900 truncate">
-                                    {item.title}
-                                  </p>
-                                  {item.desc && (
-                                    <p className="text-[10px] text-slate-500 line-clamp-1 mt-0.5 leading-snug">
-                                      {item.desc}
-                                    </p>
-                                  )}
-                                </div>
-                              </Link>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </motion.div>
-                  );
-                })()}
-              </AnimatePresence>
             </div>
 
 
