@@ -4,8 +4,7 @@ import { motion } from 'framer-motion';
 import {
   Sparkles,
   ChevronDown,
-  User,
-  Menu
+  User
 } from 'lucide-react';
 import { PUBLIC_NAV_TABS, NavTabItem } from '../../data/navigationData';
 import { useAuth } from '../../context/AuthContext';
@@ -249,19 +248,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               </nav>
             </div>
 
-            {/* Right Side: Profile Pill Capsule & Mobile Drawer Trigger */}
+            {/* Right Side: Profile Pill Capsule */}
             <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 shrink-0">
-              {/* Mobile Hamburger Drawer Trigger Button */}
-              <button
-                type="button"
-                onClick={onOpenMobileMenu}
-                className="flex lg:hidden items-center justify-center w-8.5 h-8.5 xs:w-9 xs:h-9 sm:w-10 sm:h-10 rounded-full bg-slate-50 hover:bg-emerald-50 active:bg-emerald-100 text-slate-700 hover:text-[#0d4a28] border border-slate-200/90 shadow-2xs transition-all active:scale-95 cursor-pointer shrink-0"
-                aria-label="Buka Menu Navigasi Lengkap"
-                title="Buka Menu Lengkap"
-              >
-                <Menu className="w-4.5 h-4.5 xs:w-5 xs:h-5 stroke-[2.3]" />
-              </button>
-
               {/* Profile Pill Capsule (Universal for All Viewports) */}
               <Link
                 to="/profil"
