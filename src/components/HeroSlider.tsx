@@ -820,42 +820,26 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                     <div className="absolute inset-0 bg-black/45 pointer-events-none rounded-2xl xs:rounded-3xl transition-opacity duration-300" />
                   )}
 
-                  {/* 4. Title & Badge Overlay Layer - Pojok Kiri Atas */}
-                  <div className={`absolute inset-x-0 top-0 pointer-events-none transition-all duration-300 z-10 ${
-                    isActive 
-                      ? 'bg-gradient-to-b from-black/85 via-black/40 to-transparent pt-2.5 xs:pt-3.5 sm:pt-5 pb-6 xs:pb-8 sm:pb-12 px-2.5 xs:px-3.5 sm:px-6' 
-                      : 'bg-gradient-to-b from-black/85 via-black/45 to-transparent pt-2 sm:pt-4 pb-5 sm:pb-9 px-2.5 sm:px-4'
-                  }`}>
-                    <div className="flex flex-col items-start gap-0.5 xs:gap-1 sm:gap-1.5 max-w-[92%] sm:max-w-[80%]">
-                      {/* Badge Kategori */}
+                  {/* 4. Badge Floating Pill (Pojok Kiri Atas - Bersih Tanpa Title & Desc) */}
+                  {slide.badge && (
+                    <div className="absolute top-2.5 xs:top-3 sm:top-4 left-2.5 xs:left-3 sm:left-4 pointer-events-none transition-all duration-300 z-10">
                       <div className="flex items-center gap-1 xs:gap-1.5 flex-wrap">
-                        <span className={`inline-flex items-center gap-1 px-2 xs:px-2.5 py-0.5 rounded-full text-[9px] xs:text-[10px] sm:text-[11px] font-bold uppercase tracking-wider shadow-sm backdrop-blur-xs ${
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 sm:py-1 rounded-full text-[9px] xs:text-[10px] sm:text-[11px] font-bold uppercase tracking-wider shadow-md backdrop-blur-md ${
                           isActive 
-                            ? 'bg-[#1a6b3c]/90 text-emerald-200 border border-emerald-400/40' 
-                            : 'bg-black/70 text-amber-300 border border-white/20'
+                            ? 'bg-[#0d4a28]/90 text-emerald-200 border border-emerald-400/40' 
+                            : 'bg-black/75 text-amber-300 border border-white/20'
                         }`}>
                           <Sparkles className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-[#ffcc00]" />
-                          <span className="truncate max-w-[180px] xs:max-w-[220px] sm:max-w-none">{slide.badge}</span>
+                          <span className="truncate max-w-[200px] xs:max-w-[260px] sm:max-w-none">{slide.badge}</span>
                         </span>
                         {isActive && slide.tag && (
-                          <span className="hidden sm:inline-block text-[11px] text-amber-300 font-bold bg-amber-950/70 border border-amber-500/30 px-2.5 py-0.5 rounded-full backdrop-blur-xs">
+                          <span className="hidden sm:inline-block text-[11px] text-amber-300 font-bold bg-amber-950/80 border border-amber-500/40 px-2.5 py-0.5 sm:py-1 rounded-full backdrop-blur-md shadow-md">
                             {slide.tag}
                           </span>
                         )}
                       </div>
-
-                      {/* Judul Slider Card di Pojok Kiri Atas (jika ada) */}
-                      {slide.title && (
-                        <h4 className={`font-black text-white tracking-tight leading-snug drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] line-clamp-2 ${
-                          isActive 
-                            ? 'text-xs xs:text-sm sm:text-lg md:text-xl lg:text-2xl' 
-                            : 'text-[11px] xs:text-xs sm:text-sm md:text-base text-gray-200'
-                        }`}>
-                          {slide.title}
-                        </h4>
-                      )}
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             );
@@ -1406,24 +1390,9 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
               </div>
             </div>
 
-            {/* Modal Content */}
-            <div className="p-5 sm:p-6 overflow-y-auto space-y-4">
-              <h3 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
-                {selectedFlyer.title}
-              </h3>
-              
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed font-normal">
-                {selectedFlyer.desc}
-              </p>
-
-              {selectedFlyer.tagline && (
-                <div className="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-xs sm:text-sm text-amber-900 font-medium">
-                  💡 {selectedFlyer.tagline}
-                </div>
-              )}
-
-              {/* Action Buttons */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-100">
+            {/* Modal Content & Action Buttons */}
+            <div className="p-4 sm:p-5 overflow-y-auto">
+              <div className="flex flex-wrap items-center justify-between gap-3">
                 <button
                   type="button"
                   onClick={() => handleShareFlyer(selectedFlyer)}
