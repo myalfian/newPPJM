@@ -7,6 +7,7 @@
 export interface CompressionResult {
   file: File;
   previewUrl: string;
+  dataUrl: string;
   originalSizeKB: number;
   compressedSizeKB: number;
   savedPercent: number;
@@ -78,10 +79,12 @@ export async function compressImageToWebP(
             );
 
             const previewUrl = URL.createObjectURL(blob);
+            const dataUrl = canvas.toDataURL('image/webp', quality);
 
             resolve({
               file: compressedFile,
               previewUrl,
+              dataUrl,
               originalSizeKB,
               compressedSizeKB,
               savedPercent,

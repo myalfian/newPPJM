@@ -124,41 +124,20 @@ export const AdminLayout: React.FC = () => {
             </Link>
           </div>
 
-          {/* Center: Desktop Horizontal Fluid Tabs */}
-          <div className="hidden md:flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-1 bg-zinc-100/80 dark:bg-zinc-800/60 rounded-2xl border border-zinc-200/60 dark:border-zinc-700/50">
-            {accessibleModules.map((item) => {
-              const Icon = item.icon;
-              const isActive =
-                item.href === '/admin'
-                  ? location.pathname === '/admin' || location.pathname === '/admin/dashboard'
-                  : location.pathname.startsWith(item.href);
-
-              return (
-                <Link
-                  key={item.id}
-                  to={item.href}
-                  className={`relative flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-150 select-none ${
-                    isActive
-                      ? 'bg-white dark:bg-zinc-900 text-[#007acc] shadow-sm'
-                      : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-zinc-700/50'
-                  }`}
-                >
-                  <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#007acc]' : 'text-zinc-400'}`} />
-                  <span>{item.shortLabel}</span>
-                  {item.badge && (
-                    <span
-                      className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold ${
-                        isActive
-                          ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                          : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300'
-                      }`}
-                    >
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
+          {/* Center: Module Breadcrumb Context Indicator (Clean UI/UX Pro Max) */}
+          <div className="hidden md:flex items-center gap-2">
+            <span className="text-zinc-300 dark:text-zinc-700">/</span>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-zinc-100/70 dark:bg-zinc-800/60 border border-zinc-200/50 dark:border-zinc-700/50">
+              {React.createElement(currentModule.icon, { className: 'w-3.5 h-3.5 text-[#007acc]' })}
+              <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">
+                {currentModule.title}
+              </span>
+              {currentModule.badge && (
+                <span className="text-[9px] px-1.5 py-0.2 rounded-full font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60">
+                  {currentModule.badge}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Right: Quick Search, Role Switcher, Public Preview, Notifications & Profile */}

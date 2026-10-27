@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   X, 
   Share2, 
@@ -8,15 +9,30 @@ import {
   Play,
   Pause,
   RotateCcw,
-  Check
+  Check,
+  Layers,
+  Plus,
+  Pencil,
+  Trash2,
+  ArrowUp,
+  ArrowDown,
+  Upload,
+  Link as LinkIcon,
+  Loader2,
+  ExternalLink
 } from 'lucide-react';
-import { HeroSlide, initialHeroSlides } from '../data/heroSlides';
+import { HeroSlide } from '../data/heroSlides';
 import { 
   SliderSettings, 
   getSliderSettings, 
   saveSliderSettings, 
-  DEFAULT_SLIDER_SETTINGS 
+  DEFAULT_SLIDER_SETTINGS,
+  getHeroSlides,
+  fetchHeroSlidesFromSupabase,
+  saveHeroSlides,
+  resetHeroSlidesToDefault
 } from '../lib/sliderSettings';
+import { compressImageToWebP } from '../lib/imageCompressor';
 import { useAuth } from '../context/AuthContext';
 
 interface HeroSliderProps {
@@ -28,9 +44,11 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
   slides: propSlides,
   settings: propSettings
 }) => {
+  const [storedSlides, setStoredSlides] = useState<HeroSlide[]>(getHeroSlides);
+
   const slides = useMemo(() => {
-    return propSlides && propSlides.length > 0 ? propSlides : initialHeroSlides;
-  }, [propSlides]);
+    return propSlides && propSlides.length > 0 ? propSlides : storedSlides;
+  }, [propSlides, storedSlides]);
 
   const total = slides.length;
   const [current, setCurrent] = useState(0);
@@ -46,7 +64,23 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     return propSettings || getSliderSettings();
   });
   const [showAdminSpeedModal, setShowAdminSpeedModal] = useState(false);
+  const [adminModalTab, setAdminModalTab] = useState<'slides' | 'speed'>('slides');
   const [saveSuccessMsg, setSaveSuccessMsg] = useState(false);
+
+  // Quick Slide Editor State inside HeroSlider Modal
+  const [editingSlideId, setEditingSlideId] = useState<string | null>(null);
+  const [isAddingSlide, setIsAddingSlide] = useState(false);
+  const [quickForm, setQuickForm] = useState({
+    id: '',
+    badge: '',
+    title: '',
+    desc: '',
+    image: '',
+    link: '',
+  });
+  const [quickImageMode, setQuickImageMode] = useState<'upload' | 'url'>('upload');
+  const [quickCompressing, setQuickCompressing] = useState(false);
+  const quickFileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Check if admin is currently logged in via RBAC profile
   const { profile, role, isAuthenticated, hasRole } = useAuth();
@@ -55,8 +89,12 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     (hasRole(['super_admin', 'pengurus_konten']) || role === 'super_admin' || role === 'pengurus_konten' || profile?.role === 'super_admin' || profile?.role === 'pengurus_konten')
   );
 
-  // Sync settings when external changes occur (custom event or prop)
+  // Sync settings & slides when external changes occur (custom event, storage, or Supabase)
   useEffect(() => {
+    fetchHeroSlidesFromSupabase().then((remote) => {
+      setStoredSlides(remote);
+    });
+
     const handleSettingsChanged = (e: Event) => {
       const customEvent = e as CustomEvent<SliderSettings>;
       if (customEvent.detail) {
@@ -66,13 +104,36 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       }
     };
 
+    const handleSlidesChanged = (e: Event) => {
+      const customEvent = e as CustomEvent<HeroSlide[]>;
+      if (customEvent.detail) {
+        setStoredSlides(customEvent.detail);
+      } else {
+        setStoredSlides(getHeroSlides());
+      }
+    };
+
+    const handleStorageEvent = () => {
+      setSliderSettings(getSliderSettings());
+      setStoredSlides(getHeroSlides());
+    };
+
     window.addEventListener('ppjm-slider-settings-changed', handleSettingsChanged);
-    window.addEventListener('storage', handleSettingsChanged);
+    window.addEventListener('ppjm-hero-slides-changed', handleSlidesChanged);
+    window.addEventListener('storage', handleStorageEvent);
     return () => {
       window.removeEventListener('ppjm-slider-settings-changed', handleSettingsChanged);
-      window.removeEventListener('storage', handleSettingsChanged);
+      window.removeEventListener('ppjm-hero-slides-changed', handleSlidesChanged);
+      window.removeEventListener('storage', handleStorageEvent);
     };
   }, []);
+
+  // Ensure current slide index stays within bounds when slides are deleted
+  useEffect(() => {
+    if (current >= total && total > 0) {
+      setCurrent(0);
+    }
+  }, [total, current]);
   
   // Touch & Mouse Drag State
   const [isDragging, setIsDragging] = useState(false);
@@ -325,6 +386,101 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     setTimeout(() => setSaveSuccessMsg(false), 2000);
   };
 
+  // Admin Quick Slide Content Handlers
+  const handleQuickStartAdd = () => {
+    setEditingSlideId(null);
+    setQuickForm({
+      id: `slide-${Date.now()}`,
+      badge: '',
+      title: '',
+      desc: '',
+      image: '',
+      link: '',
+    });
+    setQuickImageMode('upload');
+    setIsAddingSlide(true);
+  };
+
+  const handleQuickStartEdit = (slide: HeroSlide) => {
+    setEditingSlideId(slide.id);
+    setQuickForm({
+      id: slide.id,
+      badge: slide.badge || '',
+      title: slide.title || '',
+      desc: slide.desc || '',
+      image: slide.image || '',
+      link: slide.link || '',
+    });
+    setQuickImageMode(slide.image.startsWith('data:image/') ? 'upload' : 'url');
+    setIsAddingSlide(true);
+  };
+
+  const handleQuickFileUpload = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Mohon pilih file gambar (JPG, PNG, WebP).');
+      return;
+    }
+    setQuickCompressing(true);
+    try {
+      const res = await compressImageToWebP(file, 1400, 900, 0.82);
+      setQuickForm(prev => ({ ...prev, image: res.dataUrl }));
+    } catch (err: any) {
+      alert('Gagal memproses gambar: ' + (err?.message || 'Format tidak didukung'));
+    } finally {
+      setQuickCompressing(false);
+    }
+  };
+
+  const handleQuickSaveSlide = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!quickForm.badge.trim() || !quickForm.image.trim()) {
+      alert('Mohon isi Badge/Kategori dan Gambar Flyer terlebih dahulu.');
+      return;
+    }
+    const newSlide: HeroSlide = {
+      id: quickForm.id || `slide-${Date.now()}`,
+      badge: quickForm.badge.trim(),
+      title: quickForm.title.trim(),
+      desc: quickForm.desc.trim(),
+      image: quickForm.image.trim(),
+      link: quickForm.link.trim(),
+      website: 'https://ppjauharulmaknuun.sch.id/',
+    };
+
+    const updated = editingSlideId
+      ? slides.map(s => (s.id === editingSlideId ? { ...s, ...newSlide } : s))
+      : [...slides, newSlide];
+
+    setStoredSlides(updated);
+    setIsAddingSlide(false);
+    setEditingSlideId(null);
+    await saveHeroSlides(updated);
+    setSaveSuccessMsg(true);
+    setTimeout(() => setSaveSuccessMsg(false), 2000);
+  };
+
+  const handleQuickDeleteSlide = async (id: string) => {
+    if (slides.length <= 1) {
+      alert('Minimal harus ada 1 slide yang tampil.');
+      return;
+    }
+    const updated = slides.filter(s => s.id !== id);
+    setStoredSlides(updated);
+    await saveHeroSlides(updated);
+    setSaveSuccessMsg(true);
+    setTimeout(() => setSaveSuccessMsg(false), 2000);
+  };
+
+  const handleQuickMoveSlide = async (idx: number, dir: 'up' | 'down') => {
+    const targetIdx = dir === 'up' ? idx - 1 : idx + 1;
+    if (targetIdx < 0 || targetIdx >= slides.length) return;
+    const updated = [...slides];
+    const [moved] = updated.splice(idx, 1);
+    updated.splice(targetIdx, 0, moved);
+    setStoredSlides(updated);
+    await saveHeroSlides(updated);
+  };
+
   // Calculate Layout Dimensions by Breakpoint
   const isDesktop = viewportWidth >= 1024;
   const isTablet = viewportWidth >= 640 && viewportWidth < 1024;
@@ -517,12 +673,28 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[250px] bg-amber-500/10 rounded-full blur-[90px] pointer-events-none" />
 
-      {/* Admin Quick Speed Control Badge (Discreet on top right - Only visible to Admin) */}
+      {/* Admin Quick Control Badge (Discreet on top right - Only visible to Admin) */}
       {isAdmin && (
-        <div className="absolute top-2 right-2 xs:top-2.5 xs:right-3 sm:top-3 sm:right-6 z-40">
+        <div className="absolute top-2 right-2 xs:top-2.5 xs:right-3 sm:top-3 sm:right-6 z-40 flex items-center gap-1.5">
           <button
             type="button"
-            onClick={() => setShowAdminSpeedModal(true)}
+            onClick={() => {
+              setAdminModalTab('slides');
+              setShowAdminSpeedModal(true);
+            }}
+            className="inline-flex items-center gap-1 xs:gap-1.5 px-2.5 xs:px-3 py-1 xs:py-1.5 rounded-full bg-emerald-950/90 hover:bg-emerald-900 text-emerald-100 hover:text-white border border-emerald-500/40 text-[10px] xs:text-xs font-bold backdrop-blur-md shadow-md transition-all cursor-pointer"
+            title="Kelola Konten Slide & Kecepatan HeroSlider"
+          >
+            <Layers className="w-3 h-3 xs:w-3.5 xs:h-3.5 text-[#ffcc00]" />
+            <span>Kelola Slide ({total})</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setAdminModalTab('speed');
+              setShowAdminSpeedModal(true);
+            }}
             className="inline-flex items-center gap-1 xs:gap-1.5 px-2 xs:px-2.5 sm:px-3 py-1 xs:py-1.5 rounded-full bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-700/80 text-[10px] xs:text-xs font-semibold backdrop-blur-md shadow-md transition-all cursor-pointer group"
             title="Atur Kecepatan Sliding (Pengaturan Admin)"
           >
@@ -730,153 +902,458 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
         )}
       </div>
 
-      {/* ================= ADMIN QUICK SPEED CONTROLLER MODAL ================= */}
+      {/* ================= ADMIN QUICK SLIDER & SPEED CONTROLLER MODAL ================= */}
       {isAdmin && showAdminSpeedModal && (
         <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/75 backdrop-blur-sm animate-in fade-in duration-150"
           onClick={() => setShowAdminSpeedModal(false)}
         >
           <div 
-            className="w-full max-w-md bg-white rounded-3xl p-6 shadow-2xl border border-gray-100 space-y-5 text-gray-900"
+            className="w-full max-w-xl bg-white rounded-3xl p-5 sm:p-6 shadow-2xl border border-gray-100 space-y-4 text-gray-900 max-h-[90vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3 shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
-                  <Gauge className="w-5 h-5" />
+                <div className="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                  <Layers className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="font-extrabold text-base text-gray-900 leading-tight">
-                    Kecepatan Slider Beranda
+                    Kelola Hero Slider Beranda
                   </h3>
                   <p className="text-[11px] text-gray-500 font-medium">
-                    Atur durasi pergantian & efek gerakan slide
+                    Isi konten flyer slide atau atur kecepatan putar otomatis
                   </p>
                 </div>
               </div>
+              <div className="flex items-center gap-1.5">
+                <Link
+                  to="/admin/slider"
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold transition-colors"
+                  title="Buka Halaman Editor Lengkap di Panel Admin"
+                >
+                  <span>Panel Penuh</span>
+                  <ExternalLink className="w-3 h-3" />
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setShowAdminSpeedModal(false)}
+                  className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700 cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Tab Switcher: Konten Slide vs Kecepatan */}
+            <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 rounded-2xl shrink-0">
               <button
                 type="button"
-                onClick={() => setShowAdminSpeedModal(false)}
-                className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* 1. Preset Durasi Cepat */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-gray-700 flex items-center justify-between">
-                <span>Durasi Tampil per Slide:</span>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-xs font-bold">
-                  {sliderSettings.autoplayInterval} Detik
-                </span>
-              </label>
-
-              {/* Slider Range */}
-              <input 
-                type="range"
-                min="2"
-                max="15"
-                step="0.5"
-                value={sliderSettings.autoplayInterval}
-                onChange={(e) => handleUpdateSettings({ autoplayInterval: parseFloat(e.target.value) })}
-                className="w-full accent-[#1a6b3c] cursor-pointer"
-              />
-
-              <div className="grid grid-cols-4 gap-2 pt-1">
-                {[
-                  { label: '3s (Cepat)', val: 3 },
-                  { label: '5.5s (Standar)', val: 5.5 },
-                  { label: '8s (Santai)', val: 8 },
-                  { label: '12s (Lambat)', val: 12 },
-                ].map((item) => (
-                  <button
-                    key={item.val}
-                    type="button"
-                    onClick={() => handleUpdateSettings({ autoplayInterval: item.val })}
-                    className={`py-1.5 px-2 rounded-xl text-[11px] font-bold border transition-all ${
-                      sliderSettings.autoplayInterval === item.val
-                        ? 'bg-[#1a6b3c] text-white border-[#1a6b3c] shadow-xs'
-                        : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 2. Efek Kecepatan Transisi Animasi */}
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-gray-700 flex items-center justify-between">
-                <span>Kecepatan Animasi Transisi:</span>
-                <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-mono text-xs font-bold">
-                  {sliderSettings.transitionSpeed} ms
-                </span>
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  { label: 'Cepat (350ms)', val: 350 },
-                  { label: 'Halus (600ms)', val: 600 },
-                  { label: 'Sinematik (1000ms)', val: 1000 },
-                ].map((item) => (
-                  <button
-                    key={item.val}
-                    type="button"
-                    onClick={() => handleUpdateSettings({ transitionSpeed: item.val })}
-                    className={`py-1.5 px-2 rounded-xl text-[11px] font-bold border transition-all ${
-                      sliderSettings.transitionSpeed === item.val
-                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                        : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* 3. Saklar Autoplay Otomatis */}
-            <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
-              <div className="flex items-center gap-2">
-                {sliderSettings.isAutoplayEnabled ? (
-                  <Play className="w-4 h-4 text-emerald-600" />
-                ) : (
-                  <Pause className="w-4 h-4 text-amber-600" />
-                )}
-                <span className="text-xs font-bold text-gray-800">
-                  Putar Slide Otomatis (Autoplay)
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleUpdateSettings({ isAutoplayEnabled: !sliderSettings.isAutoplayEnabled })}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  sliderSettings.isAutoplayEnabled ? 'bg-[#1a6b3c]' : 'bg-gray-300'
+                onClick={() => setAdminModalTab('slides')}
+                className={`py-2 px-3 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                  adminModalTab === 'slides'
+                    ? 'bg-[#1a6b3c] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <span 
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    sliderSettings.isAutoplayEnabled ? 'translate-x-6' : 'translate-x-1'
-                  }`}
-                />
+                <Layers className="w-3.5 h-3.5" />
+                <span>Konten Slide ({slides.length})</span>
               </button>
+              <button
+                type="button"
+                onClick={() => setAdminModalTab('speed')}
+                className={`py-2 px-3 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                  adminModalTab === 'speed'
+                    ? 'bg-[#1a6b3c] text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Gauge className="w-3.5 h-3.5" />
+                <span>Kecepatan ({sliderSettings.autoplayInterval}s)</span>
+              </button>
+            </div>
+
+            {/* Scrollable Body */}
+            <div className="overflow-y-auto pr-1 space-y-4 flex-1">
+              {adminModalTab === 'slides' ? (
+                <div className="space-y-3">
+                  {/* Action Bar */}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-slate-600">
+                      Daftar Kartu Flyer Aktif
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleQuickStartAdd}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#1a6b3c] hover:bg-[#0d4a28] text-white text-xs font-bold shadow-2xs cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Tambah Slide</span>
+                    </button>
+                  </div>
+
+                  {/* Quick Add / Edit Form */}
+                  {isAddingSlide && (
+                    <form
+                      onSubmit={handleQuickSaveSlide}
+                      className="p-3.5 rounded-2xl bg-slate-50 border border-emerald-200 space-y-3"
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-extrabold text-emerald-950">
+                          {editingSlideId ? 'Edit Slide' : 'Tambah Slide Baru'}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsAddingSlide(false);
+                            setEditingSlideId(null);
+                          }}
+                          className="text-slate-400 hover:text-slate-700"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+
+                      {/* Pilih Mode Gambar */}
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => setQuickImageMode('upload')}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 cursor-pointer ${
+                              quickImageMode === 'upload'
+                                ? 'bg-emerald-800 text-white'
+                                : 'bg-white border border-slate-200 text-slate-600'
+                            }`}
+                          >
+                            <Upload className="w-3 h-3" />
+                            <span>Upload Gambar (WebP)</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setQuickImageMode('url')}
+                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 cursor-pointer ${
+                              quickImageMode === 'url'
+                                ? 'bg-emerald-800 text-white'
+                                : 'bg-white border border-slate-200 text-slate-600'
+                            }`}
+                          >
+                            <LinkIcon className="w-3 h-3" />
+                            <span>Link URL</span>
+                          </button>
+                        </div>
+
+                        {quickImageMode === 'upload' ? (
+                          <div>
+                            <input
+                              ref={quickFileInputRef}
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                if (e.target.files?.[0]) {
+                                  handleQuickFileUpload(e.target.files[0]);
+                                }
+                              }}
+                              className="hidden"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => quickFileInputRef.current?.click()}
+                              disabled={quickCompressing}
+                              className="w-full py-2 px-3 rounded-xl border border-dashed border-emerald-400 bg-white hover:bg-emerald-50/50 text-emerald-900 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                            >
+                              {quickCompressing ? (
+                                <>
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                  <span>Mengompres WebP...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Upload className="w-3.5 h-3.5" />
+                                  <span>{quickForm.image ? 'Ganti File Gambar' : 'Pilih Gambar Flyer dari Perangkat'}</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        ) : (
+                          <input
+                            type="url"
+                            value={quickForm.image.startsWith('data:image/') ? '' : quickForm.image}
+                            onChange={(e) => setQuickForm({ ...quickForm, image: e.target.value })}
+                            placeholder="https://images.unsplash.com/..."
+                            className="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 text-xs"
+                          />
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-0.5">
+                            Badge / Kategori <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="text"
+                            required
+                            value={quickForm.badge}
+                            onChange={(e) => setQuickForm({ ...quickForm, badge: e.target.value })}
+                            placeholder="Misal: PSB 2025 / Program Unggulan"
+                            className="w-full px-3 py-1.5 rounded-xl bg-white border border-slate-300 text-xs"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[11px] font-bold text-slate-700 mb-0.5">
+                            Judul Slide (Opsional)
+                          </label>
+                          <input
+                            type="text"
+                            value={quickForm.title}
+                            onChange={(e) => setQuickForm({ ...quickForm, title: e.target.value })}
+                            placeholder="Judul utama slide..."
+                            className="w-full px-3 py-1.5 rounded-xl bg-white border border-slate-300 text-xs"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-bold text-slate-700 mb-0.5">
+                          Deskripsi Popup / Link Tujuan (Opsional)
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={quickForm.desc}
+                          onChange={(e) => setQuickForm({ ...quickForm, desc: e.target.value })}
+                          placeholder="Deskripsi saat slide diklik..."
+                          className="w-full px-3 py-1.5 rounded-xl bg-white border border-slate-300 text-xs mb-1.5"
+                        />
+                        <input
+                          type="text"
+                          value={quickForm.link}
+                          onChange={(e) => setQuickForm({ ...quickForm, link: e.target.value })}
+                          placeholder="Link tujuan (opsional, misal https://wa.me/628...)"
+                          className="w-full px-3 py-1.5 rounded-xl bg-white border border-slate-300 text-xs"
+                        />
+                      </div>
+
+                      <div className="flex justify-end gap-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsAddingSlide(false);
+                            setEditingSlideId(null);
+                          }}
+                          className="px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-bold text-slate-600 cursor-pointer"
+                        >
+                          Batal
+                        </button>
+                        <button
+                          type="submit"
+                          className="px-4 py-1.5 rounded-xl bg-[#1a6b3c] text-white text-xs font-bold cursor-pointer"
+                        >
+                          Simpan Slide
+                        </button>
+                      </div>
+                    </form>
+                  )}
+
+                  {/* Slide Items List */}
+                  <div className="space-y-2">
+                    {slides.map((s, idx) => (
+                      <div
+                        key={s.id || idx}
+                        className="p-2.5 rounded-2xl border border-slate-200 bg-slate-50/70 flex items-center justify-between gap-2.5"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                          <img
+                            src={s.image}
+                            alt={s.badge}
+                            className="w-16 aspect-video rounded-lg object-cover bg-slate-900 shrink-0 border border-slate-200"
+                          />
+                          <div className="min-w-0 flex-1">
+                            <span className="text-[10px] font-bold text-emerald-800 uppercase block truncate">
+                              #{idx + 1} • {s.badge}
+                            </span>
+                            <p className="text-xs font-extrabold text-slate-900 truncate">
+                              {s.title || '(Tanpa judul teks)'}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            type="button"
+                            onClick={() => handleQuickMoveSlide(idx, 'up')}
+                            disabled={idx === 0}
+                            className="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-30 cursor-pointer"
+                            title="Geser Atas"
+                          >
+                            <ArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickMoveSlide(idx, 'down')}
+                            disabled={idx === slides.length - 1}
+                            className="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-30 cursor-pointer"
+                            title="Geser Bawah"
+                          >
+                            <ArrowDown className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickStartEdit(s)}
+                            className="p-1.5 rounded-lg border border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 cursor-pointer"
+                            title="Edit Slide"
+                          >
+                            <Pencil className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleQuickDeleteSlide(s.id)}
+                            className="p-1.5 rounded-lg border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 cursor-pointer"
+                            title="Hapus Slide"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* 1. Preset Durasi Cepat */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-700 flex items-center justify-between">
+                      <span>Durasi Tampil per Slide:</span>
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-xs font-bold">
+                        {sliderSettings.autoplayInterval} Detik
+                      </span>
+                    </label>
+
+                    <input 
+                      type="range"
+                      min="2"
+                      max="15"
+                      step="0.5"
+                      value={sliderSettings.autoplayInterval}
+                      onChange={(e) => handleUpdateSettings({ autoplayInterval: parseFloat(e.target.value) })}
+                      className="w-full accent-[#1a6b3c] cursor-pointer"
+                    />
+
+                    <div className="grid grid-cols-4 gap-2 pt-1">
+                      {[
+                        { label: '3s (Cepat)', val: 3 },
+                        { label: '5.5s (Standar)', val: 5.5 },
+                        { label: '8s (Santai)', val: 8 },
+                        { label: '12s (Lambat)', val: 12 },
+                      ].map((item) => (
+                        <button
+                          key={item.val}
+                          type="button"
+                          onClick={() => handleUpdateSettings({ autoplayInterval: item.val })}
+                          className={`py-1.5 px-2 rounded-xl text-[11px] font-bold border transition-all cursor-pointer ${
+                            sliderSettings.autoplayInterval === item.val
+                              ? 'bg-[#1a6b3c] text-white border-[#1a6b3c] shadow-xs'
+                              : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 2. Efek Kecepatan Transisi Animasi */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-gray-700 flex items-center justify-between">
+                      <span>Kecepatan Animasi Transisi:</span>
+                      <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 font-mono text-xs font-bold">
+                        {sliderSettings.transitionSpeed} ms
+                      </span>
+                    </label>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { label: 'Cepat (350ms)', val: 350 },
+                        { label: 'Halus (600ms)', val: 600 },
+                        { label: 'Sinematik (1000ms)', val: 1000 },
+                      ].map((item) => (
+                        <button
+                          key={item.val}
+                          type="button"
+                          onClick={() => handleUpdateSettings({ transitionSpeed: item.val })}
+                          className={`py-1.5 px-2 rounded-xl text-[11px] font-bold border transition-all cursor-pointer ${
+                            sliderSettings.transitionSpeed === item.val
+                              ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                              : 'bg-gray-50 hover:bg-gray-100 text-gray-700 border-gray-200'
+                          }`}
+                        >
+                          {item.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 3. Saklar Autoplay Otomatis */}
+                  <div className="flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80">
+                    <div className="flex items-center gap-2">
+                      {sliderSettings.isAutoplayEnabled ? (
+                        <Play className="w-4 h-4 text-emerald-600" />
+                      ) : (
+                        <Pause className="w-4 h-4 text-amber-600" />
+                      )}
+                      <span className="text-xs font-bold text-gray-800">
+                        Putar Slide Otomatis (Autoplay)
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleUpdateSettings({ isAutoplayEnabled: !sliderSettings.isAutoplayEnabled })}
+                      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
+                        sliderSettings.isAutoplayEnabled ? 'bg-[#1a6b3c]' : 'bg-gray-300'
+                      }`}
+                    >
+                      <span 
+                        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                          sliderSettings.isAutoplayEnabled ? 'translate-x-6' : 'translate-x-1'
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Success Feedback & Footer */}
-            <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-              <button
-                type="button"
-                onClick={() => {
-                  setSliderSettings(DEFAULT_SLIDER_SETTINGS);
-                  saveSliderSettings(DEFAULT_SLIDER_SETTINGS);
-                }}
-                className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-800 font-semibold"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                <span>Reset Standar</span>
-              </button>
+            <div className="flex items-center justify-between pt-2 border-t border-gray-100 shrink-0">
+              {adminModalTab === 'slides' ? (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (window.confirm('Kembalikan ke 5 Slide Standar PPJM?')) {
+                      const defaults = await resetHeroSlidesToDefault();
+                      setStoredSlides(defaults);
+                      setSaveSuccessMsg(true);
+                      setTimeout(() => setSaveSuccessMsg(false), 2000);
+                    }
+                  }}
+                  className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-800 font-semibold cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Reset 5 Slide Standar</span>
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSliderSettings(DEFAULT_SLIDER_SETTINGS);
+                    saveSliderSettings(DEFAULT_SLIDER_SETTINGS);
+                  }}
+                  className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-800 font-semibold cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Reset Kecepatan Standar</span>
+                </button>
+              )}
 
               <div className="flex items-center gap-2">
                 {saveSuccessMsg && (

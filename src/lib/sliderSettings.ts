@@ -1,3 +1,6 @@
+import { HeroSlide, initialHeroSlides } from '../data/heroSlides';
+import { supabase, isSupabaseConfigured } from './supabase';
+
 export interface SliderSettings {
   autoplayInterval: number; // in seconds (e.g., 2 to 20)
   transitionSpeed: number;  // in milliseconds (e.g., 200 to 1500)
@@ -11,6 +14,9 @@ export const DEFAULT_SLIDER_SETTINGS: SliderSettings = {
 };
 
 const STORAGE_KEY = 'ppjm_slider_settings';
+const SLIDES_STORAGE_KEY = 'ppjm_hero_slides';
+const SUPABASE_SLIDES_KEY = 'hero_slides';
+const SUPABASE_SETTINGS_KEY = 'slider_settings';
 
 export const getSliderSettings = (): SliderSettings => {
   if (typeof window === 'undefined') return DEFAULT_SLIDER_SETTINGS;
@@ -44,4 +50,168 @@ export const saveSliderSettings = (settings: SliderSettings): void => {
   } catch (e) {
     console.error('Gagal menyimpan pengaturan slider:', e);
   }
+
+  if (isSupabaseConfigured()) {
+    supabase
+      .from('site_settings')
+      .upsert(
+        {
+          key: SUPABASE_SETTINGS_KEY,
+          value: settings as unknown as Record<string, unknown>,
+          description: 'Pengaturan kecepatan & autoplay HeroSlider beranda PPJM',
+          updated_at: new Date().toISOString(),
+        } as any,
+        { onConflict: 'key' }
+      )
+      .then(({ error }) => {
+        if (error) {
+          console.warn('Info sinkronisasi pengaturan slider ke Supabase:', error.message);
+        }
+      });
+  }
+};
+
+/**
+ * Validasi array HeroSlide agar aman dirender
+ */
+const sanitizeHeroSlides = (data: unknown): HeroSlide[] | null => {
+  if (!Array.isArray(data) || data.length === 0) return null;
+  const validSlides = data
+    .filter((item): item is Record<string, any> => Boolean(item && typeof item === 'object' && item.image && item.badge))
+    .map((item, idx) => ({
+      id: typeof item.id === 'string' && item.id.trim() ? item.id : `slide-${Date.now()}-${idx}`,
+      badge: String(item.badge).trim(),
+      title: typeof item.title === 'string' ? item.title.trim() : '',
+      desc: typeof item.desc === 'string' ? item.desc.trim() : '',
+      image: String(item.image).trim(),
+      link: typeof item.link === 'string' ? item.link.trim() : '',
+      tag: typeof item.tag === 'string' ? item.tag.trim() : undefined,
+      tagline: typeof item.tagline === 'string' ? item.tagline.trim() : undefined,
+      website: typeof item.website === 'string' ? item.website : 'https://ppjauharulmaknuun.sch.id/',
+      cardTheme: typeof item.cardTheme === 'string' ? item.cardTheme : 'from-[#08357a] via-[#093c8a] to-[#062c66]',
+      badgeTheme: typeof item.badgeTheme === 'string' ? item.badgeTheme : 'bg-emerald-500/20 border-emerald-400/40 text-emerald-200',
+      tagColor: typeof item.tagColor === 'string' ? item.tagColor : 'text-[#ffcc00]',
+      btnTheme: typeof item.btnTheme === 'string' ? item.btnTheme : 'from-[#ffcc00] via-[#eab308] to-[#ca8a04]',
+    }));
+  return validSlides.length > 0 ? validSlides : null;
+};
+
+/**
+ * Ambil daftar slide dari LocalStorage cache atau fallback ke initialHeroSlides
+ */
+export const getHeroSlides = (): HeroSlide[] => {
+  if (typeof window === 'undefined') return initialHeroSlides;
+  try {
+    const raw = localStorage.getItem(SLIDES_STORAGE_KEY);
+    if (!raw) return initialHeroSlides;
+    const parsed = JSON.parse(raw);
+    return sanitizeHeroSlides(parsed) || initialHeroSlides;
+  } catch (e) {
+    console.warn('Gagal membaca konten hero slides dari localStorage:', e);
+    return initialHeroSlides;
+  }
+};
+
+/**
+ * Tarik daftar slide terbaru dari Supabase site_settings (jika terkonfigurasi),
+ * lalu perbarui cache LocalStorage & beritahu komponen HeroSlider.
+ */
+export const fetchHeroSlidesFromSupabase = async (): Promise<HeroSlide[]> => {
+  if (!isSupabaseConfigured()) {
+    return getHeroSlides();
+  }
+  try {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('value')
+      .eq('key', SUPABASE_SLIDES_KEY)
+      .maybeSingle();
+
+    if (error || !data) {
+      return getHeroSlides();
+    }
+
+    const rawValue = (data as { value?: unknown }).value;
+    const remoteSlides = sanitizeHeroSlides(rawValue);
+    if (remoteSlides) {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(SLIDES_STORAGE_KEY, JSON.stringify(remoteSlides));
+        window.dispatchEvent(new CustomEvent('ppjm-hero-slides-changed', { detail: remoteSlides }));
+      }
+      return remoteSlides;
+    }
+  } catch (e) {
+    console.warn('Gagal mengambil hero_slides dari Supabase:', e);
+  }
+  return getHeroSlides();
+};
+
+/**
+ * Simpan daftar slide ke LocalStorage dan sinkronkan ke tabel site_settings di Supabase
+ */
+export const saveHeroSlides = async (slides: HeroSlide[]): Promise<{ syncedToCloud: boolean }> => {
+  const sanitized = sanitizeHeroSlides(slides) || initialHeroSlides;
+
+  if (typeof window !== 'undefined') {
+    try {
+      localStorage.setItem(SLIDES_STORAGE_KEY, JSON.stringify(sanitized));
+      window.dispatchEvent(new CustomEvent('ppjm-hero-slides-changed', { detail: sanitized }));
+    } catch (e) {
+      console.error('Gagal menyimpan hero slides ke localStorage:', e);
+    }
+  }
+
+  if (isSupabaseConfigured()) {
+    try {
+      const { error } = await supabase
+        .from('site_settings')
+        .upsert(
+          {
+            key: SUPABASE_SLIDES_KEY,
+            value: sanitized as unknown as Record<string, unknown>,
+            description: 'Konten daftar kartu HeroSlider utama beranda PPJM',
+            updated_at: new Date().toISOString(),
+          } as any,
+          { onConflict: 'key' }
+        );
+      if (!error) {
+        return { syncedToCloud: true };
+      }
+      console.warn('Info simpan hero_slides ke Supabase:', error.message);
+    } catch (e) {
+      console.warn('Gagal sinkronisasi hero_slides ke Supabase:', e);
+    }
+  }
+
+  return { syncedToCloud: false };
+};
+
+/**
+ * Kembalikan daftar slide ke 5 Slide Standar PPJM (initialHeroSlides)
+ */
+export const resetHeroSlidesToDefault = async (): Promise<HeroSlide[]> => {
+  if (typeof window !== 'undefined') {
+    localStorage.removeItem(SLIDES_STORAGE_KEY);
+    window.dispatchEvent(new CustomEvent('ppjm-hero-slides-changed', { detail: initialHeroSlides }));
+  }
+
+  if (isSupabaseConfigured()) {
+    try {
+      await supabase
+        .from('site_settings')
+        .upsert(
+          {
+            key: SUPABASE_SLIDES_KEY,
+            value: initialHeroSlides as unknown as Record<string, unknown>,
+            description: 'Konten daftar kartu HeroSlider utama beranda PPJM',
+            updated_at: new Date().toISOString(),
+          } as any,
+          { onConflict: 'key' }
+        );
+    } catch (e) {
+      console.warn('Gagal mereset hero_slides di Supabase:', e);
+    }
+  }
+
+  return initialHeroSlides;
 };

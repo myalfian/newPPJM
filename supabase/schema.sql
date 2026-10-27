@@ -295,7 +295,7 @@ END $$;
 -- Authenticated Write Policies with Role-Based Access Control
 DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Admin Write Settings' AND tablename = 'site_settings') THEN
-        CREATE POLICY "Admin Write Settings" ON public.site_settings FOR ALL USING (public.check_user_role('super_admin'));
+        CREATE POLICY "Admin Write Settings" ON public.site_settings FOR ALL USING (public.check_user_role('pengurus_konten'));
     END IF;
     IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname = 'Admin Write Profiles' AND tablename = 'admin_profiles') THEN
         CREATE POLICY "Admin Write Profiles" ON public.admin_profiles FOR ALL USING (public.check_user_role('super_admin'));
