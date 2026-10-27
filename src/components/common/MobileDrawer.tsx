@@ -24,7 +24,8 @@ import {
   HeartHandshake,
   Compass,
   CheckCircle2,
-  Volume2
+  Volume2,
+  Newspaper
 } from 'lucide-react';
 
 interface MobileDrawerProps {
@@ -170,6 +171,24 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
       ],
     },
     {
+      id: 'jm-news',
+      title: 'JM News',
+      subtitle: 'Warta Terkini & Kabar Pesantren',
+      href: '/#warta-berita',
+      icon: Newspaper,
+      color: {
+        badgeBg: 'bg-sky-50',
+        iconColor: 'text-sky-700',
+        border: 'border-sky-200/80',
+        activeBg: 'bg-sky-600',
+      },
+      items: [
+        { title: 'Warta Terkini', href: '/#warta-berita', desc: 'Kabar & rilis resmi aktivitas pesantren', icon: Newspaper },
+        { title: 'Kabar Prestasi', href: '/prestasi', desc: 'Liputan kejuaraan santri', icon: Trophy },
+        { title: 'Dokumentasi Galeri', href: '/galeri/foto', desc: 'Arsip foto & liputan video', icon: Images },
+      ],
+    },
+    {
       id: 'galeri',
       title: 'Galeri Multimedia',
       subtitle: 'Dokumentasi Foto & Video',
@@ -208,6 +227,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
     if (categoryHref === '/agenda') return location.pathname.startsWith('/agenda');
     if (categoryHref === '/prestasi') return location.pathname === '/prestasi';
     if (categoryHref === '/ekskul') return location.pathname === '/ekskul';
+    if (categoryHref === '/#warta-berita') return location.hash === '#warta-berita';
     if (categoryHref === '/galeri') return location.pathname.startsWith('/galeri');
     if (categoryHref === '/jm-center') return location.pathname.startsWith('/jm-center');
     if (categoryHref === '/program-unggulan') return location.pathname.startsWith('/program-unggulan');
@@ -281,12 +301,12 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
                   Menu Navigasi Portal
                 </span>
                 <span className="text-[10px] uppercase font-bold text-[#ffd700] tracking-wider">
-                  7 Pilar Utama
+                  8 Pilar Terpadu
                 </span>
               </div>
             </div>
 
-            {/* Menu List: 7 Harmonized Pillars */}
+            {/* Menu List: 8 Harmonized Pillars */}
             <div className="flex-1 overflow-y-auto p-3.5 space-y-2.5">
               {categories.map((cat) => {
                 const Icon = cat.icon;

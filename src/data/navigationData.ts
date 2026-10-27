@@ -184,6 +184,24 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     },
   },
   {
+    id: 'jm-news',
+    label: 'JM News',
+    icon: Newspaper,
+    href: '/#warta-berita',
+    isDropdown: false,
+    color: {
+      badgeBg: 'bg-sky-50 text-sky-700 border-sky-200/80 group-hover:bg-sky-100 group-hover:text-sky-800',
+      activeBadgeBg: 'bg-sky-600 text-white shadow-md shadow-sky-600/30 ring-2 ring-sky-400/60',
+      activeText: 'text-sky-900',
+      activeDot: 'bg-sky-600',
+    },
+    items: [
+      { title: 'Warta Terkini', href: '/#warta-berita', desc: 'Kabar resmi & agenda terhangat PPJM', icon: Newspaper },
+      { title: 'Kabar Prestasi', href: '/prestasi', desc: 'Liputan kejuaraan & rekam jejak juara', icon: Trophy },
+      { title: 'Dokumentasi Galeri', href: '/galeri/foto', desc: 'Arsip foto & liputan video santri', icon: Images },
+    ]
+  },
+  {
     id: 'galeri',
     label: 'Galeri',
     icon: Images,

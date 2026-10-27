@@ -109,6 +109,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
     if (tab.id === 'smart-jm') return location.pathname.startsWith('/smart-jm') || location.pathname.startsWith('/stem');
     if (tab.id === 'prestasi') return location.pathname === '/prestasi';
     if (tab.id === 'ekskul') return location.pathname === '/ekskul';
+    if (tab.id === 'jm-news') return location.hash === '#warta-berita';
     if (tab.id === 'galeri') return location.pathname.startsWith('/galeri');
     if (tab.id === 'agenda') return location.pathname.startsWith('/agenda');
     return false;
@@ -195,10 +196,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             </Link>
 
 
-            {/* Desktop Navigation: 7 Pillars Equal Width & Uniform Horizontal Distribution (h-[58px]) */}
+            {/* Desktop Navigation: 8 Pillars Equal Width & Uniform Horizontal Distribution (h-[58px]) */}
             <div className="relative hidden lg:block" onMouseLeave={() => setHoveredTab(null)}>
               <nav
-                className="grid grid-cols-7 items-center h-[56px] xl:h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[590px] xl:w-[710px] 2xl:w-[790px]"
+                className="grid grid-cols-8 items-center h-[56px] xl:h-[58px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[640px] xl:w-[760px] 2xl:w-[840px]"
               >
                 {navTabs.map((tab) => {
                   const TabIcon = tab.icon;
@@ -214,27 +215,39 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
                       {/* Direct Page Navigation Link: Both Icon Badge and Menu Label Fit Comfortably Inside Container */}
                       <Link
                         to={tab.href}
-                        onClick={() => {
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        onClick={(e) => {
+                          if (tab.href.startsWith('/#')) {
+                            if (location.pathname === '/') {
+                              e.preventDefault();
+                              const targetId = tab.href.replace('/#', '');
+                              const el = document.getElementById(targetId);
+                              if (el) {
+                                el.scrollIntoView({ behavior: 'smooth' });
+                                window.history.pushState(null, '', tab.href);
+                              }
+                            }
+                          } else {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }
                           setHoveredTab(null);
                         }}
-                        className="relative z-10 w-full h-full px-1 py-1 rounded-xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
+                        className="relative z-10 w-full h-full px-0.5 py-1 rounded-xl flex flex-col items-center justify-center transition-all duration-200 select-none cursor-pointer group"
                       >
                         {/* Compact Android-style Colorful Icon Badge */}
                         <div
-                          className={`w-6 h-6 xl:w-6.5 xl:h-6.5 rounded-lg flex items-center justify-center border transition-all duration-200 group-hover:scale-105 shrink-0 ${
+                          className={`w-5.5 h-5.5 xl:w-6 xl:h-6 rounded-lg flex items-center justify-center border transition-all duration-200 group-hover:scale-105 shrink-0 ${
                             isActive
                               ? tab.color.activeBadgeBg
                               : tab.color.badgeBg
                           }`}
                         >
-                          <TabIcon className="w-3.5 h-3.5 xl:w-3.5 xl:h-3.5 transition-transform duration-200 shrink-0" />
+                          <TabIcon className="w-3 h-3 xl:w-3.5 xl:h-3.5 transition-transform duration-200 shrink-0" />
                         </div>
 
                         {/* Menu Label: Centered, Bold & Crisp Inside the Capsule Card */}
                         <div className="w-full text-center px-0.5 mt-1 leading-none">
                           <span
-                            className={`block text-[11px] xl:text-[12px] 2xl:text-[12.5px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${
+                            className={`block text-[10px] xl:text-[11px] 2xl:text-[12px] font-black tracking-tight truncate leading-none transition-colors duration-200 ${
                               isActive
                                 ? tab.color.activeText
                                 : 'text-slate-700 group-hover:text-slate-950'
