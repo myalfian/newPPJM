@@ -336,13 +336,13 @@ export const KelolaBerita: React.FC = () => {
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-2">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider">
           <Newspaper className="w-3.5 h-3.5 text-emerald-800" />
-          <span>Manajemen Warta & Berita Terpadu</span>
+          <span>CMS • Press Release Resmi PPJM</span>
         </div>
         <h1 className="text-xl sm:text-2xl font-black text-emerald-950">
-          Kelola Warta & Pengumuman Santri
+          Kelola Press Release Pesantren
         </h1>
         <p className="text-xs sm:text-sm text-slate-500">
-          Buat, ubah, dan terbitkan warta pesantren langsung ke Supabase dengan kompresi WebP otomatis dan broadcast WhatsApp 1-klik.
+          Publikasi siaran pers resmi, foto kegiatan WebP otomatis, dan narasi deskripsi dengan broadcast WhatsApp 1-klik.
         </p>
       </div>
 
@@ -364,7 +364,7 @@ export const KelolaBerita: React.FC = () => {
           }`}
         >
           <Newspaper className="w-4 h-4" />
-          <span>Daftar Warta ({newsList.length})</span>
+          <span>Daftar Press Release ({newsList.length})</span>
         </button>
         <button
           onClick={() => { setActiveTab('editor'); resetForm(); }}
@@ -375,7 +375,7 @@ export const KelolaBerita: React.FC = () => {
           }`}
         >
           <PlusCircle className="w-4 h-4" />
-          <span>{editingId ? 'Edit Warta' : 'Tulis Warta Baru'}</span>
+          <span>{editingId ? 'Edit Press Release' : 'Rilis Pers Baru (Foto & Deskripsi)'}</span>
         </button>
       </div>
 

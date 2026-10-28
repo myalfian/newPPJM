@@ -131,11 +131,11 @@ export const DetailBerita: React.FC = () => {
           Berita atau pengumuman yang Anda tuju mungkin telah diperbarui atau dipindahkan.
         </p>
         <Link
-          to="/berita"
+          to="/jm-news/press-release"
           className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-emerald-800 text-white font-bold text-xs"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Kembali ke Warta Terkini</span>
+          <span>Kembali ke Press Release</span>
         </Link>
       </div>
     );
@@ -148,11 +148,11 @@ export const DetailBerita: React.FC = () => {
       {/* Back button */}
       <div>
         <Link
-          to="/berita"
+          to="/jm-news/press-release"
           className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>Kembali ke Semua Warta Berita</span>
+          <span>Kembali ke Press Release Resmi</span>
         </Link>
       </div>
 

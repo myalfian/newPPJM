@@ -218,7 +218,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
       id: 'jm-news',
       title: 'JM News',
       subtitle: 'Agenda Bulanan & Press Release',
-      href: '/berita',
+      href: '/jm-news/agenda-bulanan',
       icon: Newspaper,
       color: {
         badgeBg: 'bg-sky-50',
@@ -227,8 +227,8 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
         activeBg: 'bg-sky-600',
       },
       items: [
-        { title: '1. Agenda Bulanan', href: '/agenda', desc: 'Jadwal & kalender kegiatan santri', icon: CalendarDays },
-        { title: '2. Press Release', href: '/berita', desc: 'Rilis pers resmi, foto & deskripsi liputan', icon: Newspaper },
+        { title: '1. Agenda Bulanan', href: '/jm-news/agenda-bulanan', desc: 'Kalender jadwal terpadu & agenda santri', icon: CalendarDays },
+        { title: '2. Press Release', href: '/jm-news/press-release', desc: 'Siaran pers resmi, foto & deskripsi liputan', icon: Newspaper },
       ],
     },
     {
@@ -273,7 +273,9 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
     if (categoryHref === '/prestasi') return location.pathname === '/prestasi';
     if (categoryHref === '/ekskul') return location.pathname === '/ekskul';
     if (categoryHref === '/osis') return location.pathname === '/osis';
-    if (categoryHref === '/#warta-berita') return location.hash === '#warta-berita';
+    if (categoryHref === '/jm-news/agenda-bulanan' || categoryHref === '/berita' || categoryHref === '/#warta-berita') {
+      return location.pathname.startsWith('/jm-news') || location.pathname.startsWith('/berita') || location.hash === '#warta-berita';
+    }
     if (categoryHref === '/galeri') return location.pathname.startsWith('/galeri');
     if (categoryHref === '/jm-center') return location.pathname.startsWith('/jm-center');
     if (categoryHref === '/program-unggulan') return location.pathname.startsWith('/program-unggulan');

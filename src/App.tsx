@@ -233,10 +233,16 @@ export const App: React.FC = () => {
             <Route path="karya-siswa" element={<Agenda />} />
             <Route path="agenda" element={<Agenda />} />
 
-            {/* JM News: 1. Agenda Bulanan, 2. Press Release */}
+            {/* JM News Hub: 1. Agenda Bulanan, 2. Press Release */}
+            <Route path="jm-news" element={<Navigate to="/jm-news/agenda-bulanan" replace />} />
+            <Route path="jm-news/agenda-bulanan" element={<Agenda />} />
+            <Route path="jm-news/press-release" element={<Berita />} />
+            <Route path="jm-news/press-release/:slug" element={<DetailBerita />} />
+
+            {/* Kompatibilitas Rute Berita & Press Release */}
             <Route path="berita" element={<Berita />} />
             <Route path="berita/press-release" element={<Berita />} />
-            <Route path="berita/agenda-bulanan" element={<Navigate to="/agenda" replace />} />
+            <Route path="berita/agenda-bulanan" element={<Navigate to="/jm-news/agenda-bulanan" replace />} />
             <Route path="berita/:slug" element={<DetailBerita />} />
 
             {/* Galeri Sekolah */}

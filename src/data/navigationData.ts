@@ -252,7 +252,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     id: 'jm-news',
     label: 'JM News',
     icon: Newspaper,
-    href: '/berita',
+    href: '/jm-news/agenda-bulanan',
     isDropdown: false,
     color: {
       badgeBg: 'bg-sky-50 text-sky-700 border-sky-200/80 group-hover:bg-sky-100 group-hover:text-sky-800',
@@ -261,8 +261,8 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeDot: 'bg-sky-600',
     },
     items: [
-      { title: 'Agenda Bulanan', href: '/agenda', desc: 'Jadwal & kalender kegiatan santri terpadu', icon: CalendarDays },
-      { title: 'Press Release', href: '/berita', desc: 'Rilis pers resmi, dokumentasi foto & deskripsi liputan', icon: Newspaper },
+      { title: 'Agenda Bulanan', href: '/jm-news/agenda-bulanan', desc: 'Kalender jadwal terpadu & agenda santri', icon: CalendarDays },
+      { title: 'Press Release', href: '/jm-news/press-release', desc: 'Siaran pers resmi, foto dokumentasi & deskripsi', icon: Newspaper },
     ]
   },
   {
@@ -330,16 +330,16 @@ export const ADMIN_MODULES: AdminModuleItem[] = [
   },
   {
     id: 'berita',
-    title: 'Kelola Warta & Berita',
-    shortLabel: 'Kelola Berita',
-    desc: 'Publikasi artikel, warta pondok & broadcast WhatsApp',
+    title: 'Kelola Press Release',
+    shortLabel: 'Press Release',
+    desc: 'Publikasi siaran pers resmi, foto kegiatan WebP & deskripsi liputan',
     href: '/admin/berita',
     icon: Newspaper,
     roles: ['super_admin', 'pengurus_konten'],
     category: 'media',
     publicCategory: 'JM News',
-    publicHref: '/berita',
-    badge: 'WA Ready',
+    publicHref: '/jm-news/press-release',
+    badge: 'Foto & Teks',
   },
   {
     id: 'agenda',

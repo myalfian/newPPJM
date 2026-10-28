@@ -165,11 +165,11 @@ const DEFAULT_CATEGORY_TABS: Record<
   },
   'jm-news': {
     parentLabel: 'JM News',
-    parentHref: '/berita',
+    parentHref: '/jm-news/agenda-bulanan',
     parentIcon: Newspaper,
     tabs: [
-      { id: 'agenda-bulanan', label: 'Agenda Bulanan', shortLabel: 'Agenda Bulanan', href: '/agenda', icon: CalendarDays },
-      { id: 'press-release', label: 'Press Release', shortLabel: 'Press Release', href: '/berita', icon: Newspaper },
+      { id: 'agenda-bulanan', label: 'Agenda Bulanan', shortLabel: 'Agenda Bulanan', href: '/jm-news/agenda-bulanan', icon: CalendarDays },
+      { id: 'press-release', label: 'Press Release', shortLabel: 'Press Release', href: '/jm-news/press-release', icon: Newspaper },
     ],
   },
 };
@@ -193,7 +193,7 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
 
   // Auto-detect hub category if tabs are not provided explicitly
   let detectedCategory = '';
-  if (pathname.includes('/berita')) detectedCategory = 'jm-news';
+  if (pathname.includes('/jm-news') || pathname.includes('/berita')) detectedCategory = 'jm-news';
   else if (pathname.includes('/agenda') || pathname.includes('/karya-siswa')) detectedCategory = 'agenda';
   else if (pathname.includes('/osis')) detectedCategory = 'osis';
   else if (pathname.includes('/jm-center')) detectedCategory = 'jm-center';
