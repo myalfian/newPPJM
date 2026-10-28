@@ -233,8 +233,10 @@ export const App: React.FC = () => {
             <Route path="karya-siswa" element={<Agenda />} />
             <Route path="agenda" element={<Agenda />} />
 
-            {/* Warta & Kabar Pesantren */}
+            {/* JM News: 1. Agenda Bulanan, 2. Press Release */}
             <Route path="berita" element={<Berita />} />
+            <Route path="berita/press-release" element={<Berita />} />
+            <Route path="berita/agenda-bulanan" element={<Navigate to="/agenda" replace />} />
             <Route path="berita/:slug" element={<DetailBerita />} />
 
             {/* Galeri Sekolah */}

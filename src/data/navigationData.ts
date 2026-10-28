@@ -261,9 +261,8 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeDot: 'bg-sky-600',
     },
     items: [
-      { title: 'Warta Terkini', href: '/berita', desc: 'Kabar resmi & agenda terhangat PPJM', icon: Newspaper },
-      { title: 'Kabar Prestasi', href: '/prestasi', desc: 'Liputan kejuaraan & rekam jejak juara', icon: Trophy },
-      { title: 'Dokumentasi Galeri', href: '/galeri/foto', desc: 'Arsip foto & liputan video santri', icon: Images },
+      { title: 'Agenda Bulanan', href: '/agenda', desc: 'Jadwal & kalender kegiatan santri terpadu', icon: CalendarDays },
+      { title: 'Press Release', href: '/berita', desc: 'Rilis pers resmi, dokumentasi foto & deskripsi liputan', icon: Newspaper },
     ]
   },
   {

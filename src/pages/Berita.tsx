@@ -109,13 +109,13 @@ export const Berita: React.FC = () => {
         <div className="relative z-10 space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Newspaper className="w-3.5 h-3.5" />
-            <span>Kabar & Publikasi Resmi Pesantren</span>
+            <span>JM News • Press Release Resmi</span>
           </div>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
-            Warta Jauharul Maknuun
+            Press Release &amp; Warta Pesantren
           </h1>
           <p className="text-xs sm:text-sm text-emerald-200/90 max-w-2xl leading-relaxed">
-            Pusat berita resmi, kabar prestasi, agenda kegiatan akbar, dan pengumuman santri Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik.
+            Pusat siaran pers resmi, dokumentasi foto kegiatan, dan deskripsi publikasi berita Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik.
           </p>
         </div>
       </div>
