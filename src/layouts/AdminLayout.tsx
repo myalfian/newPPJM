@@ -296,51 +296,145 @@ export const AdminLayout: React.FC = () => {
               </div>
             )}
 
-            {/* Section A: Core CMS Modules */}
+            {/* Section A: Manajemen Konten (CMS) */}
             <div className="space-y-1">
               {!sidebarCollapsed && (
                 <div className="px-3 pb-1 text-[11px] font-extrabold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
                   Manajemen Konten
                 </div>
               )}
-              {accessibleModules.map((item) => {
-                const Icon = item.icon;
-                const isActive =
-                  item.href === '/admin'
-                    ? location.pathname === '/admin' || location.pathname === '/admin/dashboard'
-                    : location.pathname.startsWith(item.href);
+              {accessibleModules
+                .filter((item) => item.category === 'media' || item.id === 'berita' || item.id === 'agenda' || item.id === 'galeri' || item.id === 'slider' || item.id === 'profil')
+                .map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname.startsWith(item.href);
 
-                return (
-                  <Link
-                    key={item.id}
-                    to={item.href}
-                    title={sidebarCollapsed ? item.title : undefined}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-150 ${
-                      isActive
-                        ? 'bg-[#007acc] text-white shadow-sm shadow-[#007acc]/20'
-                        : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/70'
-                    }`}
-                  >
-                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-zinc-400'}`} />
-                    {!sidebarCollapsed && (
-                      <div className="flex-1 min-w-0 flex items-center justify-between">
-                        <span className="truncate">{item.shortLabel}</span>
-                        {item.badge && (
-                          <span
-                            className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold ml-1.5 ${
-                              isActive
-                                ? 'bg-white/20 text-white'
-                                : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300'
-                            }`}
-                          >
-                            {item.badge}
-                          </span>
-                        )}
-                      </div>
-                    )}
-                  </Link>
-                );
-              })}
+                  return (
+                    <Link
+                      key={item.id}
+                      to={item.href}
+                      title={sidebarCollapsed ? item.title : undefined}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-150 ${
+                        isActive
+                          ? 'bg-[#007acc] text-white shadow-sm shadow-[#007acc]/20'
+                          : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/70'
+                      }`}
+                    >
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-zinc-400'}`} />
+                      {!sidebarCollapsed && (
+                        <div className="flex-1 min-w-0 flex items-center justify-between">
+                          <span className="truncate">{item.shortLabel}</span>
+                          {item.badge && (
+                            <span
+                              className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold ml-1.5 ${
+                                isActive
+                                  ? 'bg-white/20 text-white'
+                                  : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300'
+                              }`}
+                            >
+                              {item.badge}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </Link>
+                  );
+                })}
+            </div>
+
+            {/* Section B: Kurikulum & Akademik Santri */}
+            <div className="space-y-1 pt-2 border-t border-zinc-200/60 dark:border-zinc-800/60">
+              {!sidebarCollapsed && (
+                <div className="px-3 pb-1 text-[11px] font-extrabold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                  Akademik &amp; Santri
+                </div>
+              )}
+              {accessibleModules
+                .filter((item) => item.category === 'academic')
+                .map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname.startsWith(item.href);
+
+                  return (
+                    <Link
+                      key={item.id}
+                      to={item.href}
+                      title={sidebarCollapsed ? item.title : undefined}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-150 ${
+                        isActive
+                          ? 'bg-[#007acc] text-white shadow-sm shadow-[#007acc]/20'
+                          : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/70'
+                      }`}
+                    >
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-zinc-400'}`} />
+                      {!sidebarCollapsed && (
+                        <div className="flex-1 min-w-0 flex items-center justify-between">
+                          <span className="truncate">{item.shortLabel}</span>
+                          {item.badge && (
+                            <span
+                              className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold ml-1.5 ${
+                                isActive
+                                  ? 'bg-white/20 text-white'
+                                  : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300'
+                              }`}
+                            >
+                              {item.badge}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </Link>
+                  );
+                })}
+            </div>
+
+            {/* Section C: Sistem & Editor */}
+            <div className="space-y-1 pt-2 border-t border-zinc-200/60 dark:border-zinc-800/60">
+              {!sidebarCollapsed && (
+                <div className="px-3 pb-1 text-[11px] font-extrabold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+                  Sistem &amp; Editor
+                </div>
+              )}
+              {accessibleModules
+                .filter((item) => item.category === 'system' || item.category === 'core' || item.id === 'editor')
+                .map((item) => {
+                  const Icon = item.icon;
+                  const isActive =
+                    item.href === '/admin'
+                      ? location.pathname === '/admin' || location.pathname === '/admin/dashboard'
+                      : location.pathname.startsWith(item.href);
+
+                  return (
+                    <Link
+                      key={item.id}
+                      to={item.href}
+                      title={sidebarCollapsed ? item.title : undefined}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all duration-150 ${
+                        isActive
+                          ? 'bg-[#007acc] text-white shadow-sm shadow-[#007acc]/20'
+                          : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-800/70'
+                      }`}
+                    >
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-zinc-400'}`} />
+                      {!sidebarCollapsed && (
+                        <div className="flex-1 min-w-0 flex items-center justify-between">
+                          <span className="truncate">{item.shortLabel}</span>
+                          {item.badge && (
+                            <span
+                              className={`text-[9px] px-1.5 py-0.2 rounded-full font-bold ml-1.5 ${
+                                isActive
+                                  ? 'bg-white/20 text-white'
+                                  : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300'
+                              }`}
+                            >
+                              {item.badge}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </Link>
+                  );
+                })}
             </div>
 
             {/* Section B: Synchronized Public Website Links (Single Source of Truth) */}
