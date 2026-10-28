@@ -1,12 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Newspaper, Sprout, CalendarDays, GraduationCap, X, Share2, ExternalLink, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Home, Newspaper, Sprout, GraduationCap, Sparkles } from 'lucide-react';
+import { MedsosModal } from './MedsosModal';
 
 export const BottomNav: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [showMedsosModal, setShowMedsosModal] = useState(false);
+
+  // Listen for global custom event to open Medsos Modal from any component
+  useEffect(() => {
+    const handleOpenMedsos = () => setShowMedsosModal(true);
+    window.addEventListener('open-medsos-modal', handleOpenMedsos);
+    return () => window.removeEventListener('open-medsos-modal', handleOpenMedsos);
+  }, []);
 
   // Dynamic responsive width for mathematical SVG path rendering
   const navRef = useRef<HTMLDivElement>(null);
@@ -50,20 +58,6 @@ export const BottomNav: React.FC = () => {
   } else if (location.pathname === '/') {
     activeTab = 'home';
   }
-
-  const handleShareWebsite = () => {
-    if ('share' in navigator) {
-      navigator
-        .share({
-          title: 'Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik',
-          text: 'Portal Resmi Pondok Pesantren Jauharul Maknuun: Tahfidz 30 Juz Bersanad, Kurikulum Terakreditasi "A" BAN-PDM, dan Inovasi STEM.',
-          url: window.location.origin,
-        })
-        .catch(() => {});
-    } else {
-      setShowMedsosModal(true);
-    }
-  };
 
   // Mathematical SVG path with center cradle scoop
   const H = 66;
@@ -244,13 +238,7 @@ export const BottomNav: React.FC = () => {
                   type="button"
                   whileHover={{ scale: 1.06 }}
                   whileTap={{ scale: 0.92 }}
-                  onClick={() => {
-                    if ('share' in navigator) {
-                      handleShareWebsite();
-                    } else {
-                      setShowMedsosModal(true);
-                    }
-                  }}
+                  onClick={() => setShowMedsosModal(true)}
                   className="relative z-10 w-[52px] h-[52px] rounded-full bg-gradient-to-tr from-[#0a6847] via-[#0f5132] to-[#10b981] shadow-[0_8px_20px_-2px_rgba(15,81,50,0.45)] dark:shadow-[0_8px_24px_-2px_rgba(16,185,129,0.4)] flex items-center justify-center text-white cursor-pointer ring-3 ring-white dark:ring-slate-900 transition-transform duration-200"
                   aria-label="Media Resmi Pesantren & Kontak"
                   title="Media Resmi PPJM"
@@ -350,116 +338,10 @@ export const BottomNav: React.FC = () => {
       </div>
 
       {/* Official Media & Social Popup Modal */}
-      <AnimatePresence>
-        {showMedsosModal && (
-          <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-            onClick={() => setShowMedsosModal(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 16 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 16 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-              className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-[28px] p-6 shadow-2xl text-center space-y-4 border-0"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-950 flex items-center justify-center text-emerald-700 dark:text-emerald-400">
-                    <Sprout className="w-4.5 h-4.5 stroke-[2.2]" />
-                  </div>
-                  <h4 className="font-extrabold text-slate-900 dark:text-white text-base">
-                    Media Resmi PPJM
-                  </h4>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setShowMedsosModal(false)}
-                  className="p-1 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-                  aria-label="Tutup Modal"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <p className="text-xs text-slate-500 dark:text-slate-400 text-left">
-                Kanal komunikasi resmi Pondok Pesantren Jauharul Maknuun Lasem, Sidayu, Gresik:
-              </p>
-
-              <div className="space-y-2 text-left">
-                <a
-                  href="https://wa.me/6281234567890"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center justify-between p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 hover:bg-emerald-100 text-xs font-bold transition-colors"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span>💬 WhatsApp Sekretariat</span>
-                  </div>
-                  <ExternalLink className="w-3.5 h-3.5 opacity-60" />
-                </a>
-
-                <a
-                  href="https://instagram.com/ppjauharulmaknuun"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center justify-between p-3 rounded-2xl bg-pink-50 dark:bg-pink-950/30 text-pink-700 dark:text-pink-300 hover:bg-pink-100 text-xs font-bold transition-colors"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span>📷 Instagram: @ppjauharulmaknuun</span>
-                  </div>
-                  <ExternalLink className="w-3.5 h-3.5 opacity-60" />
-                </a>
-
-                <a
-                  href="https://youtube.com/@ppjauharulmaknuun"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center justify-between p-3 rounded-2xl bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-300 hover:bg-red-100 text-xs font-bold transition-colors"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span>📺 YouTube: @ppjauharulmaknuun</span>
-                  </div>
-                  <ExternalLink className="w-3.5 h-3.5 opacity-60" />
-                </a>
-
-                <a
-                  href="https://facebook.com/ppjauharulmaknuun"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center justify-between p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 hover:bg-blue-100 text-xs font-bold transition-colors"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <span>📘 Facebook: PP Jauharul Maknuun</span>
-                  </div>
-                  <ExternalLink className="w-3.5 h-3.5 opacity-60" />
-                </a>
-              </div>
-
-              <div className="pt-2 flex gap-2">
-                {'share' in navigator && (
-                  <button
-                    type="button"
-                    onClick={handleShareWebsite}
-                    className="flex-1 py-2.5 rounded-xl bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm hover:bg-emerald-800 transition-colors"
-                  >
-                    <Share2 className="w-3.5 h-3.5" />
-                    <span>Bagikan Website</span>
-                  </button>
-                )}
-                <button
-                  type="button"
-                  onClick={() => setShowMedsosModal(false)}
-                  className="flex-1 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-200 transition-colors"
-                >
-                  Tutup
-                </button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+      <MedsosModal
+        isOpen={showMedsosModal}
+        onClose={() => setShowMedsosModal(false)}
+      />
     </>
   );
 };

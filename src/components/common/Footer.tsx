@@ -11,7 +11,7 @@ import {
   FileText,
   HelpCircle
 } from 'lucide-react';
-import { YoutubeIcon, InstagramIcon, FacebookIcon } from './SocialIcons';
+import { YoutubeIcon, InstagramIcon, FacebookIcon, WhatsAppIcon, TikTokIcon } from './SocialIcons';
 
 export const Footer: React.FC = () => {
   const [showContactModal, setShowContactModal] = useState(false);
@@ -116,66 +116,74 @@ export const Footer: React.FC = () => {
 
             {/* ================= COLUMN 3: SOCIAL ICONS PILL (lg:col-span-2) ================= */}
             <div className="lg:col-span-2 flex flex-col justify-start lg:items-center space-y-2 pt-0.5">
-              {/* Row 1 */}
+              <h4 className="text-xs sm:text-sm font-bold text-[#e5a93b] uppercase tracking-wider text-left lg:text-center w-full">
+                MEDIA SOSIAL
+              </h4>
+              {/* Row 1: WhatsApp, Instagram, TikTok */}
               <div className="flex items-center gap-2">
                 <a
-                  href="https://facebook.com/ppjauharulmaknuun"
+                  href="https://wa.me/6285646199273"
                   target="_blank"
                   rel="noreferrer"
                   className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
-                  aria-label="Facebook PPJM"
+                  aria-label="WhatsApp Admin PPJM"
+                  title="WhatsApp Admin"
                 >
-                  <FacebookIcon className="w-3.5 h-3.5" />
+                  <WhatsAppIcon className="w-3.5 h-3.5" />
                 </a>
                 <a
-                  href="https://instagram.com/ppjauharulmaknuun"
+                  href="https://www.instagram.com/ppjauharulmaknuun?mdxt=MWRieHkydGt5ZDNrNw=="
                   target="_blank"
                   rel="noreferrer"
                   className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
                   aria-label="Instagram PPJM"
+                  title="Instagram Resmi"
                 >
                   <InstagramIcon className="w-3.5 h-3.5" />
                 </a>
                 <a
-                  href="https://youtube.com/@ppjauharulmaknuun"
+                  href="https://www.tiktok.com/@ppjauharulmaknuun?_r=1&_t=ZS-9ArxcQ3dNKf"
                   target="_blank"
                   rel="noreferrer"
                   className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
-                  aria-label="YouTube PPJM"
+                  aria-label="TikTok Resmi PPJM"
+                  title="TikTok Resmi"
                 >
-                  <YoutubeIcon className="w-3.5 h-3.5" />
+                  <TikTokIcon className="w-3.5 h-3.5" />
                 </a>
               </div>
 
-              {/* Row 2 */}
+              {/* Row 2: YouTube, WhatsApp Channel, All Channels Trigger */}
               <div className="flex items-center gap-2">
                 <a
-                  href="https://facebook.com/ppjauharulmaknuun"
+                  href="https://youtube.com/@ppjauharulmaknuunlasem?si=OHYeRczBA-kLl3Kl"
                   target="_blank"
                   rel="noreferrer"
                   className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
-                  aria-label="Facebook PPJM Fanpage"
-                >
-                  <FacebookIcon className="w-3.5 h-3.5" />
-                </a>
-                <a
-                  href="https://instagram.com/ppjauharulmaknuun"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
-                  aria-label="Instagram Galeri Santri"
-                >
-                  <InstagramIcon className="w-3.5 h-3.5" />
-                </a>
-                <a
-                  href="https://youtube.com/@ppjauharulmaknuun"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
-                  aria-label="YouTube Live Streaming PPJM"
+                  aria-label="YouTube Channel PPJM"
+                  title="YouTube Channel"
                 >
                   <YoutubeIcon className="w-3.5 h-3.5" />
                 </a>
+                <a
+                  href="https://whatsapp.com/channel/0029Vb6FZq7Jpe8cR5vR0T0D"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
+                  aria-label="Saluran WhatsApp Resmi"
+                  title="Saluran WhatsApp Resmi"
+                >
+                  <span className="text-xs font-bold text-[#e5a93b]">WA</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-medsos-modal'))}
+                  className="px-2 h-8 rounded-lg bg-emerald-800/80 hover:bg-emerald-700 text-[#e5a93b] hover:text-white border border-[#d4af37]/40 flex items-center justify-center text-[11px] font-bold transition-all shadow-xs cursor-pointer gap-1"
+                  title="Lihat 7 Kanal Komunikasi Resmi"
+                >
+                  <span>Medsos</span>
+                  <ExternalLink className="w-3 h-3" />
+                </button>
               </div>
             </div>
 
@@ -193,11 +201,17 @@ export const Footer: React.FC = () => {
                   </p>
                 </div>
 
-                {/* Phone */}
+                {/* WhatsApp Admin Hotline */}
                 <div className="flex items-center gap-1.5">
                   <Phone className="w-3.5 h-3.5 text-[#e5a93b] shrink-0" />
-                  <a href="tel:0313949000" className="hover:text-white transition-colors">
-                    031-3949xxx (Panitia PPDB)
+                  <a
+                    href="https://wa.me/6285646199273"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-white transition-colors flex items-center gap-1"
+                  >
+                    <span>+62 856-4619-9273</span>
+                    <span className="text-[10px] bg-emerald-700/80 text-emerald-200 px-1.5 py-0.2 rounded font-bold">Chat Admin</span>
                   </a>
                 </div>
 

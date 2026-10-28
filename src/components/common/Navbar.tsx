@@ -107,7 +107,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             <span>|</span>
             <span>🔬 Laboratorium Komputer Modern &amp; Kurikulum Riset STEM Santri Terpadu</span>
             <span>|</span>
-            <span>📲 Narahubung Sekretariat &amp; Konsultasi Asrama: 0812-3456-7890</span>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-medsos-modal'))}
+              className="hover:underline cursor-pointer font-bold text-emerald-800 inline-flex items-center gap-1"
+            >
+              <span>📲 WhatsApp Admin &amp; Medsos Resmi: +62 856-4619-9273</span>
+            </button>
           </div>
         </div>
       </div>

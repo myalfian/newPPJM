@@ -522,17 +522,29 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
               })}
             </div>
 
-            {/* Footer Action Links: WhatsApp, PPDB, Admin */}
+            {/* Footer Action Links: WhatsApp, Medsos, Admin */}
             <div className="p-3.5 border-t border-slate-100 bg-slate-50 space-y-2 shrink-0 pb-safe">
               <a
-                href="https://wa.me/6281234567890?text=Assalamualaikum,%20saya%20ingin%20konsultasi%20mengenai%20Pondok%20Pesantren%20Jauharul%20Maknuun."
+                href="https://wa.me/6285646199273?text=Assalamualaikum,%20saya%20ingin%20konsultasi%20mengenai%20Pondok%20Pesantren%20Jauharul%20Maknuun."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl text-xs font-bold text-emerald-800 bg-emerald-100/80 hover:bg-emerald-200 min-h-[40px] transition-colors"
               >
                 <MessageCircle className="w-4 h-4 text-emerald-800" />
-                <span>Konsultasi WhatsApp Sekretariat</span>
+                <span>WhatsApp Admin (+62 856-4619-9273)</span>
               </a>
+
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  window.dispatchEvent(new CustomEvent('open-medsos-modal'));
+                }}
+                className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl text-xs font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300/60 min-h-[40px] transition-colors cursor-pointer"
+              >
+                <Globe className="w-4 h-4 text-emerald-700" />
+                <span>Kanal Komunikasi &amp; Medsos Resmi (7 Kanal)</span>
+              </button>
 
               <Link
                 to="/admin"
