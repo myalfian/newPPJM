@@ -26,7 +26,9 @@ import {
   Users,
   Building2,
   School,
-  Newspaper
+  Newspaper,
+  Info,
+  FileText
 } from 'lucide-react';
 import { OsisIcon } from '../../data/navigationData';
 import './NavBarTabs.css';
@@ -172,6 +174,15 @@ const DEFAULT_CATEGORY_TABS: Record<
       { id: 'press-release', label: 'Press Release', shortLabel: 'Press Release', href: '/jm-news/press-release', icon: Newspaper },
     ],
   },
+  'spmb': {
+    parentLabel: 'SPMB',
+    parentHref: '/spmb',
+    parentIcon: GraduationCap,
+    tabs: [
+      { id: 'tentang-spmb', label: 'Tentang SPMB', shortLabel: 'Tentang', href: '/spmb', icon: Info },
+      { id: 'formulir-spmb', label: 'Formulir SPMB', shortLabel: 'Formulir', href: '/spmb#formulir', icon: FileText },
+    ],
+  },
 };
 
 /**
@@ -193,7 +204,8 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
 
   // Auto-detect hub category if tabs are not provided explicitly
   let detectedCategory = '';
-  if (pathname.includes('/jm-news') || pathname.includes('/berita')) detectedCategory = 'jm-news';
+  if (pathname.includes('/spmb') || pathname.includes('/ppdb')) detectedCategory = 'spmb';
+  else if (pathname.includes('/jm-news') || pathname.includes('/berita')) detectedCategory = 'jm-news';
   else if (pathname.includes('/agenda') || pathname.includes('/karya-siswa')) detectedCategory = 'agenda';
   else if (pathname.includes('/osis')) detectedCategory = 'osis';
   else if (pathname.includes('/jm-center')) detectedCategory = 'jm-center';

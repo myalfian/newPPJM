@@ -38,7 +38,7 @@ export const BottomNav: React.FC = () => {
   }, []);
 
   // Determine active tab corresponding to the 5 positions
-  let activeTab: 'home' | 'news' | 'center' | 'agenda' | 'program' = 'home';
+  let activeTab: 'home' | 'news' | 'center' | 'agenda' | 'spmb' = 'home';
   if (showMedsosModal) {
     activeTab = 'center';
   } else if (
@@ -51,10 +51,10 @@ export const BottomNav: React.FC = () => {
   } else if (location.pathname.startsWith('/agenda') || location.pathname.startsWith('/karya-siswa')) {
     activeTab = 'agenda';
   } else if (
-    location.pathname.startsWith('/program-unggulan') ||
-    location.pathname.startsWith('/jm-center')
+    location.pathname.startsWith('/spmb') ||
+    location.pathname.startsWith('/ppdb')
   ) {
-    activeTab = 'program';
+    activeTab = 'spmb';
   } else if (location.pathname === '/') {
     activeTab = 'home';
   }
@@ -293,30 +293,23 @@ export const BottomNav: React.FC = () => {
               </span>
             </button>
 
-            {/* 5. Program & PPDB */}
+            {/* 5. SPMB - Sistem Penerimaan Murid Baru */}
             <button
               type="button"
-              onClick={() => {
-                const el = document.getElementById('kontak-ppdb');
-                if (el) {
-                  el.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                  navigate('/program-unggulan/program-sekolah');
-                }
-              }}
+              onClick={() => navigate('/spmb')}
               className="flex flex-col items-center justify-center h-full relative cursor-pointer group py-1"
-              aria-label="PPDB"
-              title="PPDB"
+              aria-label="SPMB"
+              title="SPMB - Sistem Penerimaan Murid Baru"
             >
               <motion.div
                 whileTap={{ scale: 0.88 }}
                 animate={{
-                  scale: activeTab === 'program' ? 1.1 : 1,
-                  y: activeTab === 'program' ? -1.5 : 0,
+                  scale: activeTab === 'spmb' ? 1.1 : 1,
+                  y: activeTab === 'spmb' ? -1.5 : 0,
                 }}
                 transition={{ type: 'spring', stiffness: 420, damping: 28 }}
                 className={`transition-colors duration-200 ${
-                  activeTab === 'program'
+                  activeTab === 'spmb'
                     ? 'text-emerald-700 dark:text-emerald-400'
                     : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
                 }`}
@@ -325,12 +318,12 @@ export const BottomNav: React.FC = () => {
               </motion.div>
               <span
                 className={`text-[11.5px] sm:text-[12px] tracking-tight mt-1 leading-none transition-colors duration-200 ${
-                  activeTab === 'program'
+                  activeTab === 'spmb'
                     ? 'font-black text-emerald-800 dark:text-emerald-300'
                     : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200'
                 }`}
               >
-                PPDB
+                SPMB
               </span>
             </button>
           </div>

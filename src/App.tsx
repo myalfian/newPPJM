@@ -152,6 +152,7 @@ const GaleriFoto = lazy(() => import('./pages/galeri/GaleriFoto').then(m => ({ d
 const GaleriVideo = lazy(() => import('./pages/galeri/GaleriVideo').then(m => ({ default: m.GaleriVideo })));
 const Berita = lazy(() => import('./pages/Berita').then(m => ({ default: m.Berita })));
 const DetailBerita = lazy(() => import('./pages/DetailBerita').then(m => ({ default: m.DetailBerita })));
+const Spmb = lazy(() => import('./pages/Spmb').then(m => ({ default: m.Spmb })));
 
 // Admin CMS Pages (Route-level code splitting with React.lazy)
 const Login = lazy(() => import('./pages/admin/Login').then(m => ({ default: m.Login })));
@@ -249,6 +250,10 @@ export const App: React.FC = () => {
             <Route path="galeri" element={<Navigate to="/galeri/foto" replace />} />
             <Route path="galeri/foto" element={<GaleriFoto />} />
             <Route path="galeri/video" element={<GaleriVideo />} />
+
+            {/* SPMB - Sistem Penerimaan Murid Baru */}
+            <Route path="spmb" element={<Spmb />} />
+            <Route path="ppdb" element={<Navigate to="/spmb" replace />} />
 
             {/* Profile Akun Pengguna / Santri */}
             <Route path="profil" element={<UserProfilePage />} />

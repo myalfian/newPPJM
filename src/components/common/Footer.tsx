@@ -102,13 +102,22 @@ export const Footer: React.FC = () => {
                   </Link>
                 </li>
                 <li>
+                  <Link
+                    to="/spmb"
+                    className="hover:text-white transition-colors flex items-center gap-1.5 text-emerald-200 font-bold group"
+                  >
+                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-xs">→</span>
+                    <span>SPMB (Penerimaan Murid Baru)</span>
+                  </Link>
+                </li>
+                <li>
                   <button
                     type="button"
                     onClick={() => openModal('faq')}
                     className="hover:text-white transition-colors flex items-center gap-1.5 text-left cursor-pointer group"
                   >
                     <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-xs">→</span>
-                    <span>Tanya Jawab (FAQ PPDB)</span>
+                    <span>Tanya Jawab (FAQ SPMB)</span>
                   </button>
                 </li>
               </ul>
@@ -332,17 +341,17 @@ export const Footer: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <div className="p-3 rounded-2xl bg-emerald-50/60 border border-emerald-100 space-y-0.5">
                     <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">
-                      WhatsApp Panitia PPDB:
+                      WhatsApp Panitia SPMB:
                     </span>
                     <a
-                      href="https://wa.me/6281234567890?text=Assalamu'alaikum%20Panitia%20PPDB%20PPJM"
+                      href="https://wa.me/6285646199273?text=Assalamu'alaikum%20Panitia%20SPMB%20PPJM"
                       target="_blank"
                       rel="noreferrer"
                       className="font-mono font-bold text-xs text-emerald-950 hover:underline block"
                     >
-                      +62 812-3456-7890
+                      +62 856-4619-9273
                     </a>
-                    <span className="text-[9px] text-emerald-700">Layanan Aktif 07.00 - 20.00 WIB</span>
+                    <span className="text-[9px] text-emerald-700">Layanan Aktif 07.30 - 20.00 WIB</span>
                   </div>
 
                   <div className="p-3 rounded-2xl bg-amber-50/60 border border-amber-100 space-y-0.5">
@@ -383,17 +392,21 @@ export const Footer: React.FC = () => {
                   Pondok Pesantren Jauharul Maknuun berkomitmen menjaga kerahasiaan data pribadi calon santri, wali santri, dan pengunjung website resmi sesuai ketentuan perundang-undangan.
                 </p>
                 <p>
-                  Data formulir pendaftaran PPDB hanya digunakan untuk keperluan verifikasi akademik, administrasi asrama, dan arsip resmi pesantren tanpa diperjualbelikan kepada pihak ketiga.
+                  Data formulir pendaftaran SPMB hanya digunakan untuk keperluan verifikasi akademik, administrasi asrama, dan arsip resmi pesantren tanpa diperjualbelikan kepada pihak ketiga.
                 </p>
               </div>
             )}
 
-            {/* Modal Body: FAQ PPDB */}
+            {/* Modal Body: FAQ SPMB */}
             {modalType === 'faq' && (
               <div className="space-y-2 text-xs text-gray-700 max-h-[60vh] overflow-y-auto pr-1">
                 <div className="p-2.5 rounded-xl bg-gray-50 border border-gray-200">
+                  <p className="font-bold text-gray-900">Q: Apa itu SPMB?</p>
+                  <p className="mt-0.5 text-gray-600">A: SPMB adalah Sistem Penerimaan Murid Baru resmi Pondok Pesantren Jauharul Maknuun dan SMP Plus Jauharul Maknuun Lasem, Sidayu, Gresik.</p>
+                </div>
+                <div className="p-2.5 rounded-xl bg-gray-50 border border-gray-200">
                   <p className="font-bold text-gray-900">Q: Apa saja syarat pendaftaran santri baru?</p>
-                  <p className="mt-0.5 text-gray-600">A: Mengisi formulir online, fotokopi KK/Akta, ijazah terakhir, dan lulus tes baca Al-Qur&apos;an dasar.</p>
+                  <p className="mt-0.5 text-gray-600">A: Mengisi formulir online, fotokopi KK/Akta, ijazah/rapor terakhir, dan lulus tes baca Al-Qur&apos;an dasar.</p>
                 </div>
                 <div className="p-2.5 rounded-xl bg-gray-50 border border-gray-200">
                   <p className="font-bold text-gray-900">Q: Apakah ada program beasiswa bagi penghafal Al-Qur&apos;an?</p>

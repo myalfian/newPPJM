@@ -522,8 +522,17 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
               })}
             </div>
 
-            {/* Footer Action Links: WhatsApp, Medsos, Admin */}
+            {/* Footer Action Links: WhatsApp, Medsos, SPMB, Admin */}
             <div className="p-3.5 border-t border-slate-100 bg-slate-50 space-y-2 shrink-0 pb-safe">
+              <Link
+                to="/spmb"
+                onClick={onClose}
+                className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl text-xs font-bold text-white bg-emerald-800 hover:bg-emerald-900 shadow-xs min-h-[40px] transition-colors"
+              >
+                <GraduationCap className="w-4 h-4 text-amber-300" />
+                <span>SPMB - Penerimaan Murid Baru 2026/2027</span>
+              </Link>
+
               <a
                 href="https://wa.me/6285646199273?text=Assalamualaikum,%20saya%20ingin%20konsultasi%20mengenai%20Pondok%20Pesantren%20Jauharul%20Maknuun."
                 target="_blank"

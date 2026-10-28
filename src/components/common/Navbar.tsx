@@ -99,7 +99,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
         </div>
         <div className="overflow-hidden whitespace-nowrap w-full">
           <div className="animate-ticker text-[#0d4a28] font-medium inline-block space-x-6">
-            <span>✨ Pendaftaran PPDB Santri Baru Pondok Pesantren Jauharul Maknuun TP 2026/2027 telah dibuka!</span>
+            <Link to="/spmb" className="hover:underline font-bold">✨ Pendaftaran SPMB (Sistem Penerimaan Murid Baru) TP 2026/2027 telah dibuka!</Link>
             <span>|</span>
             <span>🏆 Pondok Pesantren Jauharul Maknuun Resmi Meraih Akreditasi &quot;A&quot; BAN-PDM</span>
             <span>|</span>
