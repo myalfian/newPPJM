@@ -140,6 +140,7 @@ const ProgramHub = lazy(() => import('./pages/program/ProgramHub').then(m => ({ 
 const AmaliyahPondok = lazy(() => import('./pages/program-unggulan/AmaliyahPondok').then(m => ({ default: m.AmaliyahPondok })));
 const ProgramSekolah = lazy(() => import('./pages/program-unggulan/ProgramSekolah').then(m => ({ default: m.ProgramSekolah })));
 const ProgramMadin = lazy(() => import('./pages/program-unggulan/ProgramMadin').then(m => ({ default: m.ProgramMadin })));
+const SmartJmHub = lazy(() => import('./pages/smart-jm/SmartJmHub').then(m => ({ default: m.SmartJmHub })));
 const QuranReadPage = lazy(() => import('./pages/smart-jm/hafidz/QuranReadPage').then(m => ({ default: m.QuranReadPage })));
 const MurojaahPage = lazy(() => import('./pages/smart-jm/hafidz/MurojaahPage').then(m => ({ default: m.MurojaahPage })));
 const StemMateri = lazy(() => import('./pages/smart-jm/stem/StemMateri').then(m => ({ default: m.StemMateri })));
@@ -220,7 +221,7 @@ export const App: React.FC = () => {
 
             {/* Smart JM & STEM Modules */}
             <Route path="stem" element={<Navigate to="/smart-jm/stem/materi" replace />} />
-            <Route path="smart-jm" element={<Navigate to="/smart-jm/stem/materi" replace />} />
+            <Route path="smart-jm" element={<SmartJmHub defaultTab="stem" />} />
             <Route path="smart-jm/hafidz/read" element={<QuranReadPage />} />
             <Route path="smart-jm/hafidz/murojaah" element={<MurojaahPage />} />
             <Route path="smart-jm/stem/materi" element={<StemMateri />} />
