@@ -143,13 +143,13 @@ const DEFAULT_CATEGORY_TABS: Record<
     ],
   },
   'agenda': {
-    parentLabel: 'Agenda',
-    parentHref: '/agenda',
-    parentIcon: CalendarCheck2,
+    parentLabel: 'Karya Siswa',
+    parentHref: '/karya-siswa',
+    parentIcon: Sparkles,
     tabs: [
-      { id: 'agenda-current', label: 'Bulan Ini', shortLabel: 'Current', href: '/agenda', icon: CalendarDays },
-      { id: 'agenda-future', label: 'Mendatang', shortLabel: 'Future', href: '/agenda', icon: Clock3 },
-      { id: 'agenda-historical', label: 'Arsip Program', shortLabel: 'Historical', href: '/agenda', icon: CheckCircle2 },
+      { id: 'agenda-current', label: 'Bulan Ini', shortLabel: 'Current', href: '/karya-siswa', icon: CalendarDays },
+      { id: 'agenda-future', label: 'Mendatang', shortLabel: 'Future', href: '/karya-siswa', icon: Clock3 },
+      { id: 'agenda-historical', label: 'Arsip Program', shortLabel: 'Historical', href: '/karya-siswa', icon: CheckCircle2 },
     ],
   },
   'osis': {
@@ -183,7 +183,7 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
 
   // Auto-detect hub category if tabs are not provided explicitly
   let detectedCategory = '';
-  if (pathname.includes('/agenda')) detectedCategory = 'agenda';
+  if (pathname.includes('/agenda') || pathname.includes('/karya-siswa')) detectedCategory = 'agenda';
   else if (pathname.includes('/osis')) detectedCategory = 'osis';
   else if (pathname.includes('/jm-center')) detectedCategory = 'jm-center';
   else if (pathname.includes('/program-unggulan')) detectedCategory = 'program-unggulan';

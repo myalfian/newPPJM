@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Home, Newspaper, Sprout, CalendarDays, GraduationCap, X, Share2, ExternalLink } from 'lucide-react';
+import { Home, Newspaper, Sprout, CalendarDays, GraduationCap, X, Share2, ExternalLink, Sparkles } from 'lucide-react';
 
 export const BottomNav: React.FC = () => {
   const navigate = useNavigate();
@@ -40,7 +40,7 @@ export const BottomNav: React.FC = () => {
     location.pathname.startsWith('/ekskul')
   ) {
     activeTab = 'news';
-  } else if (location.pathname.startsWith('/agenda')) {
+  } else if (location.pathname.startsWith('/agenda') || location.pathname.startsWith('/karya-siswa')) {
     activeTab = 'agenda';
   } else if (
     location.pathname.startsWith('/program-unggulan') ||
@@ -271,13 +271,13 @@ export const BottomNav: React.FC = () => {
               </span>
             </div>
 
-            {/* 4. Agenda Kegiatan Santri (Historical, Current, Future) */}
+            {/* 4. Karya Siswa & Portofolio Santri */}
             <button
               type="button"
-              onClick={() => navigate('/agenda')}
+              onClick={() => navigate('/karya-siswa')}
               className="flex flex-col items-center justify-center h-full relative cursor-pointer group py-1"
-              aria-label="Agenda"
-              title="Agenda Kegiatan Santri"
+              aria-label="Karya Siswa"
+              title="Karya & Portofolio Siswa"
             >
               <motion.div
                 whileTap={{ scale: 0.88 }}
@@ -292,16 +292,16 @@ export const BottomNav: React.FC = () => {
                     : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
                 }`}
               >
-                <CalendarDays className="w-5 h-5 stroke-[2.3]" />
+                <Sparkles className="w-5 h-5 stroke-[2.3]" />
               </motion.div>
               <span
-                className={`text-[11.5px] sm:text-[12px] tracking-tight mt-1 leading-none transition-colors duration-200 ${
+                className={`text-[11px] sm:text-[11.5px] tracking-tight mt-1 leading-none transition-colors duration-200 ${
                   activeTab === 'agenda'
                     ? 'font-black text-emerald-800 dark:text-emerald-300'
                     : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200'
                 }`}
               >
-                Agenda
+                Karya Siswa
               </span>
             </button>
 

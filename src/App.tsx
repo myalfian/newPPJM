@@ -229,7 +229,8 @@ export const App: React.FC = () => {
             <Route path="ekskul" element={<Ekskul />} />
             <Route path="osis" element={<Osis />} />
 
-            {/* Agenda Kegiatan Santri (Historical, Current, Future) */}
+            {/* Karya Siswa & Agenda Santri (Inovasi, Riset & Portofolio) */}
+            <Route path="karya-siswa" element={<Agenda />} />
             <Route path="agenda" element={<Agenda />} />
 
             {/* Warta & Kabar Pesantren */}

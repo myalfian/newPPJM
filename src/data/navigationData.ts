@@ -285,9 +285,9 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
   },
   {
     id: 'agenda',
-    label: 'Agenda',
-    icon: CalendarDays,
-    href: '/agenda',
+    label: 'Karya Siswa',
+    icon: Sparkles,
+    href: '/karya-siswa',
     isDropdown: false,
     color: {
       badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 group-hover:bg-emerald-100 group-hover:text-emerald-800',
@@ -296,7 +296,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeDot: 'bg-[#d4af37]',
     },
     items: [
-      { title: 'Agenda Bulanan', href: '/agenda', desc: 'Jadwal & kalender kegiatan santri', icon: CalendarDays },
+      { title: 'Karya & Portofolio Siswa', href: '/karya-siswa', desc: 'Inovasi, riset teknologi & karya kreatif santri', icon: Sparkles },
     ]
   },
 ];

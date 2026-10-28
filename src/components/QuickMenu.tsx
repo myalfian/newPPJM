@@ -8,7 +8,8 @@ import {
   Palette,
   Images,
   ArrowUpRight,
-  CalendarDays
+  CalendarDays,
+  Sparkles
 } from 'lucide-react';
 import { OsisIcon } from '../data/navigationData';
 
@@ -95,15 +96,15 @@ export const QuickMenu: React.FC = () => {
       route: '/osis'
     },
     {
-      id: 'agenda-pesantren',
-      label: 'Agenda',
-      icon: CalendarDays,
+      id: 'karya-siswa',
+      label: 'Karya Siswa',
+      icon: Sparkles,
       cardTheme: 'bg-gradient-to-br from-[#f0fdf4] via-[#ecfdf5] to-[#d1fae5]/95 border-2 border-emerald-300/90 hover:border-emerald-500 shadow-xs dark:from-slate-900 dark:via-emerald-950/40 dark:to-slate-900 dark:border-emerald-600/60 dark:hover:border-emerald-400/80',
       pillTheme: 'bg-gradient-to-br from-emerald-100 to-emerald-200/80 border border-emerald-300/70 dark:from-emerald-950 dark:to-emerald-900/60 dark:border-emerald-600/60',
       iconColor: 'text-[#0d4a28] dark:text-emerald-300',
       glowTheme: 'group-hover:bg-emerald-400/20',
       hoverShadow: 'hover:shadow-emerald-500/20',
-      route: '/agenda'
+      route: '/karya-siswa'
     },
     {
       id: 'galeri-sekolah',

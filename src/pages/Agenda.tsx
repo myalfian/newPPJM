@@ -406,16 +406,16 @@ export const Agenda: React.FC = () => {
       <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-4 sm:p-6 lg:p-7 text-white shadow-m3-2 relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="space-y-2 max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs sm:text-sm font-black uppercase tracking-wider shadow-sm">
-            <CalendarCheck2 className="w-4 h-4 text-emerald-950" />
-            <span>Kalender Akademik & Agenda Program</span>
+            <Sparkles className="w-4 h-4 text-emerald-950" />
+            <span>Karya Siswa &amp; Agenda Santri</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
-            Agenda Kegiatan Santri Tiap Bulan
+            Karya Siswa &amp; Agenda Program Santri
           </h1>
 
           <p className="text-sm sm:text-base text-emerald-100 font-medium leading-relaxed sm:leading-loose">
-            Jadwal terpadu program tahfidz, kajian madrasah diniyah salafiyah, riset laboratorium STEM, ujian penutur bahasa, dan agenda sosial kemasyarakatan Pondok Pesantren Jauharul Maknuun.
+            Eksplorasi portofolio inovasi sains teknologi santri, pencapaian riset STEM, karya literasi, serta jadwal terpadu kegiatan Pondok Pesantren Jauharul Maknuun.
           </p>
         </div>
 

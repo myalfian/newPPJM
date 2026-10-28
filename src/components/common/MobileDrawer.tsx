@@ -251,10 +251,10 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
     },
     {
       id: 'agenda',
-      title: 'Agenda Kegiatan',
-      subtitle: 'Kalender & Jadwal Program',
-      href: '/agenda',
-      icon: CalendarDays,
+      title: 'Karya Siswa',
+      subtitle: 'Inovasi, Riset & Portofolio',
+      href: '/karya-siswa',
+      icon: Sparkles,
       color: {
         badgeBg: 'bg-emerald-50',
         iconColor: 'text-[#0d4a28]',
@@ -262,13 +262,15 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
         activeBg: 'bg-[#0f5132]',
       },
       items: [
-        { title: 'Jadwal Agenda Bulanan', href: '/agenda', desc: 'Timeline & arsip kegiatan santri', icon: CalendarDays },
+        { title: 'Karya & Portofolio Santri', href: '/karya-siswa', desc: 'Inovasi teknologi, literasi & seni kreatif', icon: Sparkles },
       ],
     },
   ];
 
   const isCurrentActive = (categoryHref: string) => {
-    if (categoryHref === '/agenda') return location.pathname.startsWith('/agenda');
+    if (categoryHref === '/agenda' || categoryHref === '/karya-siswa') {
+      return location.pathname.startsWith('/agenda') || location.pathname.startsWith('/karya-siswa');
+    }
     if (categoryHref === '/prestasi') return location.pathname === '/prestasi';
     if (categoryHref === '/ekskul') return location.pathname === '/ekskul';
     if (categoryHref === '/osis') return location.pathname === '/osis';
