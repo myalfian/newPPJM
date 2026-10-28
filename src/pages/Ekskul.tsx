@@ -1,94 +1,23 @@
-import React from 'react';
-import { Activity, Music, Shield, Cpu, Globe, Camera, Flag } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import {
+  Activity,
+  Sparkles,
+  Search,
+  Award,
+  Users2,
+  Calendar,
+  Layers
+} from 'lucide-react';
 import { NavBarTabs } from '../components/common/NavBarTabs';
+import { EkskulCategoryFilter } from './ekskul/EkskulCategoryFilter';
+import { EkskulCard } from './ekskul/EkskulCard';
+import { EkskulDetailModal } from './ekskul/EkskulDetailModal';
+import { EKSKUL_DATASET } from './ekskul/ekskulData';
+import { DetailedEkskulItem, EkskulCategory } from './ekskul/types';
 import { supabase } from '../lib/supabase';
 import { useCachedQuery } from '../lib/queryCache';
 
-export interface EkskulItem {
-  id: string;
-  name: string;
-  icon: React.ComponentType<{ className?: string }>;
-  schedule: string;
-  mentor: string;
-  desc: string;
-  image: string;
-  badge: string;
-}
-
-const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
-  Music,
-  Shield,
-  Cpu,
-  Globe,
-  Camera,
-  Flag,
-  Activity,
-};
-
-const DEFAULT_EKSKULS: EkskulItem[] = [
-  {
-    id: 'e1',
-    name: 'Hadrah Al-Banjari PPJM',
-    icon: Music,
-    schedule: 'Malam Rabu & Malam Ahad (20.00 WIB)',
-    mentor: 'Ust. M. Ridlwan',
-    desc: 'Pelatihan seni tabuh terbang banjari, teknik vokal sholawat, dan penguasaan qasidah puji-pujian kepada Rasulullah SAW.',
-    image: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80',
-    badge: 'Seni Musik Islami'
-  },
-  {
-    id: 'e2',
-    name: 'Pencak Silat Pagar Nusa',
-    icon: Shield,
-    schedule: 'Jumat Pagi & Selasa Sore',
-    mentor: 'Pendekar Syamsul Hadi',
-    desc: 'Penggemblengan fisik, teknik bela diri tradisional pencak silat nahdlatul ulama, dan penanaman budi pekerti luhur santri.',
-    image: 'https://images.unsplash.com/photo-1555597673-b21d5c935865?auto=format&fit=crop&w=800&q=80',
-    badge: 'Bela Diri Tradisi'
-  },
-  {
-    id: 'e3',
-    name: 'Klub Robotika & IoT Pesantren',
-    icon: Cpu,
-    schedule: 'Sabtu Siang (13.30 - 16.00 WIB)',
-    mentor: 'Ustadz Riski, S.T.',
-    desc: 'Praktik mikrokontroler Arduino/ESP32, perakitan line follower, otomatisasi green-house, dan persiapan kompetisi sains.',
-    image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80',
-    badge: 'Teknologi & Sains'
-  },
-  {
-    id: 'e4',
-    name: 'Klub Bahasa Asing (Arab & Mandarin)',
-    icon: Globe,
-    schedule: 'Senin & Kamis Malam',
-    mentor: 'Lao Shi Chen & Ust. Fauzan',
-    desc: 'Pelatihan muhadharah (pidato tiga bahasa), percakapan tematik, tata bahasa Pinyin, dan seni kaligrafi khat.',
-    image: 'https://images.unsplash.com/photo-1508873696983-2df5293cb32f?auto=format&fit=crop&w=800&q=80',
-    badge: 'Bahasa Internasional'
-  },
-  {
-    id: 'e5',
-    name: 'Kreatif Multimedia & Jurnalistik',
-    icon: Camera,
-    schedule: 'Ahad Pagi (08.00 WIB)',
-    mentor: 'Tim Media PPJM',
-    desc: 'Pelatihan fotografi dakwah, videografi dokumenter, pengelolaan web santri, dan penulisan artikel buletin pesantren.',
-    image: 'https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&w=800&q=80',
-    badge: 'Media Dakwah'
-  },
-  {
-    id: 'e6',
-    name: 'Gerakan Pramuka Gudep Santri',
-    icon: Flag,
-    schedule: 'Sabtu Sore (15.30 WIB)',
-    mentor: 'Kak Ahmad Yani',
-    desc: 'Pengembangan karakter kemandirian, survival alam terbuka, tali temali, kedisiplinan baris-berbaris, dan jiwa kepemimpinan.',
-    image: 'https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=800&q=80',
-    badge: 'Kepanduan'
-  }
-];
-
-const fetchEkskuls = async (): Promise<EkskulItem[]> => {
+const fetchEkskulsData = async (): Promise<DetailedEkskulItem[]> => {
   try {
     const { data, error } = await supabase
       .from('extracurriculars')
@@ -96,106 +25,196 @@ const fetchEkskuls = async (): Promise<EkskulItem[]> => {
       .order('created_at', { ascending: true });
 
     if (error || !data || data.length === 0) {
-      return DEFAULT_EKSKULS;
+      return EKSKUL_DATASET;
     }
 
+    // Merge Supabase entries with default gallery dataset
     return data.map((item) => {
-      const IconComp = ICON_MAP[item.icon_name || 'Activity'] || Activity;
+      const existing = EKSKUL_DATASET.find((d) => d.id === item.id || d.name === item.name);
       return {
         id: item.id,
         name: item.name,
-        icon: IconComp,
-        schedule: item.schedule,
-        mentor: item.mentor_name || 'Pembina PPJM',
-        desc: item.description,
-        image: item.cover_image || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80',
-        badge: item.icon_name || 'Ekstrakurikuler'
+        category: ((item as any).category as any) || existing?.category || 'Sains & Teknologi',
+        schedule: item.schedule || existing?.schedule || 'Jadwal Mingguan',
+        coach: item.mentor_name || existing?.coach || 'Pembina PPJM',
+        description: item.description || existing?.description || '',
+        featuredPhoto: item.cover_image || existing?.featuredPhoto || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
+        gallery: existing?.gallery || [],
+        highlights: existing?.highlights || ['Latihan rutin terstruktur', 'Pembinaan karakter mandiri'],
+        targetCapaian: existing?.targetCapaian,
+        tempatLatihan: existing?.tempatLatihan
       };
     });
   } catch {
-    return DEFAULT_EKSKULS;
+    return EKSKUL_DATASET;
   }
 };
 
 export const Ekskul: React.FC = () => {
-  const { data: ekskuls } = useCachedQuery<EkskulItem[]>(
-    'ekskul_list',
-    fetchEkskuls,
-    DEFAULT_EKSKULS
+  const { data: ekskuls } = useCachedQuery<DetailedEkskulItem[]>(
+    'ekskul_dataset_v2',
+    fetchEkskulsData,
+    EKSKUL_DATASET
   );
 
+  const [selectedCategory, setSelectedCategory] = useState<EkskulCategory>('Semua Kategori');
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [activeDetailItem, setActiveDetailItem] = useState<DetailedEkskulItem | null>(null);
+
+  // Category counts calculation
+  const categoryCounts = useMemo(() => {
+    const counts: Record<EkskulCategory, number> = {
+      'Semua Kategori': ekskuls.length,
+      'Sains & Teknologi': 0,
+      'Seni & Bahasa': 0,
+      'Olahraga & Bela Diri': 0,
+      'Kepanduan & Keagamaan': 0
+    };
+
+    ekskuls.forEach((item) => {
+      if (counts[item.category] !== undefined) {
+        counts[item.category]++;
+      }
+    });
+
+    return counts;
+  }, [ekskuls]);
+
+  // Filtered ekskuls
+  const filteredEkskuls = useMemo(() => {
+    return ekskuls.filter((item) => {
+      const matchCategory =
+        selectedCategory === 'Semua Kategori' || item.category === selectedCategory;
+      const matchSearch =
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.coach.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+      return matchCategory && matchSearch;
+    });
+  }, [ekskuls, selectedCategory, searchQuery]);
+
   return (
-    <div className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2 space-y-1.5 sm:space-y-2">
-      {/* Skeuomorphic Folder-Tab Breadcrumb Navigation */}
+    <div className="w-full max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-3 sm:py-6 space-y-5 sm:space-y-8 overflow-x-hidden select-none">
+      {/* Folder-style Navigation Breadcrumb */}
       <NavBarTabs />
 
-      {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-2.5 sm:p-3.5 lg:p-4 text-white shadow-m3-2 relative overflow-hidden">
-        <div className="relative z-10 space-y-1.5">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
-            <Activity className="w-3.5 h-3.5" />
-            <span>Kreativitas & Minat Bakat</span>
+      {/* ========================================================= */}
+      {/* HEADER BANNER: MODERN LUXURY PPJM */}
+      {/* ========================================================= */}
+      <header className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-950 via-emerald-900 to-zinc-950 text-white p-5 sm:p-8 lg:p-10 shadow-xl border border-emerald-800/40">
+        <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-1/4 w-60 h-60 bg-gold-400/10 rounded-full blur-2xl pointer-events-none" />
+
+        <div className="relative z-10 space-y-4 max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 text-xs font-semibold backdrop-blur-md">
+            <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+            <span>Katalog Minat, Bakat & Kepanduan Santri</span>
           </div>
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
-            Direktori Ekstrakurikuler Santri
-          </h1>
-          <p className="text-xs sm:text-sm text-emerald-200/90 max-w-2xl">
-            Wadah pengembangan potensi jasmani, kesenian islami, sains teknologi, dan keterampilan dakwah santri PP Jauharul Maknuun.
-          </p>
-        </div>
-      </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1.5 sm:gap-2.5 lg:gap-3">
-        {ekskuls.map((item) => {
-          const Icon = item.icon;
-          return (
-            <div
-              key={item.name}
-              className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all flex flex-col justify-between group"
-            >
-              <div>
-                <div className="relative h-32 sm:h-38 overflow-hidden bg-slate-100">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-emerald-900/80 backdrop-blur-md text-gold-300 text-xs font-bold">
-                    {item.badge}
-                  </span>
-                </div>
+          <div>
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight">
+              Ekstrakurikuler & Talenta Santri
+            </h1>
+            <p className="mt-2.5 text-xs sm:text-base text-emerald-100/90 leading-relaxed font-normal">
+              Ruang aktualisasi minat, bakat, kebugaran jasmani, dan kreativitas santri Pondok Pesantren Jauharul Maknuun: mulai dari riset sains robotika, seni hadrah banjari, kaligrafi, pencak silat Pagar Nusa, hingga diplomasi bahasa asing.
+            </p>
+          </div>
 
-                <div className="p-2.5 sm:p-3 space-y-1.5">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-800 flex items-center justify-center">
-                      <Icon className="w-3 h-3" />
-                    </div>
-                    <h3 className="font-extrabold text-xs sm:text-sm text-emerald-950 group-hover:text-emerald-700 transition-colors">
-                      {item.name}
-                    </h3>
-                  </div>
-
-                  <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-                    {item.desc}
-                  </p>
-
-                  <div className="pt-1.5 border-t border-slate-100 space-y-0.5 text-xs text-slate-500">
-                    <div><strong>Jadwal:</strong> {item.schedule}</div>
-                    <div><strong>Pembina:</strong> {item.mentor}</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-2.5 sm:p-3 pt-0">
-                <span className="inline-block text-xs font-bold text-emerald-800">
-                  Terbuka untuk Santri Mukim
-                </span>
-              </div>
+          {/* Quick Metrics Badges */}
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-xs font-medium">
+              <Award className="w-4 h-4 text-gold-400 shrink-0" />
+              <span>{ekskuls.length} Pilihan Ekstrakurikuler</span>
             </div>
-          );
-        })}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-xs font-medium">
+              <Users2 className="w-4 h-4 text-emerald-300 shrink-0" />
+              <span>Pembina Profesional & Berlisensi</span>
+            </div>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-xs font-medium">
+              <Calendar className="w-4 h-4 text-blue-300 shrink-0" />
+              <span>Jadwal Latihan Terstruktur</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* ========================================================= */}
+      {/* SEARCH BOX & STICKY CATEGORY CONTROLLER */}
+      {/* ========================================================= */}
+      <div className="space-y-4">
+        {/* Search Bar */}
+        <div className="flex items-center justify-between gap-3">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
+            <input
+              type="text"
+              placeholder="Cari ekskul, pembina, atau kegiatan..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-emerald-500 shadow-xs"
+            />
+          </div>
+
+          <span className="text-xs text-zinc-400 font-medium hidden sm:inline">
+            Menampilkan <strong>{filteredEkskuls.length}</strong> kegiatan
+          </span>
+        </div>
+
+        {/* Sticky Category Filter Pills */}
+        <EkskulCategoryFilter
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          categoryCounts={categoryCounts}
+        />
       </div>
+
+      {/* ========================================================= */}
+      {/* OVERVIEW SHOWCASE: ADAPTIVE GRID (1 COL MOB, 2 TAB, 3 DSK) */}
+      {/* ========================================================= */}
+      <main className="min-h-[400px]">
+        {filteredEkskuls.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            {filteredEkskuls.map((item) => (
+              <EkskulCard
+                key={item.id}
+                item={item}
+                onOpenDetail={setActiveDetailItem}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="p-12 text-center rounded-2xl bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-3">
+            <Activity className="w-8 h-8 mx-auto text-zinc-400" />
+            <h3 className="text-base font-bold text-zinc-700 dark:text-zinc-300">
+              Tidak ada ekstrakurikuler yang sesuai kriteria pencarian
+            </h3>
+            <p className="text-xs text-zinc-400">
+              Coba kata kunci lain atau pilih &quot;Semua Kategori&quot; pada tombol filter di atas.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedCategory('Semua Kategori');
+                setSearchQuery('');
+              }}
+              className="px-4 py-2 rounded-xl bg-emerald-700 text-white text-xs font-bold cursor-pointer hover:bg-emerald-600 transition-colors"
+            >
+              Reset Filter
+            </button>
+          </div>
+        )}
+      </main>
+
+      {/* ========================================================= */}
+      {/* DETAIL MODAL & MULTI-PHOTO GALLERY WITH LIGHTBOX */}
+      {/* ========================================================= */}
+      <EkskulDetailModal
+        item={activeDetailItem}
+        onClose={() => setActiveDetailItem(null)}
+      />
     </div>
   );
 };
+
+export default Ekskul;

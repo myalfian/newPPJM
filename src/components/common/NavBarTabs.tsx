@@ -146,13 +146,13 @@ const DEFAULT_CATEGORY_TABS: Record<
     ],
   },
   'agenda': {
-    parentLabel: 'Karya Siswa',
-    parentHref: '/karya-siswa',
-    parentIcon: Sparkles,
+    parentLabel: 'Agenda',
+    parentHref: '/agenda',
+    parentIcon: CalendarDays,
     tabs: [
-      { id: 'agenda-current', label: 'Bulan Ini', shortLabel: 'Current', href: '/karya-siswa', icon: CalendarDays },
-      { id: 'agenda-future', label: 'Mendatang', shortLabel: 'Future', href: '/karya-siswa', icon: Clock3 },
-      { id: 'agenda-historical', label: 'Arsip Program', shortLabel: 'Historical', href: '/karya-siswa', icon: CheckCircle2 },
+      { id: 'kalender', label: 'Kalender Akademik', shortLabel: 'Kalender', href: '/agenda', icon: CalendarDays },
+      { id: 'upcoming', label: 'Agenda Terdekat', shortLabel: 'Terdekat', href: '/agenda?tab=upcoming', icon: Clock3 },
+      { id: 'rutin', label: 'Agenda Rutin', shortLabel: 'Rutin', href: '/agenda?tab=rutin', icon: Sparkles },
     ],
   },
   'osis': {
