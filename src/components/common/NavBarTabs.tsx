@@ -19,6 +19,7 @@ import {
   Globe,
   CheckCircle2,
   Layers3,
+  Calendar,
   CalendarDays,
   CalendarCheck2,
   Clock3,
@@ -160,9 +161,9 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentHref: '/osis',
     parentIcon: OsisIcon,
     tabs: [
-      { id: 'osis-kabinet', label: 'Bagan BPH', shortLabel: 'Kabinet', href: '/osis', icon: Users },
-      { id: 'osis-divisi', label: '6 Divisi & Proker', shortLabel: 'Divisi', href: '/osis', icon: OsisIcon },
-      { id: 'osis-aspirasi', label: 'Kotak Aspirasi', shortLabel: 'Aspirasi', href: '/osis', icon: HeartHandshake },
+      { id: 'struktur', label: 'Struktur Pengurus', shortLabel: 'Struktur', href: '/osis', icon: Users },
+      { id: 'program', label: 'Program Kerja', shortLabel: 'Program', href: '/osis?tab=program', icon: Sparkles },
+      { id: 'event', label: 'Event & Berita', shortLabel: 'Event', href: '/osis?tab=event', icon: Calendar },
     ],
   },
   'jm-news': {

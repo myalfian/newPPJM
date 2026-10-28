@@ -244,9 +244,9 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeDot: 'bg-amber-500',
     },
     items: [
-      { title: 'Bagan BPH', href: '/osis', desc: 'Struktur kabinet santri putra & putri', icon: Users },
-      { title: 'Divisi & Proker', href: '/osis', desc: '6 departemen kepemimpinan santri', icon: OsisIcon },
-      { title: 'Kotak Aspirasi', href: '/osis', desc: 'Suara santri untuk kemajuan pesantren', icon: HeartHandshake },
+      { title: 'Struktur Pengurus', href: '/osis', desc: 'Bagan & hierarki kabinet santri', icon: Users },
+      { title: 'Program Kerja', href: '/osis?tab=program', desc: '5 departemen & program kerja terpadu', icon: Sparkles },
+      { title: 'Event & Berita', href: '/osis?tab=event', desc: 'Press release & warta kegiatan OSIS', icon: CalendarDays },
     ]
   },
   {
