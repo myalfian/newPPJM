@@ -85,9 +85,9 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentHref: '/program-unggulan/amaliyah-pondok',
     parentIcon: GraduationCap,
     tabs: [
-      { id: 'amaliyah-pondok', label: 'Amaliyah Pondok', shortLabel: 'Amaliyah', href: '/program-unggulan/amaliyah-pondok', icon: Sparkles },
-      { id: 'program-sekolah', label: 'Program Sekolah', shortLabel: 'Sekolah', href: '/program-unggulan/program-sekolah', icon: GraduationCap },
-      { id: 'program-madin', label: 'Program Madin', shortLabel: 'Madin', href: '/program-unggulan/program-madin', icon: BookOpen },
+      { id: 'amaliyah-pondok', label: 'Pondok Pesantren', shortLabel: 'Pondok', href: '/program-unggulan/amaliyah-pondok', icon: Sparkles },
+      { id: 'program-sekolah', label: 'Sekolah (SMP Plus)', shortLabel: 'Sekolah', href: '/program-unggulan/program-sekolah', icon: GraduationCap },
+      { id: 'program-madin', label: 'Madrasah Diniyah', shortLabel: 'Madin', href: '/program-unggulan/program-madin', icon: BookOpen },
     ],
   },
   'galeri': {
@@ -209,7 +209,7 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
   else if (pathname.includes('/agenda') || pathname.includes('/karya-siswa')) detectedCategory = 'agenda';
   else if (pathname.includes('/osis')) detectedCategory = 'osis';
   else if (pathname.includes('/jm-center')) detectedCategory = 'jm-center';
-  else if (pathname.includes('/program-unggulan')) detectedCategory = 'program-unggulan';
+  else if (pathname.includes('/program-unggulan') || pathname.startsWith('/program')) detectedCategory = 'program-unggulan';
   else if (pathname.includes('/galeri')) detectedCategory = 'galeri';
   else if (pathname === '/prestasi' || pathname === '/ekskul') detectedCategory = 'prestasi-ekskul';
   else if (pathname.includes('/smart-jm')) detectedCategory = 'smart-jm';

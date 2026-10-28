@@ -274,3 +274,4 @@ export const FacilitiesSection: React.FC = () => {
     </div>
   );
 };
+

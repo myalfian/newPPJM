@@ -72,7 +72,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
 
   const isTabActive = (tab: NavTabItem) => {
     if (tab.id === 'jm-center') return location.pathname.startsWith('/jm-center');
-    if (tab.id === 'programs') return location.pathname.startsWith('/program-unggulan');
+    if (tab.id === 'programs') return location.pathname.startsWith('/program');
     if (tab.id === 'smart-jm') return location.pathname.startsWith('/smart-jm') || location.pathname.startsWith('/stem');
     if (tab.id === 'prestasi') return location.pathname === '/prestasi';
     if (tab.id === 'ekskul') return location.pathname === '/ekskul';

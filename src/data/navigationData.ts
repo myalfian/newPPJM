@@ -157,9 +157,9 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeDot: 'bg-blue-600',
     },
     items: [
-      { title: 'Amaliyah Pondok', href: '/program-unggulan/amaliyah-pondok', desc: 'Wirid, ratib & sholat berjamaah', icon: HeartHandshake },
-      { title: 'Program Sekolah', href: '/program-unggulan/program-sekolah', desc: 'Kurikulum formal terakreditasi "A"', icon: GraduationCap },
-      { title: 'Program Madin', href: '/program-unggulan/program-madin', desc: 'Madrasah Diniyah maknani gandul turats', icon: BookOpenCheck },
+      { title: 'Pondok Pesantren', href: '/program-unggulan/amaliyah-pondok', desc: 'Tahfidz, salaf & amaliyah 24 jam', icon: HeartHandshake },
+      { title: 'Sekolah (SMP Plus)', href: '/program-unggulan/program-sekolah', desc: 'Kurikulum formal "A" & riset STEM', icon: GraduationCap },
+      { title: 'Madrasah Diniyah', href: '/program-unggulan/program-madin', desc: 'Flyer kitab turats & panduan ubudiyah', icon: BookOpenCheck },
     ]
   },
   {

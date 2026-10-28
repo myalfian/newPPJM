@@ -44,3 +44,4 @@ export interface InstitutionItem {
   stats?: { label: string; value: string }[];
   curriculumHighlight: string;
 }
+

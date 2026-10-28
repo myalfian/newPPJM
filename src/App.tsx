@@ -136,6 +136,7 @@ const FasilitasPondok = lazy(() => import('./pages/jm-center/FasilitasPondok').t
 const FasilitasSekolah = lazy(() => import('./pages/jm-center/FasilitasSekolah').then(m => ({ default: m.FasilitasSekolah })));
 const LembagaPondok = lazy(() => import('./pages/jm-center/LembagaPondok').then(m => ({ default: m.LembagaPondok })));
 const LembagaSekolah = lazy(() => import('./pages/jm-center/LembagaSekolah').then(m => ({ default: m.LembagaSekolah })));
+const ProgramHub = lazy(() => import('./pages/program/ProgramHub').then(m => ({ default: m.ProgramHub })));
 const AmaliyahPondok = lazy(() => import('./pages/program-unggulan/AmaliyahPondok').then(m => ({ default: m.AmaliyahPondok })));
 const ProgramSekolah = lazy(() => import('./pages/program-unggulan/ProgramSekolah').then(m => ({ default: m.ProgramSekolah })));
 const ProgramMadin = lazy(() => import('./pages/program-unggulan/ProgramMadin').then(m => ({ default: m.ProgramMadin })));
@@ -211,6 +212,7 @@ export const App: React.FC = () => {
             <Route path="jm-center/lembaga-sekolah" element={<Navigate to="/jm-center/lembaga/sekolah" replace />} />
 
             {/* Program Unggulan */}
+            <Route path="program" element={<ProgramHub defaultTab="pondok" />} />
             <Route path="program-unggulan" element={<Navigate to="/program-unggulan/amaliyah-pondok" replace />} />
             <Route path="program-unggulan/amaliyah-pondok" element={<AmaliyahPondok />} />
             <Route path="program-unggulan/program-sekolah" element={<ProgramSekolah />} />

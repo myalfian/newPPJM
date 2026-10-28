@@ -196,3 +196,4 @@ export const InstitutionsSection: React.FC = () => {
     </div>
   );
 };
+

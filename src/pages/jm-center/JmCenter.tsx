@@ -229,3 +229,4 @@ export const JmCenter: React.FC<JmCenterProps> = ({ defaultTab = 'profil' }) => 
 };
 
 export default JmCenter;
+
