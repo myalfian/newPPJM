@@ -27,7 +27,9 @@ import {
   CheckCircle2,
   Volume2,
   Newspaper,
-  ShieldCheck
+  ShieldCheck,
+  Building2,
+  School
 } from 'lucide-react';
 import { OsisIcon } from '../../data/navigationData';
 
@@ -77,11 +79,32 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
         border: 'border-emerald-200/80',
         activeBg: 'bg-emerald-700',
       },
-      items: [
-        { title: 'Sambutan Pimpinan', href: '/jm-center/sambutan', desc: 'Pesan & Arahan Pengasuh', icon: Compass },
-        { title: 'Sejarah Pesantren', href: '/jm-center/sejarah', desc: 'Napak tilas dakwah di Lasem Sidayu', icon: Landmark },
-        { title: 'Visi & Misi', href: '/jm-center/visi-misi', desc: 'Arah & Nilai Luhur Lembaga', icon: HeartHandshake },
-        { title: 'Struktur Lembaga', href: '/jm-center/lembaga', desc: 'Kepengurusan, asrama & santri', icon: Layers },
+      groups: [
+        {
+          groupTitle: '1. Profil',
+          icon: Compass,
+          items: [
+            { title: 'Sambutan Pimpinan', href: '/jm-center/sambutan', icon: Compass },
+            { title: 'Sejarah Pesantren', href: '/jm-center/sejarah', icon: Landmark },
+            { title: 'Visi dan Misi', href: '/jm-center/visi-misi', icon: HeartHandshake },
+          ],
+        },
+        {
+          groupTitle: '2. Fasilitas',
+          icon: Building2,
+          items: [
+            { title: 'Fasilitas Pondok', href: '/jm-center/fasilitas/pondok', icon: Building2 },
+            { title: 'Fasilitas Sekolah', href: '/jm-center/fasilitas/sekolah', icon: School },
+          ],
+        },
+        {
+          groupTitle: '3. Lembaga',
+          icon: Layers,
+          items: [
+            { title: 'Lembaga Pondok', href: '/jm-center/lembaga/pondok', icon: Layers },
+            { title: 'Lembaga Sekolah', href: '/jm-center/lembaga/sekolah', icon: GraduationCap },
+          ],
+        },
       ],
     },
     {

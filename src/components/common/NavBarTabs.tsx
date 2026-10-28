@@ -23,7 +23,9 @@ import {
   CalendarCheck2,
   Clock3,
   ShieldCheck,
-  Users
+  Users,
+  Building2,
+  School
 } from 'lucide-react';
 import { OsisIcon } from '../../data/navigationData';
 import './NavBarTabs.css';
@@ -66,10 +68,13 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentHref: '/jm-center/sambutan',
     parentIcon: Landmark,
     tabs: [
-      { id: 'sambutan', label: 'Sambutan', href: '/jm-center/sambutan', icon: Compass },
-      { id: 'sejarah', label: 'Sejarah', href: '/jm-center/sejarah', icon: Landmark },
-      { id: 'visi-misi', label: 'Visi Misi', href: '/jm-center/visi-misi', icon: HeartHandshake },
-      { id: 'lembaga', label: 'Lembaga', href: '/jm-center/lembaga', icon: Layers },
+      { id: 'sambutan', label: 'Sambutan', shortLabel: 'Sambutan', href: '/jm-center/sambutan', icon: Compass },
+      { id: 'sejarah', label: 'Sejarah', shortLabel: 'Sejarah', href: '/jm-center/sejarah', icon: Landmark },
+      { id: 'visi-misi', label: 'Visi Misi', shortLabel: 'Visi Misi', href: '/jm-center/visi-misi', icon: HeartHandshake },
+      { id: 'fasilitas-pondok', label: 'Fasilitas Pondok', shortLabel: 'Fas. Pondok', href: '/jm-center/fasilitas/pondok', icon: Building2 },
+      { id: 'fasilitas-sekolah', label: 'Fasilitas Sekolah', shortLabel: 'Fas. Sekolah', href: '/jm-center/fasilitas/sekolah', icon: School },
+      { id: 'lembaga-pondok', label: 'Lembaga Pondok', shortLabel: 'Lemb. Pondok', href: '/jm-center/lembaga/pondok', icon: Layers },
+      { id: 'lembaga-sekolah', label: 'Lembaga Sekolah', shortLabel: 'Lemb. Sekolah', href: '/jm-center/lembaga/sekolah', icon: GraduationCap },
     ],
   },
   'program-unggulan': {

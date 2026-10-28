@@ -27,7 +27,9 @@ import {
   Users,
   CalendarDays,
   ShieldCheck,
-  Monitor
+  Monitor,
+  Building2,
+  School
 } from 'lucide-react';
 
 export interface NavSubItem {
@@ -102,11 +104,44 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeText: 'text-[#073b22]',
       activeDot: 'bg-[#0f5132]',
     },
+    sections: [
+      {
+        title: 'Profil',
+        icon: Compass,
+        color: 'emerald',
+        items: [
+          { title: 'Sambutan', href: '/jm-center/sambutan', desc: 'Pesan & Arahan Pimpinan Pondok', icon: Compass },
+          { title: 'Sejarah', href: '/jm-center/sejarah', desc: 'Napak tilas dakwah di Lasem Sidayu', icon: Landmark },
+          { title: 'Visi dan Misi', href: '/jm-center/visi-misi', desc: 'Arah & Nilai Luhur Lembaga', icon: HeartHandshake },
+        ]
+      },
+      {
+        title: 'Fasilitas',
+        icon: Building2,
+        color: 'amber',
+        items: [
+          { title: 'Pondok', href: '/jm-center/fasilitas/pondok', desc: 'Masjid, asrama santri & sanitasi bersih', icon: Building2 },
+          { title: 'Sekolah', href: '/jm-center/fasilitas/sekolah', desc: 'Ruang kelas multimedia & lab riset STEM', icon: School },
+        ]
+      },
+      {
+        title: 'Lembaga',
+        icon: Layers,
+        color: 'blue',
+        items: [
+          { title: 'Pondok', href: '/jm-center/lembaga/pondok', desc: 'Pengasuhan santri, Madin & Tahfidz 30 juz', icon: Layers },
+          { title: 'Sekolah', href: '/jm-center/lembaga/sekolah', desc: 'Pendidikan formal & dewan pengajar', icon: GraduationCap },
+        ]
+      }
+    ],
     items: [
       { title: 'Sambutan', href: '/jm-center/sambutan', desc: 'Pesan & Arahan Pimpinan Pondok', icon: Compass },
       { title: 'Sejarah', href: '/jm-center/sejarah', desc: 'Napak tilas dakwah di Lasem Sidayu', icon: Landmark },
-      { title: 'Visi Misi', href: '/jm-center/visi-misi', desc: 'Arah & Nilai Luhur Lembaga', icon: HeartHandshake },
-      { title: 'Lembaga', href: '/jm-center/lembaga', desc: 'Struktur kepengurusan & asrama', icon: Layers },
+      { title: 'Visi dan Misi', href: '/jm-center/visi-misi', desc: 'Arah & Nilai Luhur Lembaga', icon: HeartHandshake },
+      { title: 'Fasilitas Pondok', href: '/jm-center/fasilitas/pondok', desc: 'Masjid, asrama & sanitasi bersih', icon: Building2 },
+      { title: 'Fasilitas Sekolah', href: '/jm-center/fasilitas/sekolah', desc: 'Kelas modern & lab riset STEM', icon: School },
+      { title: 'Lembaga Pondok', href: '/jm-center/lembaga/pondok', desc: 'Pengasuhan, Madin & Tahfidz', icon: Layers },
+      { title: 'Lembaga Sekolah', href: '/jm-center/lembaga/sekolah', desc: 'Pendidikan formal & kurikulum', icon: GraduationCap },
     ]
   },
   {
