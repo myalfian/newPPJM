@@ -84,14 +84,16 @@ const sanitizeHeroSlides = (data: unknown): HeroSlide[] | null => {
       title: typeof item.title === 'string' ? item.title.trim() : '',
       desc: typeof item.desc === 'string' ? item.desc.trim() : '',
       image: String(item.image).trim(),
+      fallbackImage: typeof item.fallbackImage === 'string' ? item.fallbackImage : undefined,
+      btnText: typeof item.btnText === 'string' && item.btnText.trim() ? item.btnText.trim() : 'Lihat Selengkapnya',
       link: typeof item.link === 'string' ? item.link.trim() : '',
       tag: typeof item.tag === 'string' ? item.tag.trim() : undefined,
       tagline: typeof item.tagline === 'string' ? item.tagline.trim() : undefined,
       website: typeof item.website === 'string' ? item.website : 'https://ppjauharulmaknuun.sch.id/',
-      cardTheme: typeof item.cardTheme === 'string' ? item.cardTheme : 'from-[#08357a] via-[#093c8a] to-[#062c66]',
+      cardTheme: typeof item.cardTheme === 'string' ? item.cardTheme : 'from-[#052817] via-[#094226] to-[#041c10]',
       badgeTheme: typeof item.badgeTheme === 'string' ? item.badgeTheme : 'bg-emerald-500/20 border-emerald-400/40 text-emerald-200',
-      tagColor: typeof item.tagColor === 'string' ? item.tagColor : 'text-[#ffcc00]',
-      btnTheme: typeof item.btnTheme === 'string' ? item.btnTheme : 'from-[#ffcc00] via-[#eab308] to-[#ca8a04]',
+      tagColor: typeof item.tagColor === 'string' ? item.tagColor : 'text-[#d4af37]',
+      btnTheme: typeof item.btnTheme === 'string' ? item.btnTheme : 'from-[#0a6847] via-[#0f5132] to-[#10b981]',
     }));
   return validSlides.length > 0 ? validSlides : null;
 };
