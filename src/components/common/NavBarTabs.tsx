@@ -105,12 +105,12 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentHref: '/prestasi',
     parentIcon: Trophy,
     tabs: [
-      { id: 'prestasi-semua', label: 'Semua Prestasi', shortLabel: 'Semua', href: '/prestasi', icon: Trophy },
-      { id: 'prestasi-sains', label: 'Sains', shortLabel: 'Sains', href: '/prestasi?kategori=Sains', icon: Award },
-      { id: 'prestasi-olahraga', label: 'Olaraga', shortLabel: 'Olaraga', href: '/prestasi?kategori=Olaraga', icon: Activity },
-      { id: 'prestasi-seni', label: 'Seni', shortLabel: 'Seni', href: '/prestasi?kategori=Seni', icon: Palette },
-      { id: 'prestasi-agama', label: 'Agama', shortLabel: 'Agama', href: '/prestasi?kategori=Agama', icon: BookOpen },
-      { id: 'prestasi-umum', label: 'Umum', shortLabel: 'Umum', href: '/prestasi?kategori=Umum', icon: Sparkles },
+      { id: 'prestasi-semua', label: 'Semua Prestasi', href: '/prestasi', icon: Trophy },
+      { id: 'prestasi-sains', label: 'Sains', href: '/prestasi?kategori=Sains', icon: Award },
+      { id: 'prestasi-olahraga', label: 'Olaraga', href: '/prestasi?kategori=Olaraga', icon: Activity },
+      { id: 'prestasi-seni', label: 'Seni', href: '/prestasi?kategori=Seni', icon: Palette },
+      { id: 'prestasi-agama', label: 'Agama', href: '/prestasi?kategori=Agama', icon: BookOpen },
+      { id: 'prestasi-umum', label: 'Umum', href: '/prestasi?kategori=Umum', icon: Sparkles },
     ],
   },
   'ekstrakurikuler': {
@@ -258,12 +258,67 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
       // 1. Check specific sub-menu items first (with full path + query match)
       const subMenuTabs = tabs.filter((t) => t.id !== 'beranda');
       const fullPath = pathname + (location.search || '');
-      activeTab = subMenuTabs.find((t) => fullPath === t.href);
-      if (!activeTab) {
-        activeTab = subMenuTabs.find((t) => pathname === t.href.split('?')[0]);
+      activeTab = subMenuTabs.find((t) => fullPath.toLowerCase() === t.href.toLowerCase());
+
+      // 2. Prestasi Category Matching
+      if (!activeTab && (pathname === '/prestasi' || pathname.startsWith('/prestasi'))) {
+        const query = new URLSearchParams(location.search).get('kategori')?.toLowerCase();
+        if (!query || query === 'semua') {
+          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-semua');
+        } else if (query === 'sains' || query === 'olimpiade') {
+          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-sains');
+        } else if (query === 'olaraga' || query === 'olahraga') {
+          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-olahraga');
+        } else if (query === 'seni') {
+          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-seni');
+        } else if (query === 'agama' || query === 'keagamaan') {
+          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-agama');
+        } else if (query === 'umum') {
+          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-umum');
+        }
       }
 
-      // 2. Specific Category Matching: SMART JM & JM Center
+      // 3. Ekstrakurikuler Category Matching
+      if (!activeTab && (pathname === '/ekstrakurikuler' || pathname.startsWith('/ekstrakurikuler') || pathname === '/ekskul' || pathname.startsWith('/ekskul'))) {
+        const query = new URLSearchParams(location.search).get('kategori')?.toLowerCase();
+        if (!query || query === 'semua') {
+          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-semua');
+        } else if (query.includes('sains') || query.includes('robotik')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-sains');
+        } else if (query.includes('seni') || query.includes('bahasa')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-seni');
+        } else if (query.includes('olahraga') || query.includes('silat')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-olahraga');
+        } else if (query.includes('kepanduan') || query.includes('agama')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-kepanduan');
+        }
+      }
+
+      // 4. Agenda Tab Matching
+      if (!activeTab && (pathname === '/agenda' || pathname.startsWith('/agenda'))) {
+        const tabParam = new URLSearchParams(location.search).get('tab')?.toLowerCase();
+        if (tabParam === 'upcoming') {
+          activeTab = subMenuTabs.find((t) => t.id === 'upcoming');
+        } else if (tabParam === 'rutin') {
+          activeTab = subMenuTabs.find((t) => t.id === 'rutin');
+        } else {
+          activeTab = subMenuTabs.find((t) => t.id === 'kalender');
+        }
+      }
+
+      // 5. OSIS Tab Matching
+      if (!activeTab && (pathname === '/osis' || pathname.startsWith('/osis'))) {
+        const tabParam = new URLSearchParams(location.search).get('tab')?.toLowerCase();
+        if (tabParam === 'program') {
+          activeTab = subMenuTabs.find((t) => t.id === 'program');
+        } else if (tabParam === 'event') {
+          activeTab = subMenuTabs.find((t) => t.id === 'event');
+        } else {
+          activeTab = subMenuTabs.find((t) => t.id === 'struktur');
+        }
+      }
+
+      // 6. Specific Category Matching: SMART JM & JM Center
       if (!activeTab && pathname.includes('/smart-jm')) {
         if (pathname.includes('/smart-jm/stem')) {
           activeTab = subMenuTabs.find((t) => t.id === 'stem');
@@ -290,29 +345,17 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
         }
       }
 
-      if (!activeTab && (pathname === '/prestasi' || pathname.startsWith('/prestasi'))) {
-        const query = new URLSearchParams(location.search).get('kategori')?.toLowerCase();
-        if (!query || query === 'semua') {
-          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-semua');
-        } else if (query === 'sains' || query === 'olimpiade') {
-          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-sains');
-        } else if (query === 'olaraga' || query === 'olahraga') {
-          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-olahraga');
-        } else if (query === 'seni') {
-          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-seni');
-        } else if (query === 'agama' || query === 'keagamaan') {
-          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-agama');
-        } else if (query === 'umum') {
-          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-umum');
-        }
+      // 7. Fallback to path without query string match (ONLY IF no query params present)
+      if (!activeTab && !location.search) {
+        activeTab = subMenuTabs.find((t) => pathname === t.href.split('?')[0]);
       }
 
-      // 3. Check sub-menu prefix
+      // 8. Check sub-menu prefix
       if (!activeTab) {
-        activeTab = subMenuTabs.find((t) => t.href !== '/' && pathname.startsWith(t.href));
+        activeTab = subMenuTabs.find((t) => t.href !== '/' && pathname.startsWith(t.href.split('?')[0]));
       }
 
-      // 4. Fallback to any matching tab or first
+      // 9. Fallback to any matching tab or first
       if (!activeTab) {
         activeTab = tabs.find((t) => pathname === t.href || (t.href !== '/' && pathname.startsWith(t.href))) || tabs[0];
       }
@@ -366,7 +409,6 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
                     {isActive && (
                       <motion.div
                         layoutId="curvedCutoutPointer"
-                        layout="position"
                         className="curved-pointer"
                         transition={{
                           type: 'spring',

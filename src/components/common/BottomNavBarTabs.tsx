@@ -113,7 +113,6 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                     {isActive && (
                       <motion.div
                         layoutId="bottomCurvedCutoutPointer"
-                        layout="position"
                         className="bottom-curved-pointer"
                         transition={{
                           type: 'spring',

@@ -209,7 +209,6 @@ export const SmartJmSubNav: React.FC = () => {
                     {isSubActive && (
                       <motion.div
                         layoutId="smartJmCurvedCutoutPointer"
-                        layout="position"
                         className="bottom-curved-pointer"
                         transition={{
                           type: 'spring',

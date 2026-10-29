@@ -231,12 +231,11 @@
 }
 
 /* The Curved Cutout Pointer / Notch dipping from BOTTOM border of the card */
-/* Always centered over the active tab column, flush with the bottom card border */
+/* Always centered over the active tab column without transform conflict with Framer Motion */
 .bottom-curved-pointer {
   position: absolute;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: calc(50% - 37px);
   width: 74px;
   height: 22px;
   pointer-events: none;

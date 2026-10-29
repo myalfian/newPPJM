@@ -114,9 +114,59 @@ export const PrestasiPage: React.FC = () => {
     if (cat === 'Semua') {
       searchParams.delete('kategori');
     } else {
-      searchParams.set('kategori', cat);
+      const queryMap: Record<PrestasiCategory, string> = {
+        Semua: '',
+        Olimpiade: 'Sains',
+        Olahraga: 'Olaraga',
+        Seni: 'Seni',
+        Keagamaan: 'Agama',
+        Umum: 'Umum',
+      };
+      searchParams.set('kategori', queryMap[cat] || cat);
     }
     setSearchParams(searchParams, { replace: true });
+  };
+
+  // Map selected category to exact NavBarTabs tab ID
+  const currentTabId = useMemo(() => {
+    switch (selectedCategory) {
+      case 'Olimpiade':
+        return 'prestasi-sains';
+      case 'Olahraga':
+        return 'prestasi-olahraga';
+      case 'Seni':
+        return 'prestasi-seni';
+      case 'Keagamaan':
+        return 'prestasi-agama';
+      case 'Umum':
+        return 'prestasi-umum';
+      case 'Semua':
+      default:
+        return 'prestasi-semua';
+    }
+  }, [selectedCategory]);
+
+  const handleNavBarTabChange = (tab: { id: string }) => {
+    switch (tab.id) {
+      case 'prestasi-sains':
+        handleSelectCategory('Olimpiade');
+        break;
+      case 'prestasi-olahraga':
+        handleSelectCategory('Olahraga');
+        break;
+      case 'prestasi-seni':
+        handleSelectCategory('Seni');
+        break;
+      case 'prestasi-agama':
+        handleSelectCategory('Keagamaan');
+        break;
+      case 'prestasi-umum':
+        handleSelectCategory('Umum');
+        break;
+      case 'prestasi-semua':
+        handleSelectCategory('Semua');
+        break;
+    }
   };
 
   // Extract unique available years
@@ -192,7 +242,10 @@ export const PrestasiPage: React.FC = () => {
   return (
     <div className="w-full max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-3 sm:py-6 space-y-6 sm:space-y-8 overflow-x-hidden select-none">
       {/* 1. Folder-style Breadcrumb Sub-Navigation */}
-      <NavBarTabs />
+      <NavBarTabs
+        activeTabId={currentTabId}
+        onChangeTab={handleNavBarTabChange}
+      />
 
       {/* 2. Hero Header Banner (Modern Lux Emerald & Gold Styling) */}
       <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#07361d] via-[#0f5132] to-[#0a2717] border border-emerald-700/40 p-6 sm:p-8 lg:p-10 text-white shadow-xl shadow-emerald-950/20">
