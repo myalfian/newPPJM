@@ -1,6 +1,7 @@
 export interface HeroSlide {
   id: string;
   badge: string; // Tag/Kategori (e.g. Sambutan Utama, Kurikulum & Pembinaan)
+  tag?: string; // Tag opsional
   title?: string; // Judul
   desc?: string; // Deskripsi Singkat
   image: string; // URL Flyer/Gambar utama

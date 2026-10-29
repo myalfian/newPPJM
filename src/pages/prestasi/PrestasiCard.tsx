@@ -98,7 +98,7 @@ export const PrestasiCard: React.FC<PrestasiCardProps> = ({ item, onOpenModal })
       </div>
 
       {/* Card Content Body */}
-      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-3">
+      <div className="p-3 sm:p-3.5 flex-1 flex flex-col justify-between space-y-2">
         <div className="space-y-2">
           {/* Winner Profile Pill */}
           <div className="flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-300">

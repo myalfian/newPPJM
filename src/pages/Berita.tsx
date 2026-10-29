@@ -96,18 +96,18 @@ export const Berita: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2 space-y-3 sm:space-y-4">
+    <div className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2 space-y-2 sm:space-y-2.5">
       {/* Navigation Tabs */}
       <NavBarTabs activeTabId="jm-news" />
 
       {/* Hero Header */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-4 sm:p-6 text-white shadow-m3-2 relative overflow-hidden">
-        <div className="relative z-10 space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-3.5 sm:p-4.5 text-white shadow-m3-2 relative overflow-hidden">
+        <div className="relative z-10 space-y-1.5">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Newspaper className="w-3.5 h-3.5" />
             <span>Siaran Pers Resmi Pesantren</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold tracking-tight">
             Press Release PP Jauharul Maknuun
           </h1>
           <p className="text-xs sm:text-sm text-emerald-200/90 max-w-2xl leading-relaxed">
@@ -117,15 +117,15 @@ export const Berita: React.FC = () => {
       </div>
 
       {/* Search Bar Editorial */}
-      <div className="bg-white rounded-2xl p-3 sm:p-4 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="bg-white rounded-2xl p-2.5 sm:p-3 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-2.5">
         <div className="relative w-full sm:w-96">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5" />
           <input
             type="text"
             placeholder="Cari arsip siaran pers &amp; liputan..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 font-medium"
+            className="w-full pl-10 pr-4 py-1.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 font-medium"
           />
         </div>
         <div className="text-xs font-bold text-slate-500">
@@ -141,7 +141,7 @@ export const Berita: React.FC = () => {
           <p className="text-xs text-slate-500">Coba kata kunci pencarian lainnya.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 lg:gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3 lg:gap-3.5">
           {filteredNews.map((news) => (
             <article
               key={news.id}

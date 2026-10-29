@@ -133,7 +133,7 @@ export const Home: React.FC = () => {
   const visiblePilarItems = programUnggulan?.data?.items?.filter((it) => it.isVisible !== false) || [];
 
   return (
-    <div className="space-y-2 sm:space-y-3 pb-4">
+    <div className="space-y-1.5 sm:space-y-2 pb-2">
       {/* 1. HERO SLIDER (3D Coverflow Carousel) */}
       {editorConfig.sections.heroSlider?.isVisible !== false && <HeroSlider />}
 
@@ -141,12 +141,12 @@ export const Home: React.FC = () => {
       {editorConfig.sections.quickMenu?.isVisible !== false && <QuickMenu />}
 
       {/* Divider Spacing Halus untuk Desktop */}
-      <div className="hidden lg:block h-1" />
+      <div className="hidden lg:block h-0.5" />
 
       {/* 2. SAMBUTAN SINGKAT PENGASUH KH. M. JAUHARUL MAKNUUN */}
       {sambutan?.isVisible !== false && (
-        <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-0.5">
-          <div className="bg-white rounded-2xl p-2.5 sm:p-3.5 lg:p-4 shadow-m3-1 border border-slate-200/90 relative overflow-hidden">
+        <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-0">
+          <div className="bg-white rounded-2xl p-2 sm:p-3 lg:p-3.5 shadow-m3-1 border border-slate-200/90 relative overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-3.5 items-center">
               <div className="lg:col-span-4 flex justify-center">
                 <div className="relative">
@@ -193,8 +193,8 @@ export const Home: React.FC = () => {
 
       {/* 3. 4 PILAR KEUNGGULAN PESANTREN */}
       {programUnggulan?.isVisible !== false && (
-        <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-2 sm:space-y-3">
-          <div className="text-center max-w-2xl mx-auto space-y-1">
+        <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-1.5 sm:space-y-2">
+          <div className="text-center max-w-2xl mx-auto space-y-0.5">
             <span className="text-xs sm:text-sm font-bold text-gold-700 uppercase tracking-widest">
               Karakteristik & Keistimewaan
             </span>
@@ -206,7 +206,7 @@ export const Home: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-2.5">
             {visiblePilarItems.map((item, idx) => {
               // Map default or custom icons and links
               let Icon = BookOpen;
@@ -277,8 +277,8 @@ export const Home: React.FC = () => {
 
       {/* 4. WARTA & BERITA TERKINI DENGAN 1-KLIK WHATSAPP WALI SANTRI */}
       {editorConfig.sections.beritaTerkini?.isVisible !== false && (
-        <section id="warta-berita" className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-2 sm:space-y-3 scroll-mt-24">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5 border-b border-slate-200 pb-2">
+        <section id="warta-berita" className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-1.5 sm:space-y-2 scroll-mt-24">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1 border-b border-slate-200 pb-1.5">
             <div>
               <span className="text-xs sm:text-sm font-bold text-gold-700 uppercase tracking-widest">
                 Kabar Pesantren
@@ -296,7 +296,7 @@ export const Home: React.FC = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-3.5 lg:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-2.5 lg:gap-3">
             {newsItems.map((news) => (
               <div
                 key={news.id}
@@ -357,7 +357,7 @@ export const Home: React.FC = () => {
 
       {/* 5. CTA PENERIMAAN SANTRI BARU */}
       <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6">
-        <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-2xl p-4 sm:p-6 lg:p-7 text-white shadow-m3-3 relative overflow-hidden text-center sm:text-left flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-5">
+        <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-2xl p-3.5 sm:p-5 lg:p-6 text-white shadow-m3-3 relative overflow-hidden text-center sm:text-left flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div className="space-y-2 max-w-xl">
             <span className="text-xs sm:text-sm font-bold text-gold-400 uppercase tracking-widest">
               Penerimaan Santri Baru (PSB)

@@ -107,7 +107,7 @@ const DEFAULT_CATEGORY_TABS: Record<
     tabs: [
       { id: 'prestasi-semua', label: 'Semua Prestasi', href: '/prestasi', icon: Trophy },
       { id: 'prestasi-sains', label: 'Sains', href: '/prestasi?kategori=Sains', icon: Award },
-      { id: 'prestasi-olahraga', label: 'Olaraga', href: '/prestasi?kategori=Olaraga', icon: Activity },
+      { id: 'prestasi-olahraga', label: 'Olahraga', href: '/prestasi?kategori=Olahraga', icon: Activity },
       { id: 'prestasi-seni', label: 'Seni', href: '/prestasi?kategori=Seni', icon: Palette },
       { id: 'prestasi-agama', label: 'Agama', href: '/prestasi?kategori=Agama', icon: BookOpen },
       { id: 'prestasi-umum', label: 'Umum', href: '/prestasi?kategori=Umum', icon: Sparkles },
@@ -118,11 +118,12 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentHref: '/ekstrakurikuler',
     parentIcon: Sparkles,
     tabs: [
-      { id: 'ekskul-semua', label: 'Semua Ekskul', shortLabel: 'Semua', href: '/ekstrakurikuler', icon: Sparkles },
-      { id: 'ekskul-sains', label: 'Sains & Robotik', shortLabel: 'Sains', href: '/ekstrakurikuler?kategori=sains', icon: Cpu },
-      { id: 'ekskul-seni', label: 'Seni & Bahasa', shortLabel: 'Seni', href: '/ekstrakurikuler?kategori=seni', icon: Palette },
-      { id: 'ekskul-olahraga', label: 'Olahraga & Silat', shortLabel: 'Olahraga', href: '/ekstrakurikuler?kategori=olahraga', icon: Activity },
-      { id: 'ekskul-kepanduan', label: 'Kepanduan & Agama', shortLabel: 'Kepanduan', href: '/ekstrakurikuler?kategori=kepanduan', icon: Users },
+      { id: 'ekskul-semua', label: 'Semua Ekskul', shortLabel: 'Semua Ekskul', href: '/ekstrakurikuler', icon: Sparkles },
+      { id: 'ekskul-sains', label: 'Sains', shortLabel: 'Sains', href: '/ekstrakurikuler?kategori=sains', icon: Cpu },
+      { id: 'ekskul-olahraga', label: 'Olahraga', shortLabel: 'Olahraga', href: '/ekstrakurikuler?kategori=olahraga', icon: Activity },
+      { id: 'ekskul-seni', label: 'Seni', shortLabel: 'Seni', href: '/ekstrakurikuler?kategori=seni', icon: Palette },
+      { id: 'ekskul-agama', label: 'Agama', shortLabel: 'Agama', href: '/ekstrakurikuler?kategori=agama', icon: BookOpen },
+      { id: 'ekskul-pramuka', label: 'Pramuka', shortLabel: 'Pramuka', href: '/ekstrakurikuler?kategori=pramuka', icon: Users },
     ],
   },
   'smart-jm-stem': {
@@ -284,12 +285,14 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
           activeTab = subMenuTabs.find((t) => t.id === 'ekskul-semua');
         } else if (query.includes('sains') || query.includes('robotik')) {
           activeTab = subMenuTabs.find((t) => t.id === 'ekskul-sains');
-        } else if (query.includes('seni') || query.includes('bahasa')) {
-          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-seni');
         } else if (query.includes('olahraga') || query.includes('silat')) {
           activeTab = subMenuTabs.find((t) => t.id === 'ekskul-olahraga');
-        } else if (query.includes('kepanduan') || query.includes('agama')) {
-          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-kepanduan');
+        } else if (query.includes('seni') || query.includes('bahasa')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-seni');
+        } else if (query.includes('agama') || query.includes('keagamaan')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-agama');
+        } else if (query.includes('pramuka') || query.includes('kepanduan')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-pramuka');
         }
       }
 

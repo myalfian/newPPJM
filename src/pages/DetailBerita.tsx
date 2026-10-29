@@ -142,7 +142,7 @@ export const DetailBerita: React.FC = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-2.5 sm:px-4 lg:px-6 py-2 space-y-6">
+    <div className="max-w-5xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 space-y-3">
       <NavBarTabs activeTabId="jm-news" />
 
       {/* Back button */}
@@ -157,7 +157,7 @@ export const DetailBerita: React.FC = () => {
       </div>
 
       {article && (
-        <article className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm space-y-6">
+        <article className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-7 border border-slate-200 shadow-sm space-y-4">
           {/* Header Metadata */}
           <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-2">

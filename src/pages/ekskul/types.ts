@@ -1,8 +1,10 @@
 export type EkskulCategory =
   | 'Semua Kategori'
   | 'Sains & Teknologi'
-  | 'Seni & Bahasa'
   | 'Olahraga & Bela Diri'
+  | 'Seni & Bahasa'
+  | 'Agama'
+  | 'Pramuka'
   | 'Kepanduan & Keagamaan';
 
 export interface EkskulPhoto {
@@ -15,7 +17,7 @@ export interface EkskulPhoto {
 export interface DetailedEkskulItem {
   id: string;
   name: string;
-  category: 'Sains & Teknologi' | 'Seni & Bahasa' | 'Olahraga & Bela Diri' | 'Kepanduan & Keagamaan';
+  category: 'Sains & Teknologi' | 'Seni & Bahasa' | 'Olahraga & Bela Diri' | 'Kepanduan & Keagamaan' | 'Agama' | 'Pramuka';
   schedule: string;
   coach: string;
   description: string;

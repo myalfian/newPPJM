@@ -69,9 +69,10 @@ export const EkskulPage: React.FC = () => {
     if (!param) return 'Semua Kategori';
     const p = param.toLowerCase();
     if (p.includes('sains') || p.includes('robotik') || p.includes('stem')) return 'Sains & Teknologi';
-    if (p.includes('seni') || p.includes('bahasa') || p.includes('arab') || p.includes('mandarin')) return 'Seni & Bahasa';
     if (p.includes('olahraga') || p.includes('silat') || p.includes('bela diri')) return 'Olahraga & Bela Diri';
-    if (p.includes('kepanduan') || p.includes('pramuka') || p.includes('agama')) return 'Kepanduan & Keagamaan';
+    if (p.includes('seni') || p.includes('bahasa') || p.includes('arab') || p.includes('mandarin')) return 'Seni & Bahasa';
+    if (p.includes('agama') || p.includes('keagamaan') || p.includes('tilawah') || p.includes('tahfidz')) return 'Agama';
+    if (p.includes('pramuka') || p.includes('kepanduan')) return 'Pramuka';
     return 'Semua Kategori';
   };
 
@@ -92,12 +93,14 @@ export const EkskulPage: React.FC = () => {
       searchParams.delete('kategori');
     } else if (cat === 'Sains & Teknologi') {
       searchParams.set('kategori', 'sains');
-    } else if (cat === 'Seni & Bahasa') {
-      searchParams.set('kategori', 'seni');
     } else if (cat === 'Olahraga & Bela Diri') {
       searchParams.set('kategori', 'olahraga');
-    } else if (cat === 'Kepanduan & Keagamaan') {
-      searchParams.set('kategori', 'kepanduan');
+    } else if (cat === 'Seni & Bahasa') {
+      searchParams.set('kategori', 'seni');
+    } else if (cat === 'Agama') {
+      searchParams.set('kategori', 'agama');
+    } else if (cat === 'Pramuka') {
+      searchParams.set('kategori', 'pramuka');
     }
     setSearchParams(searchParams, { replace: true });
   };
@@ -107,12 +110,14 @@ export const EkskulPage: React.FC = () => {
     switch (selectedCategory) {
       case 'Sains & Teknologi':
         return 'ekskul-sains';
-      case 'Seni & Bahasa':
-        return 'ekskul-seni';
       case 'Olahraga & Bela Diri':
         return 'ekskul-olahraga';
-      case 'Kepanduan & Keagamaan':
-        return 'ekskul-kepanduan';
+      case 'Seni & Bahasa':
+        return 'ekskul-seni';
+      case 'Agama':
+        return 'ekskul-agama';
+      case 'Pramuka':
+        return 'ekskul-pramuka';
       case 'Semua Kategori':
       default:
         return 'ekskul-semua';
@@ -124,45 +129,39 @@ export const EkskulPage: React.FC = () => {
       case 'ekskul-sains':
         handleSelectCategory('Sains & Teknologi');
         break;
-      case 'ekskul-seni':
-        handleSelectCategory('Seni & Bahasa');
-        break;
       case 'ekskul-olahraga':
         handleSelectCategory('Olahraga & Bela Diri');
         break;
-      case 'ekskul-kepanduan':
-        handleSelectCategory('Kepanduan & Keagamaan');
+      case 'ekskul-seni':
+        handleSelectCategory('Seni & Bahasa');
+        break;
+      case 'ekskul-agama':
+        handleSelectCategory('Agama');
+        break;
+      case 'ekskul-pramuka':
+        handleSelectCategory('Pramuka');
         break;
       case 'ekskul-semua':
+      default:
         handleSelectCategory('Semua Kategori');
         break;
     }
   };
 
-  // Category counts calculation
-  const categoryCounts = useMemo(() => {
-    const counts: Record<EkskulCategory, number> = {
-      'Semua Kategori': ekskuls.length,
-      'Sains & Teknologi': 0,
-      'Seni & Bahasa': 0,
-      'Olahraga & Bela Diri': 0,
-      'Kepanduan & Keagamaan': 0
-    };
-
-    ekskuls.forEach((item) => {
-      if (counts[item.category] !== undefined) {
-        counts[item.category]++;
-      }
-    });
-
-    return counts;
-  }, [ekskuls]);
-
   // Filtered ekskuls
   const filteredEkskuls = useMemo(() => {
     return ekskuls.filter((item) => {
-      const matchCategory =
-        selectedCategory === 'Semua Kategori' || item.category === selectedCategory;
+      let matchCategory = selectedCategory === 'Semua Kategori';
+      if (!matchCategory) {
+        if (selectedCategory === 'Agama') {
+          matchCategory = item.id === 'tahfidz-tilawah' || item.name.toLowerCase().includes('qur') || item.category === 'Agama' || (item.category === 'Kepanduan & Keagamaan' && item.id !== 'pramuka');
+        } else if (selectedCategory === 'Pramuka') {
+          matchCategory = item.id === 'pramuka' || item.name.toLowerCase().includes('pramuka') || item.category === 'Pramuka';
+        } else {
+          matchCategory = item.category === selectedCategory;
+        }
+      }
+
       const matchSearch =
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.coach.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -173,7 +172,7 @@ export const EkskulPage: React.FC = () => {
   }, [ekskuls, selectedCategory, searchQuery]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-3 sm:py-6 space-y-6 sm:space-y-8 overflow-x-hidden select-none">
+    <div className="w-full max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2.5 space-y-2.5 sm:space-y-3.5 overflow-x-hidden select-none">
       {/* 1. Folder-style Navigation Breadcrumb */}
       <NavBarTabs
         activeTabId={currentTabId}
@@ -181,18 +180,18 @@ export const EkskulPage: React.FC = () => {
       />
 
       {/* 2. Hero Header Banner (Modern Lux Royal Indigo & Violet Styling) */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#1e1b4b] via-[#2e1065] to-[#0f172a] border border-purple-500/30 p-6 sm:p-8 lg:p-10 text-white shadow-xl shadow-purple-950/20">
+      <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-br from-[#1e1b4b] via-[#2e1065] to-[#0f172a] border border-purple-500/30 p-3.5 sm:p-5 lg:p-6 text-white shadow-lg shadow-purple-950/20">
         {/* Glow Spheres */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/15 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
         <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/40 text-purple-200 text-xs font-black uppercase tracking-wider">
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
+          <div className="space-y-1.5 sm:space-y-2 max-w-2xl">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-500/20 border border-purple-400/40 text-purple-200 text-[11px] font-black uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5 text-[#d4af37]" />
               <span>Katalog Pengembangan Minat &amp; Bakat Santri</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight leading-tight">
               Ekstrakurikuler Unggulan Santri
             </h1>
             <p className="text-xs sm:text-sm text-purple-100/90 leading-relaxed font-normal">
@@ -201,31 +200,31 @@ export const EkskulPage: React.FC = () => {
           </div>
 
           {/* Quick Stats Pills */}
-          <div className="grid grid-cols-3 gap-2.5 sm:gap-3 shrink-0">
-            <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
-              <div className="text-xl sm:text-2xl font-black text-[#d4af37]">
+          <div className="grid grid-cols-3 gap-2 sm:gap-2.5 shrink-0">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
+              <div className="text-lg sm:text-xl font-black text-[#d4af37]">
                 {ekskuls.length}
               </div>
-              <div className="text-[10.5px] sm:text-xs text-purple-200 font-bold mt-0.5">
+              <div className="text-[10px] sm:text-xs text-purple-200 font-bold mt-0.5">
                 Klub Ekskul
               </div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
-              <div className="text-xl sm:text-2xl font-black text-white">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
+              <div className="text-lg sm:text-xl font-black text-white">
                 100%
               </div>
-              <div className="text-[10.5px] sm:text-xs text-purple-200 font-bold mt-0.5">
+              <div className="text-[10px] sm:text-xs text-purple-200 font-bold mt-0.5">
                 Pembina Ahli
               </div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
-              <div className="text-xl sm:text-2xl font-black text-purple-300">
-                4 Pilar
+            <div className="p-2 sm:p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
+              <div className="text-lg sm:text-xl font-black text-purple-300">
+                6 Bidang
               </div>
-              <div className="text-[10.5px] sm:text-xs text-purple-200 font-bold mt-0.5">
-                Bidang Bakat
+              <div className="text-[10px] sm:text-xs text-purple-200 font-bold mt-0.5">
+                Kategori
               </div>
             </div>
           </div>
@@ -233,7 +232,7 @@ export const EkskulPage: React.FC = () => {
       </div>
 
       {/* 3. Real-time Search Toolbar */}
-      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/80 shadow-xs flex items-center justify-between gap-3">
+      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-2.5 sm:p-3 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/80 shadow-xs flex items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
           <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-zinc-400">
             <Search className="w-4 h-4" />
@@ -243,7 +242,7 @@ export const EkskulPage: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari ekstrakurikuler, pembina, atau kegiatan..."
-            className="w-full pl-9 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-purple-500/40 transition-all"
+            className="w-full pl-9 pr-4 py-2 rounded-xl text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-purple-500/40 transition-all"
           />
         </div>
 
@@ -254,7 +253,7 @@ export const EkskulPage: React.FC = () => {
 
       {/* 4. Grid of Ekskul Cards */}
       {filteredEkskuls.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
           {filteredEkskuls.map((item) => (
             <EkskulCard
               key={item.id}

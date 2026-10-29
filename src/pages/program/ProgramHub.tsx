@@ -58,19 +58,19 @@ export const ProgramHub: React.FC<ProgramHubProps> = ({ defaultTab = 'pondok' })
   }, [location.pathname, location.search]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-3 sm:py-6 space-y-5 sm:space-y-8 overflow-x-hidden select-none">
+    <div className="w-full max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2.5 space-y-2.5 sm:space-y-3.5 overflow-x-hidden select-none">
       {/* Folder-style Navigation Breadcrumb */}
       <NavBarTabs />
 
       {/* ========================================================= */}
       {/* HEADER BANNER: MODERN LUXURY PPJM */}
       {/* ========================================================= */}
-      <header className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-950 via-emerald-900 to-zinc-950 text-white p-5 sm:p-8 lg:p-10 shadow-xl border border-emerald-800/40">
+      <header className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-950 via-emerald-900 to-zinc-950 text-white p-3.5 sm:p-5 lg:p-6 shadow-xl border border-emerald-800/40">
         {/* Glow & Pattern Accents */}
         <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-0 right-1/4 w-60 h-60 bg-gold-400/10 rounded-full blur-2xl pointer-events-none" />
 
-        <div className="relative z-10 space-y-4 max-w-3xl">
+        <div className="relative z-10 space-y-2 sm:space-y-3 max-w-3xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 text-xs font-semibold backdrop-blur-md">
             <Sparkles className="w-3.5 h-3.5 text-gold-400" />
             <span>Pusat Kurikulum & Aktivitas Unggulan</span>

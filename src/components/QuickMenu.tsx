@@ -122,11 +122,11 @@ export const QuickMenu: React.FC = () => {
   return (
     <section
       aria-label="Menu Navigasi Cepat Portal"
-      className="relative z-30 -mt-2 sm:-mt-3.5 bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-t-3xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-6px_25px_rgba(0,0,0,0.05)] dark:shadow-[0_-6px_25px_rgba(0,0,0,0.3)] pt-2 pb-2.5 sm:pt-3 sm:pb-4 lg:hidden transition-colors duration-200 overflow-hidden"
+      className="relative z-30 -mt-2 sm:-mt-3.5 bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-t-3xl border-t border-slate-100 dark:border-slate-800 shadow-[0_-6px_25px_rgba(0,0,0,0.05)] dark:shadow-[0_-6px_25px_rgba(0,0,0,0.3)] pt-1.5 pb-2 sm:pt-2 sm:pb-2.5 lg:hidden transition-colors duration-200 overflow-hidden"
     >
       <div className="w-full max-w-7xl mx-auto px-2 xs:px-3 sm:px-4">
         {/* Layout QuickMenu: 2 Kolom x 4 Baris di Mobile Viewport */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 xs:gap-2 sm:gap-2.5 md:gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 xs:gap-1.5 sm:gap-2 md:gap-2.5">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (

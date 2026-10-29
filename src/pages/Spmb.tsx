@@ -150,12 +150,12 @@ _Mohon konfirmasi dan arahan jadwal tes observasi SPMB selanjutnya. Terima kasih
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-3 sm:py-6 space-y-4 sm:space-y-6 overflow-x-hidden select-none">
+    <div className="w-full max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2.5 space-y-2.5 sm:space-y-3.5 overflow-x-hidden select-none">
       {/* Sub-Nav Tabs */}
       <NavBarTabs />
 
       {/* Hero Header Banner */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#06331e] via-[#094729] to-[#042415] border border-emerald-800/40 shadow-xl p-5 sm:p-8 text-white">
+      <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-br from-[#06331e] via-[#094729] to-[#042415] border border-emerald-800/40 shadow-xl p-3.5 sm:p-5 text-white">
         {/* Subtle Ambient Radial Glow */}
         <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />
         <div className="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-[#d4af37]/15 blur-3xl pointer-events-none" />

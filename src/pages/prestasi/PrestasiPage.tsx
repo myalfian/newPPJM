@@ -117,7 +117,7 @@ export const PrestasiPage: React.FC = () => {
       const queryMap: Record<PrestasiCategory, string> = {
         Semua: '',
         Olimpiade: 'Sains',
-        Olahraga: 'Olaraga',
+        Olahraga: 'Olahraga',
         Seni: 'Seni',
         Keagamaan: 'Agama',
         Umum: 'Umum',
@@ -240,7 +240,7 @@ export const PrestasiPage: React.FC = () => {
   }, [achievements]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-3 sm:py-6 space-y-6 sm:space-y-8 overflow-x-hidden select-none">
+    <div className="w-full max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2.5 space-y-2.5 sm:space-y-3.5 overflow-x-hidden select-none">
       {/* 1. Folder-style Breadcrumb Sub-Navigation */}
       <NavBarTabs
         activeTabId={currentTabId}
@@ -248,18 +248,18 @@ export const PrestasiPage: React.FC = () => {
       />
 
       {/* 2. Hero Header Banner (Modern Lux Emerald & Gold Styling) */}
-      <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#07361d] via-[#0f5132] to-[#0a2717] border border-emerald-700/40 p-6 sm:p-8 lg:p-10 text-white shadow-xl shadow-emerald-950/20">
+      <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-br from-[#07361d] via-[#0f5132] to-[#0a2717] border border-emerald-700/40 p-3.5 sm:p-5 lg:p-6 text-white shadow-lg shadow-emerald-950/20">
         {/* Glow Spheres */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-[#d4af37]/15 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
         <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#d4af37]/20 border border-[#d4af37]/40 text-[#d4af37] text-xs font-black uppercase tracking-wider">
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
+          <div className="space-y-1.5 sm:space-y-2 max-w-2xl">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#d4af37]/20 border border-[#d4af37]/40 text-[#d4af37] text-[11px] font-black uppercase tracking-wider">
               <Trophy className="w-3.5 h-3.5" />
               <span>Etalase Juara &amp; Prestasi Santri</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight leading-tight">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight leading-tight">
               Rekam Jejak Prestasi &amp; Kejuaraan Santri
             </h1>
             <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed font-normal">
@@ -268,30 +268,30 @@ export const PrestasiPage: React.FC = () => {
           </div>
 
           {/* Quick Stats Pills */}
-          <div className="grid grid-cols-3 gap-2.5 sm:gap-3 shrink-0">
-            <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
-              <div className="text-xl sm:text-2xl font-black text-[#d4af37]">
+          <div className="grid grid-cols-3 gap-2 sm:gap-2.5 shrink-0">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
+              <div className="text-lg sm:text-xl font-black text-[#d4af37]">
                 {achievements.length}+
               </div>
-              <div className="text-[10.5px] sm:text-xs text-emerald-200 font-bold mt-0.5">
+              <div className="text-[10px] sm:text-xs text-emerald-200 font-bold mt-0.5">
                 Total Prestasi
               </div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
-              <div className="text-xl sm:text-2xl font-black text-white">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
+              <div className="text-lg sm:text-xl font-black text-white">
                 {goldMedalCount}
               </div>
-              <div className="text-[10.5px] sm:text-xs text-emerald-200 font-bold mt-0.5">
+              <div className="text-[10px] sm:text-xs text-emerald-200 font-bold mt-0.5">
                 Medali Emas
               </div>
             </div>
 
-            <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
-              <div className="text-xl sm:text-2xl font-black text-[#d4af37]">
+            <div className="p-2 sm:p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
+              <div className="text-lg sm:text-xl font-black text-[#d4af37]">
                 {nationalCount}
               </div>
-              <div className="text-[10.5px] sm:text-xs text-emerald-200 font-bold mt-0.5">
+              <div className="text-[10px] sm:text-xs text-emerald-200 font-bold mt-0.5">
                 Tk. Nasional
               </div>
             </div>
@@ -312,7 +312,7 @@ export const PrestasiPage: React.FC = () => {
 
       {/* 4. Grid of Achievements */}
       {filteredAchievements.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
           {filteredAchievements.map((item) => (
             <PrestasiCard
               key={item.id}
