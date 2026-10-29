@@ -6,3 +6,4 @@ export const Fasilitas: React.FC = () => {
 };
 
 export default Fasilitas;
+

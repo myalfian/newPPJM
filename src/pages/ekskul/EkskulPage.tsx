@@ -14,7 +14,6 @@ import {
   Building
 } from 'lucide-react';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
-import { EkskulCategoryFilter } from './EkskulCategoryFilter';
 import { EkskulCard } from './EkskulCard';
 import { EkskulDetailModal } from './EkskulDetailModal';
 import { EKSKUL_DATASET } from './ekskulData';
@@ -84,9 +83,7 @@ export const EkskulPage: React.FC = () => {
 
   // Sync state if URL changes externally
   useEffect(() => {
-    if (urlCategoryParam) {
-      setSelectedCategory(parseCategoryParam(urlCategoryParam));
-    }
+    setSelectedCategory(parseCategoryParam(urlCategoryParam));
   }, [urlCategoryParam]);
 
   const handleSelectCategory = (cat: EkskulCategory) => {
@@ -103,6 +100,43 @@ export const EkskulPage: React.FC = () => {
       searchParams.set('kategori', 'kepanduan');
     }
     setSearchParams(searchParams, { replace: true });
+  };
+
+  // Map selected category to exact NavBarTabs tab ID
+  const currentTabId = useMemo(() => {
+    switch (selectedCategory) {
+      case 'Sains & Teknologi':
+        return 'ekskul-sains';
+      case 'Seni & Bahasa':
+        return 'ekskul-seni';
+      case 'Olahraga & Bela Diri':
+        return 'ekskul-olahraga';
+      case 'Kepanduan & Keagamaan':
+        return 'ekskul-kepanduan';
+      case 'Semua Kategori':
+      default:
+        return 'ekskul-semua';
+    }
+  }, [selectedCategory]);
+
+  const handleNavBarTabChange = (tab: { id: string }) => {
+    switch (tab.id) {
+      case 'ekskul-sains':
+        handleSelectCategory('Sains & Teknologi');
+        break;
+      case 'ekskul-seni':
+        handleSelectCategory('Seni & Bahasa');
+        break;
+      case 'ekskul-olahraga':
+        handleSelectCategory('Olahraga & Bela Diri');
+        break;
+      case 'ekskul-kepanduan':
+        handleSelectCategory('Kepanduan & Keagamaan');
+        break;
+      case 'ekskul-semua':
+        handleSelectCategory('Semua Kategori');
+        break;
+    }
   };
 
   // Category counts calculation
@@ -141,7 +175,10 @@ export const EkskulPage: React.FC = () => {
   return (
     <div className="w-full max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-3 sm:py-6 space-y-6 sm:space-y-8 overflow-x-hidden select-none">
       {/* 1. Folder-style Navigation Breadcrumb */}
-      <NavBarTabs />
+      <NavBarTabs
+        activeTabId={currentTabId}
+        onChangeTab={handleNavBarTabChange}
+      />
 
       {/* 2. Hero Header Banner (Modern Lux Royal Indigo & Violet Styling) */}
       <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#1e1b4b] via-[#2e1065] to-[#0f172a] border border-purple-500/30 p-6 sm:p-8 lg:p-10 text-white shadow-xl shadow-purple-950/20">
@@ -195,33 +232,23 @@ export const EkskulPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Filter Navigation & Real-time Search */}
-      <div className="space-y-4">
-        {/* Category Pills */}
-        <EkskulCategoryFilter
-          selectedCategory={selectedCategory}
-          onSelectCategory={handleSelectCategory}
-          categoryCounts={categoryCounts}
-        />
-
-        {/* Search Bar Bar */}
-        <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/80 shadow-xs flex items-center justify-between gap-3">
-          <div className="relative flex-1 max-w-md">
-            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-zinc-400">
-              <Search className="w-4 h-4" />
-            </div>
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Cari ekstrakurikuler, pembina, atau kegiatan..."
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-purple-500/40 transition-all"
-            />
+      {/* 3. Real-time Search Toolbar */}
+      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-3 sm:p-4 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/80 shadow-xs flex items-center justify-between gap-3">
+        <div className="relative flex-1 max-w-md">
+          <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-zinc-400">
+            <Search className="w-4 h-4" />
           </div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Cari ekstrakurikuler, pembina, atau kegiatan..."
+            className="w-full pl-9 pr-4 py-2.5 rounded-xl text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-purple-500/40 transition-all"
+          />
+        </div>
 
-          <div className="text-xs text-zinc-500 dark:text-zinc-400 font-medium hidden sm:block">
-            Menampilkan <span className="font-bold text-zinc-800 dark:text-zinc-200">{filteredEkskuls.length}</span> kegiatan ekskul
-          </div>
+        <div className="text-xs text-zinc-500 dark:text-zinc-400 font-medium hidden sm:block">
+          Menampilkan <span className="font-bold text-zinc-800 dark:text-zinc-200">{filteredEkskuls.length}</span> kegiatan ekskul
         </div>
       </div>
 
