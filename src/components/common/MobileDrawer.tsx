@@ -7,6 +7,9 @@ import {
   BookOpenCheck,
   Cpu,
   Trophy,
+  Award,
+  Palette,
+  Activity,
   Sparkles,
   Images,
   CalendarDays,
@@ -177,14 +180,19 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
         activeBg: 'bg-amber-600',
       },
       items: [
-        { title: 'Daftar Prestasi & Juara', href: '/prestasi', desc: 'Tingkat Kabupaten hingga Nasional', icon: Trophy },
+        { title: 'Semua Prestasi Santri', href: '/prestasi', desc: 'Galeri panggung juara lengkap', icon: Trophy },
+        { title: 'Olimpiade & Sains', href: '/prestasi?kategori=Olimpiade', desc: 'Kompetisi sains & robotika', icon: Award },
+        { title: 'Olahraga & Silat', href: '/prestasi?kategori=Olahraga', desc: 'Pencak silat, futsal & panahan', icon: Activity },
+        { title: 'Seni & Bahasa', href: '/prestasi?kategori=Seni', desc: 'Kaligrafi, hadrah & pidato santri', icon: Palette },
+        { title: 'Keagamaan & MQK', href: '/prestasi?kategori=Keagamaan', desc: 'Musabaqah Kitab Kuning & Tahfidz', icon: BookOpen },
+        { title: 'Umum & Riset', href: '/prestasi?kategori=Umum', desc: 'Karya inovatif & penghargaan umum', icon: Sparkles },
       ],
     },
     {
       id: 'ekskul',
       title: 'Ekstrakurikuler',
       subtitle: 'Minat, Bakat & Kepribadian',
-      href: '/ekskul',
+      href: '/ekstrakurikuler',
       icon: Sparkles,
       color: {
         badgeBg: 'bg-purple-50',
@@ -193,7 +201,11 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
         activeBg: 'bg-purple-700',
       },
       items: [
-        { title: 'Kegiatan Ekstrakurikuler', href: '/ekskul', desc: 'Pramuka, Silat, Rebana, Kaligrafi', icon: Sparkles },
+        { title: 'Katalog Semua Ekskul', href: '/ekstrakurikuler', desc: 'Pengembangan minat bakat santri', icon: Sparkles },
+        { title: 'Sains & Robotik', href: '/ekstrakurikuler?kategori=sains', desc: 'Robotika, IoT & sains club', icon: Cpu },
+        { title: 'Seni & Bahasa', href: '/ekstrakurikuler?kategori=seni', desc: 'Hadrah banjari, kaligrafi, bahasa asing', icon: Palette },
+        { title: 'Olahraga & Bela Diri', href: '/ekstrakurikuler?kategori=olahraga', desc: 'Pencak Silat Pagar Nusa & futsal', icon: Activity },
+        { title: 'Kepanduan & Agama', href: '/ekstrakurikuler?kategori=kepanduan', desc: 'Pramuka santri & kajian tilawah', icon: Users },
       ],
     },
     {
@@ -209,9 +221,9 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
         activeBg: 'bg-amber-500',
       },
       items: [
-        { title: 'Bagan Kepengurusan BPH', href: '/osis', desc: 'Struktur kabinet santri putra & putri', icon: Users },
-        { title: '6 Divisi & Program Kerja', href: '/osis', desc: 'Departemen kepemimpinan & bakat', icon: OsisIcon },
-        { title: 'Kotak Aspirasi Santri', href: '/osis', desc: 'Suara santri untuk kemajuan pondok', icon: HeartHandshake },
+        { title: 'Struktur Pengurus', href: '/osis', desc: 'Bagan & hierarki kabinet santri', icon: Users },
+        { title: 'Program Kerja', href: '/osis?tab=program', desc: '5 departemen & program kerja terpadu', icon: Sparkles },
+        { title: 'Event & Berita', href: '/osis?tab=event', desc: 'Press release & warta kegiatan OSIS', icon: CalendarDays },
       ],
     },
     {

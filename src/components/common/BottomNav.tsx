@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Home, Newspaper, Sprout, GraduationCap, Sparkles } from 'lucide-react';
+import { Home, Newspaper, Sprout, GraduationCap, Sparkles, CalendarDays } from 'lucide-react';
 import { MedsosModal } from './MedsosModal';
 
 export const BottomNav: React.FC = () => {
@@ -259,13 +259,13 @@ export const BottomNav: React.FC = () => {
               </span>
             </div>
 
-            {/* 4. Karya Siswa & Portofolio Santri */}
+            {/* 4. Agenda & Kalender Santri */}
             <button
               type="button"
-              onClick={() => navigate('/karya-siswa')}
+              onClick={() => navigate('/agenda')}
               className="flex flex-col items-center justify-center h-full relative cursor-pointer group py-1"
-              aria-label="Karya Siswa"
-              title="Karya & Portofolio Siswa"
+              aria-label="Agenda"
+              title="Kalender & Agenda Santri"
             >
               <motion.div
                 whileTap={{ scale: 0.88 }}
@@ -280,7 +280,7 @@ export const BottomNav: React.FC = () => {
                     : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
                 }`}
               >
-                <Sparkles className="w-5 h-5 stroke-[2.3]" />
+                <CalendarDays className="w-5 h-5 stroke-[2.3]" />
               </motion.div>
               <span
                 className={`text-[11px] sm:text-[11.5px] tracking-tight mt-1 leading-none transition-colors duration-200 ${
@@ -289,7 +289,7 @@ export const BottomNav: React.FC = () => {
                     : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200'
                 }`}
               >
-                Karya Siswa
+                Agenda
               </span>
             </button>
 

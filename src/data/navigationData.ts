@@ -4,6 +4,7 @@ import {
   BookOpenCheck,
   Sparkles,
   Trophy,
+  Award,
   Atom,
   Images,
   Compass,
@@ -217,12 +218,19 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeText: 'text-amber-900',
       activeDot: 'bg-amber-500',
     },
+    items: [
+      { title: 'Olimpiade & Sains', href: '/prestasi?kategori=Olimpiade', desc: 'Kompetisi sains & teknologi santri', icon: Award },
+      { title: 'Olahraga & Silat', href: '/prestasi?kategori=Olahraga', desc: 'Pencak silat, futsal & kebugaran', icon: Activity },
+      { title: 'Seni & Bahasa', href: '/prestasi?kategori=Seni', desc: 'Kaligrafi, hadrah & pidato santri', icon: Palette },
+      { title: 'Keagamaan & MQK', href: '/prestasi?kategori=Keagamaan', desc: 'Musabaqah Qiraatil Kutub & Tahfidz', icon: BookOpen },
+      { title: 'Umum & Riset', href: '/prestasi?kategori=Umum', desc: 'Karya inovatif & penghargaan umum', icon: Sparkles },
+    ]
   },
   {
     id: 'ekskul',
     label: 'Ekskul',
     icon: Sparkles,
-    href: '/ekskul',
+    href: '/ekstrakurikuler',
     isDropdown: false,
     color: {
       badgeBg: 'bg-purple-50 text-purple-700 border-purple-200/80 group-hover:bg-purple-100 group-hover:text-purple-800',
@@ -230,6 +238,12 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeText: 'text-purple-800',
       activeDot: 'bg-purple-600',
     },
+    items: [
+      { title: 'Sains & Robotik', href: '/ekstrakurikuler?kategori=sains', desc: 'Robotika, IoT & coding sains', icon: Cpu },
+      { title: 'Seni & Bahasa', href: '/ekstrakurikuler?kategori=seni', desc: 'Hadrah banjari, kaligrafi, English/Arabic', icon: Palette },
+      { title: 'Olahraga & Silat', href: '/ekstrakurikuler?kategori=olahraga', desc: 'Pencak Silat Pagar Nusa & futsal', icon: Activity },
+      { title: 'Kepanduan & Agama', href: '/ekstrakurikuler?kategori=kepanduan', desc: 'Pramuka santri & kajian tilawah', icon: Users },
+    ]
   },
   {
     id: 'osis',
@@ -455,8 +469,8 @@ export const ADMIN_MODULES: AdminModuleItem[] = [
     icon: Sparkles,
     roles: ['super_admin', 'pengurus_konten'],
     category: 'academic',
-    publicCategory: 'Ekskul',
-    publicHref: '/ekskul',
+    publicCategory: 'Ekstrakurikuler',
+    publicHref: '/ekstrakurikuler',
   },
   {
     id: 'profil',

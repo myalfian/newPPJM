@@ -13,6 +13,8 @@ import {
   Image as ImageIcon,
   Video,
   Trophy,
+  Award,
+  Palette,
   Activity,
   Volume2,
   Cpu,
@@ -100,13 +102,29 @@ const DEFAULT_CATEGORY_TABS: Record<
       { id: 'video', label: 'Video', href: '/galeri/video', icon: Video },
     ],
   },
-  'prestasi-ekskul': {
-    parentLabel: 'Aktivitas',
+  'prestasi': {
+    parentLabel: 'Prestasi',
     parentHref: '/prestasi',
     parentIcon: Trophy,
     tabs: [
-      { id: 'prestasi', label: 'Prestasi', href: '/prestasi', icon: Trophy },
-      { id: 'ekskul', label: 'Ekskul', href: '/ekskul', icon: Activity },
+      { id: 'prestasi-semua', label: 'Semua Prestasi', shortLabel: 'Semua', href: '/prestasi', icon: Trophy },
+      { id: 'prestasi-olimpiade', label: 'Olimpiade & Sains', shortLabel: 'Olimpiade', href: '/prestasi?kategori=Olimpiade', icon: Award },
+      { id: 'prestasi-olahraga', label: 'Olahraga & Silat', shortLabel: 'Olahraga', href: '/prestasi?kategori=Olahraga', icon: Activity },
+      { id: 'prestasi-seni', label: 'Seni & Bahasa', shortLabel: 'Seni', href: '/prestasi?kategori=Seni', icon: Palette },
+      { id: 'prestasi-keagamaan', label: 'Keagamaan & MQK', shortLabel: 'Keagamaan', href: '/prestasi?kategori=Keagamaan', icon: BookOpen },
+      { id: 'prestasi-umum', label: 'Umum & Riset', shortLabel: 'Umum', href: '/prestasi?kategori=Umum', icon: Sparkles },
+    ],
+  },
+  'ekstrakurikuler': {
+    parentLabel: 'Ekstrakurikuler',
+    parentHref: '/ekstrakurikuler',
+    parentIcon: Sparkles,
+    tabs: [
+      { id: 'ekskul-semua', label: 'Semua Ekskul', shortLabel: 'Semua', href: '/ekstrakurikuler', icon: Sparkles },
+      { id: 'ekskul-sains', label: 'Sains & Robotik', shortLabel: 'Sains', href: '/ekstrakurikuler?kategori=sains', icon: Cpu },
+      { id: 'ekskul-seni', label: 'Seni & Bahasa', shortLabel: 'Seni', href: '/ekstrakurikuler?kategori=seni', icon: Palette },
+      { id: 'ekskul-olahraga', label: 'Olahraga & Silat', shortLabel: 'Olahraga', href: '/ekstrakurikuler?kategori=olahraga', icon: Activity },
+      { id: 'ekskul-kepanduan', label: 'Kepanduan & Agama', shortLabel: 'Kepanduan', href: '/ekstrakurikuler?kategori=kepanduan', icon: Users },
     ],
   },
   'smart-jm-stem': {
@@ -212,7 +230,8 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
   else if (pathname.includes('/jm-center')) detectedCategory = 'jm-center';
   else if (pathname.includes('/program-unggulan') || pathname.startsWith('/program')) detectedCategory = 'program-unggulan';
   else if (pathname.includes('/galeri')) detectedCategory = 'galeri';
-  else if (pathname === '/prestasi' || pathname === '/ekskul') detectedCategory = 'prestasi-ekskul';
+  else if (pathname === '/prestasi' || pathname.startsWith('/prestasi')) detectedCategory = 'prestasi';
+  else if (pathname === '/ekstrakurikuler' || pathname.startsWith('/ekstrakurikuler') || pathname === '/ekskul' || pathname.startsWith('/ekskul')) detectedCategory = 'ekstrakurikuler';
   else if (pathname.includes('/smart-jm')) detectedCategory = 'smart-jm';
 
   const defaultCategory = DEFAULT_CATEGORY_TABS[detectedCategory];
@@ -238,9 +257,13 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
     if (pathname === '/') {
       activeTab = tabs.find((t) => t.id === 'beranda') || tabs[0];
     } else {
-      // 1. Check specific sub-menu items first
+      // 1. Check specific sub-menu items first (with full path + query match)
       const subMenuTabs = tabs.filter((t) => t.id !== 'beranda');
-      activeTab = subMenuTabs.find((t) => pathname === t.href);
+      const fullPath = pathname + (location.search || '');
+      activeTab = subMenuTabs.find((t) => fullPath === t.href);
+      if (!activeTab) {
+        activeTab = subMenuTabs.find((t) => pathname === t.href.split('?')[0]);
+      }
 
       // 2. Specific SMART JM category matching
       if (!activeTab && pathname.includes('/smart-jm')) {

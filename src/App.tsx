@@ -231,7 +231,8 @@ export const App: React.FC = () => {
 
             {/* Prestasi, Ekskul & Organisasi Santri (OSIS) */}
             <Route path="prestasi" element={<Prestasi />} />
-            <Route path="ekskul" element={<Ekskul />} />
+            <Route path="ekstrakurikuler" element={<Ekskul />} />
+            <Route path="ekskul" element={<Navigate to="/ekstrakurikuler" replace />} />
             <Route path="osis" element={<Osis />} />
 
             {/* Karya Siswa & Agenda Santri (Inovasi, Riset & Portofolio) */}
@@ -307,6 +308,7 @@ export const App: React.FC = () => {
             <Route path="hafidz" element={<KelolaHafidz />} />
             <Route path="prestasi" element={<KelolaPrestasi />} />
             <Route path="ekskul" element={<KelolaEkskul />} />
+            <Route path="ekstrakurikuler" element={<Navigate to="/admin/ekskul" replace />} />
             <Route path="profil" element={<KelolaProfil />} />
             <Route path="akun" element={<UserProfilePage />} />
             <Route path="profile" element={<Navigate to="/admin/akun" replace />} />
