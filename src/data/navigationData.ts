@@ -263,7 +263,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     id: 'jm-news',
     label: 'JM News',
     icon: Newspaper,
-    href: '/jm-news/agenda-bulanan',
+    href: '/jm-news',
     isDropdown: false,
     color: {
       badgeBg: 'bg-sky-50 text-sky-700 border-sky-200/80 group-hover:bg-sky-100 group-hover:text-sky-800',
@@ -272,8 +272,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeDot: 'bg-sky-600',
     },
     items: [
-      { title: 'Agenda Bulanan', href: '/jm-news/agenda-bulanan', desc: 'Kalender jadwal terpadu & agenda santri', icon: CalendarDays },
-      { title: 'Press Release', href: '/jm-news/press-release', desc: 'Siaran pers resmi, foto dokumentasi & deskripsi', icon: Newspaper },
+      { title: 'JM News', href: '/jm-news', desc: 'Siaran pers resmi, foto dokumentasi & warta', icon: Newspaper },
     ]
   },
   {

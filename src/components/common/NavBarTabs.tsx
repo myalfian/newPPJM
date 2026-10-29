@@ -184,11 +184,10 @@ const DEFAULT_CATEGORY_TABS: Record<
   },
   'jm-news': {
     parentLabel: 'JM News',
-    parentHref: '/jm-news/agenda-bulanan',
+    parentHref: '/jm-news',
     parentIcon: Newspaper,
     tabs: [
-      { id: 'agenda-bulanan', label: 'Agenda Bulanan', shortLabel: 'Agenda Bulanan', href: '/jm-news/agenda-bulanan', icon: CalendarDays },
-      { id: 'press-release', label: 'Press Release', shortLabel: 'Press Release', href: '/jm-news/press-release', icon: Newspaper },
+      { id: 'jm-news', label: 'JM News', href: '/jm-news', icon: Newspaper },
     ],
   },
   'spmb': {
@@ -343,6 +342,10 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
         } else {
           activeTab = subMenuTabs.find((t) => t.id === 'sambutan') || subMenuTabs[0];
         }
+      }
+
+      if (!activeTab && (pathname.includes('/jm-news') || pathname.includes('/berita'))) {
+        activeTab = subMenuTabs.find((t) => t.id === 'jm-news') || subMenuTabs[0];
       }
 
       // 7. Fallback to path without query string match (ONLY IF no query params present)

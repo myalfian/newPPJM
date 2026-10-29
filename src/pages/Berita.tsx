@@ -98,7 +98,7 @@ export const Berita: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2 space-y-3 sm:space-y-4">
       {/* Navigation Tabs */}
-      <NavBarTabs />
+      <NavBarTabs activeTabId="jm-news" />
 
       {/* Hero Header */}
       <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-4 sm:p-6 text-white shadow-m3-2 relative overflow-hidden">
