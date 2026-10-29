@@ -469,7 +469,10 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
   return (
     <div className="w-full max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-3 sm:py-6 space-y-4 sm:space-y-6 overflow-x-hidden select-none">
       {/* 1. Android-Style Folder Sub-Nav Tabs */}
-      <NavBarTabs />
+      <NavBarTabs
+        activeTabId={activeTab}
+        onChangeTab={(tab) => handleTabChange(tab.id as 'foto' | 'video')}
+      />
 
       {/* 2. Hero Header Banner (Modern Luxury Glassmorphism) */}
       <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-950 via-[#07361f] to-emerald-950 border border-emerald-800/40 shadow-xl p-5 sm:p-8 text-white">
@@ -512,84 +515,6 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
               </button>
             )}
           </div>
-        </div>
-      </div>
-
-      {/* 3. Luxury Segmented Control Switcher (Foto vs Video) */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-1">
-        {/* The Segmented Pill Capsule */}
-        <div className="inline-flex p-1.5 rounded-full bg-zinc-100/90 dark:bg-zinc-800/90 border border-zinc-200/70 dark:border-zinc-700/70 backdrop-blur-md shadow-inner w-full sm:w-auto">
-          {/* Tab 1: Foto Kegiatan */}
-          <button
-            type="button"
-            onClick={() => handleTabChange('foto')}
-            className={`relative flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-colors cursor-pointer min-h-[44px] ${
-              activeTab === 'foto'
-                ? 'text-white'
-                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
-            }`}
-          >
-            {activeTab === 'foto' && (
-              <motion.div
-                layoutId="galleryTabActivePill"
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-700 via-emerald-800 to-teal-800 shadow-md shadow-emerald-950/20"
-                transition={{ type: 'spring', stiffness: 420, damping: 32 }}
-              />
-            )}
-            <Camera className="w-4 h-4 relative z-10" />
-            <span className="relative z-10">Foto Kegiatan</span>
-            <span
-              className={`relative z-10 text-[10px] px-2 py-0.5 rounded-full font-black ${
-                activeTab === 'foto'
-                  ? 'bg-emerald-950/60 text-emerald-200 border border-emerald-500/30'
-                  : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300'
-              }`}
-            >
-              {photoActivities.length}
-            </span>
-          </button>
-
-          {/* Tab 2: Video Kegiatan */}
-          <button
-            type="button"
-            onClick={() => handleTabChange('video')}
-            className={`relative flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold transition-colors cursor-pointer min-h-[44px] ${
-              activeTab === 'video'
-                ? 'text-white'
-                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
-            }`}
-          >
-            {activeTab === 'video' && (
-              <motion.div
-                layoutId="galleryTabActivePill"
-                className="absolute inset-0 rounded-full bg-gradient-to-r from-emerald-700 via-emerald-800 to-teal-800 shadow-md shadow-emerald-950/20"
-                transition={{ type: 'spring', stiffness: 420, damping: 32 }}
-              />
-            )}
-            <Film className="w-4 h-4 relative z-10" />
-            <span className="relative z-10">Video Kegiatan</span>
-            <span
-              className={`relative z-10 text-[10px] px-2 py-0.5 rounded-full font-black ${
-                activeTab === 'video'
-                  ? 'bg-emerald-950/60 text-emerald-200 border border-emerald-500/30'
-                  : 'bg-zinc-200 dark:bg-zinc-700 text-zinc-600 dark:text-zinc-300'
-              }`}
-            >
-              {videoActivities.length}
-            </span>
-          </button>
-        </div>
-
-        {/* Counter Info Pill */}
-        <div className="text-xs text-zinc-500 dark:text-zinc-400 font-medium hidden sm:flex items-center gap-1.5">
-          <Info className="w-3.5 h-3.5 text-emerald-600" />
-          <span>
-            Menampilkan{' '}
-            <strong className="text-zinc-800 dark:text-zinc-200">
-              {activeTab === 'foto' ? filteredPhotos.length : filteredVideos.length}
-            </strong>{' '}
-            dokumentasi terkurasi
-          </span>
         </div>
       </div>
 
