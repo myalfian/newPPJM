@@ -301,3 +301,4 @@ export const SmartImageDropzone: React.FC<SmartImageDropzoneProps> = ({
     </div>
   );
 };
+

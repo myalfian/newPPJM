@@ -458,3 +458,4 @@ export const KelolaOsis: React.FC = () => {
     </div>
   );
 };
+

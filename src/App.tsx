@@ -194,7 +194,7 @@ export const App: React.FC = () => {
             <Route index element={<Home />} />
 
             {/* JM Center Hub (Hierarki Terpadu: 1. Profil, 2. Fasilitas, 3. Lembaga) */}
-            <Route path="jm-center" element={<JmCenter defaultTab="profil" />} />
+            <Route path="jm-center" element={<JmCenter defaultTab="sambutan" />} />
             {/* 1. Profil */}
             <Route path="jm-center/sambutan" element={<Sambutan />} />
             <Route path="jm-center/sejarah" element={<Sejarah />} />

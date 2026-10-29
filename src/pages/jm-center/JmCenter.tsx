@@ -6,17 +6,19 @@ import {
   Landmark
 } from 'lucide-react';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
-import { ProfileSection } from './ProfileSection';
+import { SambutanSection } from './SambutanSection';
+import { SejarahSection } from './SejarahSection';
+import { VisiMisiSection } from './VisiMisiSection';
 import { FacilitiesSection } from './FacilitiesSection';
 import { InstitutionsSection } from './InstitutionsSection';
 
-export type JmCenterTab = 'profil' | 'fasilitas' | 'lembaga';
+export type JmCenterTab = 'sambutan' | 'sejarah' | 'visi-misi' | 'fasilitas' | 'lembaga';
 
 export interface JmCenterProps {
   defaultTab?: JmCenterTab;
 }
 
-export const JmCenter: React.FC<JmCenterProps> = ({ defaultTab = 'profil' }) => {
+export const JmCenter: React.FC<JmCenterProps> = ({ defaultTab = 'sambutan' }) => {
   const location = useLocation();
 
   // Tab State determination from URL or props
@@ -25,11 +27,11 @@ export const JmCenter: React.FC<JmCenterProps> = ({ defaultTab = 'profil' }) => 
     const search = new URLSearchParams(location.search);
     const tabParam = search.get('tab');
 
+    if (tabParam === 'sejarah' || path.includes('/sejarah')) return 'sejarah';
+    if (tabParam === 'visi-misi' || path.includes('/visi-misi')) return 'visi-misi';
     if (tabParam === 'fasilitas' || path.includes('/fasilitas')) return 'fasilitas';
     if (tabParam === 'lembaga' || path.includes('/lembaga')) return 'lembaga';
-    if (tabParam === 'profil' || path.includes('/sambutan') || path.includes('/sejarah') || path.includes('/visi-misi')) {
-      return 'profil';
-    }
+    if (tabParam === 'sambutan' || path.includes('/sambutan') || path.includes('/profil')) return 'sambutan';
     return defaultTab;
   });
 
@@ -39,17 +41,16 @@ export const JmCenter: React.FC<JmCenterProps> = ({ defaultTab = 'profil' }) => 
     const search = new URLSearchParams(location.search);
     const tabParam = search.get('tab');
 
-    if (tabParam === 'fasilitas' || path.includes('/fasilitas')) {
+    if (tabParam === 'sejarah' || path.includes('/sejarah')) {
+      setActiveTab('sejarah');
+    } else if (tabParam === 'visi-misi' || path.includes('/visi-misi')) {
+      setActiveTab('visi-misi');
+    } else if (tabParam === 'fasilitas' || path.includes('/fasilitas')) {
       setActiveTab('fasilitas');
     } else if (tabParam === 'lembaga' || path.includes('/lembaga')) {
       setActiveTab('lembaga');
-    } else if (
-      tabParam === 'profil' ||
-      path.includes('/sambutan') ||
-      path.includes('/sejarah') ||
-      path.includes('/visi-misi')
-    ) {
-      setActiveTab('profil');
+    } else if (tabParam === 'sambutan' || path.includes('/sambutan') || path.includes('/profil')) {
+      setActiveTab('sambutan');
     }
   }, [location.pathname, location.search]);
 
@@ -97,15 +98,39 @@ export const JmCenter: React.FC<JmCenterProps> = ({ defaultTab = 'profil' }) => 
       {/* 3. Active Section Content Render */}
       <main className="pt-2">
         <AnimatePresence mode="wait">
-          {activeTab === 'profil' && (
+          {activeTab === 'sambutan' && (
             <motion.div
-              key="jm-section-profil"
+              key="jm-section-sambutan"
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -14 }}
               transition={{ duration: 0.22 }}
             >
-              <ProfileSection />
+              <SambutanSection />
+            </motion.div>
+          )}
+
+          {activeTab === 'sejarah' && (
+            <motion.div
+              key="jm-section-sejarah"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -14 }}
+              transition={{ duration: 0.22 }}
+            >
+              <SejarahSection />
+            </motion.div>
+          )}
+
+          {activeTab === 'visi-misi' && (
+            <motion.div
+              key="jm-section-visi-misi"
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -14 }}
+              transition={{ duration: 0.22 }}
+            >
+              <VisiMisiSection />
             </motion.div>
           )}
 
