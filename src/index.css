@@ -130,6 +130,11 @@
     transform: scale(0.95);
   }
 
+  /* Al-Qur'an Naskh Typography */
+  .font-quran {
+    font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade New', 'Lateef', serif;
+  }
+
   @keyframes ticker {
     0% { transform: translate3d(0, 0, 0); }
     100% { transform: translate3d(-100%, 0, 0); }
