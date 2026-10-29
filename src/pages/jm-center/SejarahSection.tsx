@@ -53,3 +53,4 @@ export const SejarahSection: React.FC = () => {
     </div>
   );
 };
+

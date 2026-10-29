@@ -74,3 +74,4 @@ export const VisiMisiSection: React.FC = () => {
     </div>
   );
 };
+

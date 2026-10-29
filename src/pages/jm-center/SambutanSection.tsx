@@ -65,3 +65,4 @@ export const SambutanSection: React.FC = () => {
     </div>
   );
 };
+
