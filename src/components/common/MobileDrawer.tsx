@@ -401,7 +401,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
                         {/* Title and Subtitle */}
                         <div className="min-w-0 flex-1 leading-snug">
                           <p
-                            className={`text-xs font-black tracking-tight truncate ${
+                            className={`text-[13.5px] xs:text-[14px] font-black tracking-tight truncate ${
                               isActive ? 'text-emerald-900' : 'text-slate-800 group-hover:text-emerald-800'
                             }`}
                           >
@@ -459,7 +459,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
                                   key={sub.href}
                                   to={sub.href}
                                   onClick={onClose}
-                                  className={`flex items-center justify-between p-2 rounded-xl text-xs font-bold transition-all ${
+                                  className={`flex items-center justify-between p-2 rounded-xl text-[12.5px] xs:text-[13px] font-bold transition-all ${
                                     isSubActive
                                       ? 'bg-emerald-700 text-white shadow-xs'
                                       : 'text-slate-700 hover:bg-white hover:text-emerald-900 shadow-2xs hover:shadow-xs'

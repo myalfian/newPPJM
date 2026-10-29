@@ -124,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
         className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-[0_4px_25px_rgba(0,0,0,0.03)] transition-all duration-300"
       >
         <div className="w-full max-w-[1536px] mx-auto px-2 xs:px-3 sm:px-5 lg:px-6 xl:px-8">
-          <div className="flex items-center justify-between gap-1.5 xs:gap-2 sm:gap-3 lg:gap-5 xl:gap-7 2xl:gap-9 py-1.5 xs:py-2 sm:py-2.5 min-h-[3.5rem] xs:min-h-[3.75rem] sm:min-h-[4.25rem] lg:min-h-[4.5rem]">
+          <div className="flex items-center justify-between gap-1.5 xs:gap-2 sm:gap-3 lg:gap-5 xl:gap-7 2xl:gap-9 py-1.5 xs:py-2 sm:py-2.5 min-h-[64px] xs:min-h-[70px] sm:min-h-[82px] lg:min-h-[92px]">
 
             {/* Brand Logo & Title */}
             <Link
@@ -294,7 +294,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
 
                 {/* Name & Role Text Stack */}
                 <div className="flex flex-col text-left leading-tight shrink-0">
-                  <span className="text-[10px] xs:text-[11px] sm:text-xs lg:text-[13px] font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[50px] xs:max-w-[70px] sm:max-w-[95px] lg:max-w-[130px]">
+                  <span className="text-[10px] xs:text-[11px] sm:text-[12px] lg:text-[13px] font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[50px] xs:max-w-[70px] sm:max-w-[95px] lg:max-w-[130px]">
                     {getFormattedDisplayName(profile?.full_name, role)}
                   </span>
                   <span
