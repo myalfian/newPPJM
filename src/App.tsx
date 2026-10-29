@@ -170,6 +170,8 @@ const KelolaHafidz = lazy(() => import('./pages/admin/KelolaHafidz').then(m => (
 const KelolaPrestasi = lazy(() => import('./pages/admin/KelolaPrestasi').then(m => ({ default: m.KelolaPrestasi })));
 const KelolaEkskul = lazy(() => import('./pages/admin/KelolaEkskul').then(m => ({ default: m.KelolaEkskul })));
 const KelolaProfil = lazy(() => import('./pages/admin/KelolaProfil').then(m => ({ default: m.KelolaProfil })));
+const KelolaOsis = lazy(() => import('./pages/admin/KelolaOsis').then(m => ({ default: m.KelolaOsis })));
+const KelolaKontak = lazy(() => import('./pages/admin/KelolaKontak').then(m => ({ default: m.KelolaKontak })));
 const WebVisualEditor = lazy(() => import('./pages/admin/WebVisualEditor').then(m => ({ default: m.WebVisualEditor })));
 const UserProfilePage = lazy(() => import('./pages/profile/UserProfilePage').then(m => ({ default: m.UserProfilePage })));
 
@@ -310,6 +312,9 @@ export const App: React.FC = () => {
             <Route path="ekskul" element={<KelolaEkskul />} />
             <Route path="ekstrakurikuler" element={<Navigate to="/admin/ekskul" replace />} />
             <Route path="profil" element={<KelolaProfil />} />
+            <Route path="program" element={<KelolaProfil />} />
+            <Route path="osis" element={<KelolaOsis />} />
+            <Route path="kontak" element={<KelolaKontak />} />
             <Route path="akun" element={<UserProfilePage />} />
             <Route path="profile" element={<Navigate to="/admin/akun" replace />} />
             <Route path="*" element={<Dashboard />} />

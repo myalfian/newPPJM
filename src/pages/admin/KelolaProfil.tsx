@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Landmark,
   Compass,
@@ -15,6 +16,7 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 
 export const KelolaProfil: React.FC = () => {
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState<
     | 'sambutan'
     | 'sejarah'
@@ -25,7 +27,23 @@ export const KelolaProfil: React.FC = () => {
     | 'lembaga-sekolah'
     | 'program'
     | 'sekolah'
-  >('sambutan');
+  >(() => {
+    if (location.pathname.includes('program')) return 'program';
+    const params = new URLSearchParams(location.search);
+    const tabParam = params.get('tab');
+    if (tabParam === 'program' || tabParam === 'fasilitas' || tabParam === 'lembaga') {
+      if (tabParam === 'program') return 'program';
+      if (tabParam === 'fasilitas') return 'fasilitas-pondok';
+      if (tabParam === 'lembaga') return 'lembaga-pondok';
+    }
+    return 'sambutan';
+  });
+
+  useEffect(() => {
+    if (location.pathname.includes('program')) {
+      setActiveTab('program');
+    }
+  }, [location.pathname]);
 
   // State Sambutan
   const [namaPimpinan, setNamaPimpinan] = useState('KH. Muhammad Jauharul Maknuun, Lc., M.Pd.I.');
