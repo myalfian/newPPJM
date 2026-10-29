@@ -79,7 +79,7 @@ export const HafidzQuranSection: React.FC = () => {
     };
   }, [selectedSurah]);
 
-  // Audio Playback handler for Murojaah
+  // Audio Playback handler for Murojaah with Multi-CDN Failover
   const playAyahAudio = (ayah: AyahItem) => {
     if (!audioRef.current) return;
 
@@ -89,25 +89,38 @@ export const HafidzQuranSection: React.FC = () => {
       return;
     }
 
-    audioRef.current.src = ayah.audioUrl;
-    audioRef.current
-      .play()
-      .then(() => {
-        setIsPlayingAudio(true);
-        setCurrentRepeatCount(1);
-      })
-      .catch((err) => {
-        if (err.name !== 'AbortError') {
-          // Fallback to secondary CDN
-          if (ayah.fallbackAudioUrl && audioRef.current) {
-            audioRef.current.src = ayah.fallbackAudioUrl;
-            audioRef.current.play().then(() => setIsPlayingAudio(true)).catch(() => setIsPlayingAudio(false));
+    const candidateUrls = [
+      ayah.audioUrl,
+      ayah.fallbackAudioUrl,
+      ayah.tertiaryAudioUrl,
+      ayah.quaternaryAudioUrl
+    ].filter((u): u is string => typeof u === 'string' && u.trim().length > 0);
+
+    const tryPlayIndex = (idx: number) => {
+      if (!audioRef.current || idx >= candidateUrls.length) {
+        setIsPlayingAudio(false);
+        return;
+      }
+
+      audioRef.current.src = candidateUrls[idx];
+      audioRef.current
+        .play()
+        .then(() => {
+          setIsPlayingAudio(true);
+          setCurrentRepeatCount(1);
+        })
+        .catch((err) => {
+          if (err.name === 'AbortError') return;
+          console.warn(`Murojaah CDN #${idx + 1} (${candidateUrls[idx]}) gagal:`, err.message);
+          if (idx + 1 < candidateUrls.length) {
+            tryPlayIndex(idx + 1);
           } else {
-            console.warn('Audio play prevented:', err);
             setIsPlayingAudio(false);
           }
-        }
-      });
+        });
+    };
+
+    tryPlayIndex(0);
   };
 
   const handleAudioEnded = () => {

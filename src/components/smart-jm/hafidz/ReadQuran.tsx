@@ -67,7 +67,8 @@ export const ReadQuran: React.FC = () => {
         nextAyah.numberInSurah,
         nextAyah.audioUrl,
         nextAyah.fallbackAudioUrl,
-        nextAyah.tertiaryAudioUrl
+        nextAyah.tertiaryAudioUrl,
+        nextAyah.quaternaryAudioUrl
       );
     } else {
       // End of surah: auto transition to next surah if available
@@ -89,7 +90,8 @@ export const ReadQuran: React.FC = () => {
         prevAyah.numberInSurah,
         prevAyah.audioUrl,
         prevAyah.fallbackAudioUrl,
-        prevAyah.tertiaryAudioUrl
+        prevAyah.tertiaryAudioUrl,
+        prevAyah.quaternaryAudioUrl
       );
     }
   }, [ayahs, selectedSurah]);
@@ -149,7 +151,8 @@ export const ReadQuran: React.FC = () => {
         ayah.numberInSurah,
         ayah.audioUrl,
         ayah.fallbackAudioUrl,
-        ayah.tertiaryAudioUrl
+        ayah.tertiaryAudioUrl,
+        ayah.quaternaryAudioUrl
       );
     }
   };
@@ -234,10 +237,25 @@ export const ReadQuran: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsSelectorOpen(true)}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-900 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-xs transition-all cursor-pointer active:scale-95"
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-950 hover:from-emerald-700 hover:to-emerald-900 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-xs transition-all cursor-pointer active:scale-95"
           >
             <BookOpen className="w-4 h-4 text-[#d4af37]" />
             <span>Pilih Surat / Juz (114)</span>
+          </button>
+
+          {/* Quick Play Surah Button */}
+          <button
+            type="button"
+            onClick={() => {
+              if (ayahs.length > 0) {
+                handlePlayAyah(ayahs[0]);
+              }
+            }}
+            className="px-3.5 py-2.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 dark:bg-emerald-950/80 dark:hover:bg-emerald-900 text-emerald-900 dark:text-emerald-200 font-bold text-xs sm:text-sm flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 border border-emerald-300/60 dark:border-emerald-800"
+            title="Mulai Putar Audio dari Ayat 1"
+          >
+            <Volume2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <span>Putar Surat</span>
           </button>
 
           {/* Font Resizer Controls */}

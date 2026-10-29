@@ -27,7 +27,55 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const trackInfoRef = useRef<TrackInfo | null>(null);
   const activeUrlIndexRef = useRef<number>(0);
-  const isSwitchingTrackRef = useRef<boolean>(false);
+
+  // Auto failover runner: tries playing candidate at `index`
+  const tryPlayCandidate = useCallback((index: number) => {
+    const track = trackInfoRef.current;
+    const audio = audioRef.current;
+    if (!track || !audio) return;
+
+    if (index >= track.urls.length) {
+      setStatus('ERROR');
+      setErrorMessage('Audio terhambat koneksi. Klik Coba Lagi untuk memutar.');
+      return;
+    }
+
+    activeUrlIndexRef.current = index;
+    const targetUrl = track.urls[index];
+    setStatus('LOADING');
+
+    try {
+      audio.pause();
+    } catch {
+      // Ignored
+    }
+
+    audio.src = targetUrl;
+
+    // Direct play invocation returns Promise
+    audio
+      .play()
+      .then(() => {
+        setStatus('PLAYING');
+        setErrorMessage(null);
+      })
+      .catch((err) => {
+        if (err.name === 'AbortError') {
+          // Playback intentionally superseded
+          return;
+        }
+
+        console.warn(`Situs CDN #${index + 1} (${targetUrl}) gagal dimuat:`, err.message);
+
+        // Try next CDN alternative if available
+        if (index + 1 < track.urls.length) {
+          tryPlayCandidate(index + 1);
+        } else {
+          setStatus('ERROR');
+          setErrorMessage('Audio terhambat koneksi. Klik Coba Lagi untuk memutar.');
+        }
+      });
+  }, []);
 
   // Initialize and cleanup single audio element instance
   useEffect(() => {
@@ -44,7 +92,7 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
     };
 
     const handleWaiting = () => {
-      if (!audio.paused && !isSwitchingTrackRef.current) {
+      if (!audio.paused) {
         setStatus('LOADING');
       }
     };
@@ -52,35 +100,17 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
     const handlePlaying = () => {
       setStatus('PLAYING');
       setErrorMessage(null);
-      isSwitchingTrackRef.current = false;
     };
 
     const handlePause = () => {
-      if (!isSwitchingTrackRef.current) {
-        setStatus((prev) => (prev === 'PLAYING' ? 'PAUSED' : prev));
-      }
+      setStatus((prev) => (prev === 'PLAYING' ? 'PAUSED' : prev));
     };
 
     const handleError = () => {
-      if (isSwitchingTrackRef.current) return;
-
       const track = trackInfoRef.current;
       if (track && activeUrlIndexRef.current + 1 < track.urls.length) {
-        const nextIdx = activeUrlIndexRef.current + 1;
-        activeUrlIndexRef.current = nextIdx;
-        const nextUrl = track.urls[nextIdx];
-        console.warn(`CDN audio gagal, beralih ke CDN alternatif #${nextIdx + 1}: ${nextUrl}`);
-
-        audio.src = nextUrl;
-        audio.load();
-        audio.play().catch((err) => {
-          if (err.name !== 'AbortError') {
-            if (nextIdx + 1 >= track.urls.length) {
-              setStatus('ERROR');
-              setErrorMessage('Audio terhambat koneksi. Klik Coba Lagi untuk memutar.');
-            }
-          }
-        });
+        console.warn('Audio onerror dipicu, mencoba CDN alternatif...');
+        tryPlayCandidate(activeUrlIndexRef.current + 1);
         return;
       }
 
@@ -106,7 +136,7 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
       audio.src = '';
       audioRef.current = null;
     };
-  }, []);
+  }, [tryPlayCandidate]);
 
   // Handle end of audio track with repeat logic
   useEffect(() => {
@@ -163,82 +193,23 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
       ayahNumber: number,
       primaryUrl: string,
       fallbackUrl?: string,
-      tertiaryUrl?: string
+      tertiaryUrl?: string,
+      quaternaryUrl?: string
     ) => {
-      const audio = audioRef.current;
-      if (!audio) return;
-
-      const rawUrls = [primaryUrl, fallbackUrl, tertiaryUrl];
+      const rawUrls = [primaryUrl, fallbackUrl, tertiaryUrl, quaternaryUrl];
       const urls = rawUrls.filter(
         (url): url is string => typeof url === 'string' && url.trim().length > 0
       );
 
       trackInfoRef.current = { surahNumber, ayahNumber, urls };
-      activeUrlIndexRef.current = 0;
-      isSwitchingTrackRef.current = true;
-
       setCurrentSurahNumber(surahNumber);
       setCurrentAyahNumber(ayahNumber);
-      setStatus('LOADING');
-      setErrorMessage(null);
       setCurrentTime(0);
 
-      try {
-        audio.pause();
-      } catch {
-        // Ignored
-      }
-
-      const activeUrl = urls[0];
-      if (!activeUrl) {
-        setStatus('ERROR');
-        setErrorMessage('URL audio tidak ditemukan.');
-        return;
-      }
-
-      audio.src = activeUrl;
-      audio.load();
-
-      // Trigger playback with user gesture activation context
-      audio
-        .play()
-        .then(() => {
-          setStatus('PLAYING');
-          setErrorMessage(null);
-          isSwitchingTrackRef.current = false;
-        })
-        .catch((err) => {
-          if (err.name === 'AbortError') {
-            return;
-          }
-
-          // If blocked or initial CDN offline, try next candidate immediately
-          if (urls.length > 1) {
-            activeUrlIndexRef.current = 1;
-            audio.src = urls[1];
-            audio.load();
-            audio
-              .play()
-              .then(() => {
-                setStatus('PLAYING');
-                setErrorMessage(null);
-                isSwitchingTrackRef.current = false;
-              })
-              .catch((fallbackErr) => {
-                if (fallbackErr.name !== 'AbortError') {
-                  setStatus('ERROR');
-                  setErrorMessage('Audio terhambat koneksi. Klik Coba Lagi untuk memutar.');
-                }
-              });
-            return;
-          }
-
-          console.warn('Audio play prevented:', err);
-          setStatus('ERROR');
-          setErrorMessage('Klik tombol Coba Lagi untuk mengaktifkan izin audio browser.');
-        });
+      // Start from first candidate
+      tryPlayCandidate(0);
     },
-    []
+    [tryPlayCandidate]
   );
 
   const togglePlay = useCallback(() => {
@@ -260,13 +231,12 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
         })
         .catch((err) => {
           if (err.name !== 'AbortError') {
-            // Re-attempt track playback
+            // Re-attempt candidate sequence from beginning
             if (trackInfoRef.current) {
-              const { surahNumber, ayahNumber, urls } = trackInfoRef.current;
-              playAyah(surahNumber, ayahNumber, urls[0], urls[1], urls[2]);
+              tryPlayCandidate(0);
             } else {
               setStatus('ERROR');
-              setErrorMessage('Gagal melanjutkan pemutaran audio. Klik Coba Lagi.');
+              setErrorMessage('Gagal melanjutkan pemutaran. Klik Coba Lagi.');
             }
           }
         });
@@ -275,10 +245,9 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
 
     // If IDLE or ERROR, attempt full replay with user gesture
     if (trackInfoRef.current) {
-      const { surahNumber, ayahNumber, urls } = trackInfoRef.current;
-      playAyah(surahNumber, ayahNumber, urls[0], urls[1], urls[2]);
+      tryPlayCandidate(0);
     }
-  }, [status, playAyah]);
+  }, [status, tryPlayCandidate]);
 
   const pause = useCallback(() => {
     const audio = audioRef.current;
