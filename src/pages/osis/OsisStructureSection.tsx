@@ -220,8 +220,8 @@ export const OsisStructureSection: React.FC = () => {
           </div>
 
           {/* Info & Motto Body */}
-          <div className="p-4 sm:p-5 space-y-2.5">
-            <div className="flex items-center justify-between text-xs text-zinc-500 pb-2 border-b border-zinc-100 dark:border-zinc-800">
+          <div className="p-3 sm:p-3.5 space-y-1.5">
+            <div className="flex items-center justify-between text-xs text-zinc-500 pb-1.5 border-b border-zinc-100 dark:border-zinc-800">
               <span className="font-semibold text-zinc-700 dark:text-zinc-300">
                 {member.department}
               </span>
@@ -230,7 +230,7 @@ export const OsisStructureSection: React.FC = () => {
               </span>
             </div>
 
-            <div className="relative pl-3 border-l-2 border-emerald-500/40 text-xs text-zinc-600 dark:text-zinc-400 italic leading-relaxed">
+            <div className="relative pl-2.5 border-l-2 border-emerald-500/40 text-xs text-zinc-600 dark:text-zinc-400 italic leading-relaxed">
               &quot;{member.motto}&quot;
             </div>
           </div>
@@ -240,16 +240,16 @@ export const OsisStructureSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-10 sm:space-y-14 animate-in fade-in duration-300">
+    <div className="space-y-3 sm:space-y-4 animate-in fade-in duration-300">
       {/* Intro Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/80 text-amber-800 dark:text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/80 text-amber-800 dark:text-amber-300 text-[11px] font-bold uppercase tracking-wider mb-1">
             <Crown className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
             <span>Kabinet Khidmah Santri Masa Bakti 2026/2027</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
-            Bagan & Struktur Pengurus OSIS
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            Bagan &amp; Struktur Pengurus OSIS
           </h2>
         </div>
         <p className="text-xs sm:text-sm text-zinc-500 max-w-md">
@@ -260,28 +260,28 @@ export const OsisStructureSection: React.FC = () => {
       {/* ========================================================= */}
       {/* LEVEL 1: PRESIDIUM PIMPINAN (Ketua Putra, Putri & Wakil) */}
       {/* ========================================================= */}
-      <section className="space-y-4">
+      <section className="space-y-2.5 sm:space-y-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 flex items-center justify-center font-bold text-xs">
+          <div className="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 flex items-center justify-center font-bold text-xs">
             1
           </div>
-          <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white">
+          <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white">
             Presidium Pimpinan Utama
           </h3>
           <span className="text-xs text-zinc-400">• Mandat Kepengurusan Utama</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
           {leaders.map((m) => renderMemberCard(m, true))}
         </div>
       </section>
 
       {/* Organizational Divider Line (Hairline Connector) */}
-      <div className="relative py-2 flex items-center justify-center">
+      <div className="relative py-1 flex items-center justify-center">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-zinc-200 dark:border-zinc-800" />
         </div>
-        <span className="relative px-4 py-1 rounded-full bg-white dark:bg-zinc-950 text-xs font-bold text-zinc-400 border border-zinc-200 dark:border-zinc-800">
+        <span className="relative px-3 py-0.5 rounded-full bg-white dark:bg-zinc-950 text-[11px] font-bold text-zinc-400 border border-zinc-200 dark:border-zinc-800">
           Jalur Koordinasi Inti
         </span>
       </div>
@@ -289,28 +289,28 @@ export const OsisStructureSection: React.FC = () => {
       {/* ========================================================= */}
       {/* LEVEL 2: PENGURUS INTI (Sekretaris & Bendahara) */}
       {/* ========================================================= */}
-      <section className="space-y-4">
+      <section className="space-y-2.5 sm:space-y-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
+          <div className="w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
             2
           </div>
-          <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white">
+          <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white">
             Badan Pengurus Harian (BPH) Inti
           </h3>
-          <span className="text-xs text-zinc-400">• Sekretariat & Kebendaharaan</span>
+          <span className="text-xs text-zinc-400">• Sekretariat &amp; Kebendaharaan</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
           {coreOfficers.map((m) => renderMemberCard(m, false))}
         </div>
       </section>
 
       {/* Organizational Divider Line (Hairline Connector) */}
-      <div className="relative py-2 flex items-center justify-center">
+      <div className="relative py-1 flex items-center justify-center">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-zinc-200 dark:border-zinc-800" />
         </div>
-        <span className="relative px-4 py-1 rounded-full bg-white dark:bg-zinc-950 text-xs font-bold text-zinc-400 border border-zinc-200 dark:border-zinc-800">
+        <span className="relative px-3 py-0.5 rounded-full bg-white dark:bg-zinc-950 text-[11px] font-bold text-zinc-400 border border-zinc-200 dark:border-zinc-800">
           Koordinator Departemen Teknis
         </span>
       </div>
@@ -318,18 +318,18 @@ export const OsisStructureSection: React.FC = () => {
       {/* ========================================================= */}
       {/* LEVEL 3: KOORDINATOR DIVISI/SEKBID */}
       {/* ========================================================= */}
-      <section className="space-y-4">
+      <section className="space-y-2.5 sm:space-y-3">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 flex items-center justify-center font-bold text-xs">
+          <div className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-950/80 text-blue-800 dark:text-blue-300 flex items-center justify-center font-bold text-xs">
             3
           </div>
-          <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white">
+          <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white">
             Koordinator Seksi Bidang (Sekbid)
           </h3>
           <span className="text-xs text-zinc-400">• Pelaksana Program Kerja Teknis</span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
           {sekbidOfficers.map((m) => renderMemberCard(m, false))}
         </div>
       </section>

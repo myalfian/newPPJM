@@ -242,27 +242,27 @@ export const AcademicCalendarSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 sm:space-y-10 animate-in fade-in duration-300">
+    <div className="space-y-2.5 sm:space-y-3.5 animate-in fade-in duration-300">
       {/* Category Filter Pills & Month Navigator Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-zinc-50 dark:bg-zinc-900/60 p-4 rounded-2xl sm:rounded-3xl border border-zinc-200/60 dark:border-zinc-800/60">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-2.5 bg-zinc-50 dark:bg-zinc-900/60 p-2.5 sm:p-3 rounded-xl sm:rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60">
         {/* Month Navigator with Prev/Next and shortcut */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 p-0.5 shadow-xs">
+        <div className="flex items-center gap-2">
+          <div className="flex items-center bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700 p-0.5 shadow-xs">
             <button
               type="button"
               onClick={handlePrevMonth}
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+              className="w-8 h-8 rounded-md flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
               title="Bulan Sebelumnya"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <span className="px-3 text-xs sm:text-sm font-bold text-zinc-900 dark:text-white whitespace-nowrap min-w-[140px] text-center">
+            <span className="px-2.5 text-xs sm:text-sm font-bold text-zinc-900 dark:text-white whitespace-nowrap min-w-[130px] text-center">
               {monthNames[currentMonth]} {currentYear}
             </span>
             <button
               type="button"
               onClick={handleNextMonth}
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+              className="w-8 h-8 rounded-md flex items-center justify-center text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
               title="Bulan Selanjutnya"
             >
               <ChevronRight className="w-4 h-4" />
@@ -272,14 +272,14 @@ export const AcademicCalendarSection: React.FC = () => {
           <button
             type="button"
             onClick={handleCurrentMonthShortcut}
-            className="px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold border border-emerald-200/60 dark:border-emerald-800/60 transition-colors cursor-pointer whitespace-nowrap"
+            className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold border border-emerald-200/60 dark:border-emerald-800/60 transition-colors cursor-pointer whitespace-nowrap"
           >
             Bulan Ini
           </button>
         </div>
 
         {/* Category Filter Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar">
           {[
             { id: 'all', label: 'Semua Kategori' },
             { id: 'Pondok', label: 'Pondok' },
@@ -292,7 +292,7 @@ export const AcademicCalendarSection: React.FC = () => {
               key={cat.id}
               type="button"
               onClick={() => setCategoryFilter(cat.id)}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer active:scale-95 ${
+              className={`px-2.5 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer active:scale-95 ${
                 categoryFilter === cat.id
                   ? 'bg-emerald-700 text-white shadow-xs'
                   : 'bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200/80 dark:border-zinc-700/80 hover:bg-zinc-100'
@@ -307,7 +307,7 @@ export const AcademicCalendarSection: React.FC = () => {
       {/* ========================================================= */}
       {/* TABLET & DESKTOP: MONTHLY GRID CALENDAR WITH COLOR DOTS */}
       {/* ========================================================= */}
-      <div className="hidden sm:block bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 p-6 shadow-xs space-y-4">
+      <div className="hidden sm:block bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 p-3.5 sm:p-4.5 shadow-xs space-y-3">
         {/* Days Header */}
         <div className="grid grid-cols-7 gap-2 text-center text-xs font-bold text-zinc-400 uppercase tracking-wider pb-2 border-b border-zinc-100 dark:border-zinc-800">
           <span className="text-rose-500">Ahad</span>
@@ -390,8 +390,8 @@ export const AcademicCalendarSection: React.FC = () => {
         </div>
 
         {/* Selected Date Summary Banner on Desktop */}
-        <div className="mt-4 pt-4 border-t border-zinc-100 dark:border-zinc-800">
-          <div className="flex items-center justify-between mb-3">
+        <div className="mt-2.5 pt-2.5 border-t border-zinc-100 dark:border-zinc-800">
+          <div className="flex items-center justify-between mb-2">
             <h4 className="text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-2">
               <CalendarCheck className="w-4 h-4 text-emerald-600" />
               <span>Agenda Tanggal: {selectedDate}</span>
@@ -402,11 +402,11 @@ export const AcademicCalendarSection: React.FC = () => {
           </div>
 
           {selectedDateEvents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
               {selectedDateEvents.map((ev) => (
                 <div
                   key={ev.id}
-                  className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-800/60 space-y-2"
+                  className="p-3 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-800/60 space-y-1.5"
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span
@@ -424,7 +424,7 @@ export const AcademicCalendarSection: React.FC = () => {
                   <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                     {ev.description}
                   </p>
-                  <div className="flex items-center gap-2 text-xs text-zinc-500 pt-1">
+                  <div className="flex items-center gap-2 text-xs text-zinc-500 pt-0.5">
                     <MapPin className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                     <span>{ev.location}</span>
                   </div>
@@ -442,7 +442,7 @@ export const AcademicCalendarSection: React.FC = () => {
       {/* ========================================================= */}
       {/* MOBILE: THUMB-FRIENDLY AGENDA VIEW / LIST HARIAN BERTINGKAT */}
       {/* ========================================================= */}
-      <div className="sm:hidden space-y-4">
+      <div className="sm:hidden space-y-2.5">
         <div className="flex items-center justify-between px-1">
           <h3 className="text-sm font-bold text-zinc-900 dark:text-white">
             Daftar Agenda {monthNames[currentMonth]} {currentYear}
@@ -452,11 +452,11 @@ export const AcademicCalendarSection: React.FC = () => {
           </span>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-2">
           {filteredEvents.map((ev) => (
             <article
               key={ev.id}
-              className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/70 dark:border-zinc-800/70 shadow-xs space-y-2.5"
+              className="p-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/70 dark:border-zinc-800/70 shadow-xs space-y-2"
             >
               <div className="flex items-center justify-between gap-2">
                 <span

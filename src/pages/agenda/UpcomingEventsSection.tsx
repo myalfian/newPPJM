@@ -140,14 +140,14 @@ export const UpcomingEventsSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8 animate-in fade-in duration-300">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-4">
+    <div className="space-y-2.5 sm:space-y-3.5 animate-in fade-in duration-300">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/80 text-amber-800 dark:text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/80 text-amber-800 dark:text-amber-300 text-[11px] font-bold uppercase tracking-wider mb-1">
             <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
             <span>Hitung Mundur Kegiatan Terdekat</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
             Agenda Terdekat PPJM
           </h2>
         </div>
@@ -157,7 +157,7 @@ export const UpcomingEventsSection: React.FC = () => {
       </div>
 
       {/* Grid 1 Col Mobile, 2 Cols Tablet & Desktop */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3.5">
         {UPCOMING_EVENTS.map((item) => {
           const { days, hours, minutes, seconds, isPast } = calculateCountdown(item.targetDate);
 
@@ -172,13 +172,13 @@ export const UpcomingEventsSection: React.FC = () => {
             <article
               key={item.id}
               id={item.id}
-              className="group bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 p-6 sm:p-7 shadow-xs hover:shadow-xl hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between space-y-5"
+              className="group bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 p-3.5 sm:p-4.5 shadow-xs hover:shadow-xl hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between space-y-3"
             >
-              <div className="space-y-4">
+              <div className="space-y-2.5">
                 {/* Header Badge & Category */}
                 <div className="flex items-center justify-between">
                   <span
-                    className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border shadow-xs ${badgeClasses}`}
+                    className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border shadow-xs ${badgeClasses}`}
                   >
                     {item.category}
                   </span>
@@ -189,56 +189,56 @@ export const UpcomingEventsSection: React.FC = () => {
 
                 {/* Title & Description */}
                 <div>
-                  <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors tracking-tight">
+                  <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors tracking-tight">
                     {item.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-2 leading-relaxed">
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed">
                     {item.description}
                   </p>
                 </div>
 
                 {/* Countdown Timer Display */}
-                <div className="p-3.5 sm:p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-800/60 space-y-1.5">
+                <div className="p-2.5 sm:p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-800/60 space-y-1">
                   <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block text-center">
                     {isPast ? 'Kegiatan Sedang/Telah Berlangsung' : 'Menuju Waktu Kegiatan:'}
                   </span>
 
                   {!isPast ? (
-                    <div className="grid grid-cols-4 gap-2 text-center pt-1 font-mono">
-                      <div className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50">
-                        <span className="text-base sm:text-lg font-black text-emerald-700 dark:text-emerald-400 block">
+                    <div className="grid grid-cols-4 gap-1.5 text-center pt-0.5 font-mono">
+                      <div className="p-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50">
+                        <span className="text-sm sm:text-base font-black text-emerald-700 dark:text-emerald-400 block">
                           {days}
                         </span>
-                        <span className="text-[9px] uppercase text-zinc-400 block">Hari</span>
+                        <span className="text-[8px] uppercase text-zinc-400 block">Hari</span>
                       </div>
-                      <div className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50">
-                        <span className="text-base sm:text-lg font-black text-zinc-900 dark:text-white block">
+                      <div className="p-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50">
+                        <span className="text-sm sm:text-base font-black text-zinc-900 dark:text-white block">
                           {hours}
                         </span>
-                        <span className="text-[9px] uppercase text-zinc-400 block">Jam</span>
+                        <span className="text-[8px] uppercase text-zinc-400 block">Jam</span>
                       </div>
-                      <div className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50">
-                        <span className="text-base sm:text-lg font-black text-zinc-900 dark:text-white block">
+                      <div className="p-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50">
+                        <span className="text-sm sm:text-base font-black text-zinc-900 dark:text-white block">
                           {minutes}
                         </span>
-                        <span className="text-[9px] uppercase text-zinc-400 block">Menit</span>
+                        <span className="text-[8px] uppercase text-zinc-400 block">Menit</span>
                       </div>
-                      <div className="p-2 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50">
-                        <span className="text-base sm:text-lg font-black text-amber-600 dark:text-amber-400 block">
+                      <div className="p-1.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200/50 dark:border-zinc-800/50">
+                        <span className="text-sm sm:text-base font-black text-amber-600 dark:text-amber-400 block">
                           {seconds}
                         </span>
-                        <span className="text-[9px] uppercase text-zinc-400 block">Detik</span>
+                        <span className="text-[8px] uppercase text-zinc-400 block">Detik</span>
                       </div>
                     </div>
                   ) : (
-                    <div className="py-2 text-center text-xs font-semibold text-emerald-700 dark:text-emerald-400">
+                    <div className="py-1 text-center text-xs font-semibold text-emerald-700 dark:text-emerald-400">
                       ✓ Kegiatan Aktif di Lingkungan Pesantren
                     </div>
                   )}
                 </div>
 
                 {/* Metadata: Waktu & Lokasi */}
-                <div className="space-y-1.5 pt-1 text-xs text-zinc-600 dark:text-zinc-400">
+                <div className="space-y-1 pt-0.5 text-xs text-zinc-600 dark:text-zinc-400">
                   <div className="flex items-center gap-2">
                     <Clock className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                     <span>{item.time}</span>
@@ -255,7 +255,7 @@ export const UpcomingEventsSection: React.FC = () => {
 
                 {/* Rundown Preview if available */}
                 {item.rundown && (
-                  <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 space-y-1.5">
+                  <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 space-y-1">
                     <span className="text-[11px] font-bold text-zinc-800 dark:text-zinc-200 block">
                       Rundown Acara Inti:
                     </span>
@@ -277,21 +277,21 @@ export const UpcomingEventsSection: React.FC = () => {
               </div>
 
               {/* Action Buttons: Simpan ke Kalender & Bagikan */}
-              <div className="pt-4 border-t border-zinc-100 dark:border-zinc-800 flex items-center gap-2">
+              <div className="pt-2.5 border-t border-zinc-100 dark:border-zinc-800 flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => handleSaveToGoogleCalendar(item)}
-                  className="flex-1 py-2.5 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 text-xs font-bold flex items-center justify-center gap-2 border border-emerald-200/60 dark:border-emerald-800/60 transition-all cursor-pointer active:scale-[0.98] min-h-[44px]"
+                  className="flex-1 py-1.5 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 text-emerald-800 dark:text-emerald-200 text-xs font-bold flex items-center justify-center gap-2 border border-emerald-200/60 dark:border-emerald-800/60 transition-all cursor-pointer active:scale-[0.98] min-h-[36px]"
                   title="Tambahkan pengingat ke Google Calendar"
                 >
-                  <CalendarPlus className="w-4 h-4 text-emerald-600" />
+                  <CalendarPlus className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Simpan ke Kalender</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => handleShare(item)}
-                  className="py-2.5 px-3 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.98] min-h-[44px]"
+                  className="py-1.5 px-3 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-[0.98] min-h-[36px]"
                   title="Bagikan Agenda ke WhatsApp atau medsos"
                 >
                   {copiedId === item.id ? (

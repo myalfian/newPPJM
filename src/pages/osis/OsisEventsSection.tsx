@@ -105,16 +105,16 @@ export const OsisEventsSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 sm:space-y-10 animate-in fade-in duration-300">
+    <div className="space-y-3 sm:space-y-4 animate-in fade-in duration-300">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-1">
             <Newspaper className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-            <span>Warta & Press Release Organisasi</span>
+            <span>Warta &amp; Press Release Organisasi</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
-            Dokumentasi & Event Kegiatan OSIS
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            Dokumentasi &amp; Event Kegiatan OSIS
           </h2>
         </div>
         <p className="text-xs sm:text-sm text-zinc-500 max-w-md">
@@ -123,7 +123,7 @@ export const OsisEventsSection: React.FC = () => {
       </div>
 
       {/* Editorial News Grid (1 Col Mobile, 2 Cols Tablet/Desktop) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2.5 sm:gap-3.5">
         {OSIS_EVENTS.map((event) => (
           <article
             key={event.id}
@@ -157,8 +157,8 @@ export const OsisEventsSection: React.FC = () => {
               </div>
 
               {/* Text Body */}
-              <div className="p-5 sm:p-6 space-y-3">
-                <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors leading-tight">
+              <div className="p-3.5 sm:p-4 space-y-2">
+                <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors leading-tight">
                   {event.title}
                 </h3>
 
@@ -166,7 +166,7 @@ export const OsisEventsSection: React.FC = () => {
                   {event.summary}
                 </p>
 
-                <div className="flex items-center gap-2 text-xs text-zinc-400 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                <div className="flex items-center gap-2 text-xs text-zinc-400 pt-1.5 border-t border-zinc-100 dark:border-zinc-800">
                   <User className="w-3.5 h-3.5 text-emerald-600" />
                   <span className="truncate">{event.author}</span>
                 </div>
@@ -174,7 +174,7 @@ export const OsisEventsSection: React.FC = () => {
             </div>
 
             {/* Read More Action */}
-            <div className="p-5 sm:p-6 pt-0">
+            <div className="p-3.5 sm:p-4 pt-0">
               <div className="flex items-center justify-between text-xs font-bold text-emerald-700 dark:text-emerald-400 group-hover:underline">
                 <span>Baca Press Release Lengkap</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />

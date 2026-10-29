@@ -197,28 +197,28 @@ export const MadinFlyerSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-10 sm:space-y-14">
+    <div className="space-y-3 sm:space-y-4">
       {/* ========================================================= */}
       {/* HEADER & FILTER SELECTOR */}
       {/* ========================================================= */}
-      <section className="space-y-6">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-4">
+      <section className="space-y-2.5 sm:space-y-3">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-1">
               <BookOpen className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-              <span>Khazanah Turats & Ubudiyah Santri</span>
+              <span>Khazanah Turats &amp; Ubudiyah Santri</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
-              Galeri Poster Kitab & Panduan Ubudiyah
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+              Galeri Poster Kitab &amp; Panduan Ubudiyah
             </h2>
           </div>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-md">
+          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 max-w-md">
             Kumpulan flyer kurikulum kitab kuning berjenjang dan poster edukasi ibadah harian santri yang dapat dipelajari, diperbesar, dan diunduh.
           </p>
         </div>
 
         {/* Filter Bar: Category & Level */}
-        <div className="flex flex-wrap items-center justify-between gap-3 bg-zinc-50 dark:bg-zinc-900/60 p-3 sm:p-4 rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 bg-zinc-50 dark:bg-zinc-900/60 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60">
           {/* Main Category Filter */}
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
             {[
@@ -233,7 +233,7 @@ export const MadinFlyerSection: React.FC = () => {
                   setCategoryFilter(f.id as any);
                   if (f.id === 'ubudiyah') setLevelFilter('all');
                 }}
-                className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[38px] active:scale-[0.98] ${
+                className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[32px] active:scale-[0.98] ${
                   categoryFilter === f.id
                     ? 'bg-emerald-700 text-white shadow-xs'
                     : 'bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 border border-zinc-200/80 dark:border-zinc-700/80'
@@ -247,7 +247,7 @@ export const MadinFlyerSection: React.FC = () => {
           {/* Level Filter (Only active if Kitab or All) */}
           {categoryFilter !== 'ubudiyah' && (
             <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-              <span className="text-xs text-zinc-400 dark:text-zinc-500 font-medium mr-1 hidden sm:inline">
+              <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-medium mr-1 hidden sm:inline">
                 Jenjang:
               </span>
               {[
@@ -260,7 +260,7 @@ export const MadinFlyerSection: React.FC = () => {
                   key={lvl.id}
                   type="button"
                   onClick={() => setLevelFilter(lvl.id)}
-                  className={`px-3 py-1.5 rounded-full text-[11px] font-semibold transition-all cursor-pointer whitespace-nowrap min-h-[32px] ${
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer whitespace-nowrap min-h-[28px] ${
                     levelFilter === lvl.id
                       ? 'bg-amber-600 text-white shadow-xs'
                       : 'bg-zinc-200/70 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300/70 dark:hover:bg-zinc-700'
@@ -278,7 +278,7 @@ export const MadinFlyerSection: React.FC = () => {
       {/* FLYER POSTER GRID (aspect-[3/4] / aspect-[4/5] + Ambient Overlay) */}
       {/* ========================================================= */}
       <section>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-2.5 sm:gap-3.5">
           {filteredFlyers.map((flyer) => {
             const isKitab = flyer.category === 'kitab';
 
@@ -372,16 +372,16 @@ export const MadinFlyerSection: React.FC = () => {
                 </div>
 
                 {/* Narrative & Tag Info Card */}
-                <div className="p-4 sm:p-5 bg-white dark:bg-zinc-900 space-y-3">
+                <div className="p-3 sm:p-3.5 bg-white dark:bg-zinc-900 space-y-2">
                   <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed">
                     {flyer.description}
                   </p>
 
-                  <div className="flex flex-wrap gap-1.5 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                  <div className="flex flex-wrap gap-1 pt-1.5 border-t border-zinc-100 dark:border-zinc-800">
                     {flyer.tags.map((tag, idx) => (
                       <span
                         key={idx}
-                        className="text-[10px] font-semibold px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
+                        className="text-[10px] font-semibold px-1.5 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400"
                       >
                         #{tag}
                       </span>

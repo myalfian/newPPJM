@@ -98,18 +98,18 @@ export const FacilitiesSection: React.FC = () => {
     : MOCK_FACILITIES.filter((f) => f.category === selectedCategory);
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-2.5 sm:space-y-3.5">
       {/* Header Info & Category Pills */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-1">
             <Building2 className="w-3.5 h-3.5" />
             <span>Sarana &amp; Prasarana Representatif</span>
           </div>
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white tracking-tight">
             Fasilitas Penunjang Santri &amp; Sekolah
           </h2>
-          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
             Dirancang secara higienis, aman, dan modern untuk mendukung kenyamanan belajar, beribadah, dan bertempat tinggal.
           </p>
         </div>
@@ -121,7 +121,7 @@ export const FacilitiesSection: React.FC = () => {
               key={cat}
               type="button"
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[36px] ${
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[32px] ${
                 selectedCategory === cat
                   ? 'bg-emerald-700 text-white shadow-xs'
                   : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300'
@@ -134,7 +134,7 @@ export const FacilitiesSection: React.FC = () => {
       </div>
 
       {/* Grid Kartu Fasilitas Modern Lux (aspect-[16/10], zoom-on-hover) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
         {filteredFacilities.map((fac) => (
           <article
             key={fac.id}
@@ -169,7 +169,7 @@ export const FacilitiesSection: React.FC = () => {
               </div>
 
               {/* Card Details */}
-              <div className="p-4 sm:p-5 space-y-2.5">
+              <div className="p-3 sm:p-3.5 space-y-1.5">
                 <div className="flex items-center justify-between gap-2">
                   <h3
                     onClick={() => setLightboxFacility(fac)}

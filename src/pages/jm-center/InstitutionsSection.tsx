@@ -83,33 +83,33 @@ export const MOCK_INSTITUTIONS: InstitutionItem[] = [
 
 export const InstitutionsSection: React.FC = () => {
   return (
-    <div className="space-y-8 sm:space-y-12">
+    <div className="space-y-2.5 sm:space-y-3.5">
       {/* Header Description */}
       <div className="max-w-3xl">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-1">
           <Layers className="w-3.5 h-3.5" />
           <span>Tritunggal Lembaga Terpadu</span>
         </div>
-        <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
+        <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white tracking-tight">
           Tiga Unit Entitas Pendidikan Terintegrasi
         </h2>
-        <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
           Sinergi harmonis antara Pesantren Salafiyah, Sekolah Menengah Pertama Formal, dan Madrasah Diniyah untuk mewujudkan insan kamil.
         </p>
       </div>
 
       {/* Split Card Display Adaptif (Bergantian Foto-Kiri Teks-Kanan di Desktop, Stacked di Mobile) */}
-      <div className="space-y-8 sm:space-y-12">
+      <div className="space-y-2.5 sm:space-y-3.5">
         {MOCK_INSTITUTIONS.map((inst, idx) => {
           const isEven = idx % 2 === 1;
 
           return (
             <article
               key={inst.id}
-              className="bg-white/95 dark:bg-zinc-900/90 rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 p-5 sm:p-8 lg:p-10 shadow-sm hover:shadow-xl transition-shadow duration-300"
+              className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 p-3.5 sm:p-5 lg:p-6 shadow-sm hover:shadow-xl transition-shadow duration-300"
             >
               <div
-                className={`grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center ${
+                className={`grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-5 items-center ${
                   isEven ? 'lg:flex-row-reverse' : ''
                 }`}
               >

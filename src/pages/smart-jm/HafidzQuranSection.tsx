@@ -175,7 +175,7 @@ export const HafidzQuranSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-2.5 sm:space-y-3.5">
       {/* Hidden Audio Element for Murojaah */}
       <audio
         ref={audioRef}
@@ -186,19 +186,19 @@ export const HafidzQuranSection: React.FC = () => {
       {/* ========================================================= */}
       {/* SUB-SECTION TOGGLER: READ QURAN vs MUROJAAH HAFALAN */}
       {/* ========================================================= */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-1">
             <BookOpen className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
             <span>Mushaf 30 Juz &amp; Murojaah Santri</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-zinc-900 dark:text-white">
+          <h2 className="text-xl sm:text-2xl font-black tracking-tight text-zinc-900 dark:text-white">
             Hafidz Quran Digital
           </h2>
         </div>
 
         {/* Pill Sub-Navigation Switcher */}
-        <div className="inline-flex p-1 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60 shrink-0">
+        <div className="inline-flex p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 shrink-0">
           <button
             type="button"
             onClick={() => {
@@ -206,7 +206,7 @@ export const HafidzQuranSection: React.FC = () => {
               setIsPlayingAudio(false);
               setActiveSubTab('read');
             }}
-            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[44px] flex items-center gap-2 active:scale-[0.98] ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[36px] flex items-center gap-1.5 active:scale-[0.98] ${
               activeSubTab === 'read'
                 ? 'bg-white dark:bg-zinc-800 text-emerald-800 dark:text-emerald-300 shadow-sm border border-zinc-200/70 dark:border-zinc-700/70 font-black'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
@@ -218,7 +218,7 @@ export const HafidzQuranSection: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveSubTab('murojaah')}
-            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[44px] flex items-center gap-2 active:scale-[0.98] ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[36px] flex items-center gap-1.5 active:scale-[0.98] ${
               activeSubTab === 'murojaah'
                 ? 'bg-white dark:bg-zinc-800 text-emerald-800 dark:text-emerald-300 shadow-sm border border-zinc-200/70 dark:border-zinc-700/70 font-black'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
@@ -239,9 +239,9 @@ export const HafidzQuranSection: React.FC = () => {
       {/* MODE 2: LATIHAN MUROJAAH (Cloze Test & Audio Repeat) */}
       {/* ========================================================= */}
       {activeSubTab === 'murojaah' && (
-        <div className="space-y-6 animate-in fade-in duration-300">
+        <div className="space-y-3 sm:space-y-4 animate-in fade-in duration-300">
           {/* Murojaah Surah Bar */}
-          <div className="bg-zinc-50 dark:bg-zinc-900/60 p-4 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 space-y-3">
+          <div className="bg-zinc-50 dark:bg-zinc-900/60 p-2.5 sm:p-3 rounded-xl border border-zinc-200/70 dark:border-zinc-800/70 space-y-2">
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <div className="relative flex-1 max-w-sm">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />

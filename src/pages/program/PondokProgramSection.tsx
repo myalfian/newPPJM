@@ -244,28 +244,28 @@ export const PondokProgramSection: React.FC = () => {
   });
 
   return (
-    <div className="space-y-12 sm:space-y-16">
+    <div className="space-y-3 sm:space-y-4">
       {/* ========================================================= */}
       {/* SEKSI 1: PROGRAM UNGGULAN PONDOK (Minimalist Grid Cards) */}
       {/* ========================================================= */}
-      <section className="space-y-6">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-4">
+      <section className="space-y-2.5 sm:space-y-3">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-1">
               <Sparkles className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
               <span>Pilar Kepesantrenan Salafiyah</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
               Program Unggulan Pesantren
             </h2>
           </div>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400 max-w-md">
+          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 max-w-md">
             Mencetak santri berakhlak mulia, mutafaqqih fiddin, hafizhul Qur’an, serta memiliki daya saing berwawasan global.
           </p>
         </div>
 
         {/* 4 Cards Grid with subtle icon, hairline border & hover lift */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3.5">
           {PONDOK_PROGRAMS.map((prog) => {
             const Icon =
               prog.iconName === 'Award'
@@ -279,42 +279,42 @@ export const PondokProgramSection: React.FC = () => {
             return (
               <div
                 key={prog.id}
-                className="group relative bg-white/90 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl p-6 sm:p-7 border border-zinc-200/70 dark:border-zinc-800/70 shadow-xs hover:shadow-xl hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
+                className="group relative bg-white/90 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4.5 border border-zinc-200/70 dark:border-zinc-800/70 shadow-xs hover:shadow-xl hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
               >
-                <div className="space-y-4">
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="w-12 h-12 rounded-2xl bg-emerald-100/70 dark:bg-emerald-950/70 border border-emerald-200/60 dark:border-emerald-800/60 flex items-center justify-center text-emerald-800 dark:text-emerald-300 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-xs">
-                      <Icon className="w-6 h-6" />
+                    <div className="w-10 h-10 rounded-xl bg-emerald-100/70 dark:bg-emerald-950/70 border border-emerald-200/60 dark:border-emerald-800/60 flex items-center justify-center text-emerald-800 dark:text-emerald-300 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-xs">
+                      <Icon className="w-5 h-5" />
                     </div>
-                    <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
+                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
                       {prog.badge}
                     </span>
                   </div>
 
                   <div>
-                    <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
+                    <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
                       {prog.category}
                     </span>
-                    <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white mt-0.5 tracking-tight group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
+                    <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white mt-0.5 tracking-tight group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
                       {prog.title}
                     </h3>
                   </div>
 
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
                     {prog.description}
                   </p>
                 </div>
 
                 {/* Key features checklist */}
-                <div className="mt-6 pt-5 border-t border-zinc-100 dark:border-zinc-800/80">
-                  <div className="text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-2.5">
+                <div className="mt-3.5 pt-3 border-t border-zinc-100 dark:border-zinc-800/80">
+                  <div className="text-[11px] font-bold text-zinc-700 dark:text-zinc-300 mb-2">
                     Fokus Pembinaan:
                   </div>
-                  <ul className="space-y-2">
+                  <ul className="space-y-1.5">
                     {prog.keyFeatures.map((feat, idx) => (
                       <li
                         key={idx}
-                        className="flex items-start gap-2 text-xs text-zinc-600 dark:text-zinc-400 leading-snug"
+                        className="flex items-start gap-1.5 text-xs text-zinc-600 dark:text-zinc-400 leading-snug"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                         <span>{feat}</span>
@@ -331,24 +331,24 @@ export const PondokProgramSection: React.FC = () => {
       {/* ========================================================= */}
       {/* SEKSI 2: FOTO KEGIATAN HARIAN SANTRI (aspect-[4/3] + Lightbox) */}
       {/* ========================================================= */}
-      <section className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-4">
+      <section className="space-y-2.5 sm:space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-800 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-800 dark:text-blue-300 text-[11px] font-bold uppercase tracking-wider mb-1">
               <Calendar className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
               <span>Dokumentasi Dinamis Santri</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
               Foto Kegiatan Santri
             </h2>
           </div>
-          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+          <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400">
             Klik foto untuk memperbesar tampilan dan melihat detail kegiatan harian.
           </p>
         </div>
 
         {/* 6 Photo Grid: aspect-[4/3], rounded-xl, zoom on hover */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
           {PONDOK_PHOTOS.map((photo) => (
             <div
               key={photo.id}
@@ -388,7 +388,7 @@ export const PondokProgramSection: React.FC = () => {
                 </div>
               </div>
 
-              <div className="p-4 bg-white dark:bg-zinc-900">
+              <div className="p-3 sm:p-3.5 bg-white dark:bg-zinc-900">
                 <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed">
                   {photo.description}
                 </p>
@@ -401,14 +401,14 @@ export const PondokProgramSection: React.FC = () => {
       {/* ========================================================= */}
       {/* SEKSI 3: JADWAL AMALIYAH 24 JAM (Timetable & Interactive Card) */}
       {/* ========================================================= */}
-      <section className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-4">
+      <section className="space-y-2.5 sm:space-y-3">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/80 text-amber-800 dark:text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/80 text-amber-800 dark:text-amber-300 text-[11px] font-bold uppercase tracking-wider mb-1">
               <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               <span>Rutinitas Harian & Disiplin Ibadah</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
               Jadwal Amaliyah 24 Jam Santri
             </h2>
           </div>
@@ -426,7 +426,7 @@ export const PondokProgramSection: React.FC = () => {
                 key={f.id}
                 type="button"
                 onClick={() => setScheduleFilter(f.id)}
-                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[36px] active:scale-[0.98] ${
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[32px] active:scale-[0.98] ${
                   scheduleFilter === f.id
                     ? 'bg-emerald-700 text-white shadow-xs'
                     : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300'
@@ -439,7 +439,7 @@ export const PondokProgramSection: React.FC = () => {
         </div>
 
         {/* Timetable Interactive Grid / List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3">
           {filteredSchedules.map((item) => {
             const Icon =
               item.iconName === 'Moon'
@@ -468,29 +468,29 @@ export const PondokProgramSection: React.FC = () => {
             return (
               <div
                 key={item.id}
-                className="group p-5 rounded-2xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/70 dark:border-zinc-800/70 shadow-xs hover:shadow-md hover:border-emerald-500/40 transition-all flex flex-col justify-between"
+                className="group p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white/90 dark:bg-zinc-900/90 border border-zinc-200/70 dark:border-zinc-800/70 shadow-xs hover:shadow-md hover:border-emerald-500/40 transition-all flex flex-col justify-between"
               >
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-black tracking-tight text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/80 px-2.5 py-1 rounded-md border border-emerald-200/60 dark:border-emerald-800/60">
+                    <span className="text-[11px] font-black tracking-tight text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/60">
                       {item.time}
                     </span>
-                    <div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-300 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-                      <Icon className="w-4 h-4" />
+                    <div className="w-7 h-7 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center text-zinc-600 dark:text-zinc-300 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                      <Icon className="w-3.5 h-3.5" />
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-base font-bold text-zinc-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
+                    <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
                       {item.title}
                     </h3>
-                    <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1.5 leading-relaxed">
+                    <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed">
                       {item.description}
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
+                <div className="mt-2.5 pt-2 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
                   <span
                     className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full border ${categoryBg}`}
                   >

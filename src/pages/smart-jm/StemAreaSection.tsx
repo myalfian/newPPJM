@@ -301,27 +301,27 @@ export const StemAreaSection: React.FC = () => {
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
   return (
-    <div className="space-y-10 sm:space-y-14">
+    <div className="space-y-3 sm:space-y-4">
       {/* ========================================================= */}
       {/* SUB-SECTION TOGGLER: WORKSHEET vs PORTOFOLIO */}
       {/* ========================================================= */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-800 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-800 dark:text-blue-300 text-[11px] font-bold uppercase tracking-wider mb-1">
             <Cpu className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-            <span>Laboratorium Sains & Robotika Santri</span>
+            <span>Laboratorium Sains &amp; Robotika Santri</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
-            STEM & Riset Terapan PPJM
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            STEM &amp; Riset Terapan PPJM
           </h2>
         </div>
 
         {/* Pill Sub-Navigation Switcher */}
-        <div className="inline-flex p-1 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60 shrink-0">
+        <div className="inline-flex p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 shrink-0">
           <button
             type="button"
             onClick={() => setActiveSubTab('worksheet')}
-            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[44px] flex items-center gap-2 active:scale-[0.98] ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[36px] flex items-center gap-1.5 active:scale-[0.98] ${
               activeSubTab === 'worksheet'
                 ? 'bg-white dark:bg-zinc-800 text-blue-700 dark:text-blue-300 shadow-sm border border-zinc-200/70 dark:border-zinc-700/70'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
@@ -333,7 +333,7 @@ export const StemAreaSection: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveSubTab('portfolio')}
-            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[44px] flex items-center gap-2 active:scale-[0.98] ${
+            className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[36px] flex items-center gap-1.5 active:scale-[0.98] ${
               activeSubTab === 'portfolio'
                 ? 'bg-white dark:bg-zinc-800 text-blue-700 dark:text-blue-300 shadow-sm border border-zinc-200/70 dark:border-zinc-700/70'
                 : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
@@ -349,9 +349,9 @@ export const StemAreaSection: React.FC = () => {
       {/* KONTEN 1: WORKSHEET PROYEK STEM & RUBRIK PENILAIAN */}
       {/* ========================================================= */}
       {activeSubTab === 'worksheet' && (
-        <div className="space-y-8 animate-in fade-in duration-300">
+        <div className="space-y-3 sm:space-y-4 animate-in fade-in duration-300">
           {/* Selector Proyek Worksheet */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
             {STEM_WORKSHEETS.map((ws) => {
               const isSelected = selectedWorksheet.id === ws.id;
               return (
@@ -359,21 +359,21 @@ export const StemAreaSection: React.FC = () => {
                   key={ws.id}
                   type="button"
                   onClick={() => setSelectedWorksheet(ws)}
-                  className={`text-left p-4 rounded-2xl border transition-all cursor-pointer active:scale-[0.98] flex flex-col justify-between ${
+                  className={`text-left p-3 rounded-xl border transition-all cursor-pointer active:scale-[0.98] flex flex-col justify-between ${
                     isSelected
                       ? 'bg-blue-50/70 dark:bg-blue-950/40 border-blue-500/70 shadow-xs ring-2 ring-blue-500/20'
                       : 'bg-white/80 dark:bg-zinc-900/80 border-zinc-200/70 dark:border-zinc-800/70 hover:border-zinc-300'
                   }`}
                 >
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-blue-100/60 dark:bg-blue-900/50 px-2.5 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-blue-100/60 dark:bg-blue-900/50 px-2 py-0.5 rounded-full">
                       {ws.category}
                     </span>
-                    <h3 className="text-sm font-bold text-zinc-900 dark:text-white mt-2 line-clamp-2">
+                    <h3 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white mt-1.5 line-clamp-2">
                       {ws.title}
                     </h3>
                   </div>
-                  <div className="flex items-center justify-between text-xs text-zinc-400 mt-3 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                  <div className="flex items-center justify-between text-[11px] text-zinc-400 mt-2 pt-1.5 border-t border-zinc-100 dark:border-zinc-800">
                     <span>{ws.targetLevel}</span>
                     <span>{ws.duration}</span>
                   </div>
@@ -383,7 +383,7 @@ export const StemAreaSection: React.FC = () => {
           </div>
 
           {/* Detail Worksheet yang Dipilih */}
-          <div className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 p-6 sm:p-8 lg:p-10 shadow-xs space-y-8">
+          <div className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 p-3.5 sm:p-5 lg:p-6 shadow-xs space-y-4">
             {/* Header Proyek */}
             <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-2">
@@ -551,23 +551,23 @@ export const StemAreaSection: React.FC = () => {
       {/* KONTEN 2: PORTOFOLIO KARYA SISWA STEM */}
       {/* ========================================================= */}
       {activeSubTab === 'portfolio' && (
-        <div className="space-y-6 animate-in fade-in duration-300">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+        <div className="space-y-3 sm:space-y-4 animate-in fade-in duration-300">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5">
             <div>
-              <h3 className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-white">
+              <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white">
                 Galeri Portofolio Proyek Santri
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-500">
+              <p className="text-xs text-zinc-500">
                 Karya orisinal santri SMP Plus Jauharul Maknuun yang telah lolos uji coba laboratorium.
               </p>
             </div>
-            <span className="text-xs text-zinc-400 font-medium">
+            <span className="text-[11px] text-zinc-400 font-medium">
               Menampilkan {STEM_PORTFOLIO.length} Karya Terpilih
             </span>
           </div>
 
           {/* Cards Showcase Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2.5 sm:gap-3.5">
             {STEM_PORTFOLIO.map((item) => (
               <article
                 key={item.id}
@@ -605,7 +605,7 @@ export const StemAreaSection: React.FC = () => {
                   </div>
 
                   {/* Body Content */}
-                  <div className="p-5 sm:p-6 space-y-3">
+                  <div className="p-3.5 sm:p-4 space-y-2">
                     <div className="flex items-center gap-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                       <User className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                       <span className="truncate">{item.studentName}</span>
@@ -616,13 +616,13 @@ export const StemAreaSection: React.FC = () => {
                     </p>
 
                     {/* Stats Metrics Grid */}
-                    <div className="grid grid-cols-3 gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                    <div className="grid grid-cols-3 gap-1.5 pt-1.5 border-t border-zinc-100 dark:border-zinc-800">
                       {item.stats.map((st, idx) => (
                         <div
                           key={idx}
-                          className="bg-zinc-50 dark:bg-zinc-800/60 p-2 rounded-xl text-center border border-zinc-200/50 dark:border-zinc-800/50"
+                          className="bg-zinc-50 dark:bg-zinc-800/60 p-1.5 rounded-lg text-center border border-zinc-200/50 dark:border-zinc-800/50"
                         >
-                          <span className="text-[10px] text-zinc-400 block truncate">
+                          <span className="text-[9px] text-zinc-400 block truncate">
                             {st.label}
                           </span>
                           <span className="text-xs font-bold text-blue-700 dark:text-blue-300">
@@ -635,13 +635,13 @@ export const StemAreaSection: React.FC = () => {
                 </div>
 
                 {/* Footer Action */}
-                <div className="p-5 sm:p-6 pt-0">
+                <div className="p-3.5 sm:p-4 pt-0">
                   <button
                     type="button"
                     onClick={() => setSelectedPortfolio(item)}
-                    className="w-full py-2.5 px-4 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-bold text-xs flex items-center justify-center gap-2 border border-blue-200/60 dark:border-blue-800/60 transition-all cursor-pointer active:scale-[0.98]"
+                    className="w-full py-2 px-3 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-bold text-xs flex items-center justify-center gap-1.5 border border-blue-200/60 dark:border-blue-800/60 transition-all cursor-pointer active:scale-[0.98]"
                   >
-                    <span>Lihat Prosedur & Hasil Proyek</span>
+                    <span>Lihat Prosedur &amp; Hasil Proyek</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>

@@ -115,12 +115,12 @@ export const ProfileSection: React.FC = () => {
   }, [location.pathname]);
 
   return (
-    <div className="space-y-8 sm:space-y-12">
+    <div className="space-y-2.5 sm:space-y-3.5">
       {/* =================================================================== */}
       {/* 1. SEKSI SAMBUTAN PIMPINAN / PENGASUH                               */}
       {/* =================================================================== */}
-      <section id="sambutan" className="scroll-mt-24 bg-white/95 dark:bg-zinc-900/90 rounded-3xl p-5 sm:p-8 lg:p-10 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
+      <section id="sambutan" className="scroll-mt-24 bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 lg:p-6 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-5 items-center">
           {/* Foto Resmi Pengasuh */}
           <div className="lg:col-span-5 flex flex-col items-center sm:items-start">
             <div className="relative w-full max-w-sm aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-emerald-700/20 shadow-xl shadow-emerald-950/15 group">
@@ -176,22 +176,22 @@ export const ProfileSection: React.FC = () => {
       {/* =================================================================== */}
       {/* 2. SEKSI SEJARAH KRONOLOGIS (TIMELINE MODERN LUX)                   */}
       {/* =================================================================== */}
-      <section id="sejarah" className="scroll-mt-24 bg-white/95 dark:bg-zinc-900/90 rounded-3xl p-5 sm:p-8 lg:p-10 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs space-y-6">
+      <section id="sejarah" className="scroll-mt-24 bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 lg:p-6 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs space-y-3">
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-[11px] font-bold uppercase tracking-wider mb-1">
             <Landmark className="w-3.5 h-3.5" />
             <span>Napak Tilas Dakwah</span>
           </div>
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
+          <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white tracking-tight">
             Sejarah &amp; Tonggak Berdirinya Pesantren
           </h2>
-          <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
             Perjalanan bertahap berlandaskan keikhlasan untuk menegakkan syiar Islam di bumi Lasem, Sidayu, Gresik.
           </p>
         </div>
 
         {/* Timeline Vertikal Modern */}
-        <div className="relative pl-6 sm:pl-8 border-l-2 border-zinc-200 dark:border-zinc-800 space-y-6 sm:space-y-8 my-4">
+        <div className="relative pl-6 sm:pl-8 border-l-2 border-zinc-200 dark:border-zinc-800 space-y-3 sm:space-y-4 my-2">
           {history.map((item, idx) => (
             <div key={idx} className="relative group">
               {/* Glowing Node Dot */}
@@ -222,16 +222,16 @@ export const ProfileSection: React.FC = () => {
       {/* =================================================================== */}
       {/* 3. SEKSI VISI & MISI (BANNER STATEMENT & NUMBERED GRID)            */}
       {/* =================================================================== */}
-      <section id="visi-misi" className="scroll-mt-24 space-y-6">
+      <section id="visi-misi" className="scroll-mt-24 space-y-3">
         {/* Visi: Banner Statement Besar Glassmorphism */}
-        <div className="relative rounded-3xl p-6 sm:p-10 overflow-hidden bg-gradient-to-br from-emerald-950 via-[#07361f] to-emerald-950 border border-emerald-800/40 text-white shadow-xl">
+        <div className="relative rounded-2xl sm:rounded-3xl p-4 sm:p-6 overflow-hidden bg-gradient-to-br from-emerald-950 via-[#07361f] to-emerald-950 border border-emerald-800/40 text-white shadow-lg">
           <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />
-          <div className="relative z-10 max-w-4xl space-y-3">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-xs font-bold uppercase tracking-wider">
+          <div className="relative z-10 max-w-4xl space-y-2">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[11px] font-bold uppercase tracking-wider">
               <Star className="w-3.5 h-3.5 fill-current" />
               <span>Visi Utama Lembaga</span>
             </span>
-            <h2 className="text-lg sm:text-2xl lg:text-3xl font-extrabold tracking-tight leading-relaxed text-zinc-100">
+            <h2 className="text-base sm:text-xl lg:text-2xl font-extrabold tracking-tight leading-relaxed text-zinc-100">
               &ldquo;{vision}&rdquo;
             </h2>
           </div>

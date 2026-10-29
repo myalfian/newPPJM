@@ -124,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
         className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-xl border-b border-slate-200/80 shadow-[0_4px_25px_rgba(0,0,0,0.03)] transition-all duration-300"
       >
         <div className="w-full max-w-[1536px] mx-auto px-2 xs:px-3 sm:px-5 lg:px-6 xl:px-8">
-          <div className="flex items-center justify-between gap-1.5 xs:gap-2 sm:gap-3 lg:gap-5 xl:gap-7 2xl:gap-9 py-1.5 xs:py-2 sm:py-2.5 min-h-[64px] xs:min-h-[70px] sm:min-h-[82px] lg:min-h-[92px]">
+          <div className="flex items-center justify-between gap-1.5 xs:gap-2 sm:gap-3 lg:gap-5 xl:gap-7 2xl:gap-9 py-1 xs:py-1.5 sm:py-2 min-h-[56px] xs:min-h-[62px] sm:min-h-[72px] lg:min-h-[80px]">
 
             {/* Brand Logo & Title */}
             <Link

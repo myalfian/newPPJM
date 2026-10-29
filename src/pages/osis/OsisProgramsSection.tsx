@@ -224,15 +224,15 @@ export const OsisProgramsSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-8 sm:space-y-10 animate-in fade-in duration-300">
+    <div className="space-y-3 sm:space-y-4 animate-in fade-in duration-300">
       {/* Intro Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-800 dark:text-blue-300 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-800 dark:text-blue-300 text-[11px] font-bold uppercase tracking-wider mb-1">
             <Sparkles className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
             <span>Pilar Program Kerja Khidmah</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
             Program Kerja 5 Departemen OSIS
           </h2>
         </div>
@@ -242,7 +242,7 @@ export const OsisProgramsSection: React.FC = () => {
       </div>
 
       {/* Departemen Switcher Pills (Horizontal Scroll) */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar select-none">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar select-none">
         {OSIS_DEPARTMENTS.map((dept) => {
           const isSelected = selectedDeptId === dept.id;
           return (
@@ -250,7 +250,7 @@ export const OsisProgramsSection: React.FC = () => {
               key={dept.id}
               type="button"
               onClick={() => setSelectedDeptId(dept.id)}
-              className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap min-h-[44px] flex items-center gap-2 active:scale-[0.98] ${
+              className={`px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap min-h-[36px] flex items-center gap-1.5 active:scale-[0.98] ${
                 isSelected
                   ? 'bg-emerald-700 text-white shadow-xs'
                   : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200/70 dark:border-zinc-800/70 hover:bg-zinc-50'
@@ -267,17 +267,17 @@ export const OsisProgramsSection: React.FC = () => {
       </div>
 
       {/* Selected Department Overview Banner */}
-      <div className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 p-6 sm:p-8 shadow-xs space-y-6">
-        <div className="space-y-2 border-b border-zinc-100 dark:border-zinc-800 pb-4">
+      <div className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 p-3.5 sm:p-5 shadow-xs space-y-3">
+        <div className="space-y-1.5 border-b border-zinc-100 dark:border-zinc-800 pb-2.5">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-xs font-mono text-emerald-700 dark:text-emerald-400 font-bold">
               {activeDept.arabicName}
             </span>
-            <span className="text-xs text-zinc-400 font-medium">
+            <span className="text-[11px] text-zinc-400 font-medium">
               Koordinator: {activeDept.coordinator}
             </span>
           </div>
-          <h3 className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">
+          <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white tracking-tight">
             {activeDept.name}
           </h3>
           <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -286,16 +286,16 @@ export const OsisProgramsSection: React.FC = () => {
         </div>
 
         {/* Work Programs Grid */}
-        <div className="space-y-4">
-          <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
+        <div className="space-y-2.5">
+          <h4 className="text-[11px] font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
             Daftar Program Kerja Departemen:
           </h4>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
             {activeDept.programs.map((proker) => (
               <div
                 key={proker.id}
-                className="group p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-800/60 shadow-xs hover:border-emerald-500/40 hover:bg-white dark:hover:bg-zinc-800 transition-all flex flex-col justify-between space-y-3"
+                className="group p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-800/60 shadow-xs hover:border-emerald-500/40 hover:bg-white dark:hover:bg-zinc-800 transition-all flex flex-col justify-between space-y-2"
               >
                 <div className="space-y-2.5">
                   <div className="flex items-center justify-between gap-2">
