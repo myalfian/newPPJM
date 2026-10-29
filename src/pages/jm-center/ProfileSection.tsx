@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Compass,
@@ -88,14 +89,37 @@ export const MOCK_PROFILE_DATA: ProfileData = {
 };
 
 export const ProfileSection: React.FC = () => {
+  const location = useLocation();
   const { greeting, history, vision, missions, values } = MOCK_PROFILE_DATA;
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const path = location.pathname.toLowerCase();
+      let targetId = '';
+      if (path.includes('sejarah')) targetId = 'sejarah';
+      else if (path.includes('visi-misi')) targetId = 'visi-misi';
+      else if (path.includes('sambutan')) targetId = 'sambutan';
+
+      if (targetId) {
+        // Small delay to allow element mounting
+        setTimeout(() => {
+          const el = document.getElementById(targetId);
+          if (el) {
+            const yOffset = -90; // offset for sticky nav
+            const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+          }
+        }, 120);
+      }
+    }
+  }, [location.pathname]);
 
   return (
     <div className="space-y-8 sm:space-y-12">
       {/* =================================================================== */}
       {/* 1. SEKSI SAMBUTAN PIMPINAN / PENGASUH                               */}
       {/* =================================================================== */}
-      <section className="bg-white/95 dark:bg-zinc-900/90 rounded-3xl p-5 sm:p-8 lg:p-10 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs">
+      <section id="sambutan" className="scroll-mt-24 bg-white/95 dark:bg-zinc-900/90 rounded-3xl p-5 sm:p-8 lg:p-10 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
           {/* Foto Resmi Pengasuh */}
           <div className="lg:col-span-5 flex flex-col items-center sm:items-start">
@@ -152,7 +176,7 @@ export const ProfileSection: React.FC = () => {
       {/* =================================================================== */}
       {/* 2. SEKSI SEJARAH KRONOLOGIS (TIMELINE MODERN LUX)                   */}
       {/* =================================================================== */}
-      <section className="bg-white/95 dark:bg-zinc-900/90 rounded-3xl p-5 sm:p-8 lg:p-10 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs space-y-6">
+      <section id="sejarah" className="scroll-mt-24 bg-white/95 dark:bg-zinc-900/90 rounded-3xl p-5 sm:p-8 lg:p-10 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs space-y-6">
         <div className="max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">
             <Landmark className="w-3.5 h-3.5" />
@@ -198,7 +222,7 @@ export const ProfileSection: React.FC = () => {
       {/* =================================================================== */}
       {/* 3. SEKSI VISI & MISI (BANNER STATEMENT & NUMBERED GRID)            */}
       {/* =================================================================== */}
-      <section className="space-y-6">
+      <section id="visi-misi" className="scroll-mt-24 space-y-6">
         {/* Visi: Banner Statement Besar Glassmorphism */}
         <div className="relative rounded-3xl p-6 sm:p-10 overflow-hidden bg-gradient-to-br from-emerald-950 via-[#07361f] to-emerald-950 border border-emerald-800/40 text-white shadow-xl">
           <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none" />

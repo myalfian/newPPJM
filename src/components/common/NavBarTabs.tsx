@@ -77,10 +77,8 @@ const DEFAULT_CATEGORY_TABS: Record<
       { id: 'sambutan', label: 'Sambutan', shortLabel: 'Sambutan', href: '/jm-center/sambutan', icon: Compass },
       { id: 'sejarah', label: 'Sejarah', shortLabel: 'Sejarah', href: '/jm-center/sejarah', icon: Landmark },
       { id: 'visi-misi', label: 'Visi Misi', shortLabel: 'Visi Misi', href: '/jm-center/visi-misi', icon: HeartHandshake },
-      { id: 'fasilitas-pondok', label: 'Fasilitas Pondok', shortLabel: 'Fas. Pondok', href: '/jm-center/fasilitas/pondok', icon: Building2 },
-      { id: 'fasilitas-sekolah', label: 'Fasilitas Sekolah', shortLabel: 'Fas. Sekolah', href: '/jm-center/fasilitas/sekolah', icon: School },
-      { id: 'lembaga-pondok', label: 'Lembaga Pondok', shortLabel: 'Lemb. Pondok', href: '/jm-center/lembaga/pondok', icon: Layers },
-      { id: 'lembaga-sekolah', label: 'Lembaga Sekolah', shortLabel: 'Lemb. Sekolah', href: '/jm-center/lembaga/sekolah', icon: GraduationCap },
+      { id: 'fasilitas', label: 'Fasilitas', shortLabel: 'Fasilitas', href: '/jm-center/fasilitas', icon: Building2 },
+      { id: 'lembaga', label: 'Lembaga', shortLabel: 'Lembaga', href: '/jm-center/lembaga', icon: Layers },
     ],
   },
   'program-unggulan': {
@@ -265,7 +263,7 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
         activeTab = subMenuTabs.find((t) => pathname === t.href.split('?')[0]);
       }
 
-      // 2. Specific SMART JM category matching
+      // 2. Specific Category Matching: SMART JM & JM Center
       if (!activeTab && pathname.includes('/smart-jm')) {
         if (pathname.includes('/smart-jm/stem')) {
           activeTab = subMenuTabs.find((t) => t.id === 'stem');
@@ -273,6 +271,22 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
           activeTab = subMenuTabs.find((t) => t.id === 'mandarin');
         } else if (pathname.includes('/smart-jm/hafidz')) {
           activeTab = subMenuTabs.find((t) => t.id === 'hafidz');
+        }
+      }
+
+      if (!activeTab && pathname.includes('/jm-center')) {
+        if (pathname.includes('/fasilitas')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'fasilitas');
+        } else if (pathname.includes('/lembaga')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'lembaga');
+        } else if (pathname.includes('/sejarah')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'sejarah');
+        } else if (pathname.includes('/visi-misi')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'visi-misi');
+        } else if (pathname.includes('/sambutan')) {
+          activeTab = subMenuTabs.find((t) => t.id === 'sambutan');
+        } else {
+          activeTab = subMenuTabs.find((t) => t.id === 'sambutan') || subMenuTabs[0];
         }
       }
 
