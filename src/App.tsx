@@ -131,6 +131,7 @@ const JmCenter = lazy(() => import('./pages/jm-center/JmCenter').then(m => ({ de
 const Sambutan = lazy(() => import('./pages/jm-center/Sambutan').then(m => ({ default: m.Sambutan })));
 const Sejarah = lazy(() => import('./pages/jm-center/Sejarah').then(m => ({ default: m.Sejarah })));
 const VisiMisi = lazy(() => import('./pages/jm-center/VisiMisi').then(m => ({ default: m.VisiMisi })));
+const Fasilitas = lazy(() => import('./pages/jm-center/Fasilitas').then(m => ({ default: m.Fasilitas })));
 const Lembaga = lazy(() => import('./pages/jm-center/Lembaga').then(m => ({ default: m.Lembaga })));
 const FasilitasPondok = lazy(() => import('./pages/jm-center/FasilitasPondok').then(m => ({ default: m.FasilitasPondok })));
 const FasilitasSekolah = lazy(() => import('./pages/jm-center/FasilitasSekolah').then(m => ({ default: m.FasilitasSekolah })));
@@ -201,18 +202,18 @@ export const App: React.FC = () => {
             <Route path="jm-center/visi-misi" element={<VisiMisi />} />
 
             {/* 2. Fasilitas */}
-            <Route path="jm-center/fasilitas" element={<Navigate to="/jm-center/fasilitas/pondok" replace />} />
-            <Route path="jm-center/fasilitas/pondok" element={<FasilitasPondok />} />
-            <Route path="jm-center/fasilitas-pondok" element={<Navigate to="/jm-center/fasilitas/pondok" replace />} />
-            <Route path="jm-center/fasilitas/sekolah" element={<FasilitasSekolah />} />
-            <Route path="jm-center/fasilitas-sekolah" element={<Navigate to="/jm-center/fasilitas/sekolah" replace />} />
+            <Route path="jm-center/fasilitas" element={<Fasilitas />} />
+            <Route path="jm-center/fasilitas/pondok" element={<Navigate to="/jm-center/fasilitas" replace />} />
+            <Route path="jm-center/fasilitas-pondok" element={<Navigate to="/jm-center/fasilitas" replace />} />
+            <Route path="jm-center/fasilitas/sekolah" element={<Navigate to="/jm-center/fasilitas" replace />} />
+            <Route path="jm-center/fasilitas-sekolah" element={<Navigate to="/jm-center/fasilitas" replace />} />
 
             {/* 3. Lembaga */}
-            <Route path="jm-center/lembaga" element={<Navigate to="/jm-center/lembaga/pondok" replace />} />
-            <Route path="jm-center/lembaga/pondok" element={<LembagaPondok />} />
-            <Route path="jm-center/lembaga-pondok" element={<Navigate to="/jm-center/lembaga/pondok" replace />} />
-            <Route path="jm-center/lembaga/sekolah" element={<LembagaSekolah />} />
-            <Route path="jm-center/lembaga-sekolah" element={<Navigate to="/jm-center/lembaga/sekolah" replace />} />
+            <Route path="jm-center/lembaga" element={<Lembaga />} />
+            <Route path="jm-center/lembaga/pondok" element={<Navigate to="/jm-center/lembaga" replace />} />
+            <Route path="jm-center/lembaga-pondok" element={<Navigate to="/jm-center/lembaga" replace />} />
+            <Route path="jm-center/lembaga/sekolah" element={<Navigate to="/jm-center/lembaga" replace />} />
+            <Route path="jm-center/lembaga-sekolah" element={<Navigate to="/jm-center/lembaga" replace />} />
 
             {/* Program Unggulan */}
             <Route path="program" element={<ProgramHub defaultTab="pondok" />} />

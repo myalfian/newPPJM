@@ -96,16 +96,14 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
           groupTitle: '2. Fasilitas',
           icon: Building2,
           items: [
-            { title: 'Fasilitas Pondok', href: '/jm-center/fasilitas/pondok', icon: Building2 },
-            { title: 'Fasilitas Sekolah', href: '/jm-center/fasilitas/sekolah', icon: School },
+            { title: 'Fasilitas', href: '/jm-center/fasilitas', icon: Building2 },
           ],
         },
         {
           groupTitle: '3. Lembaga',
           icon: Layers,
           items: [
-            { title: 'Lembaga Pondok', href: '/jm-center/lembaga/pondok', icon: Layers },
-            { title: 'Lembaga Sekolah', href: '/jm-center/lembaga/sekolah', icon: GraduationCap },
+            { title: 'Lembaga', href: '/jm-center/lembaga', icon: Layers },
           ],
         },
       ],

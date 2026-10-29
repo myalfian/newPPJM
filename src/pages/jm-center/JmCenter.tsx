@@ -57,7 +57,7 @@ export const JmCenter: React.FC<JmCenterProps> = ({ defaultTab = 'sambutan' }) =
   return (
     <div className="w-full max-w-7xl mx-auto px-3 sm:px-5 lg:px-8 py-3 sm:py-6 space-y-4 sm:space-y-6 overflow-x-hidden select-none">
       {/* 1. Android-Style Folder Sub-Nav Tabs */}
-      <NavBarTabs />
+      <NavBarTabs activeTabId={activeTab} />
 
       {/* 2. Hero Header Banner (Modern Luxury Glassmorphism) */}
       <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-[#042817] via-[#083e24] to-[#031d11] border border-emerald-800/40 shadow-xl p-5 sm:p-8 text-white">

@@ -122,8 +122,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
         icon: Building2,
         color: 'amber',
         items: [
-          { title: 'Pondok', href: '/jm-center/fasilitas/pondok', desc: 'Masjid, asrama santri & sanitasi bersih', icon: Building2 },
-          { title: 'Sekolah', href: '/jm-center/fasilitas/sekolah', desc: 'Ruang kelas multimedia & lab riset STEM', icon: School },
+          { title: 'Fasilitas', href: '/jm-center/fasilitas', desc: 'Sarana & prasarana santri dan sekolah', icon: Building2 },
         ]
       },
       {
@@ -131,8 +130,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
         icon: Layers,
         color: 'blue',
         items: [
-          { title: 'Pondok', href: '/jm-center/lembaga/pondok', desc: 'Pengasuhan santri, Madin & Tahfidz 30 juz', icon: Layers },
-          { title: 'Sekolah', href: '/jm-center/lembaga/sekolah', desc: 'Pendidikan formal & dewan pengajar', icon: GraduationCap },
+          { title: 'Lembaga', href: '/jm-center/lembaga', desc: 'Pondok pesantren, SMP Plus & Madin', icon: Layers },
         ]
       }
     ],
@@ -140,10 +138,8 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       { title: 'Sambutan', href: '/jm-center/sambutan', desc: 'Pesan & Arahan Pimpinan Pondok', icon: Compass },
       { title: 'Sejarah', href: '/jm-center/sejarah', desc: 'Napak tilas dakwah di Lasem Sidayu', icon: Landmark },
       { title: 'Visi dan Misi', href: '/jm-center/visi-misi', desc: 'Arah & Nilai Luhur Lembaga', icon: HeartHandshake },
-      { title: 'Fasilitas Pondok', href: '/jm-center/fasilitas/pondok', desc: 'Masjid, asrama & sanitasi bersih', icon: Building2 },
-      { title: 'Fasilitas Sekolah', href: '/jm-center/fasilitas/sekolah', desc: 'Kelas modern & lab riset STEM', icon: School },
-      { title: 'Lembaga Pondok', href: '/jm-center/lembaga/pondok', desc: 'Pengasuhan, Madin & Tahfidz', icon: Layers },
-      { title: 'Lembaga Sekolah', href: '/jm-center/lembaga/sekolah', desc: 'Pendidikan formal & kurikulum', icon: GraduationCap },
+      { title: 'Fasilitas', href: '/jm-center/fasilitas', desc: 'Sarana & prasarana santri dan sekolah', icon: Building2 },
+      { title: 'Lembaga', href: '/jm-center/lembaga', desc: 'Pondok pesantren, SMP Plus & Madin', icon: Layers },
     ]
   },
   {
