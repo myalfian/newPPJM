@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import {
   Play,
   Pause,
@@ -10,8 +11,7 @@ import {
   Volume2,
   X,
   AlertCircle,
-  Loader2,
-  Sparkles
+  Loader2
 } from 'lucide-react';
 import { AudioPlaybackStatus, AudioRepeatMode } from '../../../hooks/useQuranAudio';
 import { SurahMeta } from '../../../lib/quranData';
@@ -77,15 +77,17 @@ export const FloatingAudioDock: React.FC<FloatingAudioDockProps> = ({
   const isPlaying = status === 'PLAYING';
   const isLoading = status === 'LOADING';
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  const dockContent = (
     <aside
       aria-label="Pemutar Audio Al-Qur'an"
-      className="fixed bottom-4 sm:bottom-6 left-3 right-3 sm:left-auto sm:right-auto sm:w-[560px] sm:left-1/2 sm:-translate-x-1/2 z-40 bg-zinc-950/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-700/80 shadow-[0_12px_40px_rgba(0,0,0,0.45)] rounded-2xl p-3 sm:p-3.5 text-white select-none animate-in slide-in-from-bottom duration-250"
+      className="fixed bottom-4 sm:bottom-6 inset-x-3 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:w-[560px] sm:max-w-[calc(100vw-32px)] z-50 bg-zinc-950/95 dark:bg-zinc-900/95 backdrop-blur-xl border border-zinc-700/80 shadow-[0_16px_50px_rgba(0,0,0,0.6)] rounded-2xl p-3.5 sm:p-4 text-white select-none animate-in slide-in-from-bottom duration-250 pointer-events-auto"
     >
       {/* Upper Info Row: Surah & Ayah Badge + Close */}
       <div className="flex items-center justify-between gap-2 mb-2 text-xs">
         <div className="flex items-center gap-2 min-w-0">
-          <div className="w-6 h-6 rounded-lg bg-emerald-800 text-[#d4af37] flex items-center justify-center font-black text-[10px] shrink-0">
+          <div className="w-6 h-6 rounded-lg bg-emerald-800 text-[#d4af37] flex items-center justify-center font-black text-[10px] shrink-0 shadow-xs">
             {surah.number}
           </div>
           <span className="font-bold text-white text-xs truncate">
@@ -151,11 +153,20 @@ export const FloatingAudioDock: React.FC<FloatingAudioDockProps> = ({
         </div>
       </div>
 
-      {/* Error notification if audio fails */}
+      {/* Error notification with direct Retry Action */}
       {errorMessage && (
-        <div className="mb-2 p-1.5 rounded-lg bg-rose-950/80 border border-rose-800/80 text-rose-200 text-[10.5px] flex items-center gap-1.5">
-          <AlertCircle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
-          <span className="truncate">{errorMessage}</span>
+        <div className="mb-2.5 p-2 rounded-xl bg-rose-950/90 border border-rose-800/90 text-rose-200 text-xs flex items-center justify-between gap-2 shadow-xs">
+          <div className="flex items-center gap-2 min-w-0">
+            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+            <span className="truncate text-[11px] sm:text-xs font-medium">{errorMessage}</span>
+          </div>
+          <button
+            type="button"
+            onClick={onTogglePlay}
+            className="shrink-0 px-2.5 py-1 rounded-lg bg-rose-800 hover:bg-rose-700 text-white font-bold text-[11px] transition-colors cursor-pointer active:scale-95 shadow-xs"
+          >
+            Coba Lagi
+          </button>
         </div>
       )}
 
@@ -206,5 +217,6 @@ export const FloatingAudioDock: React.FC<FloatingAudioDockProps> = ({
       </div>
     </aside>
   );
-};
 
+  return createPortal(dockContent, document.body);
+};

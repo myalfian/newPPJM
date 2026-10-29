@@ -66,7 +66,8 @@ export const ReadQuran: React.FC = () => {
         selectedSurah.number,
         nextAyah.numberInSurah,
         nextAyah.audioUrl,
-        nextAyah.fallbackAudioUrl
+        nextAyah.fallbackAudioUrl,
+        nextAyah.tertiaryAudioUrl
       );
     } else {
       // End of surah: auto transition to next surah if available
@@ -87,7 +88,8 @@ export const ReadQuran: React.FC = () => {
         selectedSurah.number,
         prevAyah.numberInSurah,
         prevAyah.audioUrl,
-        prevAyah.fallbackAudioUrl
+        prevAyah.fallbackAudioUrl,
+        prevAyah.tertiaryAudioUrl
       );
     }
   }, [ayahs, selectedSurah]);
@@ -137,7 +139,8 @@ export const ReadQuran: React.FC = () => {
     setIsDockVisible(true);
     if (
       audioState.currentSurahNumber === selectedSurah.number &&
-      audioState.currentAyahNumber === ayah.numberInSurah
+      audioState.currentAyahNumber === ayah.numberInSurah &&
+      audioState.status !== 'ERROR'
     ) {
       audioState.togglePlay();
     } else {
@@ -145,7 +148,8 @@ export const ReadQuran: React.FC = () => {
         selectedSurah.number,
         ayah.numberInSurah,
         ayah.audioUrl,
-        ayah.fallbackAudioUrl
+        ayah.fallbackAudioUrl,
+        ayah.tertiaryAudioUrl
       );
     }
   };

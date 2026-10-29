@@ -31,6 +31,7 @@ export interface AyahItem {
   translationIndo: string;
   audioUrl: string;
   fallbackAudioUrl: string;
+  tertiaryAudioUrl?: string;
 }
 
 // 114 Daftar Surat Al-Qur'an Lengkap
@@ -195,56 +196,63 @@ export const SAMPLE_AL_FATIHAH: AyahItem[] = [
     textArabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
     textLatin: 'Bismillāhir-raḥmānir-raḥīm(i)',
     translationIndo: 'Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang.',
-    audioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001001.mp3',
-    fallbackAudioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001001.mp3'
+    audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001001.mp3',
+    fallbackAudioUrl: 'https://verses.quran.com/Alafasy/mp3/001001.mp3',
+    tertiaryAudioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001001.mp3'
   },
   {
     numberInSurah: 2,
     textArabic: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
     textLatin: 'Al-ḥamdu lillāhi rabbil-‘ālamīn(a)',
     translationIndo: 'Segala puji bagi Allah, Tuhan semesta alam,',
-    audioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001002.mp3',
-    fallbackAudioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001002.mp3'
+    audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001002.mp3',
+    fallbackAudioUrl: 'https://verses.quran.com/Alafasy/mp3/001002.mp3',
+    tertiaryAudioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001002.mp3'
   },
   {
     numberInSurah: 3,
     textArabic: 'الرَّحْمَٰنِ الرَّحِيمِ',
     textLatin: 'Ar-raḥmānir-raḥīm(i)',
     translationIndo: 'Yang Maha Pengasih lagi Maha Penyayang,',
-    audioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001003.mp3',
-    fallbackAudioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001003.mp3'
+    audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001003.mp3',
+    fallbackAudioUrl: 'https://verses.quran.com/Alafasy/mp3/001003.mp3',
+    tertiaryAudioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001003.mp3'
   },
   {
     numberInSurah: 4,
-    textArabic: 'مَالِكِ يَوْمِ الدِّينِ',
+    textArabic: 'مَالِكِ يَوْMِ الدِّينِ',
     textLatin: 'Māliki yaumid-dīn(i)',
     translationIndo: 'Pemilik hari Pembalasan.',
-    audioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001004.mp3',
-    fallbackAudioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001004.mp3'
+    audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001004.mp3',
+    fallbackAudioUrl: 'https://verses.quran.com/Alafasy/mp3/001004.mp3',
+    tertiaryAudioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001004.mp3'
   },
   {
     numberInSurah: 5,
     textArabic: 'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ',
     textLatin: 'Iyyāka na‘budu wa iyyāka nasta‘īn(u)',
     translationIndo: 'Hanya kepada Engkaulah kami menyembah dan hanya kepada Engkaulah kami memohon pertolongan.',
-    audioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001005.mp3',
-    fallbackAudioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001005.mp3'
+    audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001005.mp3',
+    fallbackAudioUrl: 'https://verses.quran.com/Alafasy/mp3/001005.mp3',
+    tertiaryAudioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001005.mp3'
   },
   {
     numberInSurah: 6,
     textArabic: 'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ',
     textLatin: 'Ihdinaṣ-ṣirāṭal-mustaqīm(a)',
     translationIndo: 'Tunjukilah kami jalan yang lurus,',
-    audioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001006.mp3',
-    fallbackAudioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001006.mp3'
+    audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001006.mp3',
+    fallbackAudioUrl: 'https://verses.quran.com/Alafasy/mp3/001006.mp3',
+    tertiaryAudioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001006.mp3'
   },
   {
     numberInSurah: 7,
     textArabic: 'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',
     textLatin: 'Ṣirāṭal-lażīna an‘amta ‘alaihim, gairil-magḍūbi ‘alaihim wa laḍ-ḍāllīn(a)',
     translationIndo: '(yaitu) jalan orang-orang yang telah Engkau beri nikmat, bukan (jalan) mereka yang dimurkai dan bukan (pula jalan) mereka yang sesat.',
-    audioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001007.mp3',
-    fallbackAudioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001007.mp3'
+    audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001007.mp3',
+    fallbackAudioUrl: 'https://verses.quran.com/Alafasy/mp3/001007.mp3',
+    tertiaryAudioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001007.mp3'
   }
 ];
 
@@ -254,32 +262,36 @@ export const SAMPLE_AL_IKHLAS: AyahItem[] = [
     textArabic: 'قُلْ هُوَ اللَّهُ أَحَدٌ',
     textLatin: 'Qul huwallāhu aḥad(un)',
     translationIndo: 'Katakanlah (Muhammad), "Dialah Allah, Yang Maha Esa."',
-    audioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/112001.mp3',
-    fallbackAudioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112001.mp3'
+    audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112001.mp3',
+    fallbackAudioUrl: 'https://verses.quran.com/Alafasy/mp3/112001.mp3',
+    tertiaryAudioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/112001.mp3'
   },
   {
     numberInSurah: 2,
     textArabic: 'اللَّهُ الصَّمَدُ',
     textLatin: 'Allāhuṣ-ṣamad(u)',
     translationIndo: 'Allah tempat meminta segala sesuatu.',
-    audioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/112002.mp3',
-    fallbackAudioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112002.mp3'
+    audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112002.mp3',
+    fallbackAudioUrl: 'https://verses.quran.com/Alafasy/mp3/112002.mp3',
+    tertiaryAudioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/112002.mp3'
   },
   {
     numberInSurah: 3,
     textArabic: 'لَمْ يَلِدْ وَلَمْ يُولَدْ',
     textLatin: 'Lam yalid wa lam yūlad',
     translationIndo: '(Allah) tidak beranak dan tidak pula diperanakkan,',
-    audioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/112003.mp3',
-    fallbackAudioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112003.mp3'
+    audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112003.mp3',
+    fallbackAudioUrl: 'https://verses.quran.com/Alafasy/mp3/112003.mp3',
+    tertiaryAudioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/112003.mp3'
   },
   {
     numberInSurah: 4,
     textArabic: 'وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ',
     textLatin: 'Wa lam yakul lahū kufuwan aḥad(un)',
     translationIndo: 'dan tidak ada sesuatu pun yang setara dengan Dia.',
-    audioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/112004.mp3',
-    fallbackAudioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112004.mp3'
+    audioUrl: 'https://everyayah.com/data/Alafasy_128kbps/112004.mp3',
+    fallbackAudioUrl: 'https://verses.quran.com/Alafasy/mp3/112004.mp3',
+    tertiaryAudioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/112004.mp3'
   }
 ];
 
@@ -300,16 +312,21 @@ export async function fetchSurahAyahs(surahNumber: number): Promise<AyahItem[]> 
     if (data && data.data && Array.isArray(data.data.ayat)) {
       const items: AyahItem[] = data.data.ayat.map((item: any) => {
         const aNum = String(item.nomorAyat).padStart(3, '0');
-        const eqAudio = item.audio?.['05'] || `https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/${sNum}${aNum}.mp3`;
+        // Primary: EveryAyah CDN (BunnyCDN global edge, 100% open CORS *)
         const everyAyahAudio = `https://everyayah.com/data/Alafasy_128kbps/${sNum}${aNum}.mp3`;
+        // Fallback 1: Quran.com official CDN (100% open CORS *)
+        const quranComAudio = `https://verses.quran.com/Alafasy/mp3/${sNum}${aNum}.mp3`;
+        // Fallback 2: equran.id
+        const eqAudio = item.audio?.['05'] || `https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/${sNum}${aNum}.mp3`;
 
         return {
           numberInSurah: item.nomorAyat,
           textArabic: item.teksArab,
           textLatin: item.teksLatin,
           translationIndo: item.teksIndonesia,
-          audioUrl: eqAudio,
-          fallbackAudioUrl: everyAyahAudio
+          audioUrl: everyAyahAudio,
+          fallbackAudioUrl: quranComAudio,
+          tertiaryAudioUrl: eqAudio
         };
       });
 
@@ -334,8 +351,9 @@ export async function fetchSurahAyahs(surahNumber: number): Promise<AyahItem[]> 
       textArabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
       textLatin: `Ayat ${idx + 1} Surat ${targetSurah?.nameLatin || ''}`,
       translationIndo: `Terjemahan ayat ke-${idx + 1} surat ${targetSurah?.nameLatin || ''}.`,
-      audioUrl: `https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/${sNum}${aNum}.mp3`,
-      fallbackAudioUrl: `https://everyayah.com/data/Alafasy_128kbps/${sNum}${aNum}.mp3`
+      audioUrl: `https://everyayah.com/data/Alafasy_128kbps/${sNum}${aNum}.mp3`,
+      fallbackAudioUrl: `https://verses.quran.com/Alafasy/mp3/${sNum}${aNum}.mp3`,
+      tertiaryAudioUrl: `https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/${sNum}${aNum}.mp3`
     };
   });
 

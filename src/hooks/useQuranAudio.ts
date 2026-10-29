@@ -8,6 +8,12 @@ interface UseQuranAudioProps {
   onAutoPrev?: () => void;
 }
 
+interface TrackInfo {
+  surahNumber: number;
+  ayahNumber: number;
+  urls: string[];
+}
+
 export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {}) {
   const [status, setStatus] = useState<AudioPlaybackStatus>('IDLE');
   const [currentSurahNumber, setCurrentSurahNumber] = useState<number | null>(null);
@@ -19,8 +25,8 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const currentFallbackUrlRef = useRef<string | null>(null);
-  const hasTriedFallbackRef = useRef<boolean>(false);
+  const trackInfoRef = useRef<TrackInfo | null>(null);
+  const activeUrlIndexRef = useRef<number>(0);
   const isSwitchingTrackRef = useRef<boolean>(false);
 
   // Initialize and cleanup single audio element instance
@@ -56,24 +62,30 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
     };
 
     const handleError = () => {
-      // Automatic fallback mechanism to secondary CDN
-      if (!hasTriedFallbackRef.current && currentFallbackUrlRef.current) {
-        hasTriedFallbackRef.current = true;
-        console.warn('CDN audio utama terkendala, beralih ke CDN cadangan (EveryAyah)...');
-        audio.src = currentFallbackUrlRef.current;
+      if (isSwitchingTrackRef.current) return;
+
+      const track = trackInfoRef.current;
+      if (track && activeUrlIndexRef.current + 1 < track.urls.length) {
+        const nextIdx = activeUrlIndexRef.current + 1;
+        activeUrlIndexRef.current = nextIdx;
+        const nextUrl = track.urls[nextIdx];
+        console.warn(`CDN audio gagal, beralih ke CDN alternatif #${nextIdx + 1}: ${nextUrl}`);
+
+        audio.src = nextUrl;
         audio.load();
         audio.play().catch((err) => {
           if (err.name !== 'AbortError') {
-            console.error('Playback error pada CDN cadangan:', err);
-            setStatus('ERROR');
-            setErrorMessage('Gagal memutar audio dari semua server CDN.');
+            if (nextIdx + 1 >= track.urls.length) {
+              setStatus('ERROR');
+              setErrorMessage('Audio terhambat koneksi. Klik Coba Lagi untuk memutar.');
+            }
           }
         });
         return;
       }
 
       setStatus('ERROR');
-      setErrorMessage('Audio tidak dapat dimuat. Periksa koneksi internet Anda.');
+      setErrorMessage('Audio terhambat koneksi. Klik Coba Lagi untuk memutar.');
     };
 
     audio.addEventListener('timeupdate', handleTimeUpdate);
@@ -115,7 +127,6 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
           audio.play().catch(() => {});
           return;
         }
-        // Completed 3x, reset and proceed to next
         setRepeatCount(0);
         if (onAutoNext) {
           onAutoNext();
@@ -145,20 +156,26 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
     };
   }, [repeatMode, repeatCount, onAutoNext]);
 
-  // Main play function with safety wrapper
+  // Main play function with safety wrapper & multi-CDN fallback
   const playAyah = useCallback(
     (
       surahNumber: number,
       ayahNumber: number,
       primaryUrl: string,
-      fallbackUrl?: string
+      fallbackUrl?: string,
+      tertiaryUrl?: string
     ) => {
       const audio = audioRef.current;
       if (!audio) return;
 
+      const rawUrls = [primaryUrl, fallbackUrl, tertiaryUrl];
+      const urls = rawUrls.filter(
+        (url): url is string => typeof url === 'string' && url.trim().length > 0
+      );
+
+      trackInfoRef.current = { surahNumber, ayahNumber, urls };
+      activeUrlIndexRef.current = 0;
       isSwitchingTrackRef.current = true;
-      hasTriedFallbackRef.current = false;
-      currentFallbackUrlRef.current = fallbackUrl || null;
 
       setCurrentSurahNumber(surahNumber);
       setCurrentAyahNumber(ayahNumber);
@@ -166,14 +183,20 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
       setErrorMessage(null);
       setCurrentTime(0);
 
-      // Safe pause before new source assignment
       try {
         audio.pause();
       } catch {
         // Ignored
       }
 
-      audio.src = primaryUrl;
+      const activeUrl = urls[0];
+      if (!activeUrl) {
+        setStatus('ERROR');
+        setErrorMessage('URL audio tidak ditemukan.');
+        return;
+      }
+
+      audio.src = activeUrl;
       audio.load();
 
       // Trigger playback with user gesture activation context
@@ -181,29 +204,30 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
         .play()
         .then(() => {
           setStatus('PLAYING');
+          setErrorMessage(null);
           isSwitchingTrackRef.current = false;
         })
         .catch((err) => {
-          // If aborted by user rapidly clicking next, do not trigger error state
           if (err.name === 'AbortError') {
             return;
           }
 
-          // If NotAllowedError or network error, attempt fallback or report
-          if (!hasTriedFallbackRef.current && fallbackUrl) {
-            hasTriedFallbackRef.current = true;
-            audio.src = fallbackUrl;
+          // If blocked or initial CDN offline, try next candidate immediately
+          if (urls.length > 1) {
+            activeUrlIndexRef.current = 1;
+            audio.src = urls[1];
             audio.load();
             audio
               .play()
               .then(() => {
                 setStatus('PLAYING');
+                setErrorMessage(null);
                 isSwitchingTrackRef.current = false;
               })
               .catch((fallbackErr) => {
                 if (fallbackErr.name !== 'AbortError') {
                   setStatus('ERROR');
-                  setErrorMessage('Audio terblokir kebijakan browser atau CDN offline.');
+                  setErrorMessage('Audio terhambat koneksi. Klik Coba Lagi untuk memutar.');
                 }
               });
             return;
@@ -211,7 +235,7 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
 
           console.warn('Audio play prevented:', err);
           setStatus('ERROR');
-          setErrorMessage('Klik tombol play untuk mengaktifkan izin audio browser.');
+          setErrorMessage('Klik tombol Coba Lagi untuk mengaktifkan izin audio browser.');
         });
     },
     []
@@ -219,23 +243,42 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
 
   const togglePlay = useCallback(() => {
     const audio = audioRef.current;
-    if (!audio || !audio.src) return;
+    if (!audio) return;
 
     if (status === 'PLAYING') {
       audio.pause();
       setStatus('PAUSED');
-    } else {
+      return;
+    }
+
+    if (status === 'PAUSED' && audio.src) {
       audio
         .play()
-        .then(() => setStatus('PLAYING'))
+        .then(() => {
+          setStatus('PLAYING');
+          setErrorMessage(null);
+        })
         .catch((err) => {
           if (err.name !== 'AbortError') {
-            setStatus('ERROR');
-            setErrorMessage('Gagal melanjutkan pemutaran audio.');
+            // Re-attempt track playback
+            if (trackInfoRef.current) {
+              const { surahNumber, ayahNumber, urls } = trackInfoRef.current;
+              playAyah(surahNumber, ayahNumber, urls[0], urls[1], urls[2]);
+            } else {
+              setStatus('ERROR');
+              setErrorMessage('Gagal melanjutkan pemutaran audio. Klik Coba Lagi.');
+            }
           }
         });
+      return;
     }
-  }, [status]);
+
+    // If IDLE or ERROR, attempt full replay with user gesture
+    if (trackInfoRef.current) {
+      const { surahNumber, ayahNumber, urls } = trackInfoRef.current;
+      playAyah(surahNumber, ayahNumber, urls[0], urls[1], urls[2]);
+    }
+  }, [status, playAyah]);
 
   const pause = useCallback(() => {
     const audio = audioRef.current;
@@ -250,7 +293,10 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
     if (audio && audio.src) {
       audio
         .play()
-        .then(() => setStatus('PLAYING'))
+        .then(() => {
+          setStatus('PLAYING');
+          setErrorMessage(null);
+        })
         .catch(() => setStatus('ERROR'));
     }
   }, []);
@@ -263,6 +309,7 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
       setStatus('IDLE');
       setCurrentTime(0);
       setCurrentAyahNumber(null);
+      setErrorMessage(null);
     }
   }, []);
 
@@ -297,4 +344,3 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
     prevAyah: onAutoPrev,
   };
 }
-

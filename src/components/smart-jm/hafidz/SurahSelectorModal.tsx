@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import {
   X,
   Search,
@@ -68,11 +69,11 @@ export const SurahSelectorModal: React.FC<SurahSelectorModalProps> = ({
     );
   }, [searchQuery]);
 
-  if (!isOpen) return null;
+  if (!isOpen || typeof document === 'undefined') return null;
 
   const popularSurahNumbers = [1, 18, 36, 55, 56, 67, 112, 114];
 
-  return (
+  const modalContent = (
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/65 backdrop-blur-md animate-in fade-in duration-200 select-none overscroll-contain"
       onClick={onClose}
@@ -325,5 +326,7 @@ export const SurahSelectorModal: React.FC<SurahSelectorModalProps> = ({
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
