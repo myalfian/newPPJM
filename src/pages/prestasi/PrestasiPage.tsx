@@ -104,6 +104,8 @@ export const PrestasiPage: React.FC = () => {
         (c) => c.toLowerCase() === urlCategory.toLowerCase()
       );
       if (match) setSelectedCategory(match as PrestasiCategory);
+    } else {
+      setSelectedCategory('Semua');
     }
   }, [urlCategory]);
 
@@ -246,9 +248,6 @@ export const PrestasiPage: React.FC = () => {
 
       {/* 3. Sub-filter Navigation & Search Bar */}
       <PrestasiFilterPills
-        categories={categoryDefinitions}
-        selectedCategory={selectedCategory}
-        onSelectCategory={handleSelectCategory}
         selectedTingkat={selectedTingkat}
         onSelectTingkat={setSelectedTingkat}
         selectedYear={selectedYear}
