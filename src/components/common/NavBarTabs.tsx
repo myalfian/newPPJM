@@ -106,11 +106,11 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentIcon: Trophy,
     tabs: [
       { id: 'prestasi-semua', label: 'Semua Prestasi', shortLabel: 'Semua', href: '/prestasi', icon: Trophy },
-      { id: 'prestasi-olimpiade', label: 'Olimpiade & Sains', shortLabel: 'Olimpiade', href: '/prestasi?kategori=Olimpiade', icon: Award },
-      { id: 'prestasi-olahraga', label: 'Olahraga & Silat', shortLabel: 'Olahraga', href: '/prestasi?kategori=Olahraga', icon: Activity },
-      { id: 'prestasi-seni', label: 'Seni & Bahasa', shortLabel: 'Seni', href: '/prestasi?kategori=Seni', icon: Palette },
-      { id: 'prestasi-keagamaan', label: 'Keagamaan & MQK', shortLabel: 'Keagamaan', href: '/prestasi?kategori=Keagamaan', icon: BookOpen },
-      { id: 'prestasi-umum', label: 'Umum & Riset', shortLabel: 'Umum', href: '/prestasi?kategori=Umum', icon: Sparkles },
+      { id: 'prestasi-sains', label: 'Sains', shortLabel: 'Sains', href: '/prestasi?kategori=Sains', icon: Award },
+      { id: 'prestasi-olahraga', label: 'Olaraga', shortLabel: 'Olaraga', href: '/prestasi?kategori=Olaraga', icon: Activity },
+      { id: 'prestasi-seni', label: 'Seni', shortLabel: 'Seni', href: '/prestasi?kategori=Seni', icon: Palette },
+      { id: 'prestasi-agama', label: 'Agama', shortLabel: 'Agama', href: '/prestasi?kategori=Agama', icon: BookOpen },
+      { id: 'prestasi-umum', label: 'Umum', shortLabel: 'Umum', href: '/prestasi?kategori=Umum', icon: Sparkles },
     ],
   },
   'ekstrakurikuler': {
@@ -287,6 +287,23 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
           activeTab = subMenuTabs.find((t) => t.id === 'sambutan');
         } else {
           activeTab = subMenuTabs.find((t) => t.id === 'sambutan') || subMenuTabs[0];
+        }
+      }
+
+      if (!activeTab && (pathname === '/prestasi' || pathname.startsWith('/prestasi'))) {
+        const query = new URLSearchParams(location.search).get('kategori')?.toLowerCase();
+        if (!query || query === 'semua') {
+          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-semua');
+        } else if (query === 'sains' || query === 'olimpiade') {
+          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-sains');
+        } else if (query === 'olaraga' || query === 'olahraga') {
+          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-olahraga');
+        } else if (query === 'seni') {
+          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-seni');
+        } else if (query === 'agama' || query === 'keagamaan') {
+          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-agama');
+        } else if (query === 'umum') {
+          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-umum');
         }
       }
 

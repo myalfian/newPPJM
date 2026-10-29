@@ -82,13 +82,20 @@ export const PrestasiPage: React.FC = () => {
     PRESTASI_DATASET
   );
 
+  const mapUrlToCategory = (val: string | null): PrestasiCategory => {
+    if (!val) return 'Semua';
+    const lower = val.toLowerCase();
+    if (lower === 'sains' || lower === 'olimpiade') return 'Olimpiade';
+    if (lower === 'olaraga' || lower === 'olahraga') return 'Olahraga';
+    if (lower === 'seni') return 'Seni';
+    if (lower === 'agama' || lower === 'keagamaan') return 'Keagamaan';
+    if (lower === 'umum') return 'Umum';
+    return 'Semua';
+  };
+
   // Synchronize category with URL params
   const initialCategory: PrestasiCategory = useMemo(() => {
-    if (!urlCategory) return 'Semua';
-    const found = ['Olimpiade', 'Olahraga', 'Seni', 'Keagamaan', 'Umum'].find(
-      (c) => c.toLowerCase() === urlCategory.toLowerCase()
-    );
-    return (found as PrestasiCategory) || 'Semua';
+    return mapUrlToCategory(urlCategory);
   }, [urlCategory]);
 
   const [selectedCategory, setSelectedCategory] = useState<PrestasiCategory>(initialCategory);
@@ -99,14 +106,7 @@ export const PrestasiPage: React.FC = () => {
 
   // Sync state when URL param changes externally
   useEffect(() => {
-    if (urlCategory) {
-      const match = ['Olimpiade', 'Olahraga', 'Seni', 'Keagamaan', 'Umum'].find(
-        (c) => c.toLowerCase() === urlCategory.toLowerCase()
-      );
-      if (match) setSelectedCategory(match as PrestasiCategory);
-    } else {
-      setSelectedCategory('Semua');
-    }
+    setSelectedCategory(mapUrlToCategory(urlCategory));
   }, [urlCategory]);
 
   const handleSelectCategory = (cat: PrestasiCategory) => {
