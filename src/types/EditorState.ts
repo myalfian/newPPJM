@@ -95,6 +95,7 @@ export interface PageEditorState {
     lastPublishedAt?: string;
   };
   sections: {
+    [key: string]: SectionMeta<any>;
     navbar: SectionMeta<{ showProfile: boolean; showTopBanner: boolean; bannerText: string }>;
     heroSlider: SectionMeta<{ autoplay: boolean; interval: number; showBadge: boolean }>;
     quickMenu: SectionMeta<{ items: QuickMenuItem[] }>;

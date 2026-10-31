@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Smartphone,
@@ -31,6 +31,7 @@ import {
   Maximize2,
   Bold,
   Italic,
+  Underline,
   Link as LinkIcon,
   Trash2,
   Copy,
@@ -44,10 +45,26 @@ import {
   Cpu,
   Newspaper,
   ShieldCheck,
-  Check
+  Check,
+  Undo2,
+  Redo2,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Highlighter,
+  GripVertical,
+  Plus,
+  Play,
+  Settings,
+  Radio,
+  Clock,
+  Video,
+  MapPin,
+  Phone,
+  Mail
 } from 'lucide-react';
 
-import { PageEditorState, INITIAL_EDITOR_STATE, NewsItem, QuickMenuItem } from '../../types/EditorState';
+import { PageEditorState, INITIAL_EDITOR_STATE, NewsItem, QuickMenuItem, SectionMeta } from '../../types/EditorState';
 import { loadEditorState, saveEditorDraft, publishEditorState, resetEditorStateToDefault } from '../../lib/editorStorage';
 import { EditorSectionWrapper } from '../../components/editor/EditorSectionWrapper';
 import { EditorItemWrapper } from '../../components/editor/EditorItemWrapper';
@@ -61,17 +78,391 @@ import { compressImageToWebP, CompressionResult } from '../../lib/imageCompresso
 
 type ViewportMode = 'mobile' | 'tablet' | 'desktop';
 
+// --- DEFINISI 21 KOMPONEN SECTION LIBRARY LENGKAP ---
+interface SectionLibraryTemplate {
+  key: string;
+  name: string;
+  category: 'Utama' | 'Akademik' | 'Publik' | 'Interaktif' | 'Informasi';
+  description: string;
+  icon: any;
+  defaultData: any;
+}
+
+const SECTION_LIBRARY: SectionLibraryTemplate[] = [
+  {
+    key: 'heroSlider',
+    name: 'Hero Coverflow (3D 5 Flyer)',
+    category: 'Utama',
+    description: 'Banner carousel 3D coverflow interaktif 5 flyer program pondok.',
+    icon: Sparkles,
+    defaultData: { autoplay: true, interval: 5, showBadge: true, effect: 'Coverflow' }
+  },
+  {
+    key: 'ticker',
+    name: 'Running Ticker (Breaking News)',
+    category: 'Utama',
+    description: 'Teks berjalan pengumuman resmi dan maklumat penting pondok.',
+    icon: Radio,
+    defaultData: {
+      headline: 'Warta Pesantren Terkini',
+      text: 'Pendaftaran Santri Baru (PPDB) TP 2026/2027 telah dibuka! Informasi hubungi Sekretariat Panitia PPDB Jauharul Maknuun.',
+      speed: 'normal'
+    }
+  },
+  {
+    key: 'navbar',
+    name: 'Navbar 9 Pilar Interaktif',
+    category: 'Utama',
+    description: 'Header navigasi website, logo pesantren, 9 pilar navigasi & profil pill.',
+    icon: Layers,
+    defaultData: { showProfile: true, showTopBanner: true, bannerText: '✨ Ahlan Wa Sahlan di Pondok Pesantren Jauharul Maknuun' }
+  },
+  {
+    key: 'quickMenu',
+    name: 'QuickMenu 8 Tombol Mobile',
+    category: 'Utama',
+    description: 'Menu akses cepat 8 kartu kompak responsif di layar smartphone.',
+    icon: LayoutGridIcon,
+    defaultData: {
+      items: [
+        { id: 'jm-center', label: 'JM Center', route: '/jm-center', theme: 'blue', isVisible: true },
+        { id: 'program-unggulan', label: 'Program', route: '/program-unggulan', theme: 'violet', isVisible: true },
+        { id: 'smart-jm', label: 'SMART JM', route: '/smart-jm/hafidz/read', theme: 'emerald', isVisible: true },
+        { id: 'prestasi', label: 'Prestasi', route: '/prestasi', theme: 'amber', isVisible: true },
+        { id: 'ekskul', label: 'Ekstrakurikuler', route: '/ekskul', theme: 'orange', isVisible: true },
+        { id: 'osis', label: 'OSIS', route: '/osis', theme: 'indigo', isVisible: true },
+        { id: 'agenda-pesantren', label: 'Agenda', route: '/agenda', theme: 'emerald', isVisible: true },
+        { id: 'galeri-sekolah', label: 'Galeri', route: '/galeri/foto', theme: 'rose', isVisible: true }
+      ]
+    }
+  },
+  {
+    key: 'sambutan',
+    name: 'Kalam Sambutan Mudir Pengasuh',
+    category: 'Utama',
+    description: 'Pesan keteladanan KH. M. Jauharul Maknuun dengan foto mudir.',
+    icon: HeartHandshake,
+    defaultData: {
+      pengasuhName: 'KH. M. Jauharul Maknuun, Lc., M.Pd.I.',
+      title: 'Mudir & Pengasuh Pesantren',
+      kalam: 'Membimbing santri dengan keteladanan akhlak salaf, ketajaman sains modern, dan keluhuran jiwa Qurani.',
+      quote: 'Pendidikan terbaik adalah menanamkan adab sebelum ilmu.',
+      imageUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80'
+    }
+  },
+  {
+    key: 'keunggulan',
+    name: '4 Pilar Keunggulan Pesantren',
+    category: 'Akademik',
+    description: 'Pilar Turats Salaf, Tahfidz Digital AI, Lab Riset STEM, dan Mandarin Class.',
+    icon: Award,
+    defaultData: {
+      headline: '4 Pilar Keunggulan Jauharul Maknuun',
+      subheadline: 'Integrasi kurikulum pesantren salaf dengan keunggulan sains masa depan.'
+    }
+  },
+  {
+    key: 'statistik',
+    name: 'Statistik Pesantren (Counter)',
+    category: 'Informasi',
+    description: 'Capaian 1.250 Santri Aktif, 85 Asatidz, 142 Prestasi Juara, 28 Tahun Mengabdi.',
+    icon: Trophy,
+    defaultData: {
+      santriCount: '1.250+',
+      asatidzCount: '85',
+      prestasiCount: '142+',
+      tahunBerdiri: '1998'
+    }
+  },
+  {
+    key: 'programUnggulan',
+    name: 'Program Pendidikan Unggulan',
+    category: 'Akademik',
+    description: 'Daftar program madin, tahfidz mutqin, bilingual Arabic/Mandarin, dan riset teknologi.',
+    icon: BookOpen,
+    defaultData: {
+      headline: 'Empat Pilar Pendidikan PPJM',
+      subheadline: 'Kurikulum holistik memadukan kedalaman kutubus salaf dan penguasaan sains global.',
+      items: [
+        { id: 'prog-1', name: 'Madrasah Diniyah Salafiyah', desc: 'Kajian kitab kuning berjenjang dengan metode sorogan dan bandongan.', iconName: 'BookOpen', tag: 'Turats', isVisible: true },
+        { id: 'prog-2', name: 'Tahfidzul Quran 30 Juz', desc: 'Bimbingan intensif bersanad dengan evaluasi harian sistematis.', iconName: 'Award', tag: 'Tahfidz', isVisible: true },
+        { id: 'prog-3', name: 'SMART Lab Riset STEM', desc: 'Laboratorium IoT, robotika cerdas, filtrasi air, dan rekayasa sains aplikatif.', iconName: 'Cpu', tag: 'STEM', isVisible: true },
+        { id: 'prog-4', name: 'Mandarin Class HSK Standar', desc: 'Pembelajaran bahasa Mandarin HSK 1-3 dengan pengajar bersertifikasi.', iconName: 'Globe', tag: 'Bahasa', isVisible: true }
+      ]
+    }
+  },
+  {
+    key: 'fasilitas',
+    name: 'Fasilitas Pesantren Lengkap',
+    category: 'Informasi',
+    description: 'Asrama santri, masjid jami, laboratorium komputer, dan perpustakaan digital.',
+    icon: ShieldCheck,
+    defaultData: {
+      headline: 'Fasilitas Unggulan Pesantren',
+      subheadline: 'Sarana dan prasarana modern menunjang kenyamanan belajar santri.'
+    }
+  },
+  {
+    key: 'amaliyah',
+    name: 'Jadwal Amaliyah 24 Jam',
+    category: 'Akademik',
+    description: 'Jadwal rutinitas santri mulai shalat tahajjud, ngaji shubuh hingga istirahat malam.',
+    icon: Clock,
+    defaultData: {
+      headline: 'Jadwal Harian & Amaliyah Santri',
+      subheadline: 'Kedisiplinan 24 jam membangun kepribadian mandiri dan berakhlakul karimah.'
+    }
+  },
+  {
+    key: 'galeri',
+    name: 'Galeri Foto Kegiatan Lightbox',
+    category: 'Publik',
+    description: 'Dokumentasi foto kegiatan harian, rihlah ilmiah, dan wisuda hafidz.',
+    icon: ImageIcon,
+    defaultData: {
+      headline: 'Galeri Kegiatan Santri',
+      subheadline: 'Potret aktivitas belajar, ibadah, dan kebersamaan santri PPJM.',
+      items: [
+        { id: 'gal-1', title: 'Halaqah Tahfidz Shubuh', category: 'Tahfidz', imageUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80', isVisible: true },
+        { id: 'gal-2', title: 'Uji Coba Robot IoT ESP32', category: 'STEM', imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80', isVisible: true },
+        { id: 'gal-3', title: 'Praktik Percakapan Mandarin HSK', category: 'Bahasa', imageUrl: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=600&q=80', isVisible: true }
+      ]
+    }
+  },
+  {
+    key: 'video',
+    name: 'Video Profil YouTube',
+    category: 'Publik',
+    description: 'Embed video profil sinematik resmi PPJM dengan deskripsi singkat.',
+    icon: Video,
+    defaultData: {
+      headline: 'Video Profil Pesantren',
+      youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      caption: 'Mengenal Lebih Dekat Pesantren Jauharul Maknuun Lasem'
+    }
+  },
+  {
+    key: 'beritaTerkini',
+    name: 'Warta & Berita Santri Terkini',
+    category: 'Publik',
+    description: 'Kabar aktual, liputan kajian, dan agenda pesantren.',
+    icon: Newspaper,
+    defaultData: {
+      headline: 'Warta & Berita Pesantren',
+      subheadline: 'Kabar aktual dan dokumentasi kegiatan santri terkini.',
+      items: [
+        { id: 'news-1', title: 'Santri PPJM Sabet Juara 1 Robotika Nasional 2026', category: 'Prestasi', date: '30 Okt 2026', thumbnail: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80', summary: 'Tim riset STEM Jauharul Maknuun berhasil meraih medali emas pada ajang teknologi nasional.', isVisible: true, isPinned: true },
+        { id: 'news-2', title: 'Wisuda Akbar Tahfidz Al-Quran 30 Juz Angkatan IX', category: 'Tahfidz', date: '28 Okt 2026', thumbnail: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80', summary: 'Sebanyak 45 santri resmi dikukuhkan sebagai hafidz dan hafidzah bersanad.', isVisible: true }
+      ]
+    }
+  },
+  {
+    key: 'testimoni',
+    name: 'Testimoni Wali Santri & Alumni',
+    category: 'Publik',
+    description: 'Ulasan dan pesan bangga dari para wali santri dan alumni sukses.',
+    icon: MessageSquare,
+    defaultData: {
+      headline: 'Apa Kata Wali Santri & Alumni',
+      subheadline: 'Kepercayaan dan pengalaman nyata menimba ilmu di Jauharul Maknuun.'
+    }
+  },
+  {
+    key: 'prestasi',
+    name: 'Prestasi Lux Card',
+    category: 'Publik',
+    description: 'Kartu kejuaraan emas santri di bidang MQK, MTQ, STEM & Bahasa.',
+    icon: Trophy,
+    defaultData: {
+      headline: 'Prestasi & Kejuaraan Membanggakan',
+      items: [
+        { id: 'pres-1', juara: 'Juara 1 Nasional', kejuaraan: 'Musabaqah Qira’atil Kutub Fathul Qorib', tingkat: 'Nasional', tahun: '2026', santri: 'Ahmad Zaki', isVisible: true },
+        { id: 'pres-2', juara: 'Juara 1 Provinsi', kejuaraan: 'Olimpiade IoT & Rekayasa Hijau', tingkat: 'Jawa Timur', tahun: '2026', santri: 'Farhan Maulana', isVisible: true },
+        { id: 'pres-3', juara: 'Juara Umum', kejuaraan: 'HSK Chinese Speech Competition', tingkat: 'Jawa-Bali', tahun: '2026', santri: 'Aisyah Nur', isVisible: true }
+      ]
+    }
+  },
+  {
+    key: 'ekskul',
+    name: 'Ekskul Santri Grid',
+    category: 'Akademik',
+    description: 'Pramuka, Hadrah Al-Banjari, Pagar Nusa, Robotik, dan Jurnalistik.',
+    icon: CompassIcon,
+    defaultData: {
+      headline: 'Ekstrakurikuler Minat & Bakat Santri',
+      items: [
+        { id: 'eks-1', nama: 'Seni Hadrah & Sholawat Al-Banjari', kategori: 'Seni Islami', jadwal: 'Malam Jumat', pembimbing: 'Ustadz Rizky', isVisible: true },
+        { id: 'eks-2', nama: 'Pencak Silat Pagar Nusa', kategori: 'Bela Diri', jadwal: 'Ahad Pagi', pembimbing: 'Kang Fauzi', isVisible: true },
+        { id: 'eks-3', nama: 'Klub Riset & Robotika Cerdas', kategori: 'Sains', jadwal: 'Sabtu Sore', pembimbing: 'Ustadz Ilham', isVisible: true }
+      ]
+    }
+  },
+  {
+    key: 'osis',
+    name: 'Struktur Kepengurusan OSIS',
+    category: 'Akademik',
+    description: 'Struktur pengurus santri: Presidium, BPH, dan 5 Departemen.',
+    icon: UsersIcon,
+    defaultData: {
+      headline: 'Organisasi Santri Intra Ma’had (OSIS)',
+      subheadline: 'Wadah kepemimpinan dan pengabdian santri.',
+      kabinetName: 'Kabinet Al-Fatih 2026/2027',
+      items: [
+        { id: 'os-1', nama: 'Muhammad Hafidz', jabatan: 'Presiden Santri', divisi: 'Presidium', lencana: 'Emas', isVisible: true },
+        { id: 'os-2', nama: 'Abdullah Azzam', jabatan: 'Sekretaris Jenderal', divisi: 'BPH', lencana: 'Perak', isVisible: true }
+      ]
+    }
+  },
+  {
+    key: 'agenda',
+    name: 'Agenda Countdown Kegiatan',
+    category: 'Interaktif',
+    description: 'Hitung mundur kegiatan besar pondok: Wisuda, Haflah Akhirussanah, dll.',
+    icon: Calendar,
+    defaultData: {
+      headline: 'Agenda & Kalender Pondok',
+      subheadline: 'Agenda kegiatan terdekat dan jadwal penting santri.',
+      items: [
+        { id: 'ag-1', title: 'Haflah Akhirussanah & Khotmil Quran', date: '15 Syawal 1447 H', location: 'Auditorium Utama PPJM', category: 'Pondok', isVisible: true },
+        { id: 'ag-2', title: 'Pameran Karya Sains & IoT Santri', date: '20 Syawal 1447 H', location: 'Lab STEM PPJM', category: 'Akademik', isVisible: true }
+      ]
+    }
+  },
+  {
+    key: 'spmb',
+    name: 'CTA Pendaftaran SPMB Online',
+    category: 'Interaktif',
+    description: 'Banner ajakan bergabung dan pendaftaran santri baru 2026/2027.',
+    icon: Sparkles,
+    defaultData: {
+      headline: 'Penerimaan Santri Baru (PPDB) 2026/2027',
+      subheadline: 'Mari bergabung menjadi bagian dari keluarga besar Pondok Pesantren Jauharul Maknuun.',
+      ctaText: 'Daftar Online Sekarang',
+      waNumber: '6285646199273'
+    }
+  },
+  {
+    key: 'kontak',
+    name: 'Kontak & Peta Interaktif',
+    category: 'Informasi',
+    description: 'Alamat lengkap, nomor telepon, WhatsApp, dan peta Google Maps.',
+    icon: MapPin,
+    defaultData: {
+      headline: 'Hubungi & Kunjungi Pesantren Kami',
+      alamat: 'Jl. Raya Lasem No. 45, Sidayu, Gresik, Jawa Timur 61153',
+      telepon: '(031) 3948212',
+      whatsapp: '+62 856-4619-9273',
+      email: 'sekretariat@jauharulmaknuun.sch.id'
+    }
+  },
+  {
+    key: 'footer',
+    name: 'Footer 3 Kolom Resmi PPJM',
+    category: 'Informasi',
+    description: 'Footer penutup resmi website, logo pondok, kontak, dan copyright.',
+    icon: ShieldCheck,
+    defaultData: {
+      alamat: 'Jl. Raya Lasem No. 45, Sidayu, Gresik, Jawa Timur 61153',
+      whatsapp: '+62 856-4619-9273',
+      telepon: '(031) 3948212',
+      email: 'sekretariat@jauharulmaknuun.sch.id',
+      copyright: '© 2026 Pondok Pesantren Jauharul Maknuun. Hak Cipta Dilindungi Undang-Undang.'
+    }
+  }
+];
+
+function LayoutGridIcon(props: any) {
+  return <Menu {...props} />;
+}
+function CompassIcon(props: any) {
+  return <Award {...props} />;
+}
+function UsersIcon(props: any) {
+  return <ShieldCheck {...props} />;
+}
+
 export const WebVisualEditor: React.FC = () => {
   const navigate = useNavigate();
-  const [editorState, setEditorState] = useState<PageEditorState>(loadEditorState);
+
+  // --- 1. STATE & HISTORY STACK (UNDO / REDO) ---
+  const initialLoadedState = useMemo(() => loadEditorState(), []);
+  const [editorState, setEditorState] = useState<PageEditorState>(initialLoadedState);
+  const [history, setHistory] = useState<PageEditorState[]>([initialLoadedState]);
+  const [historyIndex, setHistoryIndex] = useState<number>(0);
+
+  // Helper untuk update state dengan merekam history snapshot
+  const updateEditorState = (
+    updater: PageEditorState | ((prev: PageEditorState) => PageEditorState),
+    recordHistory = true
+  ) => {
+    setEditorState((prev) => {
+      const next = typeof updater === 'function' ? updater(prev) : updater;
+      if (recordHistory) {
+        setHistory((currHist) => {
+          const newHist = currHist.slice(0, historyIndex + 1);
+          newHist.push(next);
+          // Batasi max 50 riwayat untuk hemat memori
+          if (newHist.length > 50) newHist.shift();
+          return newHist;
+        });
+        setHistoryIndex((currIdx) => Math.min(currIdx + 1, 49));
+      }
+      return next;
+    });
+  };
+
+  const handleUndo = () => {
+    if (historyIndex > 0) {
+      const prevIdx = historyIndex - 1;
+      setHistoryIndex(prevIdx);
+      setEditorState(history[prevIdx]);
+      showToast(`Undo: Kembali ke perubahan #${prevIdx}`);
+    }
+  };
+
+  const handleRedo = () => {
+    if (historyIndex < history.length - 1) {
+      const nextIdx = historyIndex + 1;
+      setHistoryIndex(nextIdx);
+      setEditorState(history[nextIdx]);
+      showToast(`Redo: Maju ke perubahan #${nextIdx}`);
+    }
+  };
+
+  // Keyboard shortcut listener untuk Ctrl+Z dan Ctrl+Y
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+        if (e.shiftKey) {
+          e.preventDefault();
+          handleRedo();
+        } else {
+          e.preventDefault();
+          handleUndo();
+        }
+      } else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+        e.preventDefault();
+        handleRedo();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [historyIndex, history]);
+
+  // --- 2. VIEWPORT & INTERACTION MODES ---
   const [viewportMode, setViewportMode] = useState<ViewportMode>('desktop');
   const [isPublicPreview, setIsPublicPreview] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [propertiesOpen, setPropertiesOpen] = useState(false);
+  const [sectionLibraryOpen, setSectionLibraryOpen] = useState(false);
   const [publishSuccessMsg, setPublishSuccessMsg] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [resetModalOpen, setResetModalOpen] = useState(false);
   const [lastSavedTime, setLastSavedTime] = useState<string>('Baru saja');
+
+  // Drag & drop sections reorder state
+  const [draggedSecKey, setDraggedSecKey] = useState<string | null>(null);
 
   // Active section for properties panel
   const [activeSectionId, setActiveSectionId] = useState<string>('heroSlider');
@@ -79,17 +470,50 @@ export const WebVisualEditor: React.FC = () => {
   // Active section modal editing state (dialog)
   const [editingSection, setEditingSection] = useState<{ id: string; title: string; data: any } | null>(null);
 
-  // Floating selection toolbar
+  // --- 3. FLOATING TOOLBAR PRO STATE ---
   const [floatingToolbarPos, setFloatingToolbarPos] = useState<{ top: number; left: number } | null>(null);
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showBgPicker, setShowBgPicker] = useState(false);
+  const [showFontSizeSelect, setShowFontSizeSelect] = useState(false);
+  const [linkInputOpen, setLinkInputOpen] = useState(false);
+  const [customLinkUrl, setCustomLinkUrl] = useState('https://');
   const canvasRef = useRef<HTMLDivElement | null>(null);
 
-  // Image Upload / Replace Modal
+  // --- 4. IMAGE EDITOR PRO STATE ---
   const [imageModalOpen, setImageModalOpen] = useState(false);
-  const [selectedImageTarget, setSelectedImageTarget] = useState<{ sectionId: string; currentUrl: string; fieldName: string } | null>(null);
+  const [selectedImageTarget, setSelectedImageTarget] = useState<{
+    sectionId: string;
+    currentUrl: string;
+    fieldName: string;
+    alt?: string;
+    title?: string;
+    linkOnClick?: string;
+    objectFit?: 'cover' | 'contain';
+    rounded?: number;
+    shadow?: string;
+    opacity?: number;
+    overlayColor?: string;
+    overlayOpacity?: number;
+  } | null>(null);
+
   const [newImageUrl, setNewImageUrl] = useState('');
+  const [imgAltText, setImgAltText] = useState('');
+  const [imgTitleText, setImgTitleText] = useState('');
+  const [imgLinkUrl, setImgLinkUrl] = useState('');
+  const [imgObjectFit, setImgObjectFit] = useState<'cover' | 'contain'>('cover');
+  const [imgRounded, setImgRounded] = useState<number>(16);
+  const [imgShadow, setImgShadow] = useState<string>('lg');
+  const [imgOpacity, setImgOpacity] = useState<number>(100);
+  const [imgOverlayColor, setImgOverlayColor] = useState<string>('#0A2116');
+  const [imgOverlayOpacity, setImgOverlayOpacity] = useState<number>(20);
+
+  // Hero Slider Spesifik Config
+  const [sliderAutoplay, setSliderAutoplay] = useState<boolean>(true);
+  const [sliderDuration, setSliderDuration] = useState<number>(5);
+  const [sliderEffect, setSliderEffect] = useState<'Coverflow' | 'Fade' | 'Slide'>('Coverflow');
+
   const [compressingImage, setCompressingImage] = useState(false);
   const [compressionResult, setCompressionResult] = useState<CompressionResult | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Auto-save draft on state change
   useEffect(() => {
@@ -105,7 +529,7 @@ export const WebVisualEditor: React.FC = () => {
     setTimeout(() => setToastMsg(null), 3000);
   };
 
-  // Listen to text selection in visual mode for floating toolbar
+  // --- FLOATING TOOLBAR SELECTION DETECTOR ---
   useEffect(() => {
     const handleSelectionChange = () => {
       if (isPublicPreview) {
@@ -115,6 +539,10 @@ export const WebVisualEditor: React.FC = () => {
       const selection = window.getSelection();
       if (!selection || selection.isCollapsed || !selection.toString().trim()) {
         setFloatingToolbarPos(null);
+        setLinkInputOpen(false);
+        setShowColorPicker(false);
+        setShowBgPicker(false);
+        setShowFontSizeSelect(false);
         return;
       }
 
@@ -123,8 +551,8 @@ export const WebVisualEditor: React.FC = () => {
         const rect = range.getBoundingClientRect();
         if (rect && rect.top > 0) {
           setFloatingToolbarPos({
-            top: Math.max(70, rect.top - 48),
-            left: Math.max(16, rect.left + rect.width / 2 - 120),
+            top: Math.max(76, rect.top - 62),
+            left: Math.max(16, rect.left + rect.width / 2 - 160)
           });
         }
       } catch {
@@ -136,28 +564,35 @@ export const WebVisualEditor: React.FC = () => {
     return () => document.removeEventListener('selectionchange', handleSelectionChange);
   }, [isPublicPreview]);
 
-  // Section toggle visibility
-  const toggleSectionVisibility = (sectionKey: keyof PageEditorState['sections']) => {
-    setEditorState((prev) => ({
+  // Apply Formatting command via document.execCommand
+  const applyFormat = (command: string, value: string | undefined = undefined) => {
+    document.execCommand(command, false, value);
+    setShowColorPicker(false);
+    setShowBgPicker(false);
+    setShowFontSizeSelect(false);
+    setLinkInputOpen(false);
+  };
+
+  // Section visibility toggle
+  const toggleSectionVisibility = (sectionKey: string) => {
+    updateEditorState((prev) => ({
       ...prev,
       sections: {
         ...prev.sections,
         [sectionKey]: {
           ...prev.sections[sectionKey],
-          isVisible: !prev.sections[sectionKey].isVisible,
-        },
-      },
+          isVisible: !prev.sections[sectionKey]?.isVisible
+        }
+      }
     }));
-    showToast(`Visibilitas seksi diperbarui`);
+    showToast(`Visibilitas seksi "${sectionKey}" diperbarui`);
   };
 
   // Section item toggle visibility
-  const toggleItemVisibility = (
-    sectionKey: 'beritaTerkini' | 'programUnggulan' | 'quickMenu' | 'prestasi' | 'ekskul' | 'osis' | 'agenda' | 'galeri',
-    itemId: string
-  ) => {
-    setEditorState((prev) => {
+  const toggleItemVisibility = (sectionKey: string, itemId: string) => {
+    updateEditorState((prev) => {
       const section = prev.sections[sectionKey];
+      if (!section) return prev;
       const items = (section.data as any).items || [];
       const updatedItems = items.map((item: any) =>
         item.id === itemId ? { ...item, isVisible: !item.isVisible } : item
@@ -170,69 +605,141 @@ export const WebVisualEditor: React.FC = () => {
             ...section,
             data: {
               ...section.data,
-              items: updatedItems,
-            },
-          },
-        },
+              items: updatedItems
+            }
+          }
+        }
       };
     });
     showToast(`Status item diperbarui`);
   };
 
-  // Section order reorder
-  const moveSectionOrder = (sectionKey: keyof PageEditorState['sections'], direction: 'up' | 'down') => {
-    setEditorState((prev) => {
-      const currentOrder = prev.sections[sectionKey].order;
+  // --- TRUE DRAG & DROP SECTION REORDER ---
+  const handleDragStartSection = (secKey: string) => {
+    setDraggedSecKey(secKey);
+  };
+
+  const handleDropSection = (targetSecKey: string) => {
+    if (!draggedSecKey || draggedSecKey === targetSecKey) return;
+
+    updateEditorState((prev) => {
+      const keys = Object.keys(prev.sections);
+      const draggedOrder = prev.sections[draggedSecKey]?.order || 0;
+      const targetOrder = prev.sections[targetSecKey]?.order || 0;
+
+      const newSections = { ...prev.sections };
+      newSections[draggedSecKey] = { ...newSections[draggedSecKey], order: targetOrder };
+      newSections[targetSecKey] = { ...newSections[targetSecKey], order: draggedOrder };
+
+      return {
+        ...prev,
+        sections: newSections
+      };
+    });
+
+    setDraggedSecKey(null);
+    showToast('Urutan seksi berhasil dipindahkan!');
+  };
+
+  // Section order reorder via Up/Down
+  const moveSectionOrder = (sectionKey: string, direction: 'up' | 'down') => {
+    updateEditorState((prev) => {
+      const sec = prev.sections[sectionKey];
+      if (!sec) return prev;
+      const currentOrder = sec.order;
       const newOrder = direction === 'up' ? Math.max(1, currentOrder - 1) : currentOrder + 1;
       return {
         ...prev,
         sections: {
           ...prev.sections,
           [sectionKey]: {
-            ...prev.sections[sectionKey],
-            order: newOrder,
-          },
-        },
+            ...sec,
+            order: newOrder
+          }
+        }
       };
     });
-    showToast(`Urutan seksi berhasil dipindahkan`);
+    showToast(`Urutan seksi dipindahkan`);
   };
 
   // Handle section content save from modal
   const handleSaveSectionContent = (updatedData: any) => {
     if (!editingSection) return;
-    const sectionKey = editingSection.id as keyof PageEditorState['sections'];
-    setEditorState((prev) => ({
+    const sectionKey = editingSection.id;
+    updateEditorState((prev) => ({
       ...prev,
       sections: {
         ...prev.sections,
         [sectionKey]: {
           ...prev.sections[sectionKey],
-          data: updatedData,
-        },
-      },
+          data: updatedData
+        }
+      }
     }));
     showToast(`Konten seksi "${editingSection.title}" berhasil disimpan`);
   };
 
-  // Duplicate section simulation
+  // Duplicate section
   const handleDuplicateSection = (sectionKey: string) => {
-    showToast(`Seksi ${sectionKey} berhasil diduplikasi ke draf`);
+    const sec = editorState.sections[sectionKey];
+    if (!sec) return;
+    const newKey = `${sectionKey}_copy_${Date.now()}`;
+    updateEditorState((prev) => ({
+      ...prev,
+      sections: {
+        ...prev.sections,
+        [newKey]: {
+          ...sec,
+          id: newKey,
+          title: `${sec.title} (Duplikat)`,
+          order: sec.order + 1
+        }
+      }
+    }));
+    showToast(`Seksi ${sec.title} berhasil diduplikasi!`);
   };
 
-  // Delete section simulation
-  const handleDeleteSection = (sectionKey: keyof PageEditorState['sections']) => {
-    setEditorState((prev) => ({
+  // Delete/Hide section
+  const handleDeleteSection = (sectionKey: string) => {
+    updateEditorState((prev) => ({
       ...prev,
       sections: {
         ...prev.sections,
         [sectionKey]: {
           ...prev.sections[sectionKey],
-          isVisible: false,
-        },
-      },
+          isVisible: false
+        }
+      }
     }));
-    showToast(`Seksi disembunyikan/dihapus dari tampilan`);
+    showToast(`Seksi ${sectionKey} disembunyikan`);
+  };
+
+  // Add Section from 21 Library Components
+  const handleAddSectionFromLibrary = (template: SectionLibraryTemplate) => {
+    const uniqueId = `${template.key}_${Date.now()}`;
+    const nextOrder = Object.keys(editorState.sections).length + 1;
+
+    const newSec: SectionMeta = {
+      id: uniqueId,
+      title: template.name,
+      description: template.description,
+      isVisible: true,
+      order: nextOrder,
+      data: template.defaultData
+    };
+
+    updateEditorState((prev) => ({
+      ...prev,
+      sections: {
+        ...prev.sections,
+        [uniqueId]: newSec
+      }
+    }));
+
+    setSectionLibraryOpen(false);
+    setActiveSectionId(uniqueId);
+    setPropertiesOpen(true);
+    showToast(`Seksi baru "${template.name}" berhasil ditambahkan!`);
   };
 
   // Handle Publish Action
@@ -241,14 +748,14 @@ export const WebVisualEditor: React.FC = () => {
     if (res.success) {
       setPublishSuccessMsg(true);
       setTimeout(() => setPublishSuccessMsg(false), 3500);
-      showToast('Berhasil disimpan & dipublikasikan ke website publik!');
+      showToast('Berhasil dipublikasikan ke website publik PPJM!');
     }
   };
 
   // Handle Reset to Default
   const handleReset = () => {
     const defaultState = resetEditorStateToDefault();
-    setEditorState(defaultState);
+    updateEditorState(defaultState);
     setResetModalOpen(false);
     showToast('Seluruh seksi berhasil direset ke pengaturan bawaan');
   };
@@ -260,28 +767,63 @@ export const WebVisualEditor: React.FC = () => {
       category: news.category,
       excerpt: news.summary,
       targetUrl: window.location.origin + (news.link || '/'),
-      tanggal: news.date,
+      tanggal: news.date
     });
     window.open(url, '_blank');
   };
 
-  // Inline formatting commands
-  const applyFormat = (command: string, value: string | undefined = undefined) => {
-    document.execCommand(command, false, value);
-    setFloatingToolbarPos(null);
+  // --- IMAGE EDITOR PRO HANDLERS ---
+  const openImageModal = (
+    sectionId: string,
+    currentUrl: string,
+    fieldName: string,
+    options?: {
+      alt?: string;
+      title?: string;
+      linkOnClick?: string;
+      objectFit?: 'cover' | 'contain';
+      rounded?: number;
+      shadow?: string;
+      opacity?: number;
+    }
+  ) => {
+    if (isPublicPreview) return;
+    setSelectedImageTarget({
+      sectionId,
+      currentUrl,
+      fieldName,
+      alt: options?.alt || 'Foto Dokumentasi PPJM',
+      title: options?.title || '',
+      linkOnClick: options?.linkOnClick || '',
+      objectFit: options?.objectFit || 'cover',
+      rounded: options?.rounded !== undefined ? options.rounded : 16,
+      shadow: options?.shadow || 'lg',
+      opacity: options?.opacity !== undefined ? options.opacity : 100
+    });
+    setNewImageUrl(currentUrl);
+    setImgAltText(options?.alt || '');
+    setImgTitleText(options?.title || '');
+    setImgLinkUrl(options?.linkOnClick || '');
+    setImgObjectFit(options?.objectFit || 'cover');
+    setImgRounded(options?.rounded !== undefined ? options.rounded : 16);
+    setImgShadow(options?.shadow || 'lg');
+    setImgOpacity(options?.opacity !== undefined ? options.opacity : 100);
+    setCompressionResult(null);
+    setImageModalOpen(true);
   };
 
-  // Handle Image Replace from file upload with WebP compression
+  // Handle File Upload with Auto-WebP Compression
   const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setCompressingImage(true);
     try {
-      const res = await compressImageToWebP(file, 1200, 1200, 0.85);
+      const res = await compressImageToWebP(file, 1400, 1400, 0.82);
       setCompressionResult(res);
       setNewImageUrl(res.previewUrl);
-    } catch {
+      showToast(`WebP Berhasil! ${res.originalSizeKB} KB ➔ ${res.compressedSizeKB} KB (Hemat ${res.savedPercent}%)`);
+    } catch (err) {
       alert('Gagal mengompres gambar.');
     } finally {
       setCompressingImage(false);
@@ -292,10 +834,10 @@ export const WebVisualEditor: React.FC = () => {
     if (!selectedImageTarget || !newImageUrl) return;
 
     const { sectionId, fieldName } = selectedImageTarget;
-    const secKey = sectionId as keyof PageEditorState['sections'];
+    const secKey = sectionId;
 
     if (editorState.sections[secKey]) {
-      setEditorState((prev) => ({
+      updateEditorState((prev) => ({
         ...prev,
         sections: {
           ...prev.sections,
@@ -304,9 +846,18 @@ export const WebVisualEditor: React.FC = () => {
             data: {
               ...prev.sections[secKey].data,
               [fieldName]: newImageUrl,
-            },
-          },
-        },
+              imgAlt: imgAltText,
+              imgTitle: imgTitleText,
+              imgLink: imgLinkUrl,
+              imgFit: imgObjectFit,
+              imgRounded,
+              imgShadow,
+              imgOpacity,
+              imgOverlayColor,
+              imgOverlayOpacity
+            }
+          }
+        }
       }));
     }
 
@@ -314,22 +865,42 @@ export const WebVisualEditor: React.FC = () => {
     setSelectedImageTarget(null);
     setNewImageUrl('');
     setCompressionResult(null);
-    showToast('Foto berhasil diganti dengan WebP terkompresi');
+    showToast('Properti gambar berhasil diperbarui & disimpan!');
   };
 
-  const openImageModal = (sectionId: string, currentUrl: string, fieldName: string) => {
-    if (isPublicPreview) return;
-    setSelectedImageTarget({ sectionId, currentUrl, fieldName });
-    setNewImageUrl(currentUrl);
-    setImageModalOpen(true);
+  const handleDeleteImage = () => {
+    if (!selectedImageTarget) return;
+    const { sectionId, fieldName } = selectedImageTarget;
+    updateEditorState((prev) => ({
+      ...prev,
+      sections: {
+        ...prev.sections,
+        [sectionId]: {
+          ...prev.sections[sectionId],
+          data: {
+            ...prev.sections[sectionId].data,
+            [fieldName]: ''
+          }
+        }
+      }
+    }));
+    setImageModalOpen(false);
+    showToast('Gambar berhasil dihapus dari seksi.');
   };
 
-  const currentSection = editorState.sections[activeSectionId as keyof PageEditorState['sections']];
+  // Sorted Sections by 'order'
+  const sortedSectionEntries = useMemo(() => {
+    return Object.entries(editorState.sections).sort((a, b) => (a[1]?.order || 0) - (b[1]?.order || 0));
+  }, [editorState.sections]);
+
+  const currentSection = editorState.sections[activeSectionId];
 
   return (
     <div className="flex h-dvh w-full overflow-hidden bg-[#09090b] font-sans text-zinc-100 antialiased selection:bg-emerald-600 selection:text-white">
       
-      {/* 1. TOP APP BAR (Modern Islamic Emerald & Gold Shell) */}
+      {/* ========================================================================= */}
+      {/* 1. TOP APP BAR (Modern Islamic Emerald & Gold Shell)                      */}
+      {/* ========================================================================= */}
       <header className="fixed top-0 left-0 right-0 z-50 flex h-16 items-center justify-between border-b border-white/10 bg-[#0A2116]/95 px-3 sm:px-6 backdrop-blur-xl">
         
         {/* Brand & Context Information */}
@@ -346,65 +917,104 @@ export const WebVisualEditor: React.FC = () => {
               <h1 className="text-xs sm:text-sm font-black tracking-tight text-white flex items-center gap-1.5">
                 PPJM Live WYSIWYG Editor
                 <span className="hidden md:inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold bg-[#0E7A4C]/30 text-[#C8A951] border border-[#C8A951]/30">
-                  <Sparkles className="w-2.5 h-2.5 text-[#C8A951]" /> Zero-IT Sandbox
+                  <Sparkles className="w-2.5 h-2.5 text-[#C8A951]" /> Zero-IT Pro
                 </span>
               </h1>
             </div>
-            <div className="flex items-center gap-2 text-[10px] sm:text-[11px] text-emerald-200/80 font-mono">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>Otomatis tersimpan ({lastSavedTime})</span>
+            <div className="flex items-center gap-2 text-[10px] text-zinc-400">
+              <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Otomatis Tersimpan: {lastSavedTime}</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="hidden sm:inline text-[#C8A951] font-mono">
+                {historyIndex} dari {Math.max(0, history.length - 1)} riwayat
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Viewport Switcher Toolbar (Mobile 390px, Tablet 768px, Desktop 100% Fluid) */}
-        <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/40 p-1 shadow-inner">
-          <button
-            type="button"
-            onClick={() => setViewportMode('mobile')}
-            className={`flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-bold transition-all cursor-pointer ${
-              viewportMode === 'mobile'
-                ? 'bg-[#0E7A4C] text-[#C8A951] shadow-sm'
-                : 'text-zinc-400 hover:text-white hover:bg-white/5'
-            }`}
-            title="Simulasikan Tampilan Layar HP (390px - Mobile)"
-          >
-            <Smartphone className="w-3.5 h-3.5" />
-            <span>Mobile</span>
-          </button>
+        {/* UNDO / REDO & DEVICE VIEWPORT SWITCHER */}
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          
+          {/* Undo / Redo Buttons */}
+          <div className="flex items-center bg-zinc-900/90 rounded-xl p-1 border border-white/10 mr-1 sm:mr-2">
+            <button
+              type="button"
+              onClick={handleUndo}
+              disabled={historyIndex <= 0}
+              className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:pointer-events-none transition"
+              title="Urungkan Perubahan (Ctrl+Z)"
+            >
+              <Undo2 className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={handleRedo}
+              disabled={historyIndex >= history.length - 1}
+              className="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-white/10 disabled:opacity-30 disabled:pointer-events-none transition"
+              title="Ulangi Perubahan (Ctrl+Y)"
+            >
+              <Redo2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
 
-          <button
-            type="button"
-            onClick={() => setViewportMode('tablet')}
-            className={`flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-bold transition-all cursor-pointer ${
-              viewportMode === 'tablet'
-                ? 'bg-[#0E7A4C] text-[#C8A951] shadow-sm'
-                : 'text-zinc-400 hover:text-white hover:bg-white/5'
-            }`}
-            title="Simulasikan Tampilan Layar Tablet (768px - Tablet)"
-          >
-            <Tablet className="w-3.5 h-3.5" />
-            <span>Tablet</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setViewportMode('desktop')}
-            className={`flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-bold transition-all cursor-pointer ${
-              viewportMode === 'desktop'
-                ? 'bg-[#0E7A4C] text-[#C8A951] shadow-sm'
-                : 'text-zinc-400 hover:text-white hover:bg-white/5'
-            }`}
-            title="Tampilan Layar Penuh Desktop (100% Fluid)"
-          >
-            <Monitor className="w-3.5 h-3.5" />
-            <span>Desktop</span>
-          </button>
+          {/* Viewport Switcher */}
+          <div className="flex items-center rounded-xl bg-zinc-900/90 p-1 border border-white/10 text-xs font-semibold">
+            <button
+              type="button"
+              onClick={() => setViewportMode('mobile')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition cursor-pointer ${
+                viewportMode === 'mobile'
+                  ? 'bg-[#0E7A4C] text-[#C8A951] shadow-sm'
+                  : 'text-zinc-400 hover:text-white hover:bg-white/5'
+              }`}
+              title="Tampilan Smartphone (iPhone 390px + 5 Hub BottomNav)"
+            >
+              <Smartphone className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">HP</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewportMode('tablet')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition cursor-pointer ${
+                viewportMode === 'tablet'
+                  ? 'bg-[#0E7A4C] text-[#C8A951] shadow-sm'
+                  : 'text-zinc-400 hover:text-white hover:bg-white/5'
+              }`}
+              title="Tampilan Tablet iPad (768px)"
+            >
+              <Tablet className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Tablet</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewportMode('desktop')}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg transition cursor-pointer ${
+                viewportMode === 'desktop'
+                  ? 'bg-[#0E7A4C] text-[#C8A951] shadow-sm'
+                  : 'text-zinc-400 hover:text-white hover:bg-white/5'
+              }`}
+              title="Tampilan Layar Komputer Penuh (100% Fluid)"
+            >
+              <Monitor className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Desktop</span>
+            </button>
+          </div>
         </div>
 
         {/* Action Buttons Toolbar */}
         <div className="flex items-center gap-2">
           
+          {/* Tombol Tambah Seksi dari 21 Library */}
+          <button
+            type="button"
+            onClick={() => setSectionLibraryOpen(true)}
+            className="flex h-9 items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#C8A951] to-amber-400 text-slate-950 font-black px-3 text-xs shadow-md hover:brightness-105 active:scale-95 transition cursor-pointer"
+            title="Tambah Seksi Baru dari 21 Koleksi Library"
+          >
+            <Plus className="w-4 h-4 stroke-[3]" />
+            <span className="hidden md:inline">Tambah Seksi</span>
+          </button>
+
           {/* Sidebar Menu Grouping Toggle */}
           <button
             type="button"
@@ -414,10 +1024,10 @@ export const WebVisualEditor: React.FC = () => {
                 ? 'border-[#0E7A4C] bg-[#0E7A4C]/30 text-[#C8A951]'
                 : 'border-white/10 bg-zinc-900 text-zinc-300 hover:text-white hover:bg-zinc-800'
             }`}
-            title="Buka Menu Modul CMS & Hierarki"
+            title="Buka Menu Modul CMS & Urutan Drag Reorder"
           >
             <Layers className="w-3.5 h-3.5 text-[#C8A951]" />
-            <span className="hidden md:inline">Modul CMS</span>
+            <span className="hidden md:inline">Seksi &amp; Urutan</span>
           </button>
 
           {/* Properties Panel Toggle */}
@@ -435,7 +1045,7 @@ export const WebVisualEditor: React.FC = () => {
             <span className="hidden md:inline">Properti</span>
           </button>
 
-          {/* Toggle Public Preview Mode vs Editor Overlay Mode */}
+          {/* Toggle Public Preview Mode */}
           <button
             type="button"
             onClick={() => setIsPublicPreview(!isPublicPreview)}
@@ -444,10 +1054,10 @@ export const WebVisualEditor: React.FC = () => {
                 ? 'bg-[#C8A951]/20 text-[#C8A951] border border-[#C8A951]/40'
                 : 'border border-white/10 bg-zinc-900 text-zinc-300 hover:bg-zinc-800 hover:text-white'
             }`}
-            title={isPublicPreview ? 'Kembali ke Mode Edit Visual' : 'Pratinjau Murni Sebagai Pengunjung Publik'}
+            title={isPublicPreview ? 'Kembali ke Mode Edit Visual' : 'Pratinjau Murni Sebagai Pengunjung'}
           >
             {isPublicPreview ? <EyeOff className="w-3.5 h-3.5 text-[#C8A951]" /> : <Eye className="w-3.5 h-3.5 text-emerald-400" />}
-            <span className="hidden sm:inline">{isPublicPreview ? 'Keluar Preview' : 'Mode Preview'}</span>
+            <span className="hidden sm:inline">{isPublicPreview ? 'Edit Mode' : 'Preview'}</span>
           </button>
 
           {/* Reset Button */}
@@ -468,89 +1078,235 @@ export const WebVisualEditor: React.FC = () => {
             className="flex h-9 items-center gap-2 rounded-xl bg-[#0E7A4C] hover:bg-[#128a57] px-4 text-xs font-extrabold text-[#C8A951] shadow-lg shadow-black/40 active:scale-95 transition cursor-pointer border border-[#C8A951]/30"
           >
             <Save className="w-3.5 h-3.5 text-[#C8A951]" />
-            <span>Simpan</span>
+            <span>Publikasikan</span>
           </button>
         </div>
       </header>
 
-      {/* 2. FLOATING TEXT FORMATTING TOOLBAR */}
+      {/* ========================================================================= */}
+      {/* 2. FLOATING TEXT FORMATTING TOOLBAR PRO (WITH ARROW & PRO TOOLS)          */}
+      {/* ========================================================================= */}
       {floatingToolbarPos && !isPublicPreview && (
         <div
           style={{ top: floatingToolbarPos.top, left: floatingToolbarPos.left }}
-          className="fixed z-50 flex items-center gap-1 p-1 rounded-xl bg-zinc-900/95 text-white border border-[#C8A951]/40 shadow-2xl backdrop-blur-md animate-fade-in"
+          className="fixed z-50 flex items-center gap-1 p-1.5 rounded-2xl bg-zinc-900/95 text-white border border-[#C8A951]/50 shadow-2xl backdrop-blur-xl animate-scale-up after:content-[''] after:absolute after:top-full after:left-1/2 after:-translate-x-1/2 after:border-4 after:border-transparent after:border-t-zinc-900/95"
         >
+          {/* Bold */}
           <button
             type="button"
-            onClick={() => applyFormat('bold')}
+            onMouseDown={(e) => { e.preventDefault(); applyFormat('bold'); }}
             className="p-1.5 rounded-lg hover:bg-white/10 text-xs font-bold"
-            title="Tebal (Bold)"
+            title="Tebal (Ctrl+B)"
           >
             <Bold className="w-3.5 h-3.5" />
           </button>
+
+          {/* Italic */}
           <button
             type="button"
-            onClick={() => applyFormat('italic')}
+            onMouseDown={(e) => { e.preventDefault(); applyFormat('italic'); }}
             className="p-1.5 rounded-lg hover:bg-white/10 text-xs font-bold"
-            title="Miring (Italic)"
+            title="Miring (Ctrl+I)"
           >
             <Italic className="w-3.5 h-3.5" />
           </button>
+
+          {/* Underline */}
           <button
             type="button"
-            onClick={() => {
-              const url = prompt('Masukkan tautan URL:');
-              if (url) applyFormat('createLink', url);
-            }}
+            onMouseDown={(e) => { e.preventDefault(); applyFormat('underline'); }}
             className="p-1.5 rounded-lg hover:bg-white/10 text-xs font-bold"
-            title="Sisipkan Tautan (Link)"
+            title="Garis Bawah (Ctrl+U)"
           >
-            <LinkIcon className="w-3.5 h-3.5" />
+            <Underline className="w-3.5 h-3.5" />
+          </button>
+
+          <span className="w-px h-4 bg-white/20 mx-0.5" />
+
+          {/* Text Color Picker Swatches */}
+          <div className="relative">
+            <button
+              type="button"
+              onMouseDown={(e) => { e.preventDefault(); setShowColorPicker(!showColorPicker); }}
+              className="p-1.5 rounded-lg hover:bg-white/10 text-xs font-bold flex items-center gap-1 text-[#C8A951]"
+              title="Warna Teks"
+            >
+              <span>A</span>
+              <ChevronDown className="w-2.5 h-2.5" />
+            </button>
+
+            {showColorPicker && (
+              <div className="absolute top-full left-0 mt-2 p-2 rounded-xl bg-zinc-900 border border-white/20 shadow-xl flex items-center gap-1.5 z-50">
+                {['#0E7A4C', '#C8A951', '#0A2116', '#FFFFFF', '#EF4444', '#2563EB'].map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    onMouseDown={(e) => { e.preventDefault(); applyFormat('foreColor', color); }}
+                    className="w-5 h-5 rounded-full border border-white/30 hover:scale-110 transition"
+                    style={{ backgroundColor: color }}
+                    title={color}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Background Highlight Swatches */}
+          <div className="relative">
+            <button
+              type="button"
+              onMouseDown={(e) => { e.preventDefault(); setShowBgPicker(!showBgPicker); }}
+              className="p-1.5 rounded-lg hover:bg-white/10 text-xs flex items-center gap-1 text-amber-300"
+              title="Warna Latar (Highlight)"
+            >
+              <Highlighter className="w-3.5 h-3.5" />
+            </button>
+
+            {showBgPicker && (
+              <div className="absolute top-full left-0 mt-2 p-2 rounded-xl bg-zinc-900 border border-white/20 shadow-xl flex items-center gap-1.5 z-50">
+                {['#FEF08A', '#A7F3D0', '#FED7AA', '#E9D5FF', 'transparent'].map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    onMouseDown={(e) => { e.preventDefault(); applyFormat('hiliteColor', color); }}
+                    className="w-5 h-5 rounded-md border border-white/30 hover:scale-110 transition flex items-center justify-center text-[9px] text-zinc-900"
+                    style={{ backgroundColor: color === 'transparent' ? '#333' : color }}
+                    title={color}
+                  >
+                    {color === 'transparent' ? '✕' : ''}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Font Size Selector */}
+          <div className="relative">
+            <button
+              type="button"
+              onMouseDown={(e) => { e.preventDefault(); setShowFontSizeSelect(!showFontSizeSelect); }}
+              className="px-2 py-1 rounded-lg hover:bg-white/10 text-[11px] font-bold text-zinc-300 flex items-center gap-1"
+              title="Ukuran Font"
+            >
+              <span>Size</span>
+              <ChevronDown className="w-2.5 h-2.5" />
+            </button>
+
+            {showFontSizeSelect && (
+              <div className="absolute top-full left-0 mt-2 p-1.5 rounded-xl bg-zinc-900 border border-white/20 shadow-xl flex flex-col gap-1 z-50 text-xs w-20">
+                {['1', '2', '3', '4', '5', '6', '7'].map((sz, idx) => {
+                  const labels = ['12px', '14px', '16px', '18px', '24px', '32px', '48px'];
+                  return (
+                    <button
+                      key={sz}
+                      type="button"
+                      onMouseDown={(e) => { e.preventDefault(); applyFormat('fontSize', sz); }}
+                      className="px-2 py-1 rounded hover:bg-white/10 text-left font-medium"
+                    >
+                      {labels[idx]}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          <span className="w-px h-4 bg-white/20 mx-0.5" />
+
+          {/* Text Alignment */}
+          <button
+            type="button"
+            onMouseDown={(e) => { e.preventDefault(); applyFormat('justifyLeft'); }}
+            className="p-1.5 rounded-lg hover:bg-white/10 text-xs"
+            title="Rata Kiri"
+          >
+            <AlignLeft className="w-3.5 h-3.5" />
           </button>
           <button
             type="button"
-            onClick={() => applyFormat('foreColor', '#C8A951')}
-            className="p-1.5 rounded-lg hover:bg-white/10 text-xs font-bold text-[#C8A951]"
-            title="Warna Emas PPJM"
+            onMouseDown={(e) => { e.preventDefault(); applyFormat('justifyCenter'); }}
+            className="p-1.5 rounded-lg hover:bg-white/10 text-xs"
+            title="Rata Tengah"
           >
-            A
+            <AlignCenter className="w-3.5 h-3.5" />
           </button>
           <button
             type="button"
-            onClick={() => applyFormat('foreColor', '#0E7A4C')}
-            className="p-1.5 rounded-lg hover:bg-white/10 text-xs font-bold text-[#0E7A4C]"
-            title="Warna Hijau Islami"
+            onMouseDown={(e) => { e.preventDefault(); applyFormat('justifyRight'); }}
+            className="p-1.5 rounded-lg hover:bg-white/10 text-xs"
+            title="Rata Kanan"
           >
-            A
+            <AlignRight className="w-3.5 h-3.5" />
           </button>
+
+          {/* Link Popover */}
+          <div className="relative">
+            <button
+              type="button"
+              onMouseDown={(e) => { e.preventDefault(); setLinkInputOpen(!linkInputOpen); }}
+              className="p-1.5 rounded-lg hover:bg-white/10 text-xs font-bold text-sky-400"
+              title="Sisipkan Tautan (Link _blank)"
+            >
+              <LinkIcon className="w-3.5 h-3.5" />
+            </button>
+
+            {linkInputOpen && (
+              <div className="absolute top-full right-0 mt-2 p-2 rounded-xl bg-zinc-900 border border-white/20 shadow-2xl flex items-center gap-2 z-50 w-64">
+                <input
+                  type="text"
+                  value={customLinkUrl}
+                  onChange={(e) => setCustomLinkUrl(e.target.value)}
+                  placeholder="https://..."
+                  className="flex-1 px-2 py-1 rounded bg-black/60 border border-white/20 text-xs text-white focus:outline-none"
+                />
+                <button
+                  type="button"
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    if (customLinkUrl) applyFormat('createLink', customLinkUrl);
+                  }}
+                  className="px-2.5 py-1 rounded bg-[#0E7A4C] text-[#C8A951] font-bold text-xs"
+                >
+                  OK
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Clear Format */}
           <button
             type="button"
-            onClick={() => applyFormat('removeFormat')}
+            onMouseDown={(e) => { e.preventDefault(); applyFormat('removeFormat'); }}
             className="p-1.5 rounded-lg hover:bg-rose-500/20 text-rose-400 text-xs"
-            title="Hapus Format"
+            title="Hapus Pemformatan"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
       )}
 
-      {/* 3. TOAST NOTIFICATION */}
+      {/* ========================================================================= */}
+      {/* 3. TOAST NOTIFICATION                                                     */}
+      {/* ========================================================================= */}
       {(toastMsg || publishSuccessMsg) && (
         <div className="fixed top-20 right-4 z-50 flex items-center gap-2.5 p-3.5 rounded-2xl bg-[#0A2116] text-white border border-[#C8A951]/60 shadow-2xl backdrop-blur-xl animate-fade-in">
           <CheckCircle2 className="w-5 h-5 text-[#C8A951] shrink-0" />
           <div className="text-xs">
             <p className="font-extrabold text-[#C8A951]">{toastMsg || 'Perubahan Berhasil Disimpan!'}</p>
-            <p className="text-emerald-100/90 text-[11px]">Tersinkronisasi ke live preview santri.</p>
+            <p className="text-emerald-100/90 text-[11px]">Tersinkronisasi ke canvas &amp; live preview santri.</p>
           </div>
         </div>
       )}
 
-      {/* 4. LEFT SIDEBAR: 6 GROUPING MODUL CMS LENGKAP */}
+      {/* ========================================================================= */}
+      {/* 4. LEFT SIDEBAR: DRAG & DROP SECTIONS REORDER LIST                        */}
+      {/* ========================================================================= */}
       {sidebarOpen && (
         <aside className="fixed top-16 left-0 bottom-0 z-40 w-80 bg-[#0A2116]/95 border-r border-white/10 p-4 shadow-2xl backdrop-blur-2xl flex flex-col overflow-hidden animate-slide-in">
           <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
             <div className="flex items-center gap-2">
               <Layers className="w-4 h-4 text-[#C8A951]" />
-              <h3 className="text-xs font-black uppercase tracking-wider text-white">Modul Editor PPJM</h3>
+              <h3 className="text-xs font-black uppercase tracking-wider text-white">Hierarki &amp; Drag Reorder</h3>
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
@@ -560,195 +1316,88 @@ export const WebVisualEditor: React.FC = () => {
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto space-y-4 pr-1 text-xs">
-            {/* GROUP 1: BERANDA & NAVIGASI */}
-            <div className="space-y-1.5">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[#C8A951]">
-                1. Beranda &amp; Navigasi
-              </span>
-              <div className="space-y-1">
-                <Link
-                  to="/admin/slider"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Kelola Poster Slider (5 Flyer)</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setActiveSectionId('quickMenu');
-                    setPropertiesOpen(true);
-                  }}
-                  className="w-full flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition text-left"
-                >
-                  <span>QuickMenu Mobile (8 Tombol)</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </button>
-              </div>
-            </div>
+          <p className="text-[11px] text-zinc-400 mb-2">
+            Geser handle <GripVertical className="w-3 h-3 inline text-[#C8A951]" /> untuk mengatur urutan section website:
+          </p>
 
-            {/* GROUP 2: JM CENTER */}
-            <div className="space-y-1.5">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[#C8A951]">
-                2. JM Center
-              </span>
-              <div className="space-y-1">
-                <Link
-                  to="/admin/profil"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Profil &amp; Sambutan KH. M. Jauharul Maknuun</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-                <Link
-                  to="/admin/profil?tab=fasilitas"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Fasilitas (Pondok, Sekolah &amp; Lab STEM)</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-                <Link
-                  to="/admin/profil?tab=lembaga"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Lembaga Pesantren &amp; SMP Plus</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-              </div>
-            </div>
+          <div className="flex-1 overflow-y-auto space-y-2 pr-1 text-xs">
+            {sortedSectionEntries.map(([key, sec]) => (
+              <div
+                key={key}
+                draggable
+                onDragStart={() => handleDragStartSection(key)}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={() => handleDropSection(key)}
+                onClick={() => {
+                  setActiveSectionId(key);
+                  setPropertiesOpen(true);
+                }}
+                className={`p-2.5 rounded-xl border flex items-center justify-between gap-2 transition cursor-pointer ${
+                  draggedSecKey === key ? 'opacity-40 border-dashed border-[#C8A951]' : ''
+                } ${
+                  activeSectionId === key
+                    ? 'bg-[#0E7A4C]/30 border-[#C8A951] text-white shadow-sm'
+                    : 'bg-white/5 border-white/10 text-zinc-300 hover:bg-white/10'
+                }`}
+              >
+                <div className="flex items-center gap-2 truncate">
+                  <span className="cursor-grab active:cursor-grabbing text-zinc-500 hover:text-[#C8A951]">
+                    <GripVertical className="w-4 h-4" />
+                  </span>
+                  <span className="font-bold truncate">{sec.title}</span>
+                </div>
 
-            {/* GROUP 3: PROGRAM */}
-            <div className="space-y-1.5">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[#C8A951]">
-                3. Program Unggulan
-              </span>
-              <div className="space-y-1">
-                <Link
-                  to="/admin/program"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Pondok 4 Program + Jadwal 24 Jam</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-                <Link
-                  to="/admin/program"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Flyer Madin Kitab Turats (Unduh &amp; Share)</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleSectionVisibility(key);
+                    }}
+                    className={`p-1 rounded ${sec.isVisible ? 'text-emerald-400' : 'text-zinc-500'}`}
+                    title={sec.isVisible ? 'Sembunyikan' : 'Tampilkan'}
+                  >
+                    {sec.isVisible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      moveSectionOrder(key, 'up');
+                    }}
+                    className="p-1 rounded text-zinc-400 hover:text-white"
+                  >
+                    <ArrowUp className="w-3 h-3" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      moveSectionOrder(key, 'down');
+                    }}
+                    className="p-1 rounded text-zinc-400 hover:text-white"
+                  >
+                    <ArrowDown className="w-3 h-3" />
+                  </button>
+                </div>
               </div>
-            </div>
-
-            {/* GROUP 4: SMART JM */}
-            <div className="space-y-1.5">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[#C8A951]">
-                4. SMART JM
-              </span>
-              <div className="space-y-1">
-                <Link
-                  to="/admin/stem"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>STEM: IoT ESP32 Hidroponik &amp; Nanofiltrasi</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-                <Link
-                  to="/admin/mandarin"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Mandarin: Audio HSK &amp; Kuis Gamifikasi Confetti</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-                <Link
-                  to="/admin/hafidz"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Tahfidz: Monitoring 114 Surat &amp; Murojaah AI</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-              </div>
-            </div>
-
-            {/* GROUP 5: KONTEN */}
-            <div className="space-y-1.5">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[#C8A951]">
-                5. Konten &amp; Komunitas
-              </span>
-              <div className="space-y-1">
-                <Link
-                  to="/admin/berita"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Warta Pesantren (Broadcast WA)</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-                <Link
-                  to="/admin/galeri"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Galeri Foto WebP &amp; Video YouTube</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-                <Link
-                  to="/admin/prestasi"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Prestasi Santri (Filter Kategori/Tahun)</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-                <Link
-                  to="/admin/ekskul"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Ekskul (Sains, Olahraga, Seni, Agama, Pramuka)</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-                <Link
-                  to="/admin/osis"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>OSIS: Presidium, BPH &amp; 5 Departemen</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-                <Link
-                  to="/admin/agenda"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Agenda &amp; Kalender Bulanan Interaktif</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-              </div>
-            </div>
-
-            {/* GROUP 6: SISTEM */}
-            <div className="space-y-1.5">
-              <span className="text-[10px] font-black uppercase tracking-wider text-[#C8A951]">
-                6. Sistem &amp; Keamanan
-              </span>
-              <div className="space-y-1">
-                <Link
-                  to="/admin/kontak"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Kontak &amp; Medsos Pop-up 7 Kanal</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-                <Link
-                  to="/admin/akun"
-                  className="flex items-center justify-between p-2 rounded-xl bg-white/5 hover:bg-[#0E7A4C]/30 text-zinc-300 hover:text-white transition"
-                >
-                  <span>Akun RBAC &amp; Kredensial 4 Peran</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-zinc-500" />
-                </Link>
-              </div>
-            </div>
+            ))}
           </div>
+
+          <button
+            type="button"
+            onClick={() => setSectionLibraryOpen(true)}
+            className="w-full mt-3 py-2.5 rounded-xl bg-gradient-to-r from-[#C8A951] to-amber-400 text-slate-950 font-black text-xs flex items-center justify-center gap-2 shadow-md hover:brightness-105 transition"
+          >
+            <Plus className="w-4 h-4 stroke-[3]" />
+            <span>Tambah Seksi dari Library</span>
+          </button>
         </aside>
       )}
 
-      {/* 5. RIGHT SIDEBAR: CONTEXT-AWARE PROPERTIES PANEL */}
+      {/* ========================================================================= */}
+      {/* 5. RIGHT SIDEBAR: CONTEXT-AWARE PROPERTIES PANEL                          */}
+      {/* ========================================================================= */}
       {propertiesOpen && currentSection && (
         <aside className="fixed top-16 right-0 bottom-0 z-40 w-84 sm:w-96 bg-[#0A2116]/95 border-l border-white/10 p-5 shadow-2xl backdrop-blur-2xl flex flex-col overflow-hidden animate-slide-in">
           <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
@@ -769,27 +1418,27 @@ export const WebVisualEditor: React.FC = () => {
           <div className="flex-1 overflow-y-auto space-y-4 pr-1 text-xs">
             {/* Quick Actions (Reorder, Visibility, Duplicate, Delete) */}
             <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-2">
-              <span className="text-[10px] font-bold uppercase text-zinc-400">Kontrol Seksi</span>
+              <span className="text-[10px] font-bold uppercase text-zinc-400">Kontrol Seksi Cepat</span>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={() => moveSectionOrder(activeSectionId as any, 'up')}
+                  onClick={() => moveSectionOrder(activeSectionId, 'up')}
                   className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center gap-1 font-bold"
                 >
                   <ArrowUp className="w-3 h-3 text-[#C8A951]" />
-                  <span>Ke Atas</span>
+                  <span>Geser Ke Atas</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => moveSectionOrder(activeSectionId as any, 'down')}
+                  onClick={() => moveSectionOrder(activeSectionId, 'down')}
                   className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center gap-1 font-bold"
                 >
                   <ArrowDown className="w-3 h-3 text-[#C8A951]" />
-                  <span>Ke Bawah</span>
+                  <span>Geser Ke Bawah</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => toggleSectionVisibility(activeSectionId as any)}
+                  onClick={() => toggleSectionVisibility(activeSectionId)}
                   className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center gap-1 font-bold"
                 >
                   {currentSection.isVisible ? (
@@ -807,16 +1456,16 @@ export const WebVisualEditor: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleDuplicateSection(activeSectionId)}
-                  className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center gap-1 font-bold text-sky-400"
+                  className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center gap-1 font-bold"
                 >
-                  <Copy className="w-3 h-3" />
-                  <span>Duplikat</span>
+                  <Copy className="w-3 h-3 text-sky-400" />
+                  <span>Duplikasi</span>
                 </button>
               </div>
             </div>
 
-            {/* Context-Aware Form Fields based on active section */}
-            <div className="space-y-3">
+            {/* Form Title & Description */}
+            <div className="p-3 rounded-xl bg-white/5 border border-white/10 space-y-3">
               <div>
                 <label className="text-[11px] font-bold text-zinc-300 block mb-1">Judul Seksi:</label>
                 <input
@@ -824,53 +1473,70 @@ export const WebVisualEditor: React.FC = () => {
                   value={currentSection.title}
                   onChange={(e) => {
                     const val = e.target.value;
-                    setEditorState((prev) => ({
+                    updateEditorState((prev) => ({
                       ...prev,
                       sections: {
                         ...prev.sections,
-                        [activeSectionId]: {
-                          ...prev.sections[activeSectionId as keyof PageEditorState['sections']],
-                          title: val,
-                        },
-                      },
+                        [activeSectionId]: { ...prev.sections[activeSectionId], title: val }
+                      }
                     }));
                   }}
                   className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/20 text-white focus:outline-none focus:border-[#C8A951]"
                 />
               </div>
 
-              <div>
-                <label className="text-[11px] font-bold text-zinc-300 block mb-1">Deskripsi Ringkas:</label>
-                <textarea
-                  rows={2}
-                  value={currentSection.description}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setEditorState((prev) => ({
-                      ...prev,
-                      sections: {
-                        ...prev.sections,
-                        [activeSectionId]: {
-                          ...prev.sections[activeSectionId as keyof PageEditorState['sections']],
-                          description: val,
-                        },
-                      },
-                    }));
-                  }}
-                  className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/20 text-white focus:outline-none focus:border-[#C8A951]"
-                />
-              </div>
-
-              {/* Specific Section Properties */}
+              {/* Specific Section Controls for Hero Slider */}
               {activeSectionId === 'heroSlider' && (
-                <div className="p-3 rounded-xl bg-[#0E7A4C]/10 border border-[#0E7A4C]/30 space-y-2">
+                <div className="p-3 rounded-xl bg-[#0E7A4C]/10 border border-[#0E7A4C]/30 space-y-3">
                   <span className="font-bold text-[#C8A951] text-[11px] block">Hero Slider Settings</span>
-                  <p className="text-[11px] text-emerald-100/80">
-                    Menampilkan 5 flyer interaktif coverflow dengan putar otomatis dan tautan jelajah.
-                  </p>
+                  
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-semibold text-zinc-300">Auto-play Carousel:</label>
+                    <button
+                      type="button"
+                      onClick={() => setSliderAutoplay(!sliderAutoplay)}
+                      className={`px-3 py-1 rounded-lg font-bold text-xs ${
+                        sliderAutoplay ? 'bg-[#0E7A4C] text-[#C8A951]' : 'bg-zinc-800 text-zinc-400'
+                      }`}
+                    >
+                      {sliderAutoplay ? 'ON' : 'OFF'}
+                    </button>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-semibold text-zinc-300">Durasi Pergantian:</label>
+                    <div className="flex items-center gap-1">
+                      {[3, 5, 7].map((dur) => (
+                        <button
+                          key={dur}
+                          type="button"
+                          onClick={() => setSliderDuration(dur)}
+                          className={`px-2 py-1 rounded font-bold text-xs ${
+                            sliderDuration === dur ? 'bg-[#C8A951] text-[#0A2116]' : 'bg-zinc-800 text-zinc-400'
+                          }`}
+                        >
+                          {dur}s
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-semibold text-zinc-300">Efek Transisi:</label>
+                    <select
+                      value={sliderEffect}
+                      onChange={(e) => setSliderEffect(e.target.value as any)}
+                      className="px-2 py-1 rounded bg-black/40 border border-white/20 text-xs text-white"
+                    >
+                      <option value="Coverflow">3D Coverflow</option>
+                      <option value="Fade">Smooth Fade</option>
+                      <option value="Slide">Slide Horizontal</option>
+                    </select>
+                  </div>
+
                   <Link
                     to="/admin/slider"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0E7A4C] text-[#C8A951] font-bold text-xs"
+                    className="w-full py-2 rounded-xl bg-[#0E7A4C] text-[#C8A951] font-bold text-xs flex items-center justify-center gap-1.5 mt-2"
                   >
                     <span>Buka Editor 5 Flyer</span>
                     <ChevronRight className="w-3.5 h-3.5" />
@@ -878,6 +1544,7 @@ export const WebVisualEditor: React.FC = () => {
                 </div>
               )}
 
+              {/* Specific Section Controls for Sambutan */}
               {activeSectionId === 'sambutan' && (
                 <div className="space-y-2">
                   <div>
@@ -887,15 +1554,15 @@ export const WebVisualEditor: React.FC = () => {
                       value={(currentSection.data as any).pengasuhName || ''}
                       onChange={(e) => {
                         const val = e.target.value;
-                        setEditorState((prev) => ({
+                        updateEditorState((prev) => ({
                           ...prev,
                           sections: {
                             ...prev.sections,
                             sambutan: {
                               ...prev.sections.sambutan,
-                              data: { ...prev.sections.sambutan.data, pengasuhName: val },
-                            },
-                          },
+                              data: { ...prev.sections.sambutan.data, pengasuhName: val }
+                            }
+                          }
                         }));
                       }}
                       className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/20 text-white focus:outline-none focus:border-[#C8A951]"
@@ -904,22 +1571,22 @@ export const WebVisualEditor: React.FC = () => {
                   <div>
                     <label className="text-[11px] font-bold text-zinc-300 block mb-1">Teks Kalam Sambutan:</label>
                     <textarea
-                      rows={4}
+                      rows={3}
                       value={(currentSection.data as any).kalam || ''}
                       onChange={(e) => {
                         const val = e.target.value;
-                        setEditorState((prev) => ({
+                        updateEditorState((prev) => ({
                           ...prev,
                           sections: {
                             ...prev.sections,
                             sambutan: {
                               ...prev.sections.sambutan,
-                              data: { ...prev.sections.sambutan.data, kalam: val },
-                            },
-                          },
+                              data: { ...prev.sections.sambutan.data, kalam: val }
+                            }
+                          }
                         }));
                       }}
-                      className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/20 text-white focus:outline-none focus:border-[#C8A951]"
+                      className="w-full p-2 rounded-xl bg-black/40 border border-white/20 text-white focus:outline-none focus:border-[#C8A951]"
                     />
                   </div>
                 </div>
@@ -931,7 +1598,7 @@ export const WebVisualEditor: React.FC = () => {
                   setEditingSection({
                     id: activeSectionId,
                     title: currentSection.title,
-                    data: currentSection.data,
+                    data: currentSection.data
                   });
                 }}
                 className="w-full py-2.5 rounded-xl bg-[#0E7A4C] hover:bg-[#128a57] text-[#C8A951] font-bold text-xs flex items-center justify-center gap-1.5 transition"
@@ -944,20 +1611,23 @@ export const WebVisualEditor: React.FC = () => {
         </aside>
       )}
 
-      {/* 6. MAIN PREVIEW CANVAS CONTAINER */}
+      {/* ========================================================================= */}
+      {/* 6. MAIN PREVIEW CANVAS CONTAINER (RESPONSIVE VIEWPORT ENGINE)             */}
+      {/* ========================================================================= */}
       <main
         ref={canvasRef}
         className="relative flex flex-1 items-start justify-center overflow-y-auto overflow-x-hidden pt-16 pb-20"
       >
-        {/* VIEWPORT MODE: MOBILE (390px iPhone Frame) */}
+        {/* VIEWPORT MODE: MOBILE (390px iPhone Frame with 5 Hub BottomNav) */}
         {viewportMode === 'mobile' && (
           <div className="w-full flex flex-col items-center py-6 px-2 animate-fade-in">
             <div className="mb-3 px-3 py-1 rounded-full bg-zinc-900/90 border border-white/10 text-[11px] font-mono text-zinc-400 flex items-center gap-2">
               <Smartphone className="w-3.5 h-3.5 text-emerald-400" />
-              <span>iPhone Viewport • 390 × 844 pt</span>
+              <span>iPhone Frame • 390 × 844 pt • 5 Hub BottomNav Sticky</span>
             </div>
 
             <div className="w-[390px] min-w-[390px] max-w-[390px] bg-white dark:bg-slate-900 rounded-[50px] border-[10px] border-zinc-900 shadow-[0_30px_100px_rgba(0,0,0,0.95)] ring-1 ring-white/10 ring-offset-4 ring-offset-zinc-950 overflow-hidden relative flex flex-col">
+              {/* Dynamic Island Notch */}
               <div className="w-full flex justify-center pt-2.5 pb-1 bg-white dark:bg-slate-900 sticky top-0 z-50">
                 <div className="w-28 h-6 bg-black rounded-full flex items-center justify-between px-3 text-white pointer-events-none shadow-md">
                   <div className="w-2 h-2 rounded-full bg-zinc-800" />
@@ -965,10 +1635,15 @@ export const WebVisualEditor: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex-1 overflow-x-hidden">
+              {/* Mobile Content + Pinned BottomNav */}
+              <div className="flex-1 overflow-x-hidden relative pb-20">
                 {renderWebsiteContent()}
+                <div className="absolute bottom-0 left-0 right-0 z-40 pointer-events-auto">
+                  <BottomNav />
+                </div>
               </div>
 
+              {/* Home Indicator */}
               <div className="w-full py-2 bg-white dark:bg-slate-900 flex justify-center sticky bottom-0 z-50 pointer-events-none">
                 <div className="w-32 h-1 bg-zinc-400 dark:bg-zinc-600 rounded-full" />
               </div>
@@ -981,7 +1656,7 @@ export const WebVisualEditor: React.FC = () => {
           <div className="w-full flex flex-col items-center py-6 px-3 animate-fade-in">
             <div className="mb-3 px-3 py-1 rounded-full bg-zinc-900/90 border border-white/10 text-[11px] font-mono text-zinc-400 flex items-center gap-2">
               <Tablet className="w-3.5 h-3.5 text-emerald-400" />
-              <span>iPad Viewport • 768 × 1024 pt</span>
+              <span>iPad Frame • 768 × 1024 pt</span>
             </div>
 
             <div className="w-[768px] min-w-[768px] max-w-[768px] bg-white dark:bg-slate-900 rounded-[36px] border-[12px] border-zinc-900 shadow-[0_30px_100px_rgba(0,0,0,0.85)] ring-1 ring-white/10 ring-offset-4 ring-offset-zinc-950 overflow-hidden relative flex flex-col">
@@ -1005,9 +1680,9 @@ export const WebVisualEditor: React.FC = () => {
                 <span>Mode Pratinjau Interaktif Desktop (100% Responsif)</span>
               </div>
               <div className="flex items-center gap-3">
-                <span>Klik teks untuk mengedit langsung</span>
+                <span>Klik teks untuk edit langsung</span>
                 <span>•</span>
-                <span>Klik gambar untuk mengganti</span>
+                <span>Klik gambar untuk membuka Image Editor Pro</span>
               </div>
             </div>
             {renderWebsiteContent()}
@@ -1015,26 +1690,16 @@ export const WebVisualEditor: React.FC = () => {
         )}
       </main>
 
-      {/* 7. FLOATING WHATSAPP HELP BUTTON */}
-      <a
-        href="https://wa.me/6285646199273?text=Halo%20Admin%20IT%20PPJM,%20saya%20butuh%20panduan%20menggunakan%20Live%20WYSIWYG%20Editor"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed bottom-5 right-5 z-40 flex items-center gap-2 px-3.5 py-2.5 rounded-full bg-[#0E7A4C] hover:bg-[#128a57] text-[#C8A951] font-extrabold text-xs shadow-2xl border border-[#C8A951]/40 backdrop-blur-md active:scale-95 transition"
-        title="Butuh Bantuan? Hubungi Tim IT / Mudir via WhatsApp"
-      >
-        <MessageSquare className="w-4 h-4 text-[#C8A951]" />
-        <span className="hidden sm:inline">Bantuan WA</span>
-      </a>
-
-      {/* 8. IMAGE REPLACE / WEBP AUTO-COMPRESSION MODAL */}
+      {/* ========================================================================= */}
+      {/* 7. IMAGE EDITOR PRO MODAL (WITH WEBP COMPRESSOR & SLIDERS)                */}
+      {/* ========================================================================= */}
       {imageModalOpen && selectedImageTarget && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="w-full max-w-md rounded-2xl bg-[#0A2116] border border-[#C8A951]/40 p-5 text-white shadow-2xl space-y-4 animate-scale-up">
+          <div className="w-full max-w-lg rounded-3xl bg-[#0A2116] border border-[#C8A951]/50 p-6 text-white shadow-2xl space-y-4 animate-scale-up">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <div className="flex items-center gap-2">
                 <ImageIcon className="w-5 h-5 text-[#C8A951]" />
-                <h3 className="font-extrabold text-sm text-white">Ganti Gambar (WebP Auto-Compressor)</h3>
+                <h3 className="font-extrabold text-sm text-white">Image Editor Pro (WebP Compressor)</h3>
               </div>
               <button
                 onClick={() => setImageModalOpen(false)}
@@ -1044,78 +1709,235 @@ export const WebVisualEditor: React.FC = () => {
               </button>
             </div>
 
-            {/* Current Image Preview */}
-            <div className="space-y-2">
-              <span className="text-[11px] font-bold text-zinc-400">Pratinjau Gambar Terpilih:</span>
-              <div className="w-full h-40 rounded-xl bg-black/50 overflow-hidden border border-white/10 flex items-center justify-center">
+            {/* Live Interactive Preview Box with Sliders Applied */}
+            <div className="space-y-1">
+              <span className="text-[11px] font-bold text-zinc-400">Pratinjau Hasil Desain:</span>
+              <div
+                className="w-full h-44 rounded-2xl bg-black/50 overflow-hidden border border-white/10 flex items-center justify-center relative"
+                style={{
+                  borderRadius: `${imgRounded}px`,
+                  opacity: imgOpacity / 100
+                }}
+              >
                 {newImageUrl ? (
-                  <img src={newImageUrl} alt="Preview" className="w-full h-full object-cover" />
+                  <img
+                    src={newImageUrl}
+                    alt={imgAltText || 'Preview'}
+                    className={`w-full h-full object-${imgObjectFit} transition-all`}
+                  />
                 ) : (
                   <span className="text-xs text-zinc-500">Tidak ada gambar</span>
                 )}
+
+                {/* Overlay color & opacity preview */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    backgroundColor: imgOverlayColor,
+                    opacity: imgOverlayOpacity / 100
+                  }}
+                />
               </div>
             </div>
 
-            {/* Upload or URL input */}
-            <div className="space-y-3">
+            {/* Sliders: Rounded, Opacity, Shadow, Object Fit */}
+            <div className="grid grid-cols-2 gap-3 bg-black/30 p-3 rounded-2xl border border-white/10 text-xs">
               <div>
-                <label className="text-[11px] font-bold text-zinc-300 block mb-1">Upload File Lokal (Kompresi WebP Otomatis):</label>
+                <label className="text-[10px] font-bold text-zinc-300 flex justify-between">
+                  <span>Rounded Corner:</span>
+                  <span className="text-[#C8A951]">{imgRounded}px</span>
+                </label>
+                <input
+                  type="range"
+                  min={0}
+                  max={32}
+                  value={imgRounded}
+                  onChange={(e) => setImgRounded(Number(e.target.value))}
+                  className="w-full accent-[#0E7A4C]"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-zinc-300 flex justify-between">
+                  <span>Opacity Gambar:</span>
+                  <span className="text-[#C8A951]">{imgOpacity}%</span>
+                </label>
+                <input
+                  type="range"
+                  min={10}
+                  max={100}
+                  value={imgOpacity}
+                  onChange={(e) => setImgOpacity(Number(e.target.value))}
+                  className="w-full accent-[#0E7A4C]"
+                />
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-zinc-300 block mb-1">Object Fit:</label>
+                <div className="flex items-center gap-1">
+                  {(['cover', 'contain'] as const).map((fit) => (
+                    <button
+                      key={fit}
+                      type="button"
+                      onClick={() => setImgObjectFit(fit)}
+                      className={`flex-1 py-1 rounded text-xs font-bold uppercase ${
+                        imgObjectFit === fit ? 'bg-[#0E7A4C] text-[#C8A951]' : 'bg-zinc-800 text-zinc-400'
+                      }`}
+                    >
+                      {fit}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[10px] font-bold text-zinc-300 flex justify-between">
+                  <span>Overlay Color Opacity:</span>
+                  <span className="text-[#C8A951]">{imgOverlayOpacity}%</span>
+                </label>
+                <input
+                  type="range"
+                  min={0}
+                  max={90}
+                  value={imgOverlayOpacity}
+                  onChange={(e) => setImgOverlayOpacity(Number(e.target.value))}
+                  className="w-full accent-[#C8A951]"
+                />
+              </div>
+            </div>
+
+            {/* Input URL & Upload WebP */}
+            <div className="space-y-2">
+              <div>
+                <label className="text-[11px] font-bold text-zinc-300 block mb-1">URL Gambar:</label>
+                <input
+                  type="text"
+                  value={newImageUrl}
+                  onChange={(e) => setNewImageUrl(e.target.value)}
+                  placeholder="https://..."
+                  className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/20 text-xs text-white focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-[11px] font-bold text-zinc-300 block mb-1">
+                  Upload dari Komputer (Auto-Compress WebP):
+                </label>
                 <input
                   type="file"
                   accept="image/*"
-                  ref={fileInputRef}
                   onChange={handleImageFileChange}
-                  className="w-full text-xs text-zinc-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#0E7A4C] file:text-[#C8A951] hover:file:bg-[#128a57] file:cursor-pointer"
+                  className="text-xs text-zinc-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#0E7A4C] file:text-[#C8A951]"
                 />
               </div>
-
-              {compressingImage && (
-                <div className="text-xs text-emerald-300 flex items-center gap-1.5 animate-pulse">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                  <span>Mengompresi ke format WebP hemat daya...</span>
-                </div>
-              )}
 
               {compressionResult && (
-                <div className="p-2.5 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-[11px] text-emerald-200">
-                  <p className="font-bold">✓ Kompresi Berhasil:</p>
-                  <p>Ukuran: {compressionResult.originalSizeKB} KB &rarr; {compressionResult.compressedSizeKB} KB (Hemat {compressionResult.savedPercent}%)</p>
+                <div className="p-2.5 rounded-xl bg-emerald-950/60 border border-emerald-500/40 text-[11px] text-emerald-300 flex items-center justify-between">
+                  <span>Kompresi WebP Berhasil!</span>
+                  <span className="font-bold">
+                    {compressionResult.originalSizeKB} KB ➔ {compressionResult.compressedSizeKB} KB (Hemat{' '}
+                    {compressionResult.savedPercent}%)
+                  </span>
                 </div>
               )}
-
-              <div>
-                <label className="text-[11px] font-bold text-zinc-300 block mb-1">Atau Masukkan URL Gambar Langsung:</label>
-                <input
-                  type="text"
-                  placeholder="https://..."
-                  value={newImageUrl}
-                  onChange={(e) => setNewImageUrl(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/20 text-white focus:outline-none focus:border-[#C8A951] text-xs"
-                />
-              </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-white/10">
+            {/* Action Buttons */}
+            <div className="flex items-center justify-between pt-3 border-t border-white/10">
               <button
                 type="button"
-                onClick={() => setImageModalOpen(false)}
-                className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-white/10"
+                onClick={handleDeleteImage}
+                className="px-3 py-2 rounded-xl text-xs font-bold text-rose-400 hover:bg-rose-500/10"
               >
-                Batal
+                Hapus Gambar
               </button>
-              <button
-                type="button"
-                onClick={handleApplyImageReplace}
-                className="px-4 py-2 rounded-xl text-xs font-extrabold bg-[#0E7A4C] text-[#C8A951] hover:bg-[#128a57] shadow-md border border-[#C8A951]/40"
-              >
-                Terapkan Gambar
-              </button>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setImageModalOpen(false)}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-300 hover:bg-white/10"
+                >
+                  Batal
+                </button>
+                <button
+                  type="button"
+                  onClick={handleApplyImageReplace}
+                  className="px-5 py-2 rounded-xl text-xs font-extrabold bg-[#0E7A4C] text-[#C8A951] hover:bg-[#128a57] shadow-md border border-[#C8A951]/40"
+                >
+                  Terapkan Gambar
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* 9. SECTION DETAIL FORM MODAL */}
+      {/* ========================================================================= */}
+      {/* 8. SECTION LIBRARY MODAL (21 KOMPONEN LENGKAP)                            */}
+      {/* ========================================================================= */}
+      {sectionLibraryOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+          <div className="w-full max-w-3xl rounded-3xl bg-[#0A2116] border border-[#C8A951]/50 p-6 text-white shadow-2xl flex flex-col max-h-[85vh] animate-scale-up">
+            <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-[#0E7A4C] text-[#C8A951] flex items-center justify-center font-bold">
+                  <Layers className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-extrabold text-base text-white">Section Library PPJM (21 Komponen)</h3>
+                  <p className="text-xs text-zinc-400">Pilih komponen untuk langsung disisipkan ke tata letak website.</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSectionLibraryOpen(false)}
+                className="p-1.5 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pr-1">
+              {SECTION_LIBRARY.map((item) => {
+                const IconComponent = item.icon;
+                return (
+                  <div
+                    key={item.key}
+                    onClick={() => handleAddSectionFromLibrary(item)}
+                    className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-[#C8A951] hover:bg-[#0E7A4C]/20 transition-all cursor-pointer flex flex-col justify-between group"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="w-8 h-8 rounded-xl bg-white/10 group-hover:bg-[#0E7A4C] text-[#C8A951] flex items-center justify-center">
+                          <IconComponent className="w-4 h-4" />
+                        </div>
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/10 text-zinc-300">
+                          {item.category}
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-xs text-white group-hover:text-[#C8A951] mb-1">
+                        {item.name}
+                      </h4>
+                      <p className="text-[11px] text-zinc-400 line-clamp-2">
+                        {item.description}
+                      </p>
+                    </div>
+
+                    <div className="mt-3 pt-2 border-t border-white/10 flex items-center justify-between text-[11px] font-bold text-[#C8A951]">
+                      <span>+ Tambahkan Seksi</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 9. SECTION DETAIL FORM MODAL (POPUP PROPERTI)                            */}
+      {/* ========================================================================= */}
       {editingSection && (
         <EditContentModal
           isOpen={!!editingSection}
@@ -1126,7 +1948,9 @@ export const WebVisualEditor: React.FC = () => {
         />
       )}
 
-      {/* 10. RESET CONFIRMATION MODAL */}
+      {/* ========================================================================= */}
+      {/* 10. RESET CONFIRMATION MODAL                                              */}
+      {/* ========================================================================= */}
       {resetModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
           <div className="w-full max-w-sm rounded-2xl bg-[#0A2116] border border-amber-500/40 p-5 text-white shadow-2xl space-y-3">
@@ -1168,493 +1992,494 @@ export const WebVisualEditor: React.FC = () => {
         {/* ============================================================ */}
         {/* 1. PUBLIC NAVBAR HEADER */}
         {/* ============================================================ */}
-        <EditorSectionWrapper
-          id="navbar"
-          title="Header Navigasi Web (9 Pilar)"
-          description="Logo pesantren, 9 pilar navigasi publik & profil pill"
-          isVisible={editorState.sections.navbar.isVisible}
-          isPublicPreview={isPublicPreview}
-          onToggleVisibility={() => toggleSectionVisibility('navbar')}
-          onEditContent={() => {
-            setActiveSectionId('navbar');
-            setPropertiesOpen(true);
-          }}
-        >
-          <Navbar />
-        </EditorSectionWrapper>
+        {editorState.sections.navbar?.isVisible && (
+          <EditorSectionWrapper
+            id="navbar"
+            title="Header Navigasi Web (9 Pilar)"
+            description="Logo pesantren, 9 pilar navigasi publik & profil pill"
+            isVisible={editorState.sections.navbar.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('navbar')}
+            onEditContent={() => {
+              setActiveSectionId('navbar');
+              setPropertiesOpen(true);
+            }}
+          >
+            <Navbar />
+          </EditorSectionWrapper>
+        )}
 
         {/* ============================================================ */}
         {/* 2. HERO COVERFLOW CAROUSEL */}
         {/* ============================================================ */}
-        <EditorSectionWrapper
-          id="heroSlider"
-          title="Hero Coverflow Slider (5 Flyer)"
-          description="Banner flyer 3D coverflow interaktif"
-          isVisible={editorState.sections.heroSlider.isVisible}
-          isPublicPreview={isPublicPreview}
-          onToggleVisibility={() => toggleSectionVisibility('heroSlider')}
-          onEditContent={() => {
-            setActiveSectionId('heroSlider');
-            setPropertiesOpen(true);
-          }}
-        >
-          <div
-            onClick={() => {
+        {editorState.sections.heroSlider?.isVisible && (
+          <EditorSectionWrapper
+            id="heroSlider"
+            title="Hero Coverflow Slider (5 Flyer)"
+            description="Banner flyer 3D coverflow interaktif"
+            isVisible={editorState.sections.heroSlider.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('heroSlider')}
+            onEditContent={() => {
               setActiveSectionId('heroSlider');
               setPropertiesOpen(true);
             }}
-            className="cursor-pointer"
           >
-            <HeroSlider />
-          </div>
-        </EditorSectionWrapper>
+            <div
+              onClick={() => {
+                setActiveSectionId('heroSlider');
+                setPropertiesOpen(true);
+              }}
+              className="cursor-pointer"
+            >
+              <HeroSlider />
+            </div>
+          </EditorSectionWrapper>
+        )}
 
         {/* ============================================================ */}
         {/* 3. QUICK MENU MOBILE (2x4 Grid) */}
         {/* ============================================================ */}
-        <EditorSectionWrapper
-          id="quickMenu"
-          title="Quick Menu Mobile (8 Tombol)"
-          description="Menu navigasi cepat 8 kartu di layar mobile dan tablet"
-          isVisible={editorState.sections.quickMenu.isVisible}
-          isPublicPreview={isPublicPreview}
-          onToggleVisibility={() => toggleSectionVisibility('quickMenu')}
-          onEditContent={() => {
-            setActiveSectionId('quickMenu');
-            setPropertiesOpen(true);
-          }}
-        >
-          <div
-            onClick={() => {
+        {editorState.sections.quickMenu?.isVisible && (
+          <EditorSectionWrapper
+            id="quickMenu"
+            title="Quick Menu Mobile (8 Tombol)"
+            description="Menu navigasi cepat 8 kartu di layar mobile dan tablet"
+            isVisible={editorState.sections.quickMenu.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('quickMenu')}
+            onEditContent={() => {
               setActiveSectionId('quickMenu');
               setPropertiesOpen(true);
             }}
-            className="relative cursor-pointer"
           >
-            <QuickMenu />
-            {!isPublicPreview && viewportMode === 'desktop' && (
-              <div className="px-4 py-1 text-[11px] text-[#C8A951] font-mono text-center">
-                💡 QuickMenu otomatis aktif di layar HP / Tablet. Beralih ke switcher "Mobile" di atas untuk simulasikan interaksi.
-              </div>
-            )}
-          </div>
-        </EditorSectionWrapper>
-
-        {/* Divider Spacing Halus untuk Desktop */}
-        <div className="hidden lg:block h-1" />
-
-        {/* ============================================================ */}
-        {/* 4. KALAM & SAMBUTAN SINGKAT PENGASUH KH. M. JAUHARUL MAKNUUN */}
-        {/* ============================================================ */}
-        <EditorSectionWrapper
-          id="sambutan"
-          title="Kalam Sambutan Pengasuh"
-          description="Pesan keteladanan KH. M. Jauharul Maknuun"
-          isVisible={editorState.sections.sambutan.isVisible}
-          isPublicPreview={isPublicPreview}
-          onToggleVisibility={() => toggleSectionVisibility('sambutan')}
-          onEditContent={() => {
-            setActiveSectionId('sambutan');
-            setPropertiesOpen(true);
-          }}
-        >
-          <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-0.5">
-            <div className="bg-white rounded-2xl p-2.5 sm:p-3.5 lg:p-4 shadow-m3-1 border border-slate-200/90 relative overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-3.5 items-center">
-                
-                <div className="lg:col-span-4 flex justify-center">
-                  <div className="relative">
-                    <div
-                      onClick={() => openImageModal('sambutan', editorState.sections.sambutan.data.imageUrl, 'imageUrl')}
-                      className="w-40 h-48 sm:w-52 sm:h-60 rounded-xl sm:rounded-2xl overflow-hidden shadow-lg border-4 border-emerald-50 bg-slate-100 cursor-pointer group relative"
-                      title="Klik untuk mengganti foto Mudir KH. M. Jauharul Maknuun"
-                    >
-                      <img
-                        src={editorState.sections.sambutan.data.imageUrl}
-                        alt="Pengasuh PP Jauharul Maknuun"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                      />
-                      {!isPublicPreview && (
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                          <span className="text-[10px] font-bold text-white bg-black/60 px-2 py-1 rounded-md">
-                            Ganti Foto
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="absolute -bottom-3.5 left-1/2 -translate-x-1/2 bg-[#0A2116] text-[#C8A951] px-3.5 py-1 rounded-full text-[11px] font-bold shadow-md whitespace-nowrap border border-[#C8A951]/40">
-                      {editorState.sections.sambutan.data.title}
-                    </div>
-                  </div>
+            <div
+              onClick={() => {
+                setActiveSectionId('quickMenu');
+                setPropertiesOpen(true);
+              }}
+              className="relative cursor-pointer"
+            >
+              <QuickMenu />
+              {!isPublicPreview && viewportMode === 'desktop' && (
+                <div className="px-4 py-1 text-[11px] text-[#C8A951] font-mono text-center">
+                  💡 QuickMenu otomatis aktif di layar HP / Tablet. Beralih ke switcher "HP" di atas untuk simulasikan interaksi.
                 </div>
-
-                <div className="lg:col-span-8 space-y-2.5 text-center lg:text-left">
-                  <span className="text-xs sm:text-sm font-bold text-amber-700 tracking-wider uppercase bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-                    Kalam Hikmah & Ma'had Barokah
-                  </span>
-                  
-                  <h2
-                    contentEditable={!isPublicPreview}
-                    suppressContentEditableWarning
-                    onBlur={(e) => {
-                      const text = e.currentTarget.textContent || '';
-                      setEditorState((prev) => ({
-                        ...prev,
-                        sections: {
-                          ...prev.sections,
-                          sambutan: {
-                            ...prev.sections.sambutan,
-                            data: { ...prev.sections.sambutan.data, pengasuhName: text },
-                          },
-                        },
-                      }));
-                      showToast('Nama pengasuh berhasil diperbarui');
-                    }}
-                    className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-950 focus:outline-dashed focus:outline-2 focus:outline-[#C8A951] p-1 rounded"
-                  >
-                    {editorState.sections.sambutan.data.pengasuhName}
-                  </h2>
-                  
-                  <p className="text-sm sm:text-base font-bold text-emerald-800">
-                    Mudir &amp; Pengasuh Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik
-                  </p>
-                  
-                  <blockquote
-                    contentEditable={!isPublicPreview}
-                    suppressContentEditableWarning
-                    onBlur={(e) => {
-                      const text = e.currentTarget.textContent || '';
-                      setEditorState((prev) => ({
-                        ...prev,
-                        sections: {
-                          ...prev.sections,
-                          sambutan: {
-                            ...prev.sections.sambutan,
-                            data: { ...prev.sections.sambutan.data, kalam: text },
-                          },
-                        },
-                      }));
-                      showToast('Kalam hikmah berhasil diperbarui');
-                    }}
-                    className="text-sm sm:text-base lg:text-lg text-slate-800 font-medium italic leading-relaxed sm:leading-loose border-l-0 lg:border-l-4 lg:border-emerald-700 lg:pl-4 focus:outline-dashed focus:outline-2 focus:outline-[#C8A951] p-1 rounded"
-                  >
-                    “{editorState.sections.sambutan.data.kalam}”
-                  </blockquote>
-                  
-                  <div className="pt-2">
-                    <Link
-                      to="/jm-center/sambutan"
-                      className="inline-flex items-center gap-1.5 text-sm sm:text-base font-extrabold text-emerald-800 hover:text-emerald-950 underline underline-offset-4"
-                    >
-                      <span>Baca Selengkapnya Sambutan Pengasuh</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </div>
-
-              </div>
+              )}
             </div>
-          </section>
-        </EditorSectionWrapper>
+          </EditorSectionWrapper>
+        )}
+
+        {/* ============================================================ */}
+        {/* 4. KALAM & SAMBUTAN SINGKAT PENGASUH */}
+        {/* ============================================================ */}
+        {editorState.sections.sambutan?.isVisible && (
+          <EditorSectionWrapper
+            id="sambutan"
+            title="Kalam Sambutan Pengasuh"
+            description="Pesan keteladanan KH. M. Jauharul Maknuun"
+            isVisible={editorState.sections.sambutan.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('sambutan')}
+            onEditContent={() => {
+              setActiveSectionId('sambutan');
+              setPropertiesOpen(true);
+            }}
+          >
+            <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-0.5">
+              <div className="bg-white rounded-2xl p-2.5 sm:p-3.5 lg:p-4 shadow-m3-1 border border-slate-200/90 relative overflow-hidden">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-3.5 items-center">
+                  
+                  <div className="lg:col-span-4 flex justify-center">
+                    <div className="relative">
+                      <div
+                        onClick={() => openImageModal('sambutan', editorState.sections.sambutan.data.imageUrl, 'imageUrl')}
+                        className="w-40 h-48 sm:w-52 sm:h-60 rounded-xl sm:rounded-2xl overflow-hidden shadow-lg border-4 border-emerald-50 bg-slate-100 cursor-pointer group relative"
+                        title="Klik untuk membuka Image Editor Pro foto Pengasuh"
+                      >
+                        <img
+                          src={editorState.sections.sambutan.data.imageUrl}
+                          alt="Pengasuh PP Jauharul Maknuun"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        />
+                        {!isPublicPreview && (
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span className="text-[10px] font-bold text-white bg-black/60 px-2 py-1 rounded-md">
+                              Edit Gambar Pro
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="absolute -bottom-3.5 left-1/2 -translate-x-1/2 bg-[#0A2116] text-[#C8A951] px-3.5 py-1 rounded-full text-[11px] font-bold shadow-md whitespace-nowrap border border-[#C8A951]/40">
+                        {editorState.sections.sambutan.data.title}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="lg:col-span-8 space-y-2.5 text-center lg:text-left">
+                    <span className="text-xs sm:text-sm font-bold text-amber-700 tracking-wider uppercase bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                      Kalam Hikmah & Ma'had Barokah
+                    </span>
+                    
+                    <h2
+                      contentEditable={!isPublicPreview}
+                      suppressContentEditableWarning
+                      onBlur={(e) => {
+                        const text = e.currentTarget.textContent || '';
+                        updateEditorState((prev) => ({
+                          ...prev,
+                          sections: {
+                            ...prev.sections,
+                            sambutan: {
+                              ...prev.sections.sambutan,
+                              data: { ...prev.sections.sambutan.data, pengasuhName: text }
+                            }
+                          }
+                        }));
+                        showToast('Nama pengasuh berhasil diperbarui');
+                      }}
+                      className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-950 focus:outline-dashed focus:outline-2 focus:outline-[#C8A951] p-1 rounded"
+                    >
+                      {editorState.sections.sambutan.data.pengasuhName}
+                    </h2>
+                    
+                    <p className="text-sm sm:text-base font-bold text-emerald-800">
+                      Mudir &amp; Pengasuh Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik
+                    </p>
+                    
+                    <blockquote
+                      contentEditable={!isPublicPreview}
+                      suppressContentEditableWarning
+                      onBlur={(e) => {
+                        const text = e.currentTarget.textContent || '';
+                        updateEditorState((prev) => ({
+                          ...prev,
+                          sections: {
+                            ...prev.sections,
+                            sambutan: {
+                              ...prev.sections.sambutan,
+                              data: { ...prev.sections.sambutan.data, kalam: text }
+                            }
+                          }
+                        }));
+                        showToast('Kalam hikmah berhasil diperbarui');
+                      }}
+                      className="text-sm sm:text-base lg:text-lg text-slate-800 font-medium italic leading-relaxed sm:leading-loose border-l-0 lg:border-l-4 lg:border-emerald-700 lg:pl-4 focus:outline-dashed focus:outline-2 focus:outline-[#C8A951] p-1 rounded"
+                    >
+                      “{editorState.sections.sambutan.data.kalam}”
+                    </blockquote>
+                  </div>
+
+                </div>
+              </div>
+            </section>
+          </EditorSectionWrapper>
+        )}
 
         {/* ============================================================ */}
         {/* 5. EMPAT PILAR PENDIDIKAN PESANTREN */}
         {/* ============================================================ */}
-        <EditorSectionWrapper
-          id="programUnggulan"
-          title="Empat Pilar Pendidikan PPJM"
-          description="Pilar: Turats Salaf, Tahfidz AI, Lab STEM, Mandarin & Arab"
-          isVisible={editorState.sections.programUnggulan.isVisible}
-          isPublicPreview={isPublicPreview}
-          onToggleVisibility={() => toggleSectionVisibility('programUnggulan')}
-          onEditContent={() => {
-            setActiveSectionId('programUnggulan');
-            setPropertiesOpen(true);
-          }}
-        >
-          <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-2 sm:space-y-3">
-            <div className="text-center max-w-2xl mx-auto space-y-1">
-              <span className="text-xs sm:text-sm font-bold text-amber-700 uppercase tracking-widest">
-                Karakteristik &amp; Keistimewaan
-              </span>
-              <h2
-                contentEditable={!isPublicPreview}
-                suppressContentEditableWarning
-                onBlur={(e) => {
-                  const text = e.currentTarget.textContent || '';
-                  setEditorState((prev) => ({
-                    ...prev,
-                    sections: {
-                      ...prev.sections,
-                      programUnggulan: {
-                        ...prev.sections.programUnggulan,
-                        data: { ...prev.sections.programUnggulan.data, headline: text },
-                      },
-                    },
-                  }));
-                }}
-                className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950 focus:outline-dashed focus:outline-2 focus:outline-[#C8A951] p-1 rounded"
-              >
-                {editorState.sections.programUnggulan.data.headline}
-              </h2>
-              <p
-                contentEditable={!isPublicPreview}
-                suppressContentEditableWarning
-                onBlur={(e) => {
-                  const text = e.currentTarget.textContent || '';
-                  setEditorState((prev) => ({
-                    ...prev,
-                    sections: {
-                      ...prev.sections,
-                      programUnggulan: {
-                        ...prev.sections.programUnggulan,
-                        data: { ...prev.sections.programUnggulan.data, subheadline: text },
-                      },
-                    },
-                  }));
-                }}
-                className="text-sm sm:text-base text-slate-700 font-medium focus:outline-dashed focus:outline-2 focus:outline-[#C8A951] p-1 rounded"
-              >
-                {editorState.sections.programUnggulan.data.subheadline}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
-              {editorState.sections.programUnggulan.data.items.map((item) => (
-                <EditorItemWrapper
-                  key={item.id}
-                  itemId={item.id}
-                  itemTitle={item.name}
-                  isVisible={item.isVisible}
-                  isPublicPreview={isPublicPreview}
-                  onToggleVisibility={() => toggleItemVisibility('programUnggulan', item.id)}
+        {editorState.sections.programUnggulan?.isVisible && (
+          <EditorSectionWrapper
+            id="programUnggulan"
+            title="Empat Pilar Pendidikan PPJM"
+            description="Pilar: Turats Salaf, Tahfidz AI, Lab STEM, Mandarin & Arab"
+            isVisible={editorState.sections.programUnggulan.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('programUnggulan')}
+            onEditContent={() => {
+              setActiveSectionId('programUnggulan');
+              setPropertiesOpen(true);
+            }}
+          >
+            <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-2 sm:space-y-3">
+              <div className="text-center max-w-2xl mx-auto space-y-1">
+                <span className="text-xs sm:text-sm font-bold text-amber-700 uppercase tracking-widest">
+                  Karakteristik &amp; Keistimewaan
+                </span>
+                <h2
+                  contentEditable={!isPublicPreview}
+                  suppressContentEditableWarning
+                  onBlur={(e) => {
+                    const text = e.currentTarget.textContent || '';
+                    updateEditorState((prev) => ({
+                      ...prev,
+                      sections: {
+                        ...prev.sections,
+                        programUnggulan: {
+                          ...prev.sections.programUnggulan,
+                          data: { ...prev.sections.programUnggulan.data, headline: text }
+                        }
+                      }
+                    }));
+                  }}
+                  className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950 focus:outline-dashed focus:outline-2 focus:outline-[#C8A951] p-1 rounded"
                 >
-                  <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-sm hover:shadow-md border border-slate-200 hover:border-emerald-300 transition-all group flex flex-col justify-between h-full">
-                    <div className="space-y-2">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center group-hover:bg-[#0E7A4C] group-hover:text-[#C8A951] transition-colors">
-                        <BookOpen className="w-5 h-5" />
+                  {editorState.sections.programUnggulan.data.headline}
+                </h2>
+                <p
+                  contentEditable={!isPublicPreview}
+                  suppressContentEditableWarning
+                  onBlur={(e) => {
+                    const text = e.currentTarget.textContent || '';
+                    updateEditorState((prev) => ({
+                      ...prev,
+                      sections: {
+                        ...prev.sections,
+                        programUnggulan: {
+                          ...prev.sections.programUnggulan,
+                          data: { ...prev.sections.programUnggulan.data, subheadline: text }
+                        }
+                      }
+                    }));
+                  }}
+                  className="text-sm sm:text-base text-slate-700 font-medium focus:outline-dashed focus:outline-2 focus:outline-[#C8A951] p-1 rounded"
+                >
+                  {editorState.sections.programUnggulan.data.subheadline}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+                {editorState.sections.programUnggulan.data.items.map((item) => (
+                  <EditorItemWrapper
+                    key={item.id}
+                    itemId={item.id}
+                    itemTitle={item.name}
+                    isVisible={item.isVisible}
+                    isPublicPreview={isPublicPreview}
+                    onToggleVisibility={() => toggleItemVisibility('programUnggulan', item.id)}
+                  >
+                    <div className="bg-white rounded-2xl p-3 sm:p-4 shadow-sm hover:shadow-md border border-slate-200 hover:border-emerald-300 transition-all group flex flex-col justify-between h-full">
+                      <div className="space-y-2">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center group-hover:bg-[#0E7A4C] group-hover:text-[#C8A951] transition-colors">
+                          <BookOpen className="w-5 h-5" />
+                        </div>
+                        <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          {item.tag}
+                        </span>
+                        <h3 className="font-black text-base sm:text-lg text-emerald-950">
+                          {item.name}
+                        </h3>
+                        <p className="text-sm text-slate-700 leading-relaxed font-normal">
+                          {item.desc}
+                        </p>
                       </div>
-                      <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
-                        {item.tag}
-                      </span>
-                      <h3 className="font-black text-base sm:text-lg text-emerald-950">
-                        {item.name}
-                      </h3>
-                      <p className="text-sm text-slate-700 leading-relaxed font-normal">
-                        {item.desc}
-                      </p>
+                      <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950">
+                        <span>Rincian Jenjang</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </div>
                     </div>
-                    <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950">
-                      <span>Rincian Jenjang</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </div>
-                  </div>
-                </EditorItemWrapper>
-              ))}
-            </div>
-          </section>
-        </EditorSectionWrapper>
+                  </EditorItemWrapper>
+                ))}
+              </div>
+            </section>
+          </EditorSectionWrapper>
+        )}
 
         {/* ============================================================ */}
         {/* 6. WARTA & BERITA TERKINI */}
         {/* ============================================================ */}
-        <EditorSectionWrapper
-          id="beritaTerkini"
-          title="Warta & Berita Santri Terkini"
-          description="Kabar aktual, liputan kajian, dan agenda pesantren"
-          isVisible={editorState.sections.beritaTerkini.isVisible}
-          isPublicPreview={isPublicPreview}
-          onToggleVisibility={() => toggleSectionVisibility('beritaTerkini')}
-          onEditContent={() => {
-            setActiveSectionId('beritaTerkini');
-            setPropertiesOpen(true);
-          }}
-        >
-          <section id="warta-berita" className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-2 sm:space-y-3 scroll-mt-24">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5 border-b border-slate-200 pb-2">
-              <div>
-                <span className="text-xs sm:text-sm font-bold text-amber-700 uppercase tracking-widest">
-                  Kabar Pesantren
-                </span>
-                <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950">
-                  {editorState.sections.beritaTerkini.data.headline}
-                </h2>
-              </div>
-              <Link
-                to="/jm-news"
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950"
-              >
-                <span>Lihat Semua Berita</span>
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-4">
-              {editorState.sections.beritaTerkini.data.items.map((news) => (
-                <EditorItemWrapper
-                  key={news.id}
-                  itemId={news.id}
-                  itemTitle={news.title}
-                  isVisible={news.isVisible}
-                  isPinned={news.isPinned}
-                  isPublicPreview={isPublicPreview}
-                  onToggleVisibility={() => toggleItemVisibility('beritaTerkini', news.id)}
+        {editorState.sections.beritaTerkini?.isVisible && (
+          <EditorSectionWrapper
+            id="beritaTerkini"
+            title="Warta & Berita Santri Terkini"
+            description="Kabar aktual, liputan kajian, dan agenda pesantren"
+            isVisible={editorState.sections.beritaTerkini.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('beritaTerkini')}
+            onEditContent={() => {
+              setActiveSectionId('beritaTerkini');
+              setPropertiesOpen(true);
+            }}
+          >
+            <section id="warta-berita" className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-2 sm:space-y-3 scroll-mt-24">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5 border-b border-slate-200 pb-2">
+                <div>
+                  <span className="text-xs sm:text-sm font-bold text-amber-700 uppercase tracking-widest">
+                    Kabar Pesantren
+                  </span>
+                  <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950">
+                    {editorState.sections.beritaTerkini.data.headline}
+                  </h2>
+                </div>
+                <Link
+                  to="/jm-news"
+                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950"
                 >
-                  <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-slate-200 hover:border-emerald-300 transition-all flex flex-col group h-full">
-                    <div
-                      onClick={() => openImageModal('beritaTerkini', news.thumbnail, 'thumbnail')}
-                      className="relative aspect-video overflow-hidden bg-slate-100 cursor-pointer"
-                      title="Klik untuk mengganti thumbnail berita"
-                    >
-                      <img
-                        src={news.thumbnail}
-                        alt={news.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <span className="absolute top-2.5 left-2.5 bg-[#0A2116] text-[#C8A951] text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm border border-[#C8A951]/40">
-                        {news.category}
-                      </span>
-                      {news.isPinned && (
-                        <span className="absolute top-2.5 right-2.5 bg-[#C8A951] text-emerald-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
-                          ⭐ Tersemat
+                  <span>Lihat Semua Berita</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 sm:gap-4">
+                {editorState.sections.beritaTerkini.data.items.map((news) => (
+                  <EditorItemWrapper
+                    key={news.id}
+                    itemId={news.id}
+                    itemTitle={news.title}
+                    isVisible={news.isVisible}
+                    isPinned={news.isPinned}
+                    isPublicPreview={isPublicPreview}
+                    onToggleVisibility={() => toggleItemVisibility('beritaTerkini', news.id)}
+                  >
+                    <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md border border-slate-200 hover:border-emerald-300 transition-all flex flex-col group h-full">
+                      <div
+                        onClick={() => openImageModal('beritaTerkini', news.thumbnail, 'thumbnail')}
+                        className="relative aspect-video overflow-hidden bg-slate-100 cursor-pointer"
+                        title="Klik untuk membuka Image Editor Pro thumbnail berita"
+                      >
+                        <img
+                          src={news.thumbnail}
+                          alt={news.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <span className="absolute top-2.5 left-2.5 bg-[#0A2116] text-[#C8A951] text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-sm border border-[#C8A951]/40">
+                          {news.category}
                         </span>
-                      )}
-                    </div>
+                        {news.isPinned && (
+                          <span className="absolute top-2.5 right-2.5 bg-[#C8A951] text-emerald-950 text-[10px] font-black px-2 py-0.5 rounded-full shadow-md flex items-center gap-1">
+                            ⭐ Tersemat
+                          </span>
+                        )}
+                      </div>
 
-                    <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between space-y-2">
-                      <div className="space-y-1.5">
-                        <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-500 font-medium">
-                          <Calendar className="w-3.5 h-3.5 text-emerald-700" />
-                          <span>{news.date}</span>
+                      <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between space-y-2">
+                        <div className="space-y-1.5">
+                          <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-500 font-medium">
+                            <Calendar className="w-3.5 h-3.5 text-emerald-700" />
+                            <span>{news.date}</span>
+                          </div>
+                          <h3 className="font-black text-sm sm:text-base text-emerald-950 group-hover:text-emerald-800 transition-colors line-clamp-2 leading-snug">
+                            {news.title}
+                          </h3>
+                          <p className="text-xs sm:text-sm text-slate-700 line-clamp-2 leading-relaxed">
+                            {news.summary}
+                          </p>
                         </div>
-                        <h3 className="font-black text-sm sm:text-base text-emerald-950 group-hover:text-emerald-800 transition-colors line-clamp-2 leading-snug">
-                          {news.title}
-                        </h3>
-                        <p className="text-xs sm:text-sm text-slate-700 line-clamp-2 leading-relaxed">
-                          {news.summary}
-                        </p>
-                      </div>
 
-                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <Link
-                          to={news.link || '/'}
-                          className="inline-flex items-center gap-1 text-xs sm:text-sm font-extrabold text-emerald-800 hover:text-emerald-950"
-                        >
-                          <span>Baca Detail</span>
-                          <ArrowUpRight className="w-3.5 h-3.5" />
-                        </Link>
-                        <button
-                          type="button"
-                          onClick={() => handleShareWA(news)}
-                          className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0E7A4C] bg-emerald-50 hover:bg-emerald-100 px-2 py-1 rounded-lg transition-colors cursor-pointer"
-                          title="Bagikan ke WhatsApp Wali Santri"
-                        >
-                          <Share2 className="w-3.5 h-3.5" />
-                          <span>WA</span>
-                        </button>
+                        <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
+                          <Link
+                            to={news.link || '/'}
+                            className="inline-flex items-center gap-1 text-xs sm:text-sm font-extrabold text-emerald-800 hover:text-emerald-950"
+                          >
+                            <span>Baca Detail</span>
+                            <ArrowUpRight className="w-3.5 h-3.5" />
+                          </Link>
+                          <button
+                            type="button"
+                            onClick={() => handleShareWA(news)}
+                            className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0E7A4C] bg-emerald-50 hover:bg-emerald-100 px-2 py-1 rounded-lg transition-colors cursor-pointer"
+                            title="Bagikan ke WhatsApp Wali Santri"
+                          >
+                            <Share2 className="w-3.5 h-3.5" />
+                            <span>WA</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </EditorItemWrapper>
-              ))}
-            </div>
-          </section>
-        </EditorSectionWrapper>
+                  </EditorItemWrapper>
+                ))}
+              </div>
+            </section>
+          </EditorSectionWrapper>
+        )}
 
         {/* ============================================================ */}
         {/* 7. PRESTASI & KEJUARAAN SANTRI */}
         {/* ============================================================ */}
-        <EditorSectionWrapper
-          id="prestasi"
-          title="Prestasi & Kejuaraan Santri"
-          description="Prestasi kitab kuning, MTQ, dan robotika santri"
-          isVisible={editorState.sections.prestasi.isVisible}
-          isPublicPreview={isPublicPreview}
-          onToggleVisibility={() => toggleSectionVisibility('prestasi')}
-          onEditContent={() => {
-            setActiveSectionId('prestasi');
-            setPropertiesOpen(true);
-          }}
-        >
-          <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-2">
-            <div className="p-4 sm:p-6 rounded-3xl bg-gradient-to-br from-[#0A2116] via-[#0E7A4C]/10 to-[#C8A951]/10 border border-[#C8A951]/30">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-xl bg-[#C8A951] text-[#0A2116] flex items-center justify-center font-bold">
-                    <Trophy className="w-4 h-4" />
+        {editorState.sections.prestasi?.isVisible && (
+          <EditorSectionWrapper
+            id="prestasi"
+            title="Prestasi & Kejuaraan Santri"
+            description="Prestasi kitab kuning, MTQ, dan robotika santri"
+            isVisible={editorState.sections.prestasi.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('prestasi')}
+            onEditContent={() => {
+              setActiveSectionId('prestasi');
+              setPropertiesOpen(true);
+            }}
+          >
+            <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-2">
+              <div className="p-4 sm:p-6 rounded-3xl bg-gradient-to-br from-[#0A2116] via-[#0E7A4C]/10 to-[#C8A951]/10 border border-[#C8A951]/30">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-[#C8A951] text-[#0A2116] flex items-center justify-center font-bold">
+                      <Trophy className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                        {editorState.sections.prestasi.data.headline}
+                      </h3>
+                      <p className="text-xs text-slate-500">Capaian membanggakan santri di tingkat daerah &amp; nasional</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
-                      {editorState.sections.prestasi.data.headline}
-                    </h3>
-                    <p className="text-xs text-slate-500">Capaian membanggakan santri di tingkat daerah &amp; nasional</p>
-                  </div>
+                  <Link to="/prestasi" className="text-xs font-bold text-emerald-700 hover:underline">
+                    Lihat Semua &rarr;
+                  </Link>
                 </div>
-                <Link to="/prestasi" className="text-xs font-bold text-emerald-700 hover:underline">
-                  Lihat Semua &rarr;
-                </Link>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {editorState.sections.prestasi.data.items.map((pres) => (
-                  <div key={pres.id} className="p-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs">
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#C8A951]/20 text-[#C8A951]">
-                      {pres.juara} • {pres.tingkat}
-                    </span>
-                    <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white mt-1.5 leading-snug">
-                      {pres.kejuaraan}
-                    </h4>
-                    <p className="text-[11px] text-slate-500 mt-1">Peraih: {pres.santri} ({pres.tahun})</p>
-                  </div>
-                ))}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {editorState.sections.prestasi.data.items.map((pres) => (
+                    <div key={pres.id} className="p-3 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-xs">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#C8A951]/20 text-[#C8A951]">
+                        {pres.juara} • {pres.tingkat}
+                      </span>
+                      <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white mt-1.5 leading-snug">
+                        {pres.kejuaraan}
+                      </h4>
+                      <p className="text-[11px] text-slate-500 mt-1">Peraih: {pres.santri} ({pres.tahun})</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          </section>
-        </EditorSectionWrapper>
+            </section>
+          </EditorSectionWrapper>
+        )}
 
         {/* ============================================================ */}
         {/* 8. FOOTER RESMI PESANTREN */}
         {/* ============================================================ */}
-        <EditorSectionWrapper
-          id="footer"
-          title="Footer & Kontak Resmi"
-          description="Alamat resmi, WhatsApp call center & copyright"
-          isVisible={editorState.sections.footer.isVisible}
-          isPublicPreview={isPublicPreview}
-          onToggleVisibility={() => toggleSectionVisibility('footer')}
-          onEditContent={() => {
-            setActiveSectionId('footer');
-            setPropertiesOpen(true);
-          }}
-        >
-          <footer className="bg-[#0A2116] text-emerald-100 pt-8 pb-16 px-4 sm:px-6 border-t-4 border-[#C8A951]">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 pb-6 border-b border-emerald-900/80">
-              <div className="md:col-span-6 space-y-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-white text-[#0A2116] font-black flex items-center justify-center text-xs">
-                    JM
+        {editorState.sections.footer?.isVisible && (
+          <EditorSectionWrapper
+            id="footer"
+            title="Footer & Kontak Resmi"
+            description="Alamat resmi, WhatsApp call center & copyright"
+            isVisible={editorState.sections.footer.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('footer')}
+            onEditContent={() => {
+              setActiveSectionId('footer');
+              setPropertiesOpen(true);
+            }}
+          >
+            <footer className="bg-[#0A2116] text-emerald-100 pt-8 pb-16 px-4 sm:px-6 border-t-4 border-[#C8A951]">
+              <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 pb-6 border-b border-emerald-900/80">
+                <div className="md:col-span-6 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-white text-[#0A2116] font-black flex items-center justify-center text-xs">
+                      JM
+                    </div>
+                    <span className="font-black text-base text-[#C8A951]">Pondok Pesantren Jauharul Maknuun</span>
                   </div>
-                  <span className="font-black text-base text-[#C8A951]">Pondok Pesantren Jauharul Maknuun</span>
+                  <p className="text-xs text-emerald-200/90 leading-relaxed max-w-md">
+                    {editorState.sections.footer.data.alamat}
+                  </p>
                 </div>
-                <p className="text-xs text-emerald-200/90 leading-relaxed max-w-md">
-                  {editorState.sections.footer.data.alamat}
-                </p>
+                <div className="md:col-span-6 flex flex-col md:items-end justify-center space-y-1 text-xs text-emerald-200">
+                  <p>WhatsApp: <span className="font-bold text-[#C8A951]">{editorState.sections.footer.data.whatsapp}</span></p>
+                  <p>Email: <span>{editorState.sections.footer.data.email}</span></p>
+                </div>
               </div>
-              <div className="md:col-span-6 flex flex-col md:items-end justify-center space-y-1 text-xs text-emerald-200">
-                <p>WhatsApp: <span className="font-bold text-[#C8A951]">{editorState.sections.footer.data.whatsapp}</span></p>
-                <p>Email: <span>{editorState.sections.footer.data.email}</span></p>
+              <div className="max-w-7xl mx-auto pt-4 text-center text-[11px] text-emerald-300/70">
+                {editorState.sections.footer.data.copyright}
               </div>
-            </div>
-            <div className="max-w-7xl mx-auto pt-4 text-center text-[11px] text-emerald-300/70">
-              {editorState.sections.footer.data.copyright}
-            </div>
-          </footer>
-        </EditorSectionWrapper>
-
-        {/* BottomNav Simulator in Mobile Viewport Mode */}
-        {viewportMode === 'mobile' && <BottomNav />}
+            </footer>
+          </EditorSectionWrapper>
+        )}
       </div>
     );
   }
 };
+
 export default WebVisualEditor;
