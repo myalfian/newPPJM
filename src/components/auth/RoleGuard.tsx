@@ -38,7 +38,8 @@ export type ModuleKey =
   | 'osis'
   | 'agenda'
   | 'kontak'
-  | 'akunRbac';
+  | 'akunRbac'
+  | 'integrationTest';
 
 export const MODULE_ACCESS: Record<ModuleKey, UserRole[]> = {
   dashboard: ['super_admin', 'pengurus_konten', 'guru_akademik'],
@@ -56,6 +57,7 @@ export const MODULE_ACCESS: Record<ModuleKey, UserRole[]> = {
   agenda: ['super_admin', 'pengurus_konten'],
   kontak: ['super_admin', 'pengurus_konten'],
   akunRbac: ['super_admin'],
+  integrationTest: ['super_admin', 'pengurus_konten', 'guru_akademik'],
 };
 
 // URL Path to Module Mapping
@@ -77,6 +79,8 @@ export const PATH_TO_MODULE: Record<string, ModuleKey> = {
   '/admin/osis': 'osis',
   '/admin/agenda': 'agenda',
   '/admin/kontak': 'kontak',
+  '/admin/integration-test': 'integrationTest',
+  '/admin/audit': 'integrationTest',
   '/admin/akun': 'akunRbac',
   '/admin/rbac': 'akunRbac',
 };

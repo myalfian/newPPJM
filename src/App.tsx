@@ -175,6 +175,7 @@ const KelolaOsis = lazy(() => import('./pages/admin/KelolaOsis').then(m => ({ de
 const KelolaKontak = lazy(() => import('./pages/admin/KelolaKontak').then(m => ({ default: m.KelolaKontak })));
 const WebVisualEditor = lazy(() => import('./pages/admin/WebVisualEditor').then(m => ({ default: m.WebVisualEditor })));
 const UserProfilePage = lazy(() => import('./pages/profile/UserProfilePage').then(m => ({ default: m.UserProfilePage })));
+const IntegrationTestPage = lazy(() => import('./pages/admin/IntegrationTestPage').then(m => ({ default: m.IntegrationTestPage })));
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
@@ -316,6 +317,8 @@ export const App: React.FC = () => {
             <Route path="program" element={<KelolaProfil />} />
             <Route path="osis" element={<KelolaOsis />} />
             <Route path="kontak" element={<KelolaKontak />} />
+            <Route path="integration-test" element={<IntegrationTestPage />} />
+            <Route path="audit" element={<Navigate to="/admin/integration-test" replace />} />
             <Route path="akun" element={<UserProfilePage />} />
             <Route path="profile" element={<Navigate to="/admin/akun" replace />} />
             <Route path="*" element={<Dashboard />} />

@@ -37,7 +37,8 @@ import {
   Trophy,
   Maximize2,
   Lock,
-  ChevronLeft
+  ChevronLeft,
+  Database
 } from 'lucide-react';
 import { UserRole } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -243,6 +244,15 @@ export const ADMIN_SIDEBAR_GROUPS: NavGroupConfig[] = [
         publicHref: '/profil',
         icon: ShieldCheck,
         badge: 'Root'
+      },
+      {
+        id: 'integrationTest',
+        moduleKey: 'integrationTest',
+        label: 'Audit & Uji Supabase',
+        href: '/admin/integration-test',
+        publicHref: '/admin/integration-test',
+        icon: Database,
+        badge: '100%'
       }
     ]
   }

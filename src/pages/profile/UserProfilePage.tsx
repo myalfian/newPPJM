@@ -170,8 +170,24 @@ export const UserProfilePage: React.FC = () => {
 
   // Safely resolve seedConfig and theme immediately at top of component
   const activeRole: UserRole = role && SEED_ACCOUNTS[role] ? role : 'visitor';
-  const seedConfig = SEED_ACCOUNTS[activeRole] || SEED_ACCOUNTS.visitor;
-  const theme = getRoleTheme(activeRole);
+  const rawSeed = SEED_ACCOUNTS[activeRole] || SEED_ACCOUNTS.visitor || ({} as any);
+  const seedConfig = useMemo(() => ({
+    role: activeRole,
+    roleLabel: rawSeed.roleLabel || 'Pengguna',
+    badgeColor: rawSeed.badgeColor || { bg: '', text: '', border: '', dot: '', accent: '' },
+    email: rawSeed.email || 'guest@ppjauharulmaknuun.sch.id',
+    fullName: rawSeed.fullName || 'Tamu / Santri PPJM',
+    department: rawSeed.department || 'Pondok Pesantren Jauharul Maknuun',
+    nisOrNip: rawSeed.nisOrNip || 'PPJM',
+    phone: rawSeed.phone || '-',
+    avatarUrl: rawSeed.avatarUrl || '/avatars/guest-avatar.svg',
+    bio: rawSeed.bio || 'Keluarga Besar Pondok Pesantren Jauharul Maknuun.',
+    permissions: Array.isArray(rawSeed.permissions) ? rawSeed.permissions : [],
+    responsibilities: Array.isArray(rawSeed.responsibilities) ? rawSeed.responsibilities : [],
+    securityLevel: rawSeed.securityLevel || 'Level 1',
+  }), [activeRole, rawSeed]);
+
+  const theme = useMemo(() => getRoleTheme(activeRole), [activeRole]);
 
   // Navigation tab state: 'seed-accounts' has been completely purged for production safety
   const [activeTab, setActiveTab] = useState<'overview' | 'buku-tamu' | 'santri-hub' | 'security'>('overview');
@@ -302,7 +318,7 @@ export const UserProfilePage: React.FC = () => {
     const checklist = [
       { label: 'Sesi Terotentikasi Supabase Auth', passed: !!user, points: 25 },
       { label: 'Identitas Email Terverifikasi', passed: !!(user?.email || seedConfig.email), points: 25 },
-      { label: 'Kontak WhatsApp / HP Terdata', passed: !!(profile?.phone && profile.phone.length >= 8), points: 25 },
+      { label: 'Kontak WhatsApp / HP Terdata', passed: !!(profile?.phone && String(profile.phone).length >= 8), points: 25 },
       { label: 'Profil & Bio Lengkap Terverifikasi', passed: !!(profile?.bio && profile?.department), points: 25 },
     ];
 
