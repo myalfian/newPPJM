@@ -9,9 +9,10 @@ import {
   X,
   Calendar,
   FileText,
-  HelpCircle
+  HelpCircle,
+  Share2
 } from 'lucide-react';
-import { YoutubeIcon, InstagramIcon, FacebookIcon, WhatsAppIcon, TikTokIcon } from './SocialIcons';
+import { YoutubeIcon, InstagramIcon, WhatsAppIcon, TikTokIcon } from './SocialIcons';
 
 export const Footer: React.FC = () => {
   const [showContactModal, setShowContactModal] = useState(false);
@@ -25,36 +26,27 @@ export const Footer: React.FC = () => {
   return (
     <>
       {/* ========================================================================= */}
-      {/* DESKTOP & MOBILE: IN-FLOW NATURAL FOOTER (FULL CONTENT VISIBILITY)        */}
-      {/* WITH DEDICATED SAFE PADDING FOR MOBILE BOTTOM NAV                         */}
+      {/* MODERN LUX MINIMALIST FOOTER (SIMPLE, CLEAN, RESPONSIVE ACROSS VIEWPORTS)  */}
       {/* ========================================================================= */}
       <footer
         id="kontak-ppdb"
-        className="relative w-full mt-auto bg-[#032110] text-emerald-100 selection:bg-[#d4af37] selection:text-black shadow-[0_-8px_30px_rgba(0,0,0,0.35)] border-t border-[#d4af37]/30 z-20"
+        className="relative w-full mt-auto bg-gradient-to-b from-[#031d0e] via-[#02180b] to-[#011107] text-emerald-100/90 border-t border-emerald-900/60 shadow-[0_-4px_24px_rgba(0,0,0,0.25)] z-20 select-none overflow-hidden"
       >
-        {/* Subtle Wave Top Divider (Ultra-slim) */}
-        <div className="w-full overflow-hidden leading-none h-2 sm:h-3">
-          <svg
-            className="w-full h-full text-[#032110] fill-current block"
-            viewBox="0 0 1440 24"
-            preserveAspectRatio="none"
-          >
-            <path d="M0,24 C360,6 1080,4 1440,20 L1440,24 L0,24 Z" />
-          </svg>
-        </div>
+        {/* Subtle accent hairline highlight */}
+        <div className="w-full h-px bg-gradient-to-r from-transparent via-[#d4af37]/40 to-transparent" />
 
-        {/* Main Footer Container with Slim Padding & Mobile Bottom Nav Safe Clearance */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2.5 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] md:pt-3 md:pb-4">
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-3.5 lg:gap-5 items-start">
-
-            {/* ================= COLUMN 1: IDENTITY & CREST (lg:col-span-4) ================= */}
-            <div className="lg:col-span-4 space-y-1.5">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-full overflow-hidden bg-white p-0.5 shadow-sm border border-[#d4af37] shrink-0 flex items-center justify-center">
+        {/* Main Footer Container */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 sm:pt-6 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] md:pb-5">
+          {/* Main 4-Column Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 items-start">
+            
+            {/* 1. Brand & Identity (lg:col-span-5) */}
+            <div className="lg:col-span-5 space-y-2.5">
+              <Link to="/" className="inline-flex items-center gap-3 group">
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-white p-0.5 shadow-md border border-[#d4af37]/80 group-hover:scale-105 transition-transform shrink-0 flex items-center justify-center">
                   <img
                     src="/logo.jpg"
-                    alt="PPJM Crest"
+                    alt="PPJM Logo"
                     className="w-full h-full object-cover rounded-full"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = '/logo-ppjm.svg';
@@ -62,79 +54,32 @@ export const Footer: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <h3 className="font-extrabold text-xs text-[#e5a93b] leading-none tracking-wider uppercase">
+                  <h3 className="font-extrabold text-[10.5px] text-[#e5a93b] tracking-wider uppercase leading-none">
                     PONDOK PESANTREN
                   </h3>
-                  <h4 className="font-black text-sm sm:text-base text-white tracking-tight uppercase leading-snug">
-                    JAUHARUL MAKNUUN LASEM
+                  <h4 className="font-black text-sm sm:text-base text-white tracking-tight uppercase leading-snug group-hover:text-emerald-200 transition-colors">
+                    JAUHARUL MAKNUUN
                   </h4>
+                  <span className="text-[10px] text-emerald-300/70 block leading-none font-medium">
+                    Lasem, Sidayu, Gresik • Akreditasi A
+                  </span>
                 </div>
-              </div>
+              </Link>
 
-              <p className="text-xs sm:text-sm text-emerald-100/85 leading-normal pr-2">
-                Lembaga pendidikan Islam terpadu yang memadukan keilmuan Kitab Kuning Salafiyah dengan kurikulum terpadu berakreditasi &quot;A&quot; BAN-PDM.
+              <p className="text-xs text-emerald-200/75 leading-relaxed max-w-md">
+                Lembaga pendidikan Islam terpadu yang memadukan kedalaman keilmuan Kitab Kuning Turats Salafiyah dengan kurikulum nasional berbasis sains &amp; teknologi.
               </p>
-            </div>
 
-            {/* ================= COLUMN 2: TAUTAN CEPAT (lg:col-span-3) ================= */}
-            <div className="lg:col-span-3 space-y-1.5">
-              <h4 className="text-xs sm:text-sm font-bold text-[#e5a93b] uppercase tracking-wider">
-                TAUTAN CEPAT (QUICK LINKS)
-              </h4>
-              <ul className="space-y-1.5 text-xs sm:text-sm text-emerald-100/90 font-medium">
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => openModal('privacy')}
-                    className="hover:text-white transition-colors flex items-center gap-1.5 text-left cursor-pointer group"
-                  >
-                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-xs">→</span>
-                    <span>Kebijakan Privasi (Privacy Policy)</span>
-                  </button>
-                </li>
-                <li>
-                  <Link
-                    to="/"
-                    className="hover:text-white transition-colors flex items-center gap-1.5 group"
-                  >
-                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-xs">→</span>
-                    <span>Beranda Utama</span>
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/spmb"
-                    className="hover:text-white transition-colors flex items-center gap-1.5 text-emerald-200 font-bold group"
-                  >
-                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-xs">→</span>
-                    <span>SPMB (Penerimaan Murid Baru)</span>
-                  </Link>
-                </li>
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => openModal('faq')}
-                    className="hover:text-white transition-colors flex items-center gap-1.5 text-left cursor-pointer group"
-                  >
-                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-xs">→</span>
-                    <span>Tanya Jawab (FAQ SPMB)</span>
-                  </button>
-                </li>
-              </ul>
-            </div>
-
-            {/* ================= COLUMN 3: SOCIAL ICONS PILL (lg:col-span-2) ================= */}
-            <div className="lg:col-span-2 flex flex-col justify-start lg:items-center space-y-2 pt-0.5">
-              <h4 className="text-xs sm:text-sm font-bold text-[#e5a93b] uppercase tracking-wider text-left lg:text-center w-full">
-                MEDIA SOSIAL
-              </h4>
-              {/* Row 1: WhatsApp, Instagram, TikTok */}
-              <div className="flex items-center gap-2">
+              {/* Social Media Pills in Brand Column for Cleaner Flow */}
+              <div className="pt-1 flex items-center gap-1.5 flex-wrap">
+                <span className="text-[11px] font-bold text-emerald-300/80 mr-1 hidden xs:inline">
+                  Ikuti Kami:
+                </span>
                 <a
                   href="https://wa.me/6285646199273"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
+                  className="w-7 h-7 rounded-lg bg-emerald-950/80 hover:bg-emerald-800 text-[#e5a93b] hover:text-white border border-emerald-800/60 flex items-center justify-center transition-all shadow-xs"
                   aria-label="WhatsApp Admin PPJM"
                   title="WhatsApp Admin"
                 >
@@ -144,7 +89,7 @@ export const Footer: React.FC = () => {
                   href="https://www.instagram.com/ppjauharulmaknuun?mdxt=MWRieHkydGt5ZDNrNw=="
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
+                  className="w-7 h-7 rounded-lg bg-emerald-950/80 hover:bg-emerald-800 text-[#e5a93b] hover:text-white border border-emerald-800/60 flex items-center justify-center transition-all shadow-xs"
                   aria-label="Instagram PPJM"
                   title="Instagram Resmi"
                 >
@@ -154,80 +99,129 @@ export const Footer: React.FC = () => {
                   href="https://www.tiktok.com/@ppjauharulmaknuun?_r=1&_t=ZS-9ArxcQ3dNKf"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
+                  className="w-7 h-7 rounded-lg bg-emerald-950/80 hover:bg-emerald-800 text-[#e5a93b] hover:text-white border border-emerald-800/60 flex items-center justify-center transition-all shadow-xs"
                   aria-label="TikTok Resmi PPJM"
                   title="TikTok Resmi"
                 >
                   <TikTokIcon className="w-3.5 h-3.5" />
                 </a>
-              </div>
-
-              {/* Row 2: YouTube, WhatsApp Channel, All Channels Trigger */}
-              <div className="flex items-center gap-2">
                 <a
                   href="https://youtube.com/@ppjauharulmaknuunlasem?si=OHYeRczBA-kLl3Kl"
                   target="_blank"
                   rel="noreferrer"
-                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
+                  className="w-7 h-7 rounded-lg bg-emerald-950/80 hover:bg-emerald-800 text-[#e5a93b] hover:text-white border border-emerald-800/60 flex items-center justify-center transition-all shadow-xs"
                   aria-label="YouTube Channel PPJM"
                   title="YouTube Channel"
                 >
                   <YoutubeIcon className="w-3.5 h-3.5" />
                 </a>
-                <a
-                  href="https://whatsapp.com/channel/0029Vb6FZq7Jpe8cR5vR0T0D"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-8 h-8 rounded-lg bg-[#093a1c] hover:bg-[#0e5429] text-[#e5a93b] hover:text-white border border-[#165a30]/80 flex items-center justify-center transition-all shadow-xs"
-                  aria-label="Saluran WhatsApp Resmi"
-                  title="Saluran WhatsApp Resmi"
-                >
-                  <span className="text-xs font-bold text-[#e5a93b]">WA</span>
-                </a>
                 <button
                   type="button"
                   onClick={() => window.dispatchEvent(new CustomEvent('open-medsos-modal'))}
-                  className="px-2 h-8 rounded-lg bg-emerald-800/80 hover:bg-emerald-700 text-[#e5a93b] hover:text-white border border-[#d4af37]/40 flex items-center justify-center text-[11px] font-bold transition-all shadow-xs cursor-pointer gap-1"
-                  title="Lihat 7 Kanal Komunikasi Resmi"
+                  className="h-7 px-2.5 rounded-lg bg-[#0e4823]/70 hover:bg-[#125c2d] text-[#e5a93b] hover:text-white border border-[#d4af37]/30 flex items-center justify-center text-[10.5px] font-bold transition-all shadow-xs cursor-pointer gap-1"
+                  title="Lihat 7 Kanal Medsos Resmi"
                 >
-                  <span>Medsos</span>
-                  <ExternalLink className="w-3 h-3" />
+                  <Share2 className="w-3 h-3" />
+                  <span>Semua Kanal</span>
                 </button>
               </div>
             </div>
 
-            {/* ================= COLUMN 4: SEKRETARIAT & ASRAMA (lg:col-span-3) ================= */}
-            <div className="lg:col-span-3 space-y-1.5">
-              <h4 className="text-xs sm:text-sm font-bold text-[#e5a93b] uppercase tracking-wider">
-                SEKRETARIAT & ASRAMA
+            {/* 2. Tautan Cepat (lg:col-span-3) */}
+            <div className="lg:col-span-3 space-y-2">
+              <h4 className="text-xs font-bold text-[#e5a93b] uppercase tracking-wider flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#e5a93b]" />
+                <span>Navigasi &amp; Tautan Cepat</span>
               </h4>
-              <div className="space-y-1.5 text-xs sm:text-sm text-emerald-100/90 font-medium">
+              <ul className="space-y-1.5 text-xs text-emerald-100/85 font-medium">
+                <li>
+                  <Link
+                    to="/"
+                    className="hover:text-white transition-colors flex items-center gap-1.5 group"
+                  >
+                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-[11px]">›</span>
+                    <span>Beranda Utama</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/spmb"
+                    className="hover:text-white transition-colors flex items-center gap-1.5 text-emerald-200 font-bold group"
+                  >
+                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-[11px]">›</span>
+                    <span>Pendaftaran Santri (SPMB)</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/agenda"
+                    className="hover:text-white transition-colors flex items-center gap-1.5 group"
+                  >
+                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-[11px]">›</span>
+                    <span>Kalender Akademik &amp; Agenda</span>
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => openModal('faq')}
+                    className="hover:text-white transition-colors flex items-center gap-1.5 text-left cursor-pointer group"
+                  >
+                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-[11px]">›</span>
+                    <span>Tanya Jawab (FAQ SPMB)</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => openModal('privacy')}
+                    className="hover:text-white transition-colors flex items-center gap-1.5 text-left cursor-pointer group"
+                  >
+                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-[11px]">›</span>
+                    <span>Kebijakan Privasi</span>
+                  </button>
+                </li>
+              </ul>
+            </div>
+
+            {/* 3. Kontak & Sekretariat (lg:col-span-4) */}
+            <div className="lg:col-span-4 space-y-2">
+              <h4 className="text-xs font-bold text-[#e5a93b] uppercase tracking-wider flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#e5a93b]" />
+                <span>Sekretariat &amp; Layanan</span>
+              </h4>
+              <div className="space-y-2 text-xs text-emerald-100/85">
                 {/* Location */}
-                <div className="flex items-start gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-[#e5a93b] shrink-0 mt-0.5" />
-                  <p className="leading-tight truncate">
-                    Jl. Pesantren No. 01, Lasem, Sidayu, Gresik 61153
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-4 h-4 text-[#e5a93b] shrink-0 mt-0.5" />
+                  <p className="leading-snug">
+                    Jl. Pesantren No. 01, Desa Lasem, Kec. Sidayu, Kab. Gresik, Jawa Timur 61153
                   </p>
                 </div>
 
-                {/* WhatsApp Admin Hotline */}
-                <div className="flex items-center gap-1.5">
-                  <Phone className="w-3.5 h-3.5 text-[#e5a93b] shrink-0" />
+                {/* WhatsApp Hotline */}
+                <div className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-[#e5a93b] shrink-0" />
                   <a
                     href="https://wa.me/6285646199273"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-white transition-colors flex items-center gap-1"
+                    className="hover:text-white transition-colors flex items-center gap-1.5 font-semibold"
                   >
                     <span>+62 856-4619-9273</span>
-                    <span className="text-[10px] bg-emerald-700/80 text-emerald-200 px-1.5 py-0.2 rounded font-bold">Chat Admin</span>
+                    <span className="text-[10px] bg-emerald-800/90 text-emerald-200 px-1.5 py-0.5 rounded-md font-bold">
+                      Admin Online
+                    </span>
                   </a>
                 </div>
 
                 {/* Email */}
-                <div className="flex items-center gap-1.5">
-                  <Mail className="w-3.5 h-3.5 text-[#e5a93b] shrink-0" />
-                  <a href="mailto:sekretariat@ppjauharulmaknuun.sch.id" className="hover:text-white transition-colors truncate">
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-[#e5a93b] shrink-0" />
+                  <a
+                    href="mailto:sekretariat@ppjauharulmaknuun.sch.id"
+                    className="hover:text-white transition-colors truncate font-medium"
+                  >
                     sekretariat@ppjauharulmaknuun.sch.id
                   </a>
                 </div>
@@ -236,24 +230,22 @@ export const Footer: React.FC = () => {
 
           </div>
 
-          {/* ================= BOTTOM SUB-FOOTER BAR (Divider & Copyright) ================= */}
-          <div className="mt-3 pt-2 border-t border-emerald-900/60 flex flex-col md:flex-row items-center justify-between text-xs sm:text-sm text-emerald-200/80 gap-2">
-            {/* Copyright with Shield */}
-            <div className="flex items-center gap-1.5 text-center md:text-left">
-              <ShieldCheck className="w-4 h-4 text-[#e5a93b] shrink-0" />
+          {/* ================= BOTTOM SUB-FOOTER BAR ================= */}
+          <div className="mt-5 pt-3 border-t border-emerald-900/50 flex flex-col sm:flex-row items-center justify-between text-[11px] text-emerald-300/70 gap-2">
+            <div className="flex items-center gap-1.5 text-center sm:text-left">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#e5a93b] shrink-0" />
               <span>
-                © 2026 Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik. All rights reserved.
+                © {new Date().getFullYear()} PP. Jauharul Maknuun Lasem Sidayu Gresik. Hak Cipta Dilindungi.
               </span>
             </div>
 
-            {/* Inline Sub-links matching screenshot */}
-            <div className="flex items-center gap-2.5 text-center md:text-right flex-wrap justify-center">
+            <div className="flex items-center gap-3 text-emerald-300/80 flex-wrap justify-center font-medium">
               <button
                 type="button"
                 onClick={() => openModal('contact')}
                 className="hover:text-white transition-colors cursor-pointer"
               >
-                Hubungi Kami (Contact Us)
+                Hubungi Kami
               </button>
               <span className="text-emerald-800">•</span>
               <button
@@ -261,7 +253,7 @@ export const Footer: React.FC = () => {
                 onClick={() => openModal('calendar')}
                 className="hover:text-white transition-colors cursor-pointer"
               >
-                Kalender Akademik (Academic Calendar)
+                Kalender Akademik
               </button>
               <span className="text-emerald-800">•</span>
               <button
@@ -269,7 +261,7 @@ export const Footer: React.FC = () => {
                 onClick={() => openModal('privacy')}
                 className="hover:text-white transition-colors cursor-pointer"
               >
-                Kebijakan Privasi (Privacy Policy)
+                Privasi
               </button>
             </div>
           </div>
@@ -284,13 +276,13 @@ export const Footer: React.FC = () => {
           onClick={() => setShowContactModal(false)}
         >
           <div
-            className="w-full max-w-lg bg-white rounded-3xl p-5 shadow-2xl border border-gray-100 space-y-3.5 text-gray-900"
+            className="w-full max-w-lg bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-2xl border border-gray-100 space-y-3.5 text-gray-900"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header Modal */}
             <div className="flex items-center justify-between border-b border-gray-100 pb-2.5">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-2xl bg-emerald-50 text-[#093a1c] flex items-center justify-center font-bold">
+                <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#093a1c] flex items-center justify-center font-bold">
                   {modalType === 'contact' && <Phone className="w-4 h-4 text-[#1a6b3c]" />}
                   {modalType === 'calendar' && <Calendar className="w-4 h-4 text-[#1a6b3c]" />}
                   {modalType === 'privacy' && <FileText className="w-4 h-4 text-[#1a6b3c]" />}
@@ -301,9 +293,9 @@ export const Footer: React.FC = () => {
                     {modalType === 'contact' && 'Layanan Kontak & Sekretariat PPJM'}
                     {modalType === 'calendar' && 'Kalender Akademik & Agenda Pesantren'}
                     {modalType === 'privacy' && 'Kebijakan Privasi (Privacy Policy)'}
-                    {modalType === 'faq' && 'Tanya Jawab (FAQ Seputar PPDB)'}
+                    {modalType === 'faq' && 'Tanya Jawab (FAQ Seputar PPDB/SPMB)'}
                   </h3>
-                  <p className="text-[10px] text-gray-500 font-medium">
+                  <p className="text-[10.5px] text-gray-500 font-medium">
                     Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik
                   </p>
                 </div>
@@ -312,6 +304,7 @@ export const Footer: React.FC = () => {
                 type="button"
                 onClick={() => setShowContactModal(false)}
                 className="p-1 rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-700 cursor-pointer"
+                aria-label="Tutup modal"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -320,7 +313,7 @@ export const Footer: React.FC = () => {
             {/* Modal Body: Contact */}
             {modalType === 'contact' && (
               <div className="space-y-3 text-xs">
-                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-1">
+                <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
                   <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block">
                     Alamat Lengkap Sekretariat:
                   </span>
@@ -339,7 +332,7 @@ export const Footer: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  <div className="p-3 rounded-2xl bg-emerald-50/60 border border-emerald-100 space-y-0.5">
+                  <div className="p-3 rounded-xl bg-emerald-50/60 border border-emerald-100 space-y-0.5">
                     <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-wider block">
                       WhatsApp Panitia SPMB:
                     </span>
@@ -351,10 +344,10 @@ export const Footer: React.FC = () => {
                     >
                       +62 856-4619-9273
                     </a>
-                    <span className="text-[9px] text-emerald-700">Layanan Aktif 07.30 - 20.00 WIB</span>
+                    <span className="text-[9.5px] text-emerald-700">Layanan Aktif 07.30 - 20.00 WIB</span>
                   </div>
 
-                  <div className="p-3 rounded-2xl bg-amber-50/60 border border-amber-100 space-y-0.5">
+                  <div className="p-3 rounded-xl bg-amber-50/60 border border-amber-100 space-y-0.5">
                     <span className="text-[10px] font-bold text-amber-800 uppercase tracking-wider block">
                       Email Resmi:
                     </span>
@@ -364,7 +357,7 @@ export const Footer: React.FC = () => {
                     >
                       sekretariat@ppjauharulmaknuun.sch.id
                     </a>
-                    <span className="text-[9px] text-amber-700">Administrasi & Surat</span>
+                    <span className="text-[9.5px] text-amber-700">Administrasi &amp; Surat</span>
                   </div>
                 </div>
               </div>
@@ -373,13 +366,13 @@ export const Footer: React.FC = () => {
             {/* Modal Body: Academic Calendar */}
             {modalType === 'calendar' && (
               <div className="space-y-2.5 text-xs text-gray-700 max-h-[60vh] overflow-y-auto pr-1">
-                <div className="p-2.5 rounded-2xl bg-emerald-50 border border-emerald-200">
-                  <h5 className="font-bold text-emerald-900 text-xs">Tahun Ajaran 2025/2026:</h5>
+                <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200">
+                  <h5 className="font-bold text-emerald-900 text-xs">Agenda &amp; Tahun Pelajaran Berjalan:</h5>
                   <ul className="mt-1.5 space-y-1 list-disc list-inside text-[11px] text-emerald-800">
-                    <li>Pendaftaran Santri Baru (Gelombang I): 01 Januari - 31 Maret 2025</li>
-                    <li>Tes Seleksi Baca Kitab & Al-Qur&apos;an: 12 April 2025</li>
-                    <li>Haflah Khotmil Qur&apos;an 30 Juz: 20 Juni 2025</li>
-                    <li>Masuk Asrama & Masa Orientasi Ta&apos;aruf: 15 Juli 2025</li>
+                    <li>Pendaftaran Santri Baru (Gelombang I): 01 Januari - 31 Maret</li>
+                    <li>Tes Seleksi Baca Kitab &amp; Al-Qur&apos;an: Pertengahan April</li>
+                    <li>Haflah Khotmil Qur&apos;an 30 Juz &amp; Imtihan: Bulan Juni</li>
+                    <li>Masa Ta&apos;aruf &amp; Masuk Asrama Santri: Bulan Juli</li>
                   </ul>
                 </div>
               </div>
@@ -420,7 +413,7 @@ export const Footer: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowContactModal(false)}
-                className="px-4 py-2 rounded-xl bg-[#093a1c] hover:bg-[#072d15] text-white font-bold text-xs transition-colors cursor-pointer"
+                className="px-4 py-1.5 rounded-xl bg-[#093a1c] hover:bg-[#072d15] text-white font-bold text-xs transition-colors cursor-pointer"
               >
                 Tutup
               </button>
