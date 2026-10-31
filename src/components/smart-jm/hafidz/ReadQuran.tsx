@@ -54,15 +54,17 @@ export const ReadQuran: React.FC = () => {
   });
 
   const ayahRefs = useRef<Record<number, HTMLDivElement | null>>({});
+  const audioStateRef = useRef<any>(null);
 
-  // Audio Hook integration
+  // Audio Hook integration with ref to avoid temporal dead zone or stale closures
   const handleAutoNext = useCallback(() => {
-    if (!audioState.currentAyahNumber || ayahs.length === 0) return;
-    const nextAyahNum = audioState.currentAyahNumber + 1;
+    const state = audioStateRef.current;
+    if (!state || !state.currentAyahNumber || ayahs.length === 0) return;
+    const nextAyahNum = state.currentAyahNumber + 1;
     const nextAyah = ayahs.find((a) => a.numberInSurah === nextAyahNum);
 
     if (nextAyah) {
-      audioState.playAyah(
+      state.playAyah(
         selectedSurah.number,
         nextAyah.numberInSurah,
         nextAyah.audioUrl,
@@ -80,12 +82,13 @@ export const ReadQuran: React.FC = () => {
   }, [ayahs, selectedSurah]);
 
   const handleAutoPrev = useCallback(() => {
-    if (!audioState.currentAyahNumber || ayahs.length === 0) return;
-    const prevAyahNum = audioState.currentAyahNumber - 1;
+    const state = audioStateRef.current;
+    if (!state || !state.currentAyahNumber || ayahs.length === 0) return;
+    const prevAyahNum = state.currentAyahNumber - 1;
     const prevAyah = ayahs.find((a) => a.numberInSurah === prevAyahNum);
 
     if (prevAyah) {
-      audioState.playAyah(
+      state.playAyah(
         selectedSurah.number,
         prevAyah.numberInSurah,
         prevAyah.audioUrl,
@@ -100,6 +103,7 @@ export const ReadQuran: React.FC = () => {
     onAutoNext: handleAutoNext,
     onAutoPrev: handleAutoPrev,
   });
+  audioStateRef.current = audioState;
 
   // Fetch Ayahs when Surah changes
   useEffect(() => {

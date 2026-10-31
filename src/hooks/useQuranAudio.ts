@@ -27,6 +27,7 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const trackInfoRef = useRef<TrackInfo | null>(null);
   const activeUrlIndexRef = useRef<number>(0);
+  const isFailingOverRef = useRef<boolean>(false);
 
   // Auto failover runner: tries playing candidate at `index`
   const tryPlayCandidate = useCallback((index: number) => {
@@ -51,11 +52,17 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
     }
 
     audio.src = targetUrl;
+    try {
+      audio.load();
+    } catch {
+      // Ignored
+    }
 
     // Direct play invocation returns Promise
     audio
       .play()
       .then(() => {
+        isFailingOverRef.current = false;
         setStatus('PLAYING');
         setErrorMessage(null);
       })
@@ -65,14 +72,27 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
           return;
         }
 
+        if (err.name === 'NotAllowedError') {
+          setStatus('PAUSED');
+          setErrorMessage('Autoplay dicegah peramban. Klik tombol Play untuk memulai.');
+          return;
+        }
+
         console.warn(`Situs CDN #${index + 1} (${targetUrl}) gagal dimuat:`, err.message);
 
-        // Try next CDN alternative if available
-        if (index + 1 < track.urls.length) {
-          tryPlayCandidate(index + 1);
-        } else {
-          setStatus('ERROR');
-          setErrorMessage('Audio terhambat koneksi. Klik Coba Lagi untuk memutar.');
+        // Failover if not already in progress
+        if (!isFailingOverRef.current) {
+          isFailingOverRef.current = true;
+          if (index + 1 < track.urls.length) {
+            setTimeout(() => {
+              isFailingOverRef.current = false;
+              tryPlayCandidate(index + 1);
+            }, 60);
+          } else {
+            isFailingOverRef.current = false;
+            setStatus('ERROR');
+            setErrorMessage('Audio terhambat koneksi. Klik Coba Lagi untuk memutar.');
+          }
         }
       });
   }, []);
@@ -108,9 +128,15 @@ export function useQuranAudio({ onAutoNext, onAutoPrev }: UseQuranAudioProps = {
 
     const handleError = () => {
       const track = trackInfoRef.current;
-      if (track && activeUrlIndexRef.current + 1 < track.urls.length) {
-        console.warn('Audio onerror dipicu, mencoba CDN alternatif...');
-        tryPlayCandidate(activeUrlIndexRef.current + 1);
+      if (!track || isFailingOverRef.current) return;
+      const nextIndex = activeUrlIndexRef.current + 1;
+      if (nextIndex < track.urls.length) {
+        isFailingOverRef.current = true;
+        console.warn('Audio onerror dipicu, mencoba CDN alternatif #' + (nextIndex + 1));
+        setTimeout(() => {
+          isFailingOverRef.current = false;
+          tryPlayCandidate(nextIndex);
+        }, 60);
         return;
       }
 

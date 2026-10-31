@@ -565,6 +565,12 @@ export const KelolaHafidz: React.FC = () => {
       audioPlayerRef.current.src = url;
     }
 
+    try {
+      audioPlayerRef.current.load();
+    } catch {
+      // Ignored
+    }
+
     audioPlayerRef.current.playbackRate = playbackSpeed;
     audioPlayerRef.current.loop = isLoopingAyah;
 

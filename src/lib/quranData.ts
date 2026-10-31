@@ -206,10 +206,10 @@ export const SAMPLE_AL_FATIHAH: AyahItem[] = [
     textArabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
     textLatin: 'Bismillāhir-raḥmānir-raḥīm(i)',
     translationIndo: 'Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang.',
-    audioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/1.mp3',
-    fallbackAudioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001001.mp3',
-    tertiaryAudioUrl: 'https://cdn.islamic.network/quran/audio/64/ar.alafasy/1.mp3',
-    quaternaryAudioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001001.mp3'
+    audioUrl: 'https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/001001.mp3',
+    fallbackAudioUrl: 'https://everyayah.com/data/Alafasy_128kbps/001001.mp3',
+    tertiaryAudioUrl: 'https://cdn.islamic.network/quran/audio/128/ar.alafasy/1.mp3',
+    quaternaryAudioUrl: 'https://cdn.islamic.network/quran/audio/64/ar.alafasy/1.mp3'
   },
   {
     numberInSurah: 2,
@@ -335,24 +335,24 @@ export async function fetchSurahAyahs(surahNumber: number): Promise<AyahItem[]> 
         const aNum = String(item.nomorAyat).padStart(3, '0');
         const globalNum = getGlobalAyahNumber(surahNumber, item.nomorAyat);
 
-        // 1. Primary: Islamic Network 128kbps (Singapore S3, bebas blokir di Indonesia)
-        const islamicNetAudio = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalNum}.mp3`;
-        // 2. Secondary: EQuran ID Indonesian cloud
+        // 1. Primary: EQuran ID Indonesian cloud (resilient, low latency in Indonesia)
         const eqAudio = item.audio?.['05'] || `https://cdn.equran.id/audio-partial/Misyari-Rasyid-Al-Afasi/${sNum}${aNum}.mp3`;
-        // 3. Tertiary: Islamic Network 64kbps (ringan & cepat)
-        const islamicNetAudio64 = `https://cdn.islamic.network/quran/audio/64/ar.alafasy/${globalNum}.mp3`;
-        // 4. Quaternary: EveryAyah global CDN
+        // 2. Secondary: EveryAyah global CDN (CORS Access-Control-Allow-Origin: *)
         const everyAyahAudio = `https://everyayah.com/data/Alafasy_128kbps/${sNum}${aNum}.mp3`;
+        // 3. Tertiary: Islamic Network 128kbps (Singapore S3)
+        const islamicNetAudio = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${globalNum}.mp3`;
+        // 4. Quaternary: Islamic Network 64kbps (ringan & cepat)
+        const islamicNetAudio64 = `https://cdn.islamic.network/quran/audio/64/ar.alafasy/${globalNum}.mp3`;
 
         return {
           numberInSurah: item.nomorAyat,
           textArabic: item.teksArab,
           textLatin: item.teksLatin,
           translationIndo: item.teksIndonesia,
-          audioUrl: islamicNetAudio,
-          fallbackAudioUrl: eqAudio,
-          tertiaryAudioUrl: islamicNetAudio64,
-          quaternaryAudioUrl: everyAyahAudio
+          audioUrl: eqAudio,
+          fallbackAudioUrl: everyAyahAudio,
+          tertiaryAudioUrl: islamicNetAudio,
+          quaternaryAudioUrl: islamicNetAudio64
         };
       });
 

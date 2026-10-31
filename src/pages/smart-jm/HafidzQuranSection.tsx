@@ -103,6 +103,11 @@ export const HafidzQuranSection: React.FC = () => {
       }
 
       audioRef.current.src = candidateUrls[idx];
+      try {
+        audioRef.current.load();
+      } catch {
+        // Ignored
+      }
       audioRef.current
         .play()
         .then(() => {
@@ -180,7 +185,6 @@ export const HafidzQuranSection: React.FC = () => {
       <audio
         ref={audioRef}
         onEnded={handleAudioEnded}
-        onError={() => setIsPlayingAudio(false)}
       />
 
       {/* ========================================================= */}
