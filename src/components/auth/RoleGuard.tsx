@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { Navigate, useLocation, Link } from 'react-router-dom';
+import { Navigate, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { UserRole } from '../../lib/supabase';
 import {
@@ -13,64 +13,199 @@ import {
   ExternalLink,
   Crown,
   KeyRound,
-  UserCheck
+  UserCheck,
+  FileText,
+  GraduationCap,
+  Users
 } from 'lucide-react';
+
+// ==============================================================================
+// 1. SPEC PPJM: MODULE ACCESS MATRIX
+// ==============================================================================
+
+export type ModuleKey =
+  | 'dashboard'
+  | 'webVisualEditor'
+  | 'slider'
+  | 'profil'
+  | 'stem'
+  | 'mandarin'
+  | 'hafidz'
+  | 'berita'
+  | 'galeri'
+  | 'prestasi'
+  | 'ekskul'
+  | 'osis'
+  | 'agenda'
+  | 'kontak'
+  | 'akunRbac';
+
+export const MODULE_ACCESS: Record<ModuleKey, UserRole[]> = {
+  dashboard: ['super_admin', 'pengurus_konten', 'guru_akademik'],
+  webVisualEditor: ['super_admin', 'pengurus_konten'],
+  slider: ['super_admin', 'pengurus_konten'],
+  profil: ['super_admin', 'pengurus_konten'],
+  stem: ['super_admin', 'guru_akademik'],
+  mandarin: ['super_admin', 'guru_akademik'],
+  hafidz: ['super_admin', 'guru_akademik'],
+  berita: ['super_admin', 'pengurus_konten'],
+  galeri: ['super_admin', 'pengurus_konten'],
+  prestasi: ['super_admin', 'pengurus_konten', 'guru_akademik'],
+  ekskul: ['super_admin', 'pengurus_konten'],
+  osis: ['super_admin', 'pengurus_konten'],
+  agenda: ['super_admin', 'pengurus_konten'],
+  kontak: ['super_admin', 'pengurus_konten'],
+  akunRbac: ['super_admin'],
+};
+
+// URL Path to Module Mapping
+export const PATH_TO_MODULE: Record<string, ModuleKey> = {
+  '/admin': 'dashboard',
+  '/admin/dashboard': 'dashboard',
+  '/admin/editor': 'webVisualEditor',
+  '/editor': 'webVisualEditor',
+  '/admin/slider': 'slider',
+  '/admin/profil': 'profil',
+  '/admin/program': 'profil',
+  '/admin/stem': 'stem',
+  '/admin/mandarin': 'mandarin',
+  '/admin/hafidz': 'hafidz',
+  '/admin/berita': 'berita',
+  '/admin/galeri': 'galeri',
+  '/admin/prestasi': 'prestasi',
+  '/admin/ekskul': 'ekskul',
+  '/admin/osis': 'osis',
+  '/admin/agenda': 'agenda',
+  '/admin/kontak': 'kontak',
+  '/admin/akun': 'akunRbac',
+  '/admin/rbac': 'akunRbac',
+};
+
+// ==============================================================================
+// 2. ROLE BADGE COMPONENT (WARNA PER ROLE RESMI PPJM)
+// ==============================================================================
+
+export interface RoleBadgeProps {
+  role: UserRole;
+  className?: string;
+  showIcon?: boolean;
+}
+
+export const RoleBadge: React.FC<RoleBadgeProps> = ({
+  role,
+  className = '',
+  showIcon = true
+}) => {
+  switch (role) {
+    case 'super_admin':
+      return (
+        <span
+          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs ${className}`}
+        >
+          {showIcon && <Crown className="w-3 h-3 text-amber-700" />}
+          <span>Super Admin</span>
+        </span>
+      );
+    case 'pengurus_konten':
+      return (
+        <span
+          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-900 border border-emerald-300 shadow-2xs ${className}`}
+        >
+          {showIcon && <FileText className="w-3 h-3 text-emerald-700" />}
+          <span>Pengurus Konten</span>
+        </span>
+      );
+    case 'guru_akademik':
+      return (
+        <span
+          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-sky-100 text-sky-900 border border-sky-300 shadow-2xs ${className}`}
+        >
+          {showIcon && <GraduationCap className="w-3 h-3 text-sky-700" />}
+          <span>Guru Akademik</span>
+        </span>
+      );
+    case 'user':
+    default:
+      return (
+        <span
+          className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-100 text-purple-900 border border-purple-300 shadow-2xs ${className}`}
+        >
+          {showIcon && <Users className="w-3 h-3 text-purple-700" />}
+          <span>Santri / Member</span>
+        </span>
+      );
+  }
+};
+
+// ==============================================================================
+// 3. ROLEGUARD CORE COMPONENT
+// ==============================================================================
 
 export interface RoleGuardProps {
   children: React.ReactNode;
-  /** Daftar peran yang diizinkan mengakses modul ini */
+  /** Daftar peran spesifik yang diizinkan (opsional jika inferensi via path) */
   allowedRoles?: UserRole[];
-  /** Nama modul untuk pesan error yang lebih informatif (opsional) */
-  moduleName?: string;
-  /** Izinkan santri/user melihat portal tertentu */
+  /** Nama modul spesifik sesuai MODULE_ACCESS (opsional) */
+  module?: ModuleKey;
+  /** Izinkan santri/user mengakses halaman ini (opsional) */
   allowSantri?: boolean;
 }
-
-// Pemetaan Hak Akses Modul Admin Default berdasarkan Jalur URL
-const MODULE_ROLE_POLICIES: Record<string, UserRole[]> = {
-  // Modul Akademik & STEM
-  '/admin/stem': ['super_admin', 'guru_akademik'],
-  '/admin/mandarin': ['super_admin', 'guru_akademik'],
-  '/admin/hafidz': ['super_admin', 'guru_akademik'],
-  
-  // Modul Media & Publikasi
-  '/admin/berita': ['super_admin', 'pengurus_konten'],
-  '/admin/galeri': ['super_admin', 'pengurus_konten'],
-  '/admin/slider': ['super_admin', 'pengurus_konten'],
-  '/admin/kontak': ['super_admin', 'pengurus_konten'],
-  '/admin/osis': ['super_admin', 'pengurus_konten'],
-  '/admin/ekskul': ['super_admin', 'pengurus_konten'],
-
-  // Modul Bersama Pengurus
-  '/admin': ['super_admin', 'pengurus_konten', 'guru_akademik'],
-  '/admin/dashboard': ['super_admin', 'pengurus_konten', 'guru_akademik'],
-  '/admin/profil': ['super_admin', 'pengurus_konten', 'guru_akademik'],
-  '/admin/agenda': ['super_admin', 'pengurus_konten', 'guru_akademik'],
-  '/admin/prestasi': ['super_admin', 'pengurus_konten', 'guru_akademik'],
-  '/admin/editor': ['super_admin', 'pengurus_konten', 'guru_akademik'],
-  '/editor': ['super_admin', 'pengurus_konten', 'guru_akademik'],
-};
 
 export const RoleGuard: React.FC<RoleGuardProps> = ({
   children,
   allowedRoles,
-  moduleName,
+  module,
   allowSantri = false,
 }) => {
-  const { isAuthenticated, role, profile, loading, hasRole, signOut } = useAuth();
+  const { isAuthenticated, role, profile, loading, signOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
-  // Evaluasi aturan akses dinamis berdasarkan path URL jika allowedRoles tidak di-passing secara eksplisit
+  // --------------------------------------------------------------------------
+  // GOTRUE NULL-TOKEN ERROR INVARIANT AUTO-RECOVERY
+  // --------------------------------------------------------------------------
+  useEffect(() => {
+    const handleGoTrueError = () => {
+      try {
+        // Cek apakah ada session/token yang corrupt di localStorage
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && (key.includes('sb-') || key.includes('supabase.auth.token'))) {
+            const rawVal = localStorage.getItem(key);
+            if (rawVal && (rawVal.includes('"recovery_token":null') || rawVal.includes('"confirmation_token":null'))) {
+              console.warn('[GoTrue Security Handshake] Mendeteksi token NULL usang. Menjalankan auto-clean dan auto-signOut...');
+              localStorage.removeItem(key);
+              signOut();
+              navigate('/admin/login', { replace: true });
+              return;
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('GoTrue Token Check warning:', err);
+      }
+    };
+
+    handleGoTrueError();
+  }, [signOut, navigate]);
+
+  // Evaluasi Hak Akses Modul Berdasarkan Spesifikasi PPJM
   const effectiveAllowedRoles = useMemo<UserRole[]>(() => {
     if (allowedRoles && allowedRoles.length > 0) {
       return allowSantri ? [...allowedRoles, 'user'] : allowedRoles;
     }
 
-    // Cocokkan prefix rute di pemetaan kebijakan
+    if (module && MODULE_ACCESS[module]) {
+      const roles = MODULE_ACCESS[module];
+      return allowSantri ? [...roles, 'user'] : roles;
+    }
+
+    // Inferensi modul dari rute URL saat ini
     const currentPath = location.pathname.toLowerCase();
-    for (const [routePrefix, policyRoles] of Object.entries(MODULE_ROLE_POLICIES)) {
+    for (const [routePrefix, modKey] of Object.entries(PATH_TO_MODULE)) {
       if (currentPath === routePrefix || currentPath.startsWith(`${routePrefix}/`)) {
-        return allowSantri ? [...policyRoles, 'user'] : policyRoles;
+        const roles = MODULE_ACCESS[modKey];
+        return allowSantri ? [...roles, 'user'] : roles;
       }
     }
 
@@ -78,12 +213,12 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
     return allowSantri
       ? ['super_admin', 'pengurus_konten', 'guru_akademik', 'user']
       : ['super_admin', 'pengurus_konten', 'guru_akademik'];
-  }, [allowedRoles, location.pathname, allowSantri]);
+  }, [allowedRoles, module, location.pathname, allowSantri]);
 
-  // Catat percobaan akses ilegal ke konsol (Audit Trail Sisi Klien)
+  // Audit Log Alert untuk Akses Tidak Sah
   useEffect(() => {
     if (!loading && isAuthenticated && role !== 'super_admin' && !effectiveAllowedRoles.includes(role)) {
-      console.warn(`[Security Alert 403] Akun ${profile?.full_name || role} (${role}) mencoba mengakses rute terproteksi: ${location.pathname}. Izin yang dibutuhkan: ${effectiveAllowedRoles.join(', ')}.`);
+      console.warn(`[Security Alert 403] Akun ${profile?.full_name || role} (${role}) mencoba mengakses: ${location.pathname}. Izin yang dibutuhkan: ${effectiveAllowedRoles.join(', ')}.`);
     }
   }, [loading, isAuthenticated, role, effectiveAllowedRoles, location.pathname, profile]);
 
@@ -100,20 +235,20 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
           Memverifikasi Otorisasi Sesi Pengurus...
         </p>
         <span className="text-[10px] text-emerald-100/60 font-mono mt-1">
-          Pondok Pesantren Jauharul Maknuun
+          PP Jauharul Maknuun • Zero-IT CMS Guard
         </span>
       </div>
     );
   }
 
-  // 2. STATE BELUM LOGIN: REDIRECT KE /ADMIN/LOGIN
+  // 2. STATE BELUM LOGIN: REDIRECT KE /ADMIN/LOGIN DENGAN SAVE LOCATION
   if (!isAuthenticated) {
     return <Navigate to="/admin/login" state={{ from: location }} replace />;
   }
 
-  // 3. STATE CEK PERAN (ROLE HIERARCHY):
+  // 3. STATE CEK PERAN:
   // - super_admin (Level 4 Root) selalu lolos ke seluruh modul
-  // - Peran lain harus terdaftar dalam effectiveAllowedRoles
+  // - Peran lain wajib terdaftar pada effectiveAllowedRoles
   const isAuthorized = role === 'super_admin' || effectiveAllowedRoles.includes(role);
 
   if (!isAuthorized) {
@@ -138,11 +273,7 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
               Izin Akses Tidak Mencukupi
             </h2>
             <p className="text-xs text-slate-300 leading-relaxed">
-              {moduleName ? (
-                <>Modul <strong>{moduleName}</strong> memerlukan peran administratif khusus.</>
-              ) : (
-                <>Halaman administratif ini hanya dapat diakses oleh peran pengurus berwenang.</>
-              )}
+              Halaman administratif ini hanya dapat diakses oleh peran pengurus yang berwenang.
             </p>
           </div>
 
@@ -150,9 +281,7 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
           <div className="p-4 rounded-2xl bg-black/40 border border-white/10 text-left text-xs space-y-2">
             <div className="flex items-center justify-between border-b border-white/10 pb-2">
               <span className="text-[10px] uppercase font-bold text-slate-400">Akun Anda:</span>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#C8A951]/20 text-[#C8A951] border border-[#C8A951]/30">
-                {role === 'user' ? 'Santri / User' : role}
-              </span>
+              <RoleBadge role={role} />
             </div>
             <div className="space-y-1 font-mono text-[11px]">
               <div className="text-slate-300 truncate">Nama: {profile?.full_name || 'Pengguna'}</div>
@@ -197,7 +326,7 @@ export const RoleGuard: React.FC<RoleGuardProps> = ({
     );
   }
 
-  // 4. AKSES DITERIMA: RENDER KONTEN ADMIN
+  // 4. AKSES DITERIMA: RENDER KONTEN
   return <>{children}</>;
 };
 
