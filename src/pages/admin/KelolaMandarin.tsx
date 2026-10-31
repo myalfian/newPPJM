@@ -33,10 +33,12 @@ import {
   AlertTriangle,
   RefreshCw,
   Eye,
-  FileText
+  FileText,
+  GripVertical
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
+import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 
 // -------------------------------------------------------------
 // INTERFACES & TYPES
@@ -55,6 +57,7 @@ export interface MandarinVocabItem {
   exampleSentenceMeaning: string;
   audioUrl?: string;
   audioBlobUrl?: string;
+  imageUrl?: string;
 }
 
 export type QuizQuestionType = 
@@ -362,6 +365,10 @@ export const KelolaMandarin: React.FC = () => {
   const [vSentMeaning, setVSentMeaning] = useState('');
   const [vAudioUrl, setVAudioUrl] = useState('');
   const [vAudioFile, setVAudioFile] = useState<File | null>(null);
+  const [vImageUrl, setVImageUrl] = useState('');
+
+  // Drag & drop questions reorder state
+  const [draggedQuestionIdx, setDraggedQuestionIdx] = useState<number | null>(null);
 
   // Modal Quiz Builder Form
   const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
@@ -439,7 +446,8 @@ export const KelolaMandarin: React.FC = () => {
       exampleSentenceHanzi: vSentHanzi,
       exampleSentencePinyin: vSentPinyin,
       exampleSentenceMeaning: vSentMeaning,
-      audioUrl: vAudioFile ? URL.createObjectURL(vAudioFile) : (vAudioUrl || 'https://actions.google.com/sounds/v1/speech/hello.ogg')
+      audioUrl: vAudioFile ? URL.createObjectURL(vAudioFile) : (vAudioUrl || 'https://actions.google.com/sounds/v1/speech/hello.ogg'),
+      imageUrl: vImageUrl || undefined
     };
 
     if (editingVocabId) {
@@ -468,6 +476,7 @@ export const KelolaMandarin: React.FC = () => {
     setVSentMeaning('');
     setVAudioUrl('');
     setVAudioFile(null);
+    setVImageUrl('');
   };
 
   const handleEditVocab = (item: MandarinVocabItem) => {
@@ -482,6 +491,7 @@ export const KelolaMandarin: React.FC = () => {
     setVSentPinyin(item.exampleSentencePinyin);
     setVSentMeaning(item.exampleSentenceMeaning);
     setVAudioUrl(item.audioUrl || '');
+    setVImageUrl(item.imageUrl || '');
     setIsVocabModalOpen(true);
   };
 
@@ -1546,6 +1556,37 @@ export const KelolaMandarin: React.FC = () => {
                 />
               </div>
 
+              {/* Upload Foto / Ilustrasi Kosakata (WebP Auto-Compressor) */}
+              <div className="space-y-2 p-3.5 rounded-2xl bg-amber-50/60 border border-amber-200">
+                <label className="text-xs font-bold text-amber-900 flex items-center justify-between">
+                  <span>Ilustrasi Visual Kosakata (WebP Auto-Compressor):</span>
+                  {vImageUrl && <span className="text-emerald-700 text-[10px] font-bold">Foto WebP Siap</span>}
+                </label>
+                <div className="flex items-center gap-3">
+                  {vImageUrl && (
+                    <img src={vImageUrl} alt="Preview" className="w-12 h-12 rounded-xl object-cover border border-amber-300" />
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        try {
+                          const res = await compressImageToWebP(file, 800, 800, 0.82);
+                          setVImageUrl(res.previewUrl);
+                          setAlertMessage(`Foto dikompres: ${res.originalSizeKB}KB ➔ ${res.compressedSizeKB}KB (Hemat ${res.savedPercent}%)`);
+                          setTimeout(() => setAlertMessage(null), 3500);
+                        } catch {
+                          setAlertMessage('Gagal mengompresi gambar visual');
+                        }
+                      }
+                    }}
+                    className="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#0E7A4C] file:text-white"
+                  />
+                </div>
+              </div>
+
               {/* Tombol Aksi Form */}
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
                 <button
@@ -1654,16 +1695,87 @@ export const KelolaMandarin: React.FC = () => {
               </div>
 
               {/* Preview Butir Soal Default */}
-              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-slate-800">Daftar Soal Tersusun ({qQuestions.length} Soal)</span>
                   <span className="text-[10px] text-emerald-700 font-bold bg-emerald-100 px-2 py-0.5 rounded-full">
-                    Siap Disimpan
+                    Drag Reorder Aktif
                   </span>
                 </div>
                 <p className="text-[11px] text-slate-500">
-                  Paket kuis ini telah dikonfigurasi dengan tipe soal Pilihan Ganda, Tebak Hanzi, dan Audio Listening dengan confetti selebrasi otomatis.
+                  Geser item soal untuk mengubah urutan pengerjaan santri:
                 </p>
+
+                <div className="space-y-2">
+                  {qQuestions.map((qItem, qIdx) => (
+                    <div
+                      key={qItem.id}
+                      draggable
+                      onDragStart={() => setDraggedQuestionIdx(qIdx)}
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={() => {
+                        if (draggedQuestionIdx === null || draggedQuestionIdx === qIdx) return;
+                        const newQ = [...qQuestions];
+                        const [moved] = newQ.splice(draggedQuestionIdx, 1);
+                        newQ.splice(qIdx, 0, moved);
+                        setQQuestions(newQ);
+                        setDraggedQuestionIdx(null);
+                        setAlertMessage('Urutan soal kuis berhasil dipindahkan.');
+                        setTimeout(() => setAlertMessage(null), 2500);
+                      }}
+                      className={`p-3 rounded-xl bg-white border flex items-center justify-between gap-3 text-xs transition-all ${
+                        draggedQuestionIdx === qIdx ? 'opacity-50 border-dashed border-[#C1272D]' : 'border-slate-200 shadow-xs'
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <span className="cursor-grab active:cursor-grabbing text-slate-400 hover:text-slate-700">
+                          <GripVertical className="w-4 h-4" />
+                        </span>
+                        <span className="w-5 h-5 rounded-full bg-slate-100 text-slate-700 font-bold flex items-center justify-center text-[10px]">
+                          {qIdx + 1}
+                        </span>
+                        <div className="truncate">
+                          <span className="font-bold text-slate-800">{qItem.prompt}</span>
+                          <span className="ml-2 text-[10px] text-slate-400 font-medium">({qItem.type})</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] font-bold text-[#0E7A4C]">{qItem.points} Poin</span>
+                        <div className="flex items-center gap-0.5">
+                          <button
+                            type="button"
+                            disabled={qIdx === 0}
+                            onClick={() => {
+                              const newQ = [...qQuestions];
+                              const temp = newQ[qIdx];
+                              newQ[qIdx] = newQ[qIdx - 1];
+                              newQ[qIdx - 1] = temp;
+                              setQQuestions(newQ);
+                            }}
+                            className="p-1 rounded text-slate-400 hover:text-slate-700 disabled:opacity-20 text-[10px]"
+                          >
+                            ▲
+                          </button>
+                          <button
+                            type="button"
+                            disabled={qIdx === qQuestions.length - 1}
+                            onClick={() => {
+                              const newQ = [...qQuestions];
+                              const temp = newQ[qIdx];
+                              newQ[qIdx] = newQ[qIdx + 1];
+                              newQ[qIdx + 1] = temp;
+                              setQQuestions(newQ);
+                            }}
+                            className="p-1 rounded text-slate-400 hover:text-slate-700 disabled:opacity-20 text-[10px]"
+                          >
+                            ▼
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">

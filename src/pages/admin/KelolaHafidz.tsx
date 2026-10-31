@@ -41,9 +41,11 @@ import {
   CheckCircle,
   MicOff,
   Flame,
-  ArrowRight
+  ArrowRight,
+  GripVertical
 } from 'lucide-react';
 import { QURAN_SURAHS, SurahMeta } from '../../lib/quranData';
+import { compressImageToWebP } from '../../lib/imageCompressor';
 
 // --- TIPE DATA ---
 
@@ -473,8 +475,10 @@ export const KelolaHafidz: React.FC = () => {
   const [isLoadingAyahs, setIsLoadingAyahs] = useState(false);
 
   // --- TAB B: AUDIO MUROTTAL RECITERS ---
-  const [reciters] = useState<ReciterItem[]>(MASTER_RECITERS);
+  const [reciters, setReciters] = useState<ReciterItem[]>(MASTER_RECITERS);
   const [selectedReciter, setSelectedReciter] = useState<ReciterItem>(MASTER_RECITERS[0]);
+  const [draggedReciterIdx, setDraggedReciterIdx] = useState<number | null>(null);
+  const [draggedClozeIdx, setDraggedClozeIdx] = useState<number | null>(null);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showMissingAudioModal, setShowMissingAudioModal] = useState(false);
   const [isScanningAudio, setIsScanningAudio] = useState(false);
@@ -514,6 +518,7 @@ export const KelolaHafidz: React.FC = () => {
   const [formMakhorij, setFormMakhorij] = useState<number>(90);
   const [formPembimbing, setFormPembimbing] = useState('Ustadz H. Abdullah Faqih');
   const [formNote, setFormNote] = useState('');
+  const [formDocPhoto, setFormDocPhoto] = useState<string>('');
 
   // --- TAB D: LATIHAN MUROJAAH AI (CLOZE TEST) ---
   const [clozeList, setClozeList] = useState<ClozeQuestion[]>(INITIAL_CLOZE_QUESTIONS);
@@ -1271,28 +1276,45 @@ export const KelolaHafidz: React.FC = () => {
             </div>
           </div>
 
-          {/* List 15 Reciters Cards */}
+          {/* List 15 Reciters Cards with Drag Reorder */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {reciters.map((reciter) => {
+            {reciters.map((reciter, rIdx) => {
               const isSelected = selectedReciter.id === reciter.id;
               const isPlaying = playingAudioUrl === reciter.audioSampleUrl;
 
               return (
                 <div
                   key={reciter.id}
+                  draggable
+                  onDragStart={() => setDraggedReciterIdx(rIdx)}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={() => {
+                    if (draggedReciterIdx === null || draggedReciterIdx === rIdx) return;
+                    const newReciters = [...reciters];
+                    const [moved] = newReciters.splice(draggedReciterIdx, 1);
+                    newReciters.splice(rIdx, 0, moved);
+                    setReciters(newReciters);
+                    setDraggedReciterIdx(null);
+                    showToast(`Urutan reciter berhasil disesuaikan: ${moved.name}`);
+                  }}
                   onClick={() => setSelectedReciter(reciter)}
                   className={`cursor-pointer rounded-2xl p-5 border transition-all duration-300 relative overflow-hidden flex flex-col justify-between ${
+                    draggedReciterIdx === rIdx ? 'opacity-50 border-dashed border-[#0E7A4C]' : ''
+                  } ${
                     isSelected
                       ? 'bg-gradient-to-br from-[#FFF9E6] to-amber-50 dark:from-gray-800 dark:to-emerald-950/30 border-[#0E7A4C] shadow-lg ring-2 ring-[#0E7A4C]/30'
                       : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-700 hover:border-[#C8A951]/60 hover:shadow-md'
                   }`}
                 >
                   <div>
-                    <div className="flex items-start gap-4 mb-3">
+                    <div className="flex items-start gap-3 mb-3">
+                      <span className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-700 pt-1" title="Geser urutan reciter">
+                        <GripVertical className="w-4 h-4" />
+                      </span>
                       <img
                         src={reciter.avatar}
                         alt={reciter.name}
-                        className="w-14 h-14 rounded-2xl object-cover border-2 border-[#C8A951]/50 shadow-sm"
+                        className="w-14 h-14 rounded-2xl object-cover border-2 border-[#C8A951]/50 shadow-sm shrink-0"
                       />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-1">
@@ -1570,20 +1592,36 @@ export const KelolaHafidz: React.FC = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500 font-semibold">Pilih Soal:</span>
+              <span className="text-xs text-gray-500 font-semibold">Pilih / Geser Soal:</span>
               <div className="flex items-center gap-1.5">
                 {clozeList.map((q, idx) => (
                   <button
                     key={q.id}
+                    draggable
+                    onDragStart={() => setDraggedClozeIdx(idx)}
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={() => {
+                      if (draggedClozeIdx === null || draggedClozeIdx === idx) return;
+                      const newList = [...clozeList];
+                      const [moved] = newList.splice(draggedClozeIdx, 1);
+                      newList.splice(idx, 0, moved);
+                      setClozeList(newList);
+                      setActiveClozeIndex(idx);
+                      setDraggedClozeIdx(null);
+                      showToast(`Urutan soal murojaah dipindahkan ke nomor ${idx + 1}`);
+                    }}
                     onClick={() => {
                       setActiveClozeIndex(idx);
                       handleResetCloze();
                     }}
-                    className={`w-9 h-9 rounded-xl font-bold text-xs transition-all ${
+                    className={`w-9 h-9 rounded-xl font-bold text-xs transition-all cursor-grab active:cursor-grabbing ${
+                      draggedClozeIdx === idx ? 'opacity-40 scale-90' : ''
+                    } ${
                       activeClozeIndex === idx
                         ? 'bg-[#0E7A4C] text-white shadow-md'
                         : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100'
                     }`}
+                    title="Klik untuk memilih, geser (drag) untuk mengatur urutan"
                   >
                     {idx + 1}
                   </button>
@@ -2191,6 +2229,34 @@ export const KelolaHafidz: React.FC = () => {
                   <option value="Ustadzah Fauziyah Al-Hafidzah">Ustadzah Fauziyah Al-Hafidzah</option>
                   <option value="Ustadz Ahmad Farhan">Ustadz Ahmad Farhan</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1">
+                  Foto Lembar Mutaba'ah / Dokumentasi (WebP Auto-Compressor):
+                </label>
+                <div className="flex items-center gap-3">
+                  {formDocPhoto && (
+                    <img src={formDocPhoto} alt="Doc Preview" className="w-12 h-12 rounded-xl object-cover border border-[#0E7A4C]" />
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        try {
+                          const res = await compressImageToWebP(file, 800, 800, 0.82);
+                          setFormDocPhoto(res.previewUrl);
+                          showToast(`Foto mutaba'ah dikompres: ${res.originalSizeKB}KB ➔ ${res.compressedSizeKB}KB (Hemat ${res.savedPercent}%)`);
+                        } catch {
+                          showToast('Gagal memproses gambar mutabaah');
+                        }
+                      }
+                    }}
+                    className="text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#0E7A4C] file:text-white"
+                  />
+                </div>
               </div>
 
               <div>

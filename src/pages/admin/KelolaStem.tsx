@@ -30,7 +30,8 @@ import {
   Clock,
   BookOpen,
   HelpCircle,
-  Maximize2
+  Maximize2,
+  GripVertical
 } from 'lucide-react';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 
@@ -415,6 +416,23 @@ export const KelolaStem: React.FC = () => {
     }
   };
 
+  // Drag & Drop Reorder State
+  const [draggedWsIndex, setDraggedWsIndex] = useState<number | null>(null);
+
+  const handleDragStartWs = (idx: number) => {
+    setDraggedWsIndex(idx);
+  };
+
+  const handleDropWs = (targetIdx: number) => {
+    if (draggedWsIndex === null || draggedWsIndex === targetIdx) return;
+    const newWs = [...worksheets];
+    const [moved] = newWs.splice(draggedWsIndex, 1);
+    newWs.splice(targetIdx, 0, moved);
+    setWorksheets(newWs);
+    setDraggedWsIndex(null);
+    showToast('Urutan lembar kerja berhasil dipindahkan.');
+  };
+
   // Reorder Worksheet (Up / Down)
   const handleMoveWs = (idx: number, direction: 'up' | 'down') => {
     if ((direction === 'up' && idx === 0) || (direction === 'down' && idx === worksheets.length - 1)) return;
@@ -797,12 +815,21 @@ export const KelolaStem: React.FC = () => {
             {filteredWorksheets.map((ws, index) => (
               <div
                 key={ws.id}
-                className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4 relative"
+                draggable
+                onDragStart={() => handleDragStartWs(index)}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={() => handleDropWs(index)}
+                className={`bg-white rounded-3xl p-6 border shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4 relative ${
+                  draggedWsIndex === index ? 'opacity-50 border-dashed border-[#0E7A4C] ring-2 ring-[#0E7A4C]/30' : 'border-slate-200'
+                }`}
               >
                 <div className="space-y-3">
                   {/* Top Badges & Reorder Buttons */}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
+                      <span className="cursor-grab active:cursor-grabbing p-1 text-slate-400 hover:text-slate-700" title="Geser untuk mengubah urutan">
+                        <GripVertical className="w-4 h-4" />
+                      </span>
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
                         {ws.category}
                       </span>
