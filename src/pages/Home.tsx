@@ -13,7 +13,7 @@ import {
 import { HeroSlider } from '../components/HeroSlider';
 import { QuickMenu } from '../components/QuickMenu';
 import { generateWhatsAppBroadcastUrl } from '../lib/waFormatter';
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { supabase, isSupabaseConfigured, SambutanPerson } from '../lib/supabase';
 import { useCachedQuery } from '../lib/queryCache';
 import { INITIAL_NEWS } from '../data/newsData';
 import { fetchPublishedEditorState, getPublishedEditorState } from '../lib/editorStorage';
@@ -92,8 +92,33 @@ const fetchHomeNews = async (): Promise<HomeNewsItem[]> => {
 
 export const Home: React.FC = () => {
   const [editorConfig, setEditorConfig] = useState<PageEditorState>(getPublishedEditorState);
+  const [liveSambutan, setLiveSambutan] = useState<SambutanPerson | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+
+    // Fetch live sambutan person directly from Supabase
+    const fetchSambutanPerson = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('sambutan_persons')
+          .select('*')
+          .eq('is_active', true)
+          .order('order_index', { ascending: true })
+          .limit(1)
+          .maybeSingle();
+
+        if (!error && data && isMounted) {
+          setLiveSambutan(data as SambutanPerson);
+        }
+      } catch (err) {
+        console.warn('Error fetching live sambutan for Home:', err);
+      }
+    };
+
+    fetchSambutanPerson();
+
     // 1. Fetch remote published config from Supabase site_settings if available
     fetchPublishedEditorState().then((cfg) => {
       setEditorConfig(cfg);
@@ -113,9 +138,17 @@ export const Home: React.FC = () => {
       .channel('public-home-realtime-sync')
       .on(
         'postgres_changes',
+        { event: '*', schema: 'public', table: 'sambutan_persons' },
+        () => {
+          fetchSambutanPerson();
+        }
+      )
+      .on(
+        'postgres_changes',
         { event: '*', schema: 'public', table: 'site_settings' },
         () => {
           fetchPublishedEditorState().then(setEditorConfig);
+          fetchSambutanPerson();
         }
       )
       .on(
@@ -123,11 +156,13 @@ export const Home: React.FC = () => {
         { event: '*', schema: 'public', table: 'cms_sections' },
         () => {
           fetchPublishedEditorState().then(setEditorConfig);
+          fetchSambutanPerson();
         }
       )
       .subscribe();
 
     return () => {
+      isMounted = false;
       window.removeEventListener('ppjm-editor-published', handlePublished as EventListener);
       supabase.removeChannel(channel);
     };
@@ -173,13 +208,13 @@ export const Home: React.FC = () => {
                 <div className="relative">
                   <div className="w-40 h-48 sm:w-52 sm:h-60 rounded-xl sm:rounded-2xl overflow-hidden shadow-lg border-4 border-emerald-50 bg-slate-100">
                     <img
-                      src={sambutan?.data?.imageUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80'}
-                      alt="Pengasuh PP Jauharul Maknuun"
+                      src={liveSambutan?.photo_url || sambutan?.data?.imageUrl || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=800&q=80'}
+                      alt={liveSambutan?.name || "Pengasuh PP Jauharul Maknuun"}
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="absolute -bottom-3.5 left-1/2 -translate-x-1/2 bg-emerald-900 text-gold-300 px-3.5 py-1 rounded-full text-[11px] font-bold shadow-md whitespace-nowrap">
-                    {sambutan?.data?.title || 'Pengasuh Pondok Pesantren'}
+                    {liveSambutan?.title || sambutan?.data?.title || 'Pengasuh Pondok Pesantren'}
                   </div>
                 </div>
               </div>
@@ -189,13 +224,13 @@ export const Home: React.FC = () => {
                   Kalam Hikmah & Ma'had Barokah
                 </span>
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-950">
-                  {sambutan?.data?.pengasuhName || 'KH. M. Jauharul Maknuun'}
+                  {liveSambutan?.name || sambutan?.data?.pengasuhName || 'KH. M. Jauharul Maknuun'}
                 </h2>
                 <p className="text-sm sm:text-base font-bold text-emerald-800">
-                  Mudir & Pengasuh Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik
+                  {liveSambutan?.title || 'Mudir & Pengasuh Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik'}
                 </p>
                 <blockquote className="text-sm sm:text-base lg:text-lg text-slate-800 font-medium italic leading-relaxed sm:leading-loose border-l-0 lg:border-l-4 lg:border-emerald-700 lg:pl-4">
-                  “{sambutan?.data?.kalam || 'Pesantren bukan hanya tempat menuntut ilmu fiqih dan nahwu, melainkan kawah candradimuka pembentukan akhlaqul karimah, ketajaman spiritual, serta ketangguhan menjawab kemajuan zaman. Santri kami bekali dengan kemurnian turats, hafalan al-Qur\'an, dan sains teknologi aplikatif agar senantiasa menjadi suluh penerang di tengah umat.'}”
+                  “{liveSambutan?.message_short || liveSambutan?.message_full || sambutan?.data?.kalam || 'Pesantren bukan hanya tempat menuntut ilmu fiqih dan nahwu, melainkan kawah candradimuka pembentukan akhlaqul karimah, ketajaman spiritual, serta ketangguhan menjawab kemajuan zaman. Santri kami bekali dengan kemurnian turats, hafalan al-Qur\'an, dan sains teknologi aplikatif agar senantiasa menjadi suluh penerang di tengah umat.'}”
                 </blockquote>
                 <div className="pt-2">
                   <Link

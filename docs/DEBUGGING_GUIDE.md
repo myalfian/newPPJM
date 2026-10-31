@@ -48,3 +48,4 @@ Jika pesan bertuliskan `Failed to fetch dynamically imported module`:
 - Semua formulir input foto dan piagam telah dipindahkan dari input URL menjadi **input file dari komputer**.
 - Sistem secara otomatis mendeteksi ukuran, mengonversi gambar ke format `.webp`, dan mengompresinya hingga hemat 70-85% kuota.
 - Format yang didukung: `.jpg`, `.jpeg`, `.png`, `.webp`. Maksimal ukuran sebelum kompresi: 10 MB.
+

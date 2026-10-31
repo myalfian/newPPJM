@@ -52,3 +52,4 @@ Status: **RESOLVED (100% Terhubung & Tersinkronisasi Realtime)**
 - [x] Edit berita di `KelolaBerita` langsung terbit di `/jm-news` seketika lewat Supabase Realtime.
 - [x] Halaman `/profil` stabil dan terlindungi dari ChunkLoadError pasca-deploy.
 - [x] Input gambar dokumentasi / piagam 100% menggunakan file dari komputer + WebP auto-compressor.
+

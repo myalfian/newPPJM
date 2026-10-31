@@ -27,6 +27,7 @@ import {
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { compressImageToWebP } from '../../lib/imageCompressor';
+import { KelolaSambutan_FIXED } from './KelolaSambutan_FIXED';
 
 interface FacilityItem {
   id: string;
@@ -202,24 +203,49 @@ export const KelolaProfil: React.FC = () => {
   const [selectedFlyer, setSelectedFlyer] = useState<MadinFlyer | null>(null);
 
   const [savedAlert, setSavedAlert] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  // Load live data from Supabase on mount so refresh F5 doesn't reset to seed
+  useEffect(() => {
+    let isMounted = true;
+    const fetchProfilData = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data: sejarahData } = await supabase
+          .from('jm_center_pages')
+          .select('*')
+          .eq('slug', 'sejarah')
+          .maybeSingle();
+
+        if (sejarahData && isMounted && sejarahData.content) {
+          setSejarahTeks(sejarahData.content);
+        }
+
+        const { data: visiData } = await supabase
+          .from('jm_center_pages')
+          .select('*')
+          .eq('slug', 'visi-misi')
+          .maybeSingle();
+
+        if (visiData && isMounted && visiData.content) {
+          const lines = visiData.content.split('\n\n');
+          setVisiTeks(lines[0] || visiData.content);
+        }
+      } catch (err) {
+        console.warn('[KelolaProfil] Error fetching live profil data:', err);
+      }
+    };
+    fetchProfilData();
+    return () => { isMounted = false; };
+  }, []);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
+    setSaveError(null);
     if (isSupabaseConfigured()) {
       try {
-        if (activeTab === 'sambutan') {
-          await supabase.from('jm_center_pages').upsert(
-            {
-              slug: 'sambutan',
-              title: 'Sambutan Pengasuh',
-              content: teksSambutan,
-              quotes: namaPimpinan,
-              updated_at: new Date().toISOString()
-            },
-            { onConflict: 'slug' }
-          );
-        } else if (activeTab === 'sejarah') {
-          await supabase.from('jm_center_pages').upsert(
+        if (activeTab === 'sejarah') {
+          const { error } = await supabase.from('jm_center_pages').upsert(
             {
               slug: 'sejarah',
               title: 'Sejarah Pesantren',
@@ -227,9 +253,15 @@ export const KelolaProfil: React.FC = () => {
               updated_at: new Date().toISOString()
             },
             { onConflict: 'slug' }
-          );
+          ).select().single();
+
+          if (error) {
+            console.error('Supabase error saving sejarah:', error);
+            setSaveError(error.message);
+            return;
+          }
         } else if (activeTab === 'visi-misi') {
-          await supabase.from('jm_center_pages').upsert(
+          const { error } = await supabase.from('jm_center_pages').upsert(
             {
               slug: 'visi-misi',
               title: 'Visi & 5 Pilar Misi',
@@ -237,10 +269,18 @@ export const KelolaProfil: React.FC = () => {
               updated_at: new Date().toISOString()
             },
             { onConflict: 'slug' }
-          );
+          ).select().single();
+
+          if (error) {
+            console.error('Supabase error saving visi-misi:', error);
+            setSaveError(error.message);
+            return;
+          }
         }
-      } catch (err) {
+      } catch (err: any) {
         console.warn('Failed to sync to Supabase:', err);
+        setSaveError(err.message || 'Gagal menyimpan');
+        return;
       }
     }
     setSavedAlert(true);
@@ -368,51 +408,7 @@ export const KelolaProfil: React.FC = () => {
 
       {/* TAB A: SAMBUTAN MUDIR */}
       {activeTab === 'sambutan' && (
-        <form onSubmit={handleSave} className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-md space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Nama Lengkap Pengasuh:</label>
-              <input
-                type="text"
-                required
-                value={namaPimpinan}
-                onChange={(e) => setNamaPimpinan(e.target.value)}
-                className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white font-bold"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Jabatan &amp; Amanah:</label>
-              <input
-                type="text"
-                required
-                value={jabatan}
-                onChange={(e) => setJabatan(e.target.value)}
-                className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white font-semibold"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Naskah Sambutan:</label>
-            <textarea
-              rows={8}
-              required
-              value={teksSambutan}
-              onChange={(e) => setTeksSambutan(e.target.value)}
-              className="w-full p-4 text-xs sm:text-sm rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white leading-relaxed"
-            />
-          </div>
-
-          <div className="pt-2 flex justify-end">
-            <button
-              type="submit"
-              className="px-6 py-2.5 rounded-xl bg-[#0E7A4C] hover:bg-[#128a57] text-[#C8A951] font-bold text-xs shadow-md flex items-center gap-2 border border-[#C8A951]/30 cursor-pointer"
-            >
-              <Save className="w-4 h-4" />
-              <span>Simpan Sambutan Mudir</span>
-            </button>
-          </div>
-        </form>
+        <KelolaSambutan_FIXED />
       )}
 
       {/* TAB B: SEJARAH LASEM SIDAYU */}

@@ -287,3 +287,4 @@ CREATE POLICY "Public can read kontak_medsos" ON public.kontak_medsos FOR SELECT
 };
 
 export default DataFlowAuditPage;
+

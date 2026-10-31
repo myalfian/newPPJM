@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
-import { supabase, isSupabaseConfigured, UserRole, AdminProfile } from '../lib/supabase';
+import { supabase, isSupabaseConfigured, UserRole, AdminProfile, normalizeRole } from '../lib/supabase';
 import { SEED_ACCOUNTS } from '../data/seedAccounts';
 
 interface AuthContextType {
@@ -46,14 +46,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const [role, setRole] = useState<UserRole>(() => {
     if (typeof window !== 'undefined' && localStorage.getItem('ppjm_admin_logged_in') === 'true') {
-      return (localStorage.getItem('ppjm_admin_role') as UserRole) || 'super_admin';
+      return normalizeRole(localStorage.getItem('ppjm_admin_role')) || 'super_admin';
     }
     return 'visitor';
   });
 
   const [profile, setProfile] = useState<AdminProfile | null>(() => {
     if (typeof window !== 'undefined' && localStorage.getItem('ppjm_admin_logged_in') === 'true') {
-      const savedRole = (localStorage.getItem('ppjm_admin_role') as UserRole) || 'super_admin';
+      const savedRole = normalizeRole(localStorage.getItem('ppjm_admin_role')) || 'super_admin';
       return getSeedProfile(savedRole);
     }
     return getSeedProfile('visitor');
@@ -77,15 +77,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (data) {
+        const resolvedRole = normalizeRole(data.role);
         const userProfile: AdminProfile = {
           id: data.id,
-          full_name: data.full_name,
-          role: data.role as UserRole,
+          full_name: data.full_name || 'Santri PPJM',
+          role: resolvedRole,
           avatar_url: data.avatar_url || undefined,
           phone: data.phone || undefined,
           bio: data.bio || undefined,
-          department: data.department || undefined,
-          nis_or_nip: data.nis_or_nip || undefined,
+          department: data.department || (resolvedRole === 'user' ? 'Santri Markaz PPJM' : undefined),
+          nis_or_nip: (data as any).nip || data.nis_or_nip || undefined,
           status_badge: data.status_badge || undefined,
           must_change_password: data.must_change_password ?? false,
           last_password_change: data.last_password_change || undefined,
@@ -93,8 +94,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           updated_at: data.updated_at,
         };
         setProfile(userProfile);
-        setRole(userProfile.role);
-        localStorage.setItem('ppjm_admin_role', userProfile.role);
+        setRole(resolvedRole);
+        localStorage.setItem('ppjm_admin_role', resolvedRole);
       }
     } catch (err) {
       console.error('Error fetching admin profile:', err);
@@ -109,7 +110,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!isSupabaseConfigured()) {
           // Fallback to local mock session if Supabase is in dev/mock mode
           const isMockLoggedIn = localStorage.getItem('ppjm_admin_logged_in') === 'true';
-          const mockRole = (localStorage.getItem('ppjm_admin_role') as UserRole) || 'visitor';
+          const mockRole = normalizeRole(localStorage.getItem('ppjm_admin_role')) || 'visitor';
           if (isMockLoggedIn && mounted) {
             setRole(mockRole);
             setProfile(getSeedProfile(mockRole));
@@ -139,7 +140,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             // Check if mock demo session is explicitly activated
             const isMockLoggedIn = localStorage.getItem('ppjm_admin_logged_in') === 'true';
             if (isMockLoggedIn) {
-              const currentMockRole = (localStorage.getItem('ppjm_admin_role') as UserRole) || 'super_admin';
+              const currentMockRole = normalizeRole(localStorage.getItem('ppjm_admin_role')) || 'super_admin';
               setRole(currentMockRole);
               setProfile(getSeedProfile(currentMockRole));
             } else {

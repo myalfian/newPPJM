@@ -1239,6 +1239,57 @@ export type Database = {
         }
         Relationships: []
       }
+      sambutan_persons: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          location: string[] | null
+          message_full: string | null
+          message_short: string | null
+          name: string
+          order_index: number
+          photo_url: string | null
+          role_type: string
+          title: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          location?: string[] | null
+          message_full?: string | null
+          message_short?: string | null
+          name: string
+          order_index?: number
+          photo_url?: string | null
+          role_type?: string
+          title: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          location?: string[] | null
+          message_full?: string | null
+          message_short?: string | null
+          name?: string
+          order_index?: number
+          photo_url?: string | null
+          role_type?: string
+          title?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       programs: {
         Row: {
           category: string

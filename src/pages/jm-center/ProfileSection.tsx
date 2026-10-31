@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -13,6 +13,7 @@ import {
   Star
 } from 'lucide-react';
 import { ProfileData } from './types';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 export const MOCK_PROFILE_DATA: ProfileData = {
   greeting: {
@@ -90,7 +91,59 @@ export const MOCK_PROFILE_DATA: ProfileData = {
 
 export const ProfileSection: React.FC = () => {
   const location = useLocation();
-  const { greeting, history, vision, missions, values } = MOCK_PROFILE_DATA;
+  const [greeting, setGreeting] = useState(MOCK_PROFILE_DATA.greeting);
+  const { history, vision, missions, values } = MOCK_PROFILE_DATA;
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchLiveProfil = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data: person } = await supabase
+          .from('sambutan_persons')
+          .select('*')
+          .eq('is_active', true)
+          .order('order_index', { ascending: true })
+          .limit(1)
+          .maybeSingle();
+
+        if (person && isMounted) {
+          const fullMsg = person.message_full
+            ? person.message_full.split('\n\n').filter(Boolean)
+            : MOCK_PROFILE_DATA.greeting.fullMessage;
+
+          setGreeting({
+            name: person.name,
+            title: person.title,
+            role: 'Pimpinan & Pengasuh Pesantren',
+            image: person.photo_url || MOCK_PROFILE_DATA.greeting.image,
+            quote: person.message_short || (person.message_full ? person.message_full.slice(0, 240) + '...' : MOCK_PROFILE_DATA.greeting.quote),
+            fullMessage: fullMsg,
+          });
+        }
+      } catch (err) {
+        console.warn('Error loading dynamic profile data:', err);
+      }
+    };
+
+    fetchLiveProfil();
+
+    const channel = supabase
+      .channel('public-profile-section-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'sambutan_persons' },
+        () => {
+          fetchLiveProfil();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

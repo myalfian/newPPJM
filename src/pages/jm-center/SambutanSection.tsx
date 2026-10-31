@@ -1,16 +1,117 @@
-import React from 'react';
-import { Quote, Sparkles, Landmark } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Quote, Sparkles, Landmark, RefreshCw } from 'lucide-react';
 import { MOCK_PROFILE_DATA } from './ProfileSection';
+import { supabase, isSupabaseConfigured, SambutanPerson } from '../../lib/supabase';
+
+interface GreetingData {
+  name: string;
+  title: string;
+  role: string;
+  image: string;
+  quote: string;
+  fullMessage: string[];
+}
 
 export const SambutanSection: React.FC = () => {
-  const { greeting } = MOCK_PROFILE_DATA;
+  const [greeting, setGreeting] = useState<GreetingData>(MOCK_PROFILE_DATA.greeting);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const fetchLiveSambutan = async () => {
+    if (!isSupabaseConfigured()) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // 1. Fetch from sambutan_persons (Primary Dynamic Source)
+      const { data: person, error: personError } = await supabase
+        .from('sambutan_persons')
+        .select('*')
+        .eq('is_active', true)
+        .order('order_index', { ascending: true })
+        .limit(1)
+        .maybeSingle();
+
+      if (person && !personError) {
+        const fullMsg = person.message_full
+          ? person.message_full.split('\n\n').filter(Boolean)
+          : MOCK_PROFILE_DATA.greeting.fullMessage;
+
+        setGreeting({
+          name: person.name,
+          title: person.title,
+          role: 'Pimpinan & Pengasuh Pesantren',
+          image: person.photo_url || MOCK_PROFILE_DATA.greeting.image,
+          quote:
+            person.message_short ||
+            (person.message_full ? person.message_full.slice(0, 240) + '...' : MOCK_PROFILE_DATA.greeting.quote),
+          fullMessage: fullMsg,
+        });
+        setLoading(false);
+        return;
+      }
+
+      // 2. Fallback to jm_center_pages (slug: 'sambutan')
+      const { data: pageData } = await supabase
+        .from('jm_center_pages')
+        .select('*')
+        .eq('slug', 'sambutan')
+        .maybeSingle();
+
+      if (pageData) {
+        const extra = (pageData.extra_data as any) || {};
+        const fullMsg = pageData.content
+          ? pageData.content.split('\n\n').filter(Boolean)
+          : MOCK_PROFILE_DATA.greeting.fullMessage;
+
+        setGreeting({
+          name: pageData.quotes || extra.penceramah || MOCK_PROFILE_DATA.greeting.name,
+          title: extra.jabatan || pageData.subtitle || MOCK_PROFILE_DATA.greeting.title,
+          role: 'Pimpinan Yayasan Pondok Pesantren Jauharul Maknuun',
+          image: pageData.banner_image || MOCK_PROFILE_DATA.greeting.image,
+          quote: pageData.content ? pageData.content.slice(0, 240) + '...' : MOCK_PROFILE_DATA.greeting.quote,
+          fullMessage: fullMsg,
+        });
+      }
+    } catch (err) {
+      console.warn('[SambutanSection] Error loading dynamic sambutan:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLiveSambutan();
+
+    // Subscribe to realtime updates on sambutan_persons & jm_center_pages
+    const channel = supabase
+      .channel('public-sambutan-section-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'sambutan_persons' },
+        () => {
+          fetchLiveSambutan();
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'jm_center_pages' },
+        () => {
+          fetchLiveSambutan();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   return (
     <div className="space-y-6">
       {/* Seksi Sambutan Pimpinan / Pengasuh Pesantren */}
       <section className="bg-white/95 dark:bg-zinc-900/90 rounded-3xl p-5 sm:p-8 lg:p-10 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 items-center">
-          
           {/* Foto Resmi Pengasuh */}
           <div className="lg:col-span-5 flex flex-col items-center sm:items-start">
             <div className="relative w-full max-w-sm aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-emerald-700/20 shadow-xl shadow-emerald-950/15 group">
@@ -53,7 +154,11 @@ export const SambutanSection: React.FC = () => {
               {greeting.fullMessage.map((p, idx) => (
                 <p
                   key={idx}
-                  className={idx === 1 ? 'first-letter:text-3xl first-letter:font-black first-letter:text-emerald-800 dark:first-letter:text-emerald-400 first-letter:float-left first-letter:mr-2' : ''}
+                  className={
+                    idx === 1
+                      ? 'first-letter:text-3xl first-letter:font-black first-letter:text-emerald-800 dark:first-letter:text-emerald-400 first-letter:float-left first-letter:mr-2'
+                      : ''
+                  }
                 >
                   {p}
                 </p>
@@ -65,4 +170,3 @@ export const SambutanSection: React.FC = () => {
     </div>
   );
 };
-

@@ -117,7 +117,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
-import { UserRole, AdminProfile, supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { UserRole, AdminProfile, supabase, isSupabaseConfigured, normalizeRole } from '../../lib/supabase';
 import { SEED_ACCOUNTS } from '../../data/seedAccounts';
 import { EditProfileModal } from '../../components/profile/EditProfileModal';
 import { ChangePasswordModal } from '../../components/profile/ChangePasswordModal';
@@ -169,7 +169,7 @@ export const UserProfilePage: React.FC = () => {
   const [searchParams] = useSearchParams();
 
   // Safely resolve seedConfig and theme immediately at top of component
-  const activeRole: UserRole = role && SEED_ACCOUNTS[role] ? role : 'visitor';
+  const activeRole: UserRole = normalizeRole(role);
   const rawSeed = SEED_ACCOUNTS[activeRole] || SEED_ACCOUNTS.visitor || ({} as any);
   const seedConfig = useMemo(() => ({
     role: activeRole,

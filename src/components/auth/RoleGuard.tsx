@@ -71,6 +71,7 @@ export const PATH_TO_MODULE: Record<string, ModuleKey> = {
   '/admin/editor': 'webVisualEditor',
   '/editor': 'webVisualEditor',
   '/admin/slider': 'slider',
+  '/admin/sambutan': 'profil',
   '/admin/profil': 'profil',
   '/admin/program': 'profil',
   '/admin/stem': 'stem',

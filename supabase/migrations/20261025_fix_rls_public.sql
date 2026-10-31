@@ -536,3 +536,4 @@ USING (
     WHERE id = auth.uid() AND role = 'super_admin'
   )
 );
+

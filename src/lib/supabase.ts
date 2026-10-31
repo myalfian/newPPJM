@@ -21,6 +21,17 @@ export const supabase = createClient<Database>(
 
 export type UserRole = 'super_admin' | 'pengurus_konten' | 'guru_akademik' | 'user' | 'visitor';
 
+export function normalizeRole(rawRole: string | undefined | null): UserRole {
+  if (!rawRole) return 'visitor';
+  const clean = String(rawRole).toLowerCase().trim();
+  if (clean === 'super_admin' || clean === 'admin' || clean === 'superadmin' || clean === 'super_admin_role') return 'super_admin';
+  if (clean === 'pengurus_konten' || clean === 'konten' || clean === 'humas' || clean === 'media' || clean === 'editor') return 'pengurus_konten';
+  if (clean === 'guru_akademik' || clean === 'guru' || clean === 'akademik' || clean === 'ustadz' || clean === 'asatidz') return 'guru_akademik';
+  if (clean === 'user' || clean === 'santri' || clean === 'student' || clean === 'alumni' || clean === 'wali_santri' || clean === 'santriwan' || clean === 'santriwati') return 'user';
+  if (clean === 'visitor' || clean === 'guest' || clean === 'tamu' || clean === 'public') return 'visitor';
+  return 'visitor';
+}
+
 export interface AdminProfile {
   id: string;
   full_name: string;
@@ -35,6 +46,23 @@ export interface AdminProfile {
   last_password_change?: string;
   created_at: string;
   updated_at?: string;
+}
+
+export interface SambutanPerson {
+  id: string;
+  name: string;
+  title: string;
+  role_type: string;
+  photo_url?: string | null;
+  message_short?: string | null;
+  message_full?: string | null;
+  order_index: number;
+  is_active: boolean;
+  location: string[];
+  created_at?: string;
+  updated_at?: string;
+  created_by?: string | null;
+  updated_by?: string | null;
 }
 
 export interface JMCenterPage {

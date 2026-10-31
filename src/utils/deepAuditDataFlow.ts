@@ -110,9 +110,11 @@ export async function deepAuditDataFlow(): Promise<DeepAuditReport> {
     );
   }
 
-  // CHECK 2: Public Read Test on 10 Key Tables (Anon Read via RLS)
+  // CHECK 2: Public Read Test on Key Tables (Anon Read via RLS)
   const publicTables = [
     { table: 'site_settings', filter: {} },
+    { table: 'sambutan_persons', filter: { is_active: true } },
+    { table: 'jm_center_pages', filter: {} },
     { table: 'cms_sections', filter: { visible: true } },
     { table: 'sliders', filter: { is_active: true } },
     { table: 'quick_menus', filter: { is_active: true } },
@@ -295,3 +297,4 @@ export async function deepAuditDataFlow(): Promise<DeepAuditReport> {
     summary,
   };
 }
+
