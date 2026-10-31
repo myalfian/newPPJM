@@ -8,13 +8,19 @@ import {
   Pencil,
   CheckCircle2,
   Image as ImageIcon,
-  UserCheck
+  UserCheck,
+  Shield,
+  Layers,
+  Clock,
+  Save,
+  X,
+  PlusCircle,
+  Eye
 } from 'lucide-react';
-import { SimpleFormCard } from '../../components/admin/SimpleFormCard';
-import { SmartImageDropzone } from '../../components/admin/SmartImageDropzone';
 
-interface OsisMember {
+export interface OsisMember {
   id: string;
+  level: 'Presidium' | 'BPH' | 'Sekbid';
   role: string;
   name: string;
   classGrade: string;
@@ -22,15 +28,21 @@ interface OsisMember {
   photoUrl: string;
 }
 
-interface OsisProgram {
+export interface OsisProgram {
   id: string;
   title: string;
-  department: string;
+  department:
+    | 'Keagamaan & Ibadah'
+    | 'Bahasa & Keilmuan'
+    | 'Kedisiplinan & Keamanan'
+    | 'Minat Bakat & Olahraga'
+    | 'Kebersihan & Lingkungan';
   description: string;
   timeline: string;
+  targetOutcome: string;
 }
 
-interface OsisEvent {
+export interface OsisEvent {
   id: string;
   title: string;
   date: string;
@@ -40,422 +52,549 @@ interface OsisEvent {
 
 const DEFAULT_MEMBERS: OsisMember[] = [
   {
-    id: 'ketua',
-    role: 'Ketua OSIS',
+    id: 'm-1',
+    level: 'Presidium',
+    role: 'Ketua Umum OSIS / OPJM',
     name: 'Ahmad Faiz Al-Habsyi',
-    classGrade: 'Kelas 9 SMP Plus JM',
+    classGrade: 'Kelas IX-A SMP Plus JM',
     motto: 'Memimpin dengan teladan akhlaqul karimah dan dedikasi tholabul ilmi.',
-    photoUrl: '/images/osis/ketua-osis.webp'
+    photoUrl: 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80'
   },
   {
-    id: 'wakil',
+    id: 'm-2',
+    level: 'Presidium',
     role: 'Wakil Ketua OSIS',
     name: 'Muhammad Farhan',
-    classGrade: 'Kelas 8 SMP Plus JM',
-    motto: 'Menjadi wadah aspirasi santri kreatif, tangguh, dan mandiri.',
-    photoUrl: '/images/osis/wakil-osis.webp'
+    classGrade: 'Kelas VIII-B SMP Plus JM',
+    motto: 'Menjadi wadah aspirasi santri kreatif, tangguh, dan berdaya saing.',
+    photoUrl: 'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 'm-3',
+    level: 'BPH',
+    role: 'Sekretaris Umum',
+    name: 'Hilmi Abdullah',
+    classGrade: 'Kelas IX-B SMP Plus JM',
+    motto: 'Tertib administrasi warta kegiatan dan dokumentasi terpadu pesantren.',
+    photoUrl: 'https://images.unsplash.com/photo-1532012164546-f432f2e3777a?auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 'm-4',
+    level: 'BPH',
+    role: 'Bendahara Umum',
+    name: 'Fajar Shodiq',
+    classGrade: 'Kelas VIII-A SMP Plus JM',
+    motto: 'Amanah mengelola dana kas kemandirian santri secara transparan.',
+    photoUrl: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 'm-5',
+    level: 'Sekbid',
+    role: 'Koordinator Sekbid Keagamaan',
+    name: 'M. Zaki Al-Faruq',
+    classGrade: 'Kelas VIII-C SMP Plus JM',
+    motto: 'Menghidupkan syiar sunnah dan sholat jamaah awal waktu.',
+    photoUrl: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80'
   }
 ];
 
 const DEFAULT_PROGRAMS: OsisProgram[] = [
   {
     id: 'prog-1',
-    title: 'Festival Muharram & Bulan Bahasa Santri',
-    department: 'Departemen Bahasa & Kebudayaan',
-    description: 'Lomba pidato 3 bahasa (Arab, Inggris, Mandarin), kaligrafi, dan cerdas cermat kitab turats.',
-    timeline: 'Bulan Muharram (Awal Tahun Ajaran)'
+    title: 'Festival Muharram & Bulan Bahasa Santri 3 Bahasa',
+    department: 'Bahasa & Keilmuan',
+    description: 'Lomba pidato 3 bahasa (Arab, Inggris, Mandarin), kaligrafi khath usmani, dan cerdas cermat kitab turats.',
+    timeline: 'Bulan Muharram (Awal Semester Gasal)',
+    targetOutcome: 'Peningkatan literasi multibahasa santri'
   },
   {
     id: 'prog-2',
-    title: 'Gerakan Santri Peduli Lingkungan (Green Pesantren)',
-    department: 'Departemen Kebersihan & Kesehatan',
+    title: 'Gerakan Santri Bersih (Green Pesantren & Roan Akbar)',
+    department: 'Kebersihan & Lingkungan',
     description: 'Program kerja bakti roan terpadu, pemilihan kamar asrama terbersih, dan edukasi pilah sampah.',
-    timeline: 'Setiap Pekan (Jumat Pagi)'
+    timeline: 'Setiap Pekan (Jumat Pagi)',
+    targetOutcome: 'Lingkungan asrama sehat dan nyaman tholabul ilmi'
+  },
+  {
+    id: 'prog-3',
+    title: 'Karantina Murojaah Ziyadah Tahfidz Akbar',
+    department: 'Keagamaan & Ibadah',
+    description: 'Halaqah intensif setoran satu juz sekali duduk jelang ujian diniyah pesantren.',
+    timeline: 'Tengah Semester',
+    targetOutcome: 'Kekokohan hafalan Al-Qur\'an 30 juz'
+  },
+  {
+    id: 'prog-4',
+    title: 'Operasi Tertib Disiplin Santri (OPSDIS)',
+    department: 'Kedisiplinan & Keamanan',
+    description: 'Pengecekan keseragaman pakaian salaf, kepatuhan jam malam, dan adab berjamaah.',
+    timeline: 'Harian (24 Jam)',
+    targetOutcome: 'Karakter santri berakhlakul karimah'
+  },
+  {
+    id: 'prog-5',
+    title: 'Turnamen Liga Santri & Ekspo Inovasi STEM',
+    department: 'Minat Bakat & Olahraga',
+    description: 'Kompetisi futsal, pencak silat pagar nusa, dan ekspo karya robotika teknologi santri.',
+    timeline: 'Akhir Semester (Haflah)',
+    targetOutcome: 'Kebugaran fisik dan sportivitas santri'
+  }
+];
+
+const DEFAULT_EVENTS: OsisEvent[] = [
+  {
+    id: 'ev-1',
+    title: 'Pelantikan Serentak Kabinet OSIS & Musyawarah Kerja Santri 2026/2027',
+    date: '20 Oktober 2026',
+    description: 'Pengambilan sumpah jabatan di hadapan Mudir KH. M. Jauharul Maknuun disaksikan dewan asatidz dan wali santri.',
+    photoUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80'
   }
 ];
 
 export const KelolaOsis: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'struktur' | 'program' | 'event'>('struktur');
-  const [members, setMembers] = useState<OsisMember[]>(() => {
-    try {
-      const saved = localStorage.getItem('ppjm_osis_members');
-      return saved ? JSON.parse(saved) : DEFAULT_MEMBERS;
-    } catch {
-      return DEFAULT_MEMBERS;
-    }
-  });
+  const [members, setMembers] = useState<OsisMember[]>(DEFAULT_MEMBERS);
+  const [programs, setPrograms] = useState<OsisProgram[]>(DEFAULT_PROGRAMS);
+  const [events, setEvents] = useState<OsisEvent[]>(DEFAULT_EVENTS);
+  const [filterLevel, setFilterLevel] = useState<'Semua' | 'Presidium' | 'BPH' | 'Sekbid'>('Semua');
+  const [filterDept, setFilterDept] = useState('Semua');
+  const [savedAlert, setSavedAlert] = useState(false);
 
-  const [programs, setPrograms] = useState<OsisProgram[]>(() => {
-    try {
-      const saved = localStorage.getItem('ppjm_osis_programs');
-      return saved ? JSON.parse(saved) : DEFAULT_PROGRAMS;
-    } catch {
-      return DEFAULT_PROGRAMS;
-    }
-  });
+  // Form Member State
+  const [mName, setMName] = useState('');
+  const [mRole, setMRole] = useState('');
+  const [mLevel, setMLevel] = useState<'Presidium' | 'BPH' | 'Sekbid'>('Presidium');
+  const [mGrade, setMGrade] = useState('');
+  const [mMotto, setMMotto] = useState('');
+  const [mPhoto, setMPhoto] = useState('');
 
-  const [events, setEvents] = useState<OsisEvent[]>(() => {
-    try {
-      const saved = localStorage.getItem('ppjm_osis_events');
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  // Form Program State
+  const [pTitle, setPTitle] = useState('');
+  const [pDept, setPDept] = useState<OsisProgram['department']>('Keagamaan & Ibadah');
+  const [pDesc, setPDesc] = useState('');
+  const [pTimeline, setPTimeline] = useState('');
+  const [pTarget, setPTarget] = useState('');
 
-  // Form input states
-  const [editingMember, setEditingMember] = useState<OsisMember | null>(null);
-  const [editingProgram, setEditingProgram] = useState<OsisProgram | null>(null);
-  const [newEvent, setNewEvent] = useState<OsisEvent>({
-    id: '',
-    title: '',
-    date: '',
-    description: '',
-    photoUrl: ''
-  });
-
-  const [isSaving, setIsSaving] = useState(false);
-
-  const handleSaveMembers = async () => {
-    setIsSaving(true);
-    try {
-      localStorage.setItem('ppjm_osis_members', JSON.stringify(members));
-      await new Promise((r) => setTimeout(r, 400));
-    } finally {
-      setIsSaving(false);
-    }
+  const handleAddMember = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!mName || !mRole) return;
+    const newMember: OsisMember = {
+      id: `m-${Date.now()}`,
+      name: mName,
+      role: mRole,
+      level: mLevel,
+      classGrade: mGrade || 'Kelas IX SMP Plus JM',
+      motto: mMotto || 'Mengabdi untuk kemaslahatan santri.',
+      photoUrl: mPhoto || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80'
+    };
+    setMembers([...members, newMember]);
+    setMName('');
+    setMRole('');
+    setMGrade('');
+    setMMotto('');
+    setMPhoto('');
+    setSavedAlert(true);
+    setTimeout(() => setSavedAlert(false), 2500);
   };
 
-  const handleSavePrograms = async () => {
-    setIsSaving(true);
-    try {
-      localStorage.setItem('ppjm_osis_programs', JSON.stringify(programs));
-      await new Promise((r) => setTimeout(r, 400));
-    } finally {
-      setIsSaving(false);
-    }
+  const handleAddProgram = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pTitle || !pDesc) return;
+    const newProg: OsisProgram = {
+      id: `prog-${Date.now()}`,
+      title: pTitle,
+      department: pDept,
+      description: pDesc,
+      timeline: pTimeline || 'Semester Gasal',
+      targetOutcome: pTarget || 'Pemberdayaan Santri'
+    };
+    setPrograms([...programs, newProg]);
+    setPTitle('');
+    setPDesc('');
+    setPTimeline('');
+    setPTarget('');
+    setSavedAlert(true);
+    setTimeout(() => setSavedAlert(false), 2500);
   };
+
+  const filteredMembers = filterLevel === 'Semua'
+    ? members
+    : members.filter((m) => m.level === filterLevel);
+
+  const filteredPrograms = filterDept === 'Semua'
+    ? programs
+    : programs.filter((p) => p.department === filterDept);
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto pb-16">
+    <div className="space-y-6 max-w-6xl mx-auto pb-16">
       
-      {/* Top Banner Navigation */}
-      <div className="p-6 rounded-3xl bg-gradient-to-r from-blue-900 to-indigo-900 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-bold backdrop-blur-md">
-            <Users className="w-3.5 h-3.5 text-sky-400" />
-            <span>Portal Organisasi Santri</span>
+      {/* Header Banner */}
+      <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-[#0A2116] via-[#0E7A4C] to-[#0A2116] text-white shadow-xl border border-[#C8A951]/30 relative overflow-hidden">
+        <div className="relative z-10 space-y-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 text-[#C8A951] text-xs font-bold border border-[#C8A951]/40">
+            <Users className="w-3.5 h-3.5" />
+            <span>Organisasi Santri Intra Ma'had &amp; Sekolah</span>
           </div>
-          <h1 className="text-xl sm:text-2xl font-black">
-            Kelola OSIS (SMP Plus Jauharul Maknuun)
+          <h1 className="text-xl sm:text-3xl font-black tracking-tight text-white">
+            Kelola OSIS (Struktur 3 Level &amp; Proker 5 Departemen)
           </h1>
-          <p className="text-xs sm:text-sm text-blue-100/80">
-            Atur hierarki bagan pengurus, agenda program kerja santri, serta warta dokumentasi event.
+          <p className="text-xs sm:text-sm text-emerald-100/90 max-w-3xl leading-relaxed">
+            Pusat tata kelola kabinet santri: Struktur hierarki (Presidium, BPH, Sekbid), program kerja 5 departemen utama, serta publikasi warta press release kegiatan organisasi.
           </p>
-        </div>
-
-        {/* Tab Switcher */}
-        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-black/20 backdrop-blur-md border border-white/10">
-          <button
-            type="button"
-            onClick={() => setActiveTab('struktur')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === 'struktur'
-                ? 'bg-white text-blue-950 shadow-md'
-                : 'text-white/80 hover:text-white hover:bg-white/10'
-            }`}
-          >
-            Struktur Pengurus
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('program')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === 'program'
-                ? 'bg-white text-blue-950 shadow-md'
-                : 'text-white/80 hover:text-white hover:bg-white/10'
-            }`}
-          >
-            Program Kerja
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('event')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all ${
-              activeTab === 'event'
-                ? 'bg-white text-blue-950 shadow-md'
-                : 'text-white/80 hover:text-white hover:bg-white/10'
-            }`}
-          >
-            Warta &amp; Event
-          </button>
         </div>
       </div>
 
-      {/* Tab A: Struktur Pengurus */}
-      {activeTab === 'struktur' && (
-        <SimpleFormCard
-          title="Bagan Struktur & Profil Pengurus OSIS"
-          subtitle="Masukkan foto formal berseragam santri/jas almamater, nama lengkap pengurus, serta motto kepemimpinan."
-          icon={Users}
-          isPublished={true}
-          onPublish={handleSaveMembers}
-          onSaveDraft={handleSaveMembers}
-          isSaving={isSaving}
-          draftStorageKey="ppjm_osis_members"
+      {savedAlert && (
+        <div className="p-4 rounded-xl bg-[#0E7A4C]/15 border border-[#0E7A4C] text-[#0E7A4C] dark:text-emerald-300 font-bold text-xs flex items-center gap-2 shadow-sm animate-fade-in">
+          <CheckCircle2 className="w-5 h-5 text-[#0E7A4C] dark:text-emerald-400" />
+          <span>Alhamdulillah, pembaruan kepengurusan OSIS berhasil disimpan!</span>
+        </div>
+      )}
+
+      {/* Tabs Switcher */}
+      <div className="flex items-center gap-2 border-b border-zinc-200 dark:border-zinc-800 pb-2 overflow-x-auto">
+        <button
+          type="button"
+          onClick={() => setActiveTab('struktur')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+            activeTab === 'struktur'
+              ? 'bg-[#0E7A4C] text-[#C8A951] shadow-md border border-[#C8A951]/40'
+              : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100'
+          }`}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {members.map((member, idx) => (
+          <Layers className="w-4 h-4" />
+          <span>1. Struktur Kabinet (3 Level)</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('program')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+            activeTab === 'program'
+              ? 'bg-[#0E7A4C] text-[#C8A951] shadow-md border border-[#C8A951]/40'
+              : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100'
+          }`}
+        >
+          <Sparkles className="w-4 h-4" />
+          <span>2. Proker (5 Departemen)</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('event')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+            activeTab === 'event'
+              ? 'bg-[#0E7A4C] text-[#C8A951] shadow-md border border-[#C8A951]/40'
+              : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100'
+          }`}
+        >
+          <CalendarDays className="w-4 h-4" />
+          <span>3. Warta &amp; Event Press Release</span>
+        </button>
+      </div>
+
+      {/* TAB 1: STRUKTUR KABINET 3 LEVEL */}
+      {activeTab === 'struktur' && (
+        <div className="space-y-6">
+          <form onSubmit={handleAddMember} className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-md space-y-4">
+            <h3 className="font-extrabold text-sm text-zinc-900 dark:text-white flex items-center gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-2">
+              <PlusCircle className="w-4 h-4 text-[#C8A951]" />
+              <span>Tambah Pengurus Kabinet Baru</span>
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Level Struktur Hierarki: *</label>
+                <select
+                  value={mLevel}
+                  onChange={(e) => setMLevel(e.target.value as any)}
+                  className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+                >
+                  <option value="Presidium">Level 1: Presidium (Ketua / Wakil)</option>
+                  <option value="BPH">Level 2: BPH (Sekretaris / Bendahara)</option>
+                  <option value="Sekbid">Level 3: Sekbid (Koordinator Divisi)</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Jabatan Resmi: *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Contoh: Ketua OSIS / Sekretaris 1"
+                  value={mRole}
+                  onChange={(e) => setMRole(e.target.value)}
+                  className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Nama Santri: *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Contoh: Ahmad Faiz Al-Habsyi"
+                  value={mName}
+                  onChange={(e) => setMName(e.target.value)}
+                  className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Kelas / Angkatan:</label>
+                <input
+                  type="text"
+                  placeholder="Kelas IX-A SMP Plus JM"
+                  value={mGrade}
+                  onChange={(e) => setMGrade(e.target.value)}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">URL Pas Foto Santri:</label>
+                <input
+                  type="url"
+                  placeholder="https://..."
+                  value={mPhoto}
+                  onChange={(e) => setMPhoto(e.target.value)}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Motto Dedikasi Santri:</label>
+              <input
+                type="text"
+                placeholder="Kalimat motivasi pengabdian..."
+                value={mMotto}
+                onChange={(e) => setMMotto(e.target.value)}
+                className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+              />
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                type="submit"
+                className="px-6 py-2.5 rounded-xl bg-[#0E7A4C] hover:bg-[#128a57] text-[#C8A951] font-bold text-xs shadow-md flex items-center gap-2 border border-[#C8A951]/40 cursor-pointer"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>Simpan Pengurus Kabinet</span>
+              </button>
+            </div>
+          </form>
+
+          {/* Filter Level Hierarchy */}
+          <div className="flex items-center gap-2">
+            {(['Semua', 'Presidium', 'BPH', 'Sekbid'] as const).map((lvl) => (
+              <button
+                key={lvl}
+                type="button"
+                onClick={() => setFilterLevel(lvl)}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                  filterLevel === lvl
+                    ? 'bg-[#0E7A4C] text-[#C8A951] shadow-xs'
+                    : 'bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-300'
+                }`}
+              >
+                {lvl === 'Semua' ? 'Semua Tingkatan' : `Level: ${lvl}`}
+              </button>
+            ))}
+          </div>
+
+          {/* Members List */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredMembers.map((member) => (
               <div
                 key={member.id}
-                className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/80 space-y-4"
+                className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm flex items-center gap-3.5 justify-between"
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-extrabold text-[#007acc] uppercase tracking-wider">
-                    {member.role}
-                  </span>
-                  <span className="text-[11px] text-zinc-400 font-medium">
-                    Posisi #{idx + 1}
-                  </span>
-                </div>
-
-                {/* Smart Image Dropzone untuk foto profil pengurus */}
-                <SmartImageDropzone
-                  value={member.photoUrl}
-                  onChange={(url) => {
-                    setMembers((prev) =>
-                      prev.map((m) => (m.id === member.id ? { ...m, photoUrl: url } : m))
-                    );
-                  }}
-                  aspectRatioPreset="portrait"
-                  label="Foto Formal Pengurus (Rasio 4:5)"
-                  helperText="Gunakan foto berjas almamater / seragam resmi"
-                />
-
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1">
-                      Nama Lengkap Santri
-                    </label>
-                    <input
-                      type="text"
-                      value={member.name}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setMembers((prev) =>
-                          prev.map((m) => (m.id === member.id ? { ...m, name: val } : m))
-                        );
-                      }}
-                      className="w-full min-h-[48px] px-4 rounded-xl text-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:border-[#007acc]"
-                      placeholder="Contoh: Ahmad Faiz Al-Habsyi"
-                    />
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-12 h-12 rounded-full overflow-hidden bg-zinc-100 shrink-0 border-2 border-[#C8A951]">
+                    <img src={member.photoUrl} alt={member.name} className="w-full h-full object-cover" />
                   </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1">
-                      Tingkat Kelas
-                    </label>
-                    <input
-                      type="text"
-                      value={member.classGrade}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setMembers((prev) =>
-                          prev.map((m) => (m.id === member.id ? { ...m, classGrade: val } : m))
-                        );
-                      }}
-                      className="w-full min-h-[48px] px-4 rounded-xl text-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:border-[#007acc]"
-                      placeholder="Contoh: Kelas 9 SMP Plus JM"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1">
-                      Motto Kepemimpinan / Visi
-                    </label>
-                    <textarea
-                      rows={2}
-                      value={member.motto}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setMembers((prev) =>
-                          prev.map((m) => (m.id === member.id ? { ...m, motto: val } : m))
-                        );
-                      }}
-                      className="w-full p-3.5 rounded-xl text-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus:outline-none focus:border-[#007acc]"
-                      placeholder="Motto singkat pengurus..."
-                    />
+                  <div className="min-w-0">
+                    <span className="text-[10px] font-black uppercase text-[#C8A951] block">
+                      {member.level}
+                    </span>
+                    <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white truncate">
+                      {member.name}
+                    </h4>
+                    <p className="text-xs font-semibold text-[#0E7A4C] dark:text-emerald-400 truncate">
+                      {member.role}
+                    </p>
+                    <p className="text-[10px] text-zinc-400 truncate">{member.classGrade}</p>
                   </div>
                 </div>
+
+                <button
+                  type="button"
+                  onClick={() => setMembers(members.filter((m) => m.id !== member.id))}
+                  className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 shrink-0"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
               </div>
             ))}
           </div>
-        </SimpleFormCard>
+        </div>
       )}
 
-      {/* Tab B: Program Kerja */}
+      {/* TAB 2: PROKER 5 DEPARTEMEN */}
       {activeTab === 'program' && (
-        <SimpleFormCard
-          title="Program Kerja Kabinet Santri"
-          subtitle="Daftar agenda kerja per divisi (Pendidikan, Bahasa, Kedisiplinan, Kebersihan & Olahraga)."
-          icon={Sparkles}
-          isPublished={true}
-          onPublish={handleSavePrograms}
-          onSaveDraft={handleSavePrograms}
-          isSaving={isSaving}
-          draftStorageKey="ppjm_osis_programs"
-        >
-          <div className="space-y-4">
-            {programs.map((prog, idx) => (
+        <div className="space-y-6">
+          <form onSubmit={handleAddProgram} className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-md space-y-4">
+            <h3 className="font-extrabold text-sm text-zinc-900 dark:text-white flex items-center gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-2">
+              <PlusCircle className="w-4 h-4 text-[#C8A951]" />
+              <span>Input Program Kerja Departemen Baru</span>
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Pilih 5 Departemen Utama: *</label>
+                <select
+                  value={pDept}
+                  onChange={(e) => setPDept(e.target.value as any)}
+                  className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+                >
+                  <option value="Keagamaan & Ibadah">1. Departemen Keagamaan &amp; Ibadah</option>
+                  <option value="Bahasa & Keilmuan">2. Departemen Bahasa &amp; Keilmuan</option>
+                  <option value="Kedisiplinan & Keamanan">3. Departemen Kedisiplinan &amp; Keamanan</option>
+                  <option value="Minat Bakat & Olahraga">4. Departemen Minat Bakat &amp; Olahraga</option>
+                  <option value="Kebersihan & Lingkungan">5. Departemen Kebersihan &amp; Lingkungan</option>
+                </select>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Nama Program Kerja: *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Contoh: Festival Muharram & Bulan Bahasa"
+                  value={pTitle}
+                  onChange={(e) => setPTitle(e.target.value)}
+                  className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Timeline / Jadwal Pelaksanaan:</label>
+                <input
+                  type="text"
+                  placeholder="Setiap Pekan (Jumat Pagi)"
+                  value={pTimeline}
+                  onChange={(e) => setPTimeline(e.target.value)}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Target Capaian Output:</label>
+                <input
+                  type="text"
+                  placeholder="Peningkatan literasi & kesehatan santri"
+                  value={pTarget}
+                  onChange={(e) => setPTarget(e.target.value)}
+                  className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Deskripsi Rencana Kegiatan:</label>
+              <textarea
+                rows={2}
+                required
+                placeholder="Rincian teknis pelaksanaan proker santri..."
+                value={pDesc}
+                onChange={(e) => setPDesc(e.target.value)}
+                className="w-full p-3 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+              />
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                type="submit"
+                className="px-6 py-2.5 rounded-xl bg-[#0E7A4C] hover:bg-[#128a57] text-[#C8A951] font-bold text-xs shadow-md flex items-center gap-2 border border-[#C8A951]/40 cursor-pointer"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>Simpan Program Kerja</span>
+              </button>
+            </div>
+          </form>
+
+          {/* Proker Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filteredPrograms.map((prog) => (
               <div
                 key={prog.id}
-                className="p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/80 space-y-3"
+                className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-2.5 flex flex-col justify-between"
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-full">
+                <div className="space-y-1.5">
+                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#0E7A4C]/15 text-[#0E7A4C] dark:text-emerald-400 border border-[#0E7A4C]/30">
                     {prog.department}
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => setPrograms((prev) => prev.filter((p) => p.id !== prog.id))}
-                    className="p-1.5 text-zinc-400 hover:text-rose-600 rounded-lg transition-colors"
-                    title="Hapus program ini"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white">
+                    {prog.title}
+                  </h4>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                    {prog.description}
+                  </p>
                 </div>
 
-                <div className="space-y-2.5">
-                  <input
-                    type="text"
-                    value={prog.title}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setPrograms((prev) =>
-                        prev.map((p) => (p.id === prog.id ? { ...p, title: val } : p))
-                      );
-                    }}
-                    className="w-full min-h-[44px] px-3.5 rounded-xl text-sm font-bold bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus:outline-none"
-                    placeholder="Nama Program Kerja"
-                  />
-                  <textarea
-                    rows={2}
-                    value={prog.description}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setPrograms((prev) =>
-                        prev.map((p) => (p.id === prog.id ? { ...p, description: val } : p))
-                      );
-                    }}
-                    className="w-full p-3 rounded-xl text-xs bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus:outline-none"
-                    placeholder="Penjelasan deskripsi tujuan dan manfaat..."
-                  />
-                  <input
-                    type="text"
-                    value={prog.timeline}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      setPrograms((prev) =>
-                        prev.map((p) => (p.id === prog.id ? { ...p, timeline: val } : p))
-                      );
-                    }}
-                    className="w-full min-h-[40px] px-3.5 rounded-xl text-xs bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus:outline-none"
-                    placeholder="Waktu Pelaksanaan (misal: Setiap Jumat Pagi)"
-                  />
+                <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between text-[11px] text-zinc-400">
+                  <span>⏱️ {prog.timeline}</span>
+                  <span className="font-bold text-[#C8A951]">🎯 {prog.targetOutcome}</span>
                 </div>
               </div>
             ))}
-
-            <button
-              type="button"
-              onClick={() => {
-                const newId = `prog-${Date.now()}`;
-                setPrograms((prev) => [
-                  ...prev,
-                  {
-                    id: newId,
-                    title: 'Program Kerja Baru OSIS',
-                    department: 'Departemen Keagamaan',
-                    description: 'Penjelasan agenda kerja terpadu santri.',
-                    timeline: 'Setiap Bulan'
-                  }
-                ]);
-              }}
-              className="w-full min-h-[48px] rounded-2xl border-2 border-dashed border-zinc-200 dark:border-zinc-700 hover:border-[#007acc] text-xs font-bold text-zinc-600 dark:text-zinc-400 hover:text-[#007acc] flex items-center justify-center gap-2 transition-all"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Tambah Program Kerja Baru</span>
-            </button>
           </div>
-        </SimpleFormCard>
+        </div>
       )}
 
-      {/* Tab C: Warta & Event */}
+      {/* TAB 3: WARTA & EVENT PRESS RELEASE OSIS */}
       {activeTab === 'event' && (
-        <SimpleFormCard
-          title="Warta Dokumentasi Event OSIS"
-          subtitle="Publikasikan kegiatan pelantikan, festival santri, atau aksi sosial dengan foto resmi beresolusi tajam."
-          icon={CalendarDays}
-          isPublished={true}
-          onPublish={async () => {
-            if (!newEvent.title) return;
-            setEvents((prev) => [...prev, { ...newEvent, id: `event-${Date.now()}` }]);
-            setNewEvent({ id: '', title: '', date: '', description: '', photoUrl: '' });
-          }}
-          onSaveDraft={async () => {}}
-        >
-          <div className="space-y-4">
-            <SmartImageDropzone
-              value={newEvent.photoUrl}
-              onChange={(url) => setNewEvent((prev) => ({ ...prev, photoUrl: url }))}
-              aspectRatioPreset="landscape"
-              label="Foto Dokumentasi Event (Rasio 4:3 / 16:9)"
-              helperText="Foto kegiatan santri bersama dewan asatidz"
-            />
-
+        <div className="space-y-4">
+          <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
             <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1">
-                Nama / Judul Event
-              </label>
-              <input
-                type="text"
-                value={newEvent.title}
-                onChange={(e) => setNewEvent((prev) => ({ ...prev, title: e.target.value }))}
-                className="w-full min-h-[48px] px-4 rounded-xl text-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus:outline-none"
-                placeholder="Contoh: Pelantikan Kabinet OSIS Periode 2026/2027"
-              />
+              <h3 className="font-extrabold text-sm text-zinc-900 dark:text-white">
+                Press Release &amp; Warta Kegiatan OSIS Santri
+              </h3>
+              <p className="text-xs text-zinc-400">
+                Dokumentasi foto dan siaran pers resmi seluruh dinamika event kesiswaan santri
+              </p>
             </div>
-
-            <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1">
-                Tanggal Kegiatan
-              </label>
-              <input
-                type="text"
-                value={newEvent.date}
-                onChange={(e) => setNewEvent((prev) => ({ ...prev, date: e.target.value }))}
-                className="w-full min-h-[48px] px-4 rounded-xl text-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus:outline-none"
-                placeholder="Contoh: 15 Oktober 2026"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1">
-                Narasi Singkat Liputan
-              </label>
-              <textarea
-                rows={3}
-                value={newEvent.description}
-                onChange={(e) => setNewEvent((prev) => ({ ...prev, description: e.target.value }))}
-                className="w-full p-3.5 rounded-xl text-sm bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 focus:outline-none"
-                placeholder="Tuliskan suasana dan hasil kegiatan..."
-              />
-            </div>
+            <span className="text-xs font-bold text-[#C8A951] bg-[#0A2116] px-3 py-1 rounded-lg border border-[#C8A951]/40">
+              {events.length} Warta Event
+            </span>
           </div>
-        </SimpleFormCard>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {events.map((ev) => (
+              <div
+                key={ev.id}
+                className="rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm flex flex-col justify-between"
+              >
+                <div className="aspect-video bg-zinc-100 overflow-hidden">
+                  <img src={ev.photoUrl} alt={ev.title} className="w-full h-full object-cover" />
+                </div>
+                <div className="p-4 space-y-1.5">
+                  <span className="text-[11px] text-[#C8A951] font-mono font-bold block">{ev.date}</span>
+                  <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white">{ev.title}</h4>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">{ev.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
     </div>
   );
 };
-
+export default KelolaOsis;

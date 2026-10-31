@@ -34,7 +34,7 @@ export const KelolaBerita: React.FC = () => {
 
   // Form states
   const [judul, setJudul] = useState('');
-  const [kategori, setKategori] = useState('Warta Pondok');
+  const [kategori, setKategori] = useState('Berita Utama');
   const [ringkasan, setRingkasan] = useState('');
   const [isiBerita, setIsiBerita] = useState('');
   const [customThumbnail, setCustomThumbnail] = useState('');
@@ -44,6 +44,7 @@ export const KelolaBerita: React.FC = () => {
 
   // Filter & Search
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState('Semua Warta');
 
   // Auto WebP Compression State
   const [compressionResult, setCompressionResult] = useState<CompressionResult | null>(null);
@@ -323,12 +324,16 @@ export const KelolaBerita: React.FC = () => {
     setWaLink(broadcastUrl);
   };
 
-  const filteredNews = newsList.filter(
-    (item) =>
+  const filteredNews = newsList.filter((item) => {
+    const matchSearch =
       !searchQuery ||
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.category.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+      item.category.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchCategory =
+      selectedCategoryFilter === 'Semua Warta' ||
+      item.category.toLowerCase() === selectedCategoryFilter.toLowerCase();
+    return matchSearch && matchCategory;
+  });
 
   return (
     <div className="space-y-6">
@@ -382,7 +387,7 @@ export const KelolaBerita: React.FC = () => {
       {activeTab === 'list' ? (
         /* List View */
         <div className="space-y-4">
-          <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center justify-between gap-3">
+          <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="relative w-full sm:w-80">
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
               <input
@@ -393,7 +398,25 @@ export const KelolaBerita: React.FC = () => {
                 className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600"
               />
             </div>
-            <span className="text-xs text-slate-500 font-bold">
+            
+            <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
+              {(['Semua Warta', 'Berita Utama', 'Siaran Pers', 'Prestasi', 'Akademik', 'Pesantren'] as const).map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategoryFilter(cat)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                    selectedCategoryFilter === cat
+                      ? 'bg-emerald-800 text-white shadow-xs'
+                      : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+
+            <span className="text-xs text-slate-500 font-bold shrink-0">
               Total: {filteredNews.length} Berita
             </span>
           </div>
@@ -565,12 +588,11 @@ export const KelolaBerita: React.FC = () => {
                 onChange={(e) => setKategori(e.target.value)}
                 className="w-full px-4 py-2.5 text-xs font-semibold rounded-xl border border-slate-200 bg-white"
               >
-                <option value="Warta Pondok">Warta Pondok</option>
-                <option value="Agenda Akbar">Agenda Akbar</option>
-                <option value="Prestasi Santri">Prestasi Santri</option>
-                <option value="Inovasi STEM">Inovasi STEM</option>
-                <option value="Pengumuman PSB">Pengumuman PSB</option>
-                <option value="Kegiatan Diniyah">Kegiatan Diniyah</option>
+                <option value="Berita Utama">Berita Utama</option>
+                <option value="Siaran Pers">Siaran Pers</option>
+                <option value="Prestasi">Prestasi</option>
+                <option value="Akademik">Akademik</option>
+                <option value="Pesantren">Pesantren</option>
               </select>
             </div>
 

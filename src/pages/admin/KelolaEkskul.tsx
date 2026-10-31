@@ -10,15 +10,19 @@ import {
   MapPin,
   User,
   Activity,
-  X
+  X,
+  Eye,
+  Calendar,
+  Layers,
+  Save
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 
-interface EkskulItem {
+export interface EkskulItem {
   id: string;
   name: string;
-  category: string;
+  category: 'Sains' | 'Olahraga' | 'Seni' | 'Agama' | 'Pramuka';
   coach: string;
   schedule: string;
   location: string;
@@ -31,18 +35,18 @@ const INITIAL_EKSKUL: EkskulItem[] = [
   {
     id: 'ek-1',
     name: 'Robotika & Rekayasa IoT Santri',
-    category: 'Teknologi & Sains',
-    coach: 'Ust. Hilman M.T. & Tim Mentor',
+    category: 'Sains',
+    coach: 'Ust. Hilman M.T. & Tim Mentor Lab STEM',
     schedule: 'Sabtu, 14:00 - 17:00 WIB',
     location: 'Laboratorium STEM Jauharul Maknuun',
-    description: 'Pelatihan algoritma pemrograman C++, perakitan mikrokontroler Arduino/ESP32, sensor array, dan persiapan olimpiade robotik.',
+    description: 'Pelatihan algoritma pemrograman C++, perakitan mikrokontroler Arduino/ESP32, sensor array, dan persiapan olimpiade robotik santri.',
     imageUrl: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80',
     isActive: true,
   },
   {
     id: 'ek-2',
     name: 'Pencak Silat Pagar Nusa Nahdlatul Ulama',
-    category: 'Bela Diri & Fisik',
+    category: 'Olahraga',
     coach: 'Pendekar M. Syamsul Huda',
     schedule: 'Ahad & Rabu, 15:30 - 17:30 WIB',
     location: 'Halaman Utama Asrama Putra',
@@ -52,8 +56,8 @@ const INITIAL_EKSKUL: EkskulItem[] = [
   },
   {
     id: 'ek-3',
-    name: 'Seni Hadrah Al-Banjari & Gambus Shalawat',
-    category: 'Seni Islami',
+    name: 'Seni Hadrah Al-Banjari & Shalawat',
+    category: 'Seni',
     coach: 'Ust. Zaki M. & Tim Syauqul Habib',
     schedule: 'Malam Jumat, 20:00 - 22:00 WIB',
     location: 'Serambi Masjid Jauharul Maknuun',
@@ -63,13 +67,24 @@ const INITIAL_EKSKUL: EkskulItem[] = [
   },
   {
     id: 'ek-4',
-    name: 'Kaligrafi Islam (Khath Araby)',
-    category: 'Seni Rupa & Turats',
+    name: 'Kajian Khath & Kaligrafi Islam (Rasm Usmani)',
+    category: 'Agama',
     coach: 'Ust. Hasan Basri (Khattat)',
     schedule: 'Senin & Kamis, 16:00 - 17:30 WIB',
-    location: 'Gedung Perpustakaan Turats',
+    location: 'Gedung Perpustakaan Turats Salaf',
     description: 'Pendalaman kaidah tulisan Arab rasm Usmani, khath Tsuluts, Naskhi, Diwani, dan Riq’ah bersertifikat.',
     imageUrl: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=800&q=80',
+    isActive: true,
+  },
+  {
+    id: 'ek-5',
+    name: 'Praja Muda Karana (Pramuka Gugus Depan PPJM)',
+    category: 'Pramuka',
+    coach: 'Kak Ahmad Ridwan (Pembina Gudep)',
+    schedule: 'Jumat Pagi, 06:30 - 09:00 WIB',
+    location: 'Bumi Perkemahan & Lapangan Hijau PPJM',
+    description: 'Pendidikan kepanduan berbasis karakter santri: semaphore, morse, tali temali, penjelajahan alam, dan kepemimpinan bela negara.',
+    imageUrl: 'https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=800&q=80',
     isActive: true,
   }
 ];
@@ -78,10 +93,12 @@ export const KelolaEkskul: React.FC = () => {
   const [items, setItems] = useState<EkskulItem[]>(INITIAL_EKSKUL);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [filterCat, setFilterCat] = useState<'Semua' | 'Sains' | 'Olahraga' | 'Seni' | 'Agama' | 'Pramuka'>('Semua');
+  const [selectedDetailModal, setSelectedDetailModal] = useState<EkskulItem | null>(null);
 
   // Form State
   const [name, setName] = useState('');
-  const [category, setCategory] = useState('Teknologi & Sains');
+  const [category, setCategory] = useState<'Sains' | 'Olahraga' | 'Seni' | 'Agama' | 'Pramuka'>('Sains');
   const [coach, setCoach] = useState('');
   const [schedule, setSchedule] = useState('');
   const [location, setLocation] = useState('');
@@ -89,7 +106,6 @@ export const KelolaEkskul: React.FC = () => {
   const [imageUrl, setImageUrl] = useState('');
   const [savedAlert, setSavedAlert] = useState(false);
 
-  // Load from Supabase on mount
   useEffect(() => {
     const loadFromSupabase = async () => {
       if (!isSupabaseConfigured()) return;
@@ -101,16 +117,16 @@ export const KelolaEkskul: React.FC = () => {
 
         if (!error && data && data.length > 0) {
           setItems(
-            data.map((row) => ({
+            data.map((row: any) => ({
               id: row.id,
               name: row.name,
-              category: row.icon_name || 'Ekstrakurikuler',
-              coach: row.mentor_name || 'Pembina PPJM',
-              schedule: row.schedule,
-              location: 'Kompleks Ponpes Jauharul Maknuun',
-              description: row.description,
-              imageUrl: row.cover_image || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=800&q=80',
-              isActive: true,
+              category: (row.category as any) || 'Sains',
+              coach: row.coach || row.mentor_name || 'Pelatih Ekstrakurikuler',
+              schedule: row.schedule || 'Sabtu Sore',
+              location: row.location || 'Komplek Pondok Pesantren',
+              description: row.description || '',
+              imageUrl: row.image_url || row.cover_image || 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80',
+              isActive: row.is_active ?? true,
             }))
           );
         }
@@ -123,7 +139,7 @@ export const KelolaEkskul: React.FC = () => {
 
   const resetForm = () => {
     setName('');
-    setCategory('Teknologi & Sains');
+    setCategory('Sains');
     setCoach('');
     setSchedule('');
     setLocation('');
@@ -141,41 +157,37 @@ export const KelolaEkskul: React.FC = () => {
     setLocation(item.location);
     setDescription(item.description);
     setImageUrl(item.imageUrl);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 100, behavior: 'smooth' });
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('Apakah Anda yakin ingin menghapus data ekstrakurikuler ini?')) {
-      setItems(items.filter((item) => item.id !== id));
+    if (confirm('Hapus kegiatan ekstrakurikuler ini?')) {
+      setItems(items.filter((i) => i.id !== id));
       if (isSupabaseConfigured() && !id.startsWith('ek-')) {
         try {
           await supabase.from('extracurriculars').delete().eq('id', id);
         } catch (err) {
-          console.warn('Failed to delete extracurricular on Supabase:', err);
+          console.warn('Failed to delete on Supabase:', err);
         }
       }
-      invalidateCache('ekskul_list');
+      invalidateCache('extracurriculars_list');
     }
-  };
-
-  const handleToggleActive = (id: string) => {
-    setItems(
-      items.map((it) => (it.id === id ? { ...it, isActive: !it.isActive } : it))
-    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !coach) return;
+    if (!name) return;
 
-    const finalImage = imageUrl || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80';
+    const finalImage =
+      imageUrl ||
+      'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80';
 
     if (editingId) {
       setItems(
-        items.map((it) =>
-          it.id === editingId
+        items.map((i) =>
+          i.id === editingId
             ? {
-                ...it,
+                ...i,
                 name,
                 category,
                 coach,
@@ -184,55 +196,12 @@ export const KelolaEkskul: React.FC = () => {
                 description,
                 imageUrl: finalImage,
               }
-            : it
+            : i
         )
       );
-
-      if (isSupabaseConfigured() && !editingId.startsWith('ek-')) {
-        try {
-          await supabase
-            .from('extracurriculars')
-            .update({
-              name,
-              schedule,
-              mentor_name: coach,
-              description,
-              cover_image: finalImage,
-              icon_name: category,
-            })
-            .eq('id', editingId);
-        } catch (err) {
-          console.warn('Failed to update extracurricular on Supabase:', err);
-        }
-      }
     } else {
-      let createdId = `ek-${Date.now()}`;
-
-      if (isSupabaseConfigured()) {
-        try {
-          const { data } = await supabase
-            .from('extracurriculars')
-            .insert({
-              name,
-              schedule,
-              mentor_name: coach,
-              description,
-              cover_image: finalImage,
-              icon_name: category,
-            })
-            .select()
-            .single();
-
-          if (data?.id) {
-            createdId = data.id;
-          }
-        } catch (err) {
-          console.warn('Failed to insert extracurricular on Supabase:', err);
-        }
-      }
-
       const newItem: EkskulItem = {
-        id: createdId,
+        id: `ek-${Date.now()}`,
         name,
         category,
         coach,
@@ -242,57 +211,61 @@ export const KelolaEkskul: React.FC = () => {
         imageUrl: finalImage,
         isActive: true,
       };
-      setItems([newItem, ...items]);
+      setItems([...items, newItem]);
     }
 
+    invalidateCache('extracurriculars_list');
     setSavedAlert(true);
-    resetForm();
-    invalidateCache('ekskul_list');
     setTimeout(() => setSavedAlert(false), 2500);
+    resetForm();
   };
 
-  const filteredItems = items.filter(
-    (it) =>
-      it.name.toLowerCase().includes(search.toLowerCase()) ||
-      it.coach.toLowerCase().includes(search.toLowerCase()) ||
-      it.category.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredItems = items.filter((item) => {
+    const matchSearch =
+      item.name.toLowerCase().includes(search.toLowerCase()) ||
+      item.coach.toLowerCase().includes(search.toLowerCase());
+    const matchCat = filterCat === 'Semua' || item.category === filterCat;
+    return matchSearch && matchCat;
+  });
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-2">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-100 text-purple-900 text-xs font-bold uppercase tracking-wider">
-          <Sparkles className="w-3.5 h-3.5 text-purple-800" />
-          <span>Editor & Publish Ekstrakurikuler</span>
+    <div className="space-y-6 max-w-6xl mx-auto pb-16">
+      
+      {/* Header Banner */}
+      <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-[#0A2116] via-[#0E7A4C] to-[#0A2116] text-white shadow-xl border border-[#C8A951]/30 relative overflow-hidden">
+        <div className="relative z-10 space-y-2">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 text-[#C8A951] text-xs font-bold border border-[#C8A951]/40">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Pusat Pembinaan Bakat &amp; Ekstrakurikuler Santri</span>
+          </div>
+          <h1 className="text-xl sm:text-3xl font-black tracking-tight text-white">
+            Kelola Ekstrakurikuler (5 Kategori Lengkap)
+          </h1>
+          <p className="text-xs sm:text-sm text-emerald-100/90 max-w-3xl leading-relaxed">
+            Pengelolaan jadwal latihan, pelatih, lokasi, dan deskripsi kegiatan santri: Sains, Olahraga, Seni, Agama, dan Pramuka.
+          </p>
         </div>
-        <h1 className="text-xl sm:text-2xl font-black text-emerald-950">
-          Kelola & Publikasikan Ekstrakurikuler Santri
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-500">
-          Atur jadwal, pelatih pembina, deskripsi materi, dan dokumentasi foto ekstrakurikuler santri yang tampil pada halaman <code>/ekskul</code>.
-        </p>
       </div>
 
       {savedAlert && (
-        <div className="p-4 rounded-2xl bg-emerald-100 border border-emerald-200 text-emerald-900 font-bold text-xs flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 text-emerald-700" />
-          <span>Alhamdulillah, data ekstrakurikuler santri berhasil disimpan dan diterbitkan!</span>
+        <div className="p-4 rounded-xl bg-[#0E7A4C]/15 border border-[#0E7A4C] text-[#0E7A4C] dark:text-emerald-300 font-bold text-xs flex items-center gap-2 shadow-sm animate-fade-in">
+          <CheckCircle2 className="w-5 h-5 text-[#0E7A4C] dark:text-emerald-400" />
+          <span>Alhamdulillah, data kegiatan ekstrakurikuler berhasil disimpan!</span>
         </div>
       )}
 
-      {/* Form Tambah / Edit */}
-      <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
-        <div className="flex items-center justify-between pb-2 border-b border-slate-100">
-          <h3 className="font-extrabold text-sm sm:text-base text-slate-800 flex items-center gap-2">
-            <Activity className="w-4 h-4 text-purple-600" />
-            <span>{editingId ? 'Edit Data Ekstrakurikuler' : 'Tambah Ekstrakurikuler Baru'}</span>
+      {/* Form Input Ekskul */}
+      <form onSubmit={handleSubmit} className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-md space-y-4">
+        <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-zinc-800">
+          <h3 className="font-extrabold text-sm sm:text-base text-zinc-900 dark:text-white flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-[#C8A951]" />
+            <span>{editingId ? 'Edit Ekstrakurikuler' : 'Tambah Ekstrakurikuler Baru'}</span>
           </h3>
           {editingId && (
             <button
               type="button"
               onClick={resetForm}
-              className="text-xs font-bold text-slate-500 hover:text-slate-800 flex items-center gap-1"
+              className="text-xs font-bold text-rose-500 hover:underline flex items-center gap-1"
             >
               <X className="w-3.5 h-3.5" />
               <span>Batal Edit</span>
@@ -302,195 +275,230 @@ export const KelolaEkskul: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Nama Ekstrakurikuler: *</label>
+            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Nama Kegiatan Ekskul: *</label>
             <input
               type="text"
               required
-              placeholder="Contoh: Robotika & IoT Santri"
+              placeholder="Contoh: Robotika & Rekayasa IoT Santri"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600"
+              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 font-bold"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Kategori Ekskul:</label>
+            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">5 Kategori Pilihan: *</label>
             <select
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2.5 text-xs font-semibold rounded-xl border border-slate-200 bg-white"
+              onChange={(e) => setCategory(e.target.value as any)}
+              className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
             >
-              <option value="Teknologi & Sains">Teknologi & Sains</option>
-              <option value="Bela Diri & Fisik">Bela Diri & Fisik</option>
-              <option value="Seni Islami">Seni Islami</option>
-              <option value="Seni Rupa & Turats">Seni Rupa & Turats</option>
-              <option value="Bahasa & Diplomasi">Bahasa & Diplomasi</option>
-              <option value="Kepanduan / Pramuka">Kepanduan / Pramuka</option>
+              <option value="Sains">Sains</option>
+              <option value="Olahraga">Olahraga</option>
+              <option value="Seni">Seni</option>
+              <option value="Agama">Agama</option>
+              <option value="Pramuka">Pramuka</option>
             </select>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Pembina / Pelatih: *</label>
+            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Pelatih / Pembina:</label>
             <input
               type="text"
-              required
-              placeholder="Contoh: Ust. Hilman M.T."
+              placeholder="Ust. Hilman M.T."
               value={coach}
               onChange={(e) => setCoach(e.target.value)}
-              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600"
+              className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Hari & Jam Latihan:</label>
+            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Jadwal Latihan:</label>
             <input
               type="text"
-              placeholder="Contoh: Sabtu, 14:00 - 17:00 WIB"
+              placeholder="Sabtu, 14:00 - 17:00 WIB"
               value={schedule}
               onChange={(e) => setSchedule(e.target.value)}
-              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600"
+              className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Tempat / Lokasi Latihan:</label>
+            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Lokasi Latihan:</label>
             <input
               type="text"
-              placeholder="Contoh: Laboratorium STEM PPJM"
+              placeholder="Laboratorium STEM PPJM"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600"
+              className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
             />
           </div>
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-bold text-slate-700">URL Foto Dokumentasi Ekskul:</label>
+          <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">URL Gambar Cover Ekskul:</label>
           <input
             type="url"
-            placeholder="https://images.unsplash.com/... (atau path gambar)"
+            placeholder="https://images.unsplash.com/..."
             value={imageUrl}
             onChange={(e) => setImageUrl(e.target.value)}
-            className="w-full px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600"
+            className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
           />
         </div>
 
         <div className="space-y-1">
-          <label className="text-xs font-bold text-slate-700">Deskripsi Program & Silabus Ekskul:</label>
+          <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Deskripsi Silabus Ekskul:</label>
           <textarea
-            rows={3}
-            placeholder="Jelaskan capaian pembelajaran, target kompetisi, dan materi latihan santri..."
+            rows={2}
+            placeholder="Keterangan materi latihan dan sasaran kompetensi santri..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-4 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600"
+            className="w-full p-3 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
           />
         </div>
 
         <div className="pt-2 flex justify-end">
           <button
             type="submit"
-            className="px-6 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all flex items-center gap-2"
+            className="px-6 py-2.5 rounded-xl bg-[#0E7A4C] hover:bg-[#128a57] text-[#C8A951] font-bold text-xs shadow-md flex items-center gap-2 border border-[#C8A951]/40 cursor-pointer"
           >
             <PlusCircle className="w-4 h-4" />
-            <span>{editingId ? 'Simpan Perubahan Ekskul' : 'Publikasikan Ekskul'}</span>
+            <span>{editingId ? 'Simpan Perubahan' : 'Terbitkan Ekskul'}</span>
           </button>
         </div>
       </form>
 
-      {/* Grid Card Daftar Ekskul */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h3 className="font-extrabold text-base text-slate-900">
-              Daftar Ekstrakurikuler Santri Aktif ({filteredItems.length})
-            </h3>
-            <p className="text-xs text-slate-500">
-              Daftar kegiatan minat bakat santri yang tampil pada portal publik.
-            </p>
-          </div>
-
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Cari ekskul / pembina..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 pr-3 py-1.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600"
-            />
-          </div>
+      {/* Filter Tabs by 5 Categories */}
+      <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
+          {(['Semua', 'Sains', 'Olahraga', 'Seni', 'Agama', 'Pramuka'] as const).map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setFilterCat(cat)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer whitespace-nowrap ${
+                filterCat === cat
+                  ? 'bg-[#0E7A4C] text-[#C8A951] shadow-xs'
+                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200'
+              }`}
+            >
+              {cat === 'Semua' ? 'Semua Ekskul' : cat}
+            </button>
+          ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {filteredItems.map((item) => (
-            <div
-              key={item.id}
-              className="p-4 rounded-2xl border border-slate-200 hover:border-purple-300 transition-all flex flex-col justify-between space-y-3 bg-slate-50/50"
-            >
-              <div className="flex items-start gap-3">
-                <img
-                  src={item.imageUrl}
-                  alt={item.name}
-                  className="w-20 h-20 rounded-xl object-cover shrink-0 bg-slate-200"
-                />
-                <div className="space-y-1 min-w-0">
-                  <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-purple-100 text-purple-900 uppercase">
-                    {item.category}
-                  </span>
-                  <h4 className="font-extrabold text-sm text-slate-900 truncate">{item.name}</h4>
-                  <p className="text-xs text-slate-600 line-clamp-2">{item.description}</p>
-                </div>
+        <div className="relative w-full sm:w-60">
+          <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-2.5" />
+          <input
+            type="text"
+            placeholder="Cari ekskul..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-9 pr-3 py-1.5 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+          />
+        </div>
+      </div>
+
+      {/* Ekskul Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filteredItems.map((item) => (
+          <div
+            key={item.id}
+            className="rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between"
+          >
+            <div>
+              <div className="relative aspect-video overflow-hidden bg-zinc-100">
+                <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#0A2116] text-[#C8A951] border border-[#C8A951]/40">
+                  {item.category}
+                </span>
               </div>
 
-              <div className="pt-2 border-t border-slate-200/70 grid grid-cols-2 gap-2 text-[11px] text-slate-500 font-medium">
-                <div className="flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-emerald-700" />
-                  <span className="truncate">{item.coach}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-amber-600" />
-                  <span className="truncate">{item.schedule}</span>
-                </div>
-              </div>
-
-              <div className="pt-1 flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={() => handleToggleActive(item.id)}
-                  className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
-                    item.isActive
-                      ? 'bg-emerald-100 text-emerald-900'
-                      : 'bg-slate-200 text-slate-500'
-                  }`}
-                >
-                  {item.isActive ? 'Aktif di Web' : 'Non-Aktif'}
-                </button>
-
-                <div className="flex items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={() => handleEdit(item)}
-                    className="p-1.5 rounded-lg text-slate-500 hover:text-purple-700 hover:bg-purple-50 transition-colors"
-                    title="Edit Ekskul"
-                  >
-                    <Edit3 className="w-4 h-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(item.id)}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                    title="Hapus Ekskul"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+              <div className="p-4 space-y-2">
+                <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white leading-snug">
+                  {item.name}
+                </h4>
+                <div className="text-xs text-zinc-500 dark:text-zinc-400 space-y-1">
+                  <p className="flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                    <span>{item.coach}</span>
+                  </p>
+                  <p className="flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                    <span>{item.schedule}</span>
+                  </p>
+                  <p className="flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                    <span className="truncate">{item.location}</span>
+                  </p>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+
+            <div className="p-4 pt-0 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 mt-2">
+              <button
+                type="button"
+                onClick={() => setSelectedDetailModal(item)}
+                className="text-xs font-bold text-[#0E7A4C] hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <Eye className="w-3.5 h-3.5" />
+                <span>Detail Ekskul</span>
+              </button>
+
+              <div className="flex items-center gap-1">
+                <button onClick={() => handleEdit(item)} className="p-1.5 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded">
+                  <Edit3 className="w-3.5 h-3.5" />
+                </button>
+                <button onClick={() => handleDelete(item.id)} className="p-1.5 text-rose-500 hover:bg-rose-950/40 rounded">
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
+
+      {/* EKSKUL DETAIL MODAL */}
+      {selectedDetailModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+          <div className="max-w-lg w-full rounded-2xl bg-[#0A2116] border border-[#C8A951]/40 text-white p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+              <div>
+                <span className="text-[10px] font-black uppercase text-[#C8A951]">Kategori {selectedDetailModal.category}</span>
+                <h3 className="font-extrabold text-base text-white">{selectedDetailModal.name}</h3>
+              </div>
+              <button onClick={() => setSelectedDetailModal(null)} className="p-1 rounded-md text-zinc-400 hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="aspect-video rounded-xl overflow-hidden bg-black/50 border border-white/10">
+              <img src={selectedDetailModal.imageUrl} alt={selectedDetailModal.name} className="w-full h-full object-cover" />
+            </div>
+
+            <div className="space-y-2 text-xs">
+              <p><span className="text-zinc-400">Pembina / Pelatih:</span> <strong className="text-[#C8A951]">{selectedDetailModal.coach}</strong></p>
+              <p><span className="text-zinc-400">Waktu Latihan:</span> <strong>{selectedDetailModal.schedule}</strong></p>
+              <p><span className="text-zinc-400">Lokasi:</span> <strong>{selectedDetailModal.location}</strong></p>
+              <p className="text-zinc-300 pt-2 leading-relaxed">{selectedDetailModal.description}</p>
+            </div>
+
+            <div className="flex justify-end pt-2 border-t border-white/10">
+              <button
+                type="button"
+                onClick={() => setSelectedDetailModal(null)}
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-[#0E7A4C] text-[#C8A951]"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
+export default KelolaEkskul;
