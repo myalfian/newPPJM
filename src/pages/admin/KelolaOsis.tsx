@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Users,
   Sparkles,
@@ -15,8 +15,11 @@ import {
   Save,
   X,
   PlusCircle,
-  Eye
+  Eye,
+  UploadCloud,
+  Link as LinkIcon
 } from 'lucide-react';
+import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 
 export interface OsisMember {
   id: string;
@@ -167,6 +170,27 @@ export const KelolaOsis: React.FC = () => {
   const [mGrade, setMGrade] = useState('');
   const [mMotto, setMMotto] = useState('');
   const [mPhoto, setMPhoto] = useState('');
+  const [compressing, setCompressing] = useState(false);
+  const [compressionResult, setCompressionResult] = useState<CompressionResult | null>(null);
+  const [imageInputMode, setImageInputMode] = useState<'upload' | 'url'>('upload');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Mohon pilih file gambar (JPG, PNG, WebP).');
+      return;
+    }
+    setCompressing(true);
+    try {
+      const res = await compressImageToWebP(file, 800, 1000, 0.82);
+      setCompressionResult(res);
+      setMPhoto(res.dataUrl);
+    } catch (err: any) {
+      alert('Gagal memproses gambar: ' + (err?.message || 'Format tidak didukung'));
+    } finally {
+      setCompressing(false);
+    }
+  };
 
   // Form Program State
   const [pTitle, setPTitle] = useState('');
@@ -193,6 +217,7 @@ export const KelolaOsis: React.FC = () => {
     setMGrade('');
     setMMotto('');
     setMPhoto('');
+    setCompressionResult(null);
     setSavedAlert(true);
     setTimeout(() => setSavedAlert(false), 2500);
   };
@@ -353,15 +378,100 @@ export const KelolaOsis: React.FC = () => {
                 />
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">URL Pas Foto Santri:</label>
-                <input
-                  type="url"
-                  placeholder="https://..."
-                  value={mPhoto}
-                  onChange={(e) => setMPhoto(e.target.value)}
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
-                />
+              {/* Pas Foto Santri Pengurus dengan Auto WebP Compressor */}
+              <div className="space-y-2 p-3 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/80 dark:border-zinc-700">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                    <ImageIcon className="w-3.5 h-3.5 text-[#0E7A4C]" />
+                    <span>Pas Foto Santri:</span>
+                  </label>
+                  <div className="flex items-center gap-1 bg-white dark:bg-zinc-900 p-0.5 rounded-lg border border-zinc-200 dark:border-zinc-700">
+                    <button
+                      type="button"
+                      onClick={() => setImageInputMode('upload')}
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition flex items-center gap-1 cursor-pointer ${
+                        imageInputMode === 'upload'
+                          ? 'bg-[#0E7A4C] text-white shadow-2xs'
+                          : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
+                      }`}
+                    >
+                      <UploadCloud className="w-2.5 h-2.5" />
+                      <span>Dari Komputer</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setImageInputMode('url')}
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition flex items-center gap-1 cursor-pointer ${
+                        imageInputMode === 'url'
+                          ? 'bg-[#0E7A4C] text-white shadow-2xs'
+                          : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
+                      }`}
+                    >
+                      <LinkIcon className="w-2.5 h-2.5" />
+                      <span>URL</span>
+                    </button>
+                  </div>
+                </div>
+
+                {imageInputMode === 'upload' ? (
+                  <div className="space-y-2">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        if (e.target.files?.[0]) {
+                          handleFileUpload(e.target.files[0]);
+                        }
+                      }}
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={compressing}
+                      className="w-full py-2.5 px-3 rounded-xl border border-dashed border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/40 dark:bg-emerald-950/20 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition text-center cursor-pointer flex flex-col items-center justify-center gap-1"
+                    >
+                      <UploadCloud className="w-5 h-5 text-[#0E7A4C]" />
+                      <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">
+                        {compressing ? 'Mengompres pas foto...' : 'Pilih Pas Foto (Otomatis WebP)'}
+                      </span>
+                    </button>
+
+                    {compressionResult && (
+                      <div className="p-2 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 border border-emerald-300 dark:border-emerald-800 flex items-center justify-between text-[11px] font-bold text-emerald-900 dark:text-emerald-300">
+                        <span>WebP: {compressionResult.compressedSizeKB} KB (Hemat {compressionResult.savedPercent}%)</span>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <input
+                    type="url"
+                    placeholder="https://..."
+                    value={mPhoto}
+                    onChange={(e) => setMPhoto(e.target.value)}
+                    className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white"
+                  />
+                )}
+
+                {mPhoto && (
+                  <div className="flex items-center gap-2 pt-1">
+                    <div className="w-10 h-10 rounded-lg overflow-hidden border border-zinc-300 dark:border-zinc-700 bg-zinc-100 shrink-0 shadow-xs">
+                      <img src={mPhoto} alt="Pratinjau" className="w-full h-full object-cover" />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMPhoto('');
+                        setCompressionResult(null);
+                      }}
+                      className="text-[10px] text-rose-600 hover:underline font-semibold cursor-pointer"
+                    >
+                      Hapus Foto
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 

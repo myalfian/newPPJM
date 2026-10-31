@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { StemProject, supabase } from '../../lib/supabase';
 import { useCachedQuery } from '../../lib/queryCache';
+import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 
 interface StemShowcaseProps {
   mode: 'materi' | 'portofolio';
@@ -157,6 +158,26 @@ export const StemShowcase: React.FC<StemShowcaseProps> = ({ mode, projects }) =>
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [santriName, setSantriName] = useState('');
   const [santriClass, setSantriClass] = useState('');
+  const [compressing, setCompressing] = useState(false);
+  const [compressionResult, setCompressionResult] = useState<CompressionResult | null>(null);
+  const [reportFileUrl, setReportFileUrl] = useState<string | null>(null);
+
+  const handleFileUpload = async (file: File) => {
+    if (file.type.startsWith('image/')) {
+      setCompressing(true);
+      try {
+        const res = await compressImageToWebP(file, 1200, 1200, 0.82);
+        setCompressionResult(res);
+        setReportFileUrl(res.dataUrl);
+      } catch (err: any) {
+        alert('Gagal memproses gambar: ' + (err?.message || 'Format tidak didukung'));
+      } finally {
+        setCompressing(false);
+      }
+    } else {
+      setReportFileUrl(file.name);
+    }
+  };
 
   const displayList = mode === 'portofolio' 
     ? activeProjects.filter(p => p.is_portfolio) 
@@ -374,6 +395,8 @@ export const StemShowcase: React.FC<StemShowcaseProps> = ({ mode, projects }) =>
                         onChange={(e) => setSantriName(e.target.value)}
                         className="px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-emerald-600"
                       />
+                      {compressing && <p className="text-[11px] text-emerald-700 font-bold mt-1">Mengompres foto ke WebP...</p>}
+                      {compressionResult && <div className="mt-2 p-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 text-[10.5px] font-bold">WebP: {compressionResult.compressedSizeKB} KB (Hemat {compressionResult.savedPercent}%)</div>}
                       <input
                         type="text"
                         required
@@ -382,15 +405,20 @@ export const StemShowcase: React.FC<StemShowcaseProps> = ({ mode, projects }) =>
                         onChange={(e) => setSantriClass(e.target.value)}
                         className="px-3 py-2 text-xs rounded-xl border border-slate-200 bg-white focus:outline-none focus:border-emerald-600"
                       />
+                      {compressing && <p className="text-[11px] text-emerald-700 font-bold mt-1">Mengompres foto ke WebP...</p>}
+                      {compressionResult && <div className="mt-2 p-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 text-[10.5px] font-bold">WebP: {compressionResult.compressedSizeKB} KB (Hemat {compressionResult.savedPercent}%)</div>}
                     </div>
                     <div className="border-2 border-dashed border-slate-200 rounded-xl p-3 text-center bg-white">
                       <p className="text-xs text-slate-500">
-                        Pilih file dokumen PDF / foto hasil perakitan alat (Maks. 10MB)
+                        Pilih file dokumen PDF atau foto perakitan alat (Otomatis WebP)
                       </p>
                       <input
                         type="file"
+                        onChange={(e) => { const file = e.target.files?.[0]; if (file) handleFileUpload(file); }}
                         className="text-xs text-slate-400 mt-1 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700"
                       />
+                      {compressing && <p className="text-[11px] text-emerald-700 font-bold mt-1">Mengompres foto ke WebP...</p>}
+                      {compressionResult && <div className="mt-2 p-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 text-[10.5px] font-bold">WebP: {compressionResult.compressedSizeKB} KB (Hemat {compressionResult.savedPercent}%)</div>}
                     </div>
                     <button
                       type="submit"

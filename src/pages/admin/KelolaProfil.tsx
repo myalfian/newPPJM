@@ -18,6 +18,7 @@ import {
   X,
   Plus,
   Trash2,
+  UploadCloud,
   Check,
   Eye,
   FileText,
@@ -25,6 +26,7 @@ import {
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
+import { compressImageToWebP } from '../../lib/imageCompressor';
 
 interface FacilityItem {
   id: string;
@@ -565,11 +567,32 @@ export const KelolaProfil: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="p-4 pt-0 flex items-center justify-end">
+                <div className="p-4 pt-0 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 mt-2">
+                  <label className="text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:text-[#0E7A4C] flex items-center gap-1 cursor-pointer">
+                    <UploadCloud className="w-3.5 h-3.5 text-[#0E7A4C]" />
+                    <span>Ganti Foto WebP</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          try {
+                            const res = await compressImageToWebP(file, 1400, 900, 0.82);
+                            setFacilities(facilities.map(f => f.id === fac.id ? { ...f, imageUrl: res.dataUrl } : f));
+                          } catch (err: any) {
+                            alert('Gagal mengompres foto: ' + err.message);
+                          }
+                        }
+                      }}
+                    />
+                  </label>
+
                   <button
                     type="button"
                     onClick={() => setLightboxImage(fac.imageUrl)}
-                    className="text-xs font-bold text-[#0E7A4C] hover:underline flex items-center gap-1"
+                    className="text-xs font-bold text-[#0E7A4C] hover:underline flex items-center gap-1 cursor-pointer"
                   >
                     <Eye className="w-3.5 h-3.5" />
                     <span>Lihat Fullsize</span>
@@ -674,8 +697,8 @@ export const KelolaProfil: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Actions: Perbesar, Unduh, Bagikan */}
-                <div className="p-4 pt-0 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 mt-2">
+                {/* Actions: Perbesar, Unduh, Ganti WebP, Bagikan */}
+                <div className="p-4 pt-0 flex flex-wrap items-center justify-between gap-2 border-t border-zinc-100 dark:border-zinc-800 mt-2">
                   <button
                     type="button"
                     onClick={() => setSelectedFlyer(flyer)}
@@ -684,6 +707,27 @@ export const KelolaProfil: React.FC = () => {
                     <Maximize2 className="w-3.5 h-3.5" />
                     <span>Perbesar</span>
                   </button>
+
+                  <label className="text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:text-[#0E7A4C] flex items-center gap-1 cursor-pointer">
+                    <UploadCloud className="w-3.5 h-3.5 text-[#0E7A4C]" />
+                    <span>Ganti WebP</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          try {
+                            const res = await compressImageToWebP(file, 1600, 1000, 0.82);
+                            setMadinFlyers(madinFlyers.map(m => m.id === flyer.id ? { ...m, imageUrl: res.dataUrl } : m));
+                          } catch (err: any) {
+                            alert('Gagal mengompres poster: ' + err.message);
+                          }
+                        }
+                      }}
+                    />
+                  </label>
 
                   <a
                     href={flyer.imageUrl}

@@ -165,3 +165,4 @@ export async function validateImageMagicBytes(file: File): Promise<boolean> {
     reader.readAsArrayBuffer(blob);
   });
 }
+
