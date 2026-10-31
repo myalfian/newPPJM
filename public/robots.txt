@@ -1,0 +1,29 @@
+# ==============================================================================
+# ROBOTS.TXT - PP Jauharul Maknuun Islamic Boarding School
+# Domain: https://ppjauharulmaknuun.sch.id
+# ==============================================================================
+
+User-agent: *
+Allow: /
+Allow: /jm-center/
+Allow: /program-unggulan/
+Allow: /smart-jm/
+Allow: /prestasi
+Allow: /ekstrakurikuler
+Allow: /osis
+Allow: /jm-news/
+Allow: /galeri/
+Allow: /agenda
+Allow: /spmb
+
+# Disallow Private & Admin Areas
+Disallow: /admin/
+Disallow: /admin/*
+Disallow: /login
+Disallow: /profil
+Disallow: /profil/*
+Disallow: /editor
+
+# Host & Sitemap
+Host: https://ppjauharulmaknuun.sch.id
+Sitemap: https://ppjauharulmaknuun.sch.id/sitemap.xml

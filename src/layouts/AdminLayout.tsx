@@ -38,7 +38,8 @@ import {
   Maximize2,
   Lock,
   ChevronLeft,
-  Database
+  Database,
+  Rocket
 } from 'lucide-react';
 import { UserRole } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -253,6 +254,15 @@ export const ADMIN_SIDEBAR_GROUPS: NavGroupConfig[] = [
         publicHref: '/admin/integration-test',
         icon: Database,
         badge: '100%'
+      },
+      {
+        id: 'goLiveCheck',
+        moduleKey: 'goLiveCheck',
+        label: 'Go-Live Launch Check',
+        href: '/admin/go-live-check',
+        publicHref: '/admin/go-live-check',
+        icon: Rocket,
+        badge: 'Final'
       }
     ]
   }
