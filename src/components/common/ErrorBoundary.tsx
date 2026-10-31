@@ -30,7 +30,7 @@ export class ErrorBoundary extends Component<Props, State> {
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     this.setState({ errorInfo });
     // In production, integrate with remote telemetry (e.g. Sentry) if configured
-    if (import.meta.env.DEV) {
+    if (true) {
       console.error('[Production Error Boundary Caught Error]:', error, errorInfo);
     }
   }

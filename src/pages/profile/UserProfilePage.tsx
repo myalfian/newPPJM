@@ -127,9 +127,51 @@ import { BukuTamuSection } from '../../components/profile/BukuTamuSection';
 import { sanitizeText } from '../../utils/sanitize';
 import { Link, useSearchParams } from 'react-router-dom';
 
+// Helper Role Themes
+const getRoleTheme = (userRole: UserRole) => {
+  switch (userRole) {
+    case 'super_admin':
+      return {
+        banner: 'from-amber-950 via-stone-900 to-[#0A2116]',
+        badge: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-500/30',
+        dot: 'bg-amber-500',
+      };
+    case 'pengurus_konten':
+      return {
+        banner: 'from-[#0E7A4C] via-[#0A2116] to-stone-950',
+        badge: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-500/30',
+        dot: 'bg-emerald-500',
+      };
+    case 'guru_akademik':
+      return {
+        banner: 'from-sky-950 via-slate-900 to-[#0A2116]',
+        badge: 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-300 dark:border-sky-500/30',
+        dot: 'bg-sky-500',
+      };
+    case 'user':
+      return {
+        banner: 'from-purple-950 via-slate-900 to-[#0A2116]',
+        badge: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-500/30',
+        dot: 'bg-purple-500',
+      };
+    case 'visitor':
+    default:
+      return {
+        banner: 'from-[#0A2116] via-slate-900 to-zinc-950',
+        badge: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-500/30',
+        dot: 'bg-emerald-400',
+      };
+  }
+};
+
 export const UserProfilePage: React.FC = () => {
   const { user, profile, role, signOut, updateProfile } = useAuth();
   const [searchParams] = useSearchParams();
+
+  // Safely resolve seedConfig and theme immediately at top of component
+  const activeRole: UserRole = role && SEED_ACCOUNTS[role] ? role : 'visitor';
+  const seedConfig = SEED_ACCOUNTS[activeRole] || SEED_ACCOUNTS.visitor;
+  const theme = getRoleTheme(activeRole);
 
   // Navigation tab state: 'seed-accounts' has been completely purged for production safety
   const [activeTab, setActiveTab] = useState<'overview' | 'buku-tamu' | 'santri-hub' | 'security'>('overview');
@@ -283,47 +325,7 @@ export const UserProfilePage: React.FC = () => {
     }
 
     return { score, status, color, barColor, checklist };
-  }, [user, profile]);
-
-  const seedConfig = SEED_ACCOUNTS[role] || SEED_ACCOUNTS.visitor;
-
-  const getRoleTheme = (userRole: UserRole) => {
-    switch (userRole) {
-      case 'super_admin':
-        return {
-          banner: 'from-amber-950 via-stone-900 to-[#0A2116]',
-          badge: 'bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-500/30',
-          dot: 'bg-amber-500',
-        };
-      case 'pengurus_konten':
-        return {
-          banner: 'from-[#0E7A4C] via-[#0A2116] to-stone-950',
-          badge: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-500/30',
-          dot: 'bg-emerald-500',
-        };
-      case 'guru_akademik':
-        return {
-          banner: 'from-sky-950 via-slate-900 to-[#0A2116]',
-          badge: 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-300 dark:border-sky-500/30',
-          dot: 'bg-sky-500',
-        };
-      case 'user':
-        return {
-          banner: 'from-purple-950 via-slate-900 to-[#0A2116]',
-          badge: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-500/30',
-          dot: 'bg-purple-500',
-        };
-      case 'visitor':
-      default:
-        return {
-          banner: 'from-[#0A2116] via-slate-900 to-zinc-950',
-          badge: 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-500/30',
-          dot: 'bg-emerald-400',
-        };
-    }
-  };
-
-  const theme = getRoleTheme(role);
+  }, [user, profile, seedConfig]);
 
   return (
     <div className="min-h-dvh bg-zinc-50 dark:bg-[#09090b] text-zinc-900 dark:text-zinc-100 pb-16 overflow-x-hidden">
