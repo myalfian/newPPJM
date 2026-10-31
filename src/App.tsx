@@ -177,6 +177,7 @@ const WebVisualEditor = lazy(() => import('./pages/admin/WebVisualEditor').then(
 const UserProfilePage = lazy(() => import('./pages/profile/UserProfilePage').then(m => ({ default: m.UserProfilePage })));
 const IntegrationTestPage = lazy(() => import('./pages/admin/IntegrationTestPage').then(m => ({ default: m.IntegrationTestPage })));
 const GoLiveCheckPage = lazy(() => import('./pages/admin/GoLiveCheckPage').then(m => ({ default: m.GoLiveCheckPage })));
+const DataFlowAuditPage = lazy(() => import('./pages/admin/DataFlowAuditPage').then(m => ({ default: m.DataFlowAuditPage })));
 
 export const App: React.FC = () => {
   const navigate = useNavigate();
@@ -320,6 +321,7 @@ export const App: React.FC = () => {
             <Route path="kontak" element={<KelolaKontak />} />
             <Route path="integration-test" element={<IntegrationTestPage />} />
             <Route path="go-live-check" element={<GoLiveCheckPage />} />
+            <Route path="data-audit" element={<DataFlowAuditPage />} />
             <Route path="audit" element={<Navigate to="/admin/integration-test" replace />} />
             <Route path="akun" element={<UserProfilePage />} />
             <Route path="profile" element={<Navigate to="/admin/akun" replace />} />

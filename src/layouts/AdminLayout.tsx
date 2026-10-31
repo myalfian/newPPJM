@@ -39,7 +39,8 @@ import {
   Lock,
   ChevronLeft,
   Database,
-  Rocket
+  Rocket,
+  Activity
 } from 'lucide-react';
 import { UserRole } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -263,6 +264,15 @@ export const ADMIN_SIDEBAR_GROUPS: NavGroupConfig[] = [
         publicHref: '/admin/go-live-check',
         icon: Rocket,
         badge: 'Final'
+      },
+      {
+        id: 'dataAudit',
+        moduleKey: 'dataAudit',
+        label: 'Audit Alur Data',
+        href: '/admin/data-audit',
+        publicHref: '/admin/data-audit',
+        icon: Activity,
+        badge: 'Flow'
       }
     ]
   }

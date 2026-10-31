@@ -18,11 +18,11 @@ export const EditProfileModal: React.FC<Props> = ({
   profile,
   onSave,
 }) => {
-  const [fullName, setFullName] = useState(profile.full_name || '');
-  const [phone, setPhone] = useState(profile.phone || '');
-  const [department, setDepartment] = useState(profile.department || '');
-  const [nisOrNip] = useState(profile.nis_or_nip || ''); // Read-only untuk keamanan
-  const [bio, setBio] = useState(profile.bio || '');
+  const [fullName, setFullName] = useState(profile?.full_name || '');
+  const [phone, setPhone] = useState(profile?.phone || '');
+  const [department, setDepartment] = useState(profile?.department || '');
+  const [nisOrNip] = useState(profile?.nis_or_nip || ''); // Read-only untuk keamanan
+  const [bio, setBio] = useState(profile?.bio || '');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -44,10 +44,10 @@ export const EditProfileModal: React.FC<Props> = ({
 
   const isModified = useMemo(() => {
     return (
-      fullName.trim() !== (profile.full_name || '').trim() ||
-      phone.trim() !== (profile.phone || '').trim() ||
-      department.trim() !== (profile.department || '').trim() ||
-      bio.trim() !== (profile.bio || '').trim()
+      fullName.trim() !== (profile?.full_name || '').trim() ||
+      phone.trim() !== (profile?.phone || '').trim() ||
+      department.trim() !== (profile?.department || '').trim() ||
+      bio.trim() !== (profile?.bio || '').trim()
     );
   }, [fullName, phone, department, bio, profile]);
 

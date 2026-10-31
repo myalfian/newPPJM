@@ -386,3 +386,4 @@ ${c.recommendation ? `- Rekomendasi: ${c.recommendation}\n` : ''}`
 };
 
 export default GoLiveCheckPage;
+

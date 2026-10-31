@@ -173,18 +173,18 @@ export const UserProfilePage: React.FC = () => {
   const rawSeed = SEED_ACCOUNTS[activeRole] || SEED_ACCOUNTS.visitor || ({} as any);
   const seedConfig = useMemo(() => ({
     role: activeRole,
-    roleLabel: rawSeed.roleLabel || 'Pengguna',
-    badgeColor: rawSeed.badgeColor || { bg: '', text: '', border: '', dot: '', accent: '' },
-    email: rawSeed.email || 'guest@ppjauharulmaknuun.sch.id',
-    fullName: rawSeed.fullName || 'Tamu / Santri PPJM',
-    department: rawSeed.department || 'Pondok Pesantren Jauharul Maknuun',
-    nisOrNip: rawSeed.nisOrNip || 'PPJM',
-    phone: rawSeed.phone || '-',
-    avatarUrl: rawSeed.avatarUrl || '/avatars/guest-avatar.svg',
-    bio: rawSeed.bio || 'Keluarga Besar Pondok Pesantren Jauharul Maknuun.',
-    permissions: Array.isArray(rawSeed.permissions) ? rawSeed.permissions : [],
-    responsibilities: Array.isArray(rawSeed.responsibilities) ? rawSeed.responsibilities : [],
-    securityLevel: rawSeed.securityLevel || 'Level 1',
+    roleLabel: rawSeed?.roleLabel || 'Pengguna',
+    badgeColor: rawSeed?.badgeColor || { bg: '', text: '', border: '', dot: '', accent: '' },
+    email: rawSeed?.email || 'guest@ppjauharulmaknuun.sch.id',
+    fullName: rawSeed?.fullName || 'Tamu / Santri PPJM',
+    department: rawSeed?.department || 'Pondok Pesantren Jauharul Maknuun',
+    nisOrNip: rawSeed?.nisOrNip || 'PPJM',
+    phone: rawSeed?.phone || '-',
+    avatarUrl: rawSeed?.avatarUrl || '/avatars/guest-avatar.svg',
+    bio: rawSeed?.bio || 'Keluarga Besar Pondok Pesantren Jauharul Maknuun.',
+    permissions: Array.isArray(rawSeed?.permissions) ? rawSeed.permissions : [],
+    responsibilities: Array.isArray(rawSeed?.responsibilities) ? rawSeed.responsibilities : [],
+    securityLevel: rawSeed?.securityLevel || 'Level 1',
   }), [activeRole, rawSeed]);
 
   const theme = useMemo(() => getRoleTheme(activeRole), [activeRole]);

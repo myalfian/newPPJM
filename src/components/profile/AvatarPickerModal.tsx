@@ -54,11 +54,13 @@ export const AvatarPickerModal: React.FC<Props> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const userInitial = useMemo(() => {
-    const parts = (userName || 'S').trim().split(' ');
-    if (parts.length >= 2) {
-      return (parts[0][0] + parts[1][0]).toUpperCase();
+    const clean = (userName || 'S').trim();
+    if (!clean) return 'S';
+    const words = clean.split(/\s+/).filter(Boolean);
+    if (words.length >= 2 && words[0]?.[0] && words[1]?.[0]) {
+      return (words[0][0] + words[1][0]).toUpperCase();
     }
-    return (parts[0][0] || 'S').toUpperCase();
+    return (words[0]?.[0] || 'S').toUpperCase();
   }, [userName]);
 
   if (!isOpen) return null;

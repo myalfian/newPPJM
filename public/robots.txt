@@ -27,3 +27,4 @@ Disallow: /editor
 # Host & Sitemap
 Host: https://ppjauharulmaknuun.sch.id
 Sitemap: https://ppjauharulmaknuun.sch.id/sitemap.xml
+

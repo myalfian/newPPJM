@@ -191,7 +191,7 @@ import {
 } from 'lucide-react';
 
 import { PageEditorState, INITIAL_EDITOR_STATE, NewsItem, QuickMenuItem, SectionMeta } from '../../types/EditorState';
-import { loadEditorState, saveEditorDraft, publishEditorState, resetEditorStateToDefault } from '../../lib/editorStorage';
+import { loadEditorState, fetchPublishedEditorState, saveEditorDraft, publishEditorState, resetEditorStateToDefault } from '../../lib/editorStorage';
 import { EditorSectionWrapper } from '../../components/editor/EditorSectionWrapper';
 import { EditorItemWrapper } from '../../components/editor/EditorItemWrapper';
 import { EditContentModal } from '../../components/editor/EditContentModal';
@@ -706,6 +706,17 @@ export const WebVisualEditor: React.FC = () => {
   const [editorState, setEditorState] = useState<PageEditorState>(initialLoadedState);
   const [history, setHistory] = useState<PageEditorState[]>([initialLoadedState]);
   const [historyIndex, setHistoryIndex] = useState<number>(0);
+
+  // Hydrate editor state from Supabase Cloud if available
+  useEffect(() => {
+    fetchPublishedEditorState().then((remoteState) => {
+      if (remoteState && remoteState.meta?.lastPublishedAt) {
+        setEditorState(remoteState);
+        setHistory([remoteState]);
+        setHistoryIndex(0);
+      }
+    });
+  }, []);
 
   // SEO Meta Validation State
   const [seoTitle, setSeoTitle] = useState('Pondok Pesantren Jauharul Maknuun - Lasem Sidayu Gresik');
@@ -1226,7 +1237,7 @@ export const WebVisualEditor: React.FC = () => {
           setTimeout(() => setPublishSuccessMsg(false), 4000);
           showToast('Berhasil dipublikasikan secara aman ke website publik PPJM!');
         } else {
-          showToast('Gagal mempublikasikan draf ke server publik', 'error');
+          showToast(`Gagal mempublikasikan: ${res.error || 'Server error'}`, 'error');
         }
       }
     });

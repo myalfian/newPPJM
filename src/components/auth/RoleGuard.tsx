@@ -40,7 +40,8 @@ export type ModuleKey =
   | 'kontak'
   | 'akunRbac'
   | 'integrationTest'
-  | 'goLiveCheck';
+  | 'goLiveCheck'
+  | 'dataAudit';
 
 export const MODULE_ACCESS: Record<ModuleKey, UserRole[]> = {
   dashboard: ['super_admin', 'pengurus_konten', 'guru_akademik'],
@@ -60,6 +61,7 @@ export const MODULE_ACCESS: Record<ModuleKey, UserRole[]> = {
   akunRbac: ['super_admin'],
   integrationTest: ['super_admin', 'pengurus_konten', 'guru_akademik'],
   goLiveCheck: ['super_admin', 'pengurus_konten'],
+  dataAudit: ['super_admin', 'pengurus_konten', 'guru_akademik'],
 };
 
 // URL Path to Module Mapping
@@ -83,6 +85,7 @@ export const PATH_TO_MODULE: Record<string, ModuleKey> = {
   '/admin/kontak': 'kontak',
   '/admin/integration-test': 'integrationTest',
   '/admin/go-live-check': 'goLiveCheck',
+  '/admin/data-audit': 'dataAudit',
   '/admin/audit': 'integrationTest',
   '/admin/akun': 'akunRbac',
   '/admin/rbac': 'akunRbac',

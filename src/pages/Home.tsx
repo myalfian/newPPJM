@@ -107,8 +107,29 @@ export const Home: React.FC = () => {
     };
 
     window.addEventListener('ppjm-editor-published', handlePublished as EventListener);
+
+    // 3. Supabase Realtime Channel Subscription for live sync across visitors
+    const channel = supabase
+      .channel('public-home-realtime-sync')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'site_settings' },
+        () => {
+          fetchPublishedEditorState().then(setEditorConfig);
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'cms_sections' },
+        () => {
+          fetchPublishedEditorState().then(setEditorConfig);
+        }
+      )
+      .subscribe();
+
     return () => {
       window.removeEventListener('ppjm-editor-published', handlePublished as EventListener);
+      supabase.removeChannel(channel);
     };
   }, []);
 

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Newspaper,
@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { NavBarTabs } from '../components/common/NavBarTabs';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { useCachedQuery } from '../lib/queryCache';
+import { useCachedQuery, invalidateCache } from '../lib/queryCache';
 import { NewsItem, INITIAL_NEWS } from '../data/newsData';
 import { generateWhatsAppBroadcastUrl } from '../lib/waFormatter';
 
@@ -67,10 +67,30 @@ const fetchPublicNews = async (): Promise<NewsItem[]> => {
 };
 
 export const Berita: React.FC = () => {
-  const { data: newsItems = INITIAL_NEWS } = useCachedQuery<NewsItem[]>(
+  const { data: newsItems = INITIAL_NEWS, refetch } = useCachedQuery<NewsItem[]>(
     'public-news-list',
     fetchPublicNews
   );
+
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+
+    const channel = supabase
+      .channel('public-news-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'berita' },
+        () => {
+          invalidateCache('public-news-list');
+          refetch();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refetch]);
 
   const [searchQuery, setSearchQuery] = useState('');
 

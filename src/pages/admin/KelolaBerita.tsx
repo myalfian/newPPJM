@@ -96,6 +96,17 @@ export const KelolaBerita: React.FC = () => {
 
   useEffect(() => {
     loadNews();
+
+    const channel = supabase
+      .channel('admin-news-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'berita' }, () => {
+        loadNews();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   // Auto generate friendly slug from title
@@ -238,7 +249,7 @@ export const KelolaBerita: React.FC = () => {
 
       if (isSupabaseConfigured() && !editingId.startsWith('news-')) {
         try {
-          await supabase
+          const { error: updateError } = await supabase
             .from('news')
             .update({
               title: judul,
@@ -252,8 +263,16 @@ export const KelolaBerita: React.FC = () => {
               updated_at: new Date().toISOString()
             })
             .eq('id', editingId);
-        } catch (err) {
-          console.warn('Failed to update news on Supabase:', err);
+
+          if (updateError) {
+            console.error('Failed to update news on Supabase:', updateError);
+            alert(`Gagal memperbarui berita di database: ${updateError.message} (${updateError.code})`);
+            return;
+          }
+        } catch (err: any) {
+          console.error('Failed to update news on Supabase:', err);
+          alert(`Kendala database: ${err?.message || 'Gagal update'}`);
+          return;
         }
       }
     } else {
@@ -262,7 +281,7 @@ export const KelolaBerita: React.FC = () => {
 
       if (isSupabaseConfigured()) {
         try {
-          const { data, error } = await supabase
+          const { data, error: insertError } = await supabase
             .from('news')
             .insert({
               title: judul,
@@ -278,14 +297,22 @@ export const KelolaBerita: React.FC = () => {
             .select()
             .single();
 
-          if (!error && data?.id) {
+          if (insertError) {
+            console.error('Failed to insert news to Supabase:', insertError);
+            alert(`Gagal menyimpan berita baru ke database: ${insertError.message} (${insertError.code})`);
+            return;
+          }
+
+          if (data?.id) {
             createdId = data.id;
             if (data.slug) {
               effectiveSlug = data.slug;
             }
           }
-        } catch (err) {
-          console.warn('Failed to insert news to Supabase:', err);
+        } catch (err: any) {
+          console.error('Failed to insert news to Supabase:', err);
+          alert(`Kendala database: ${err?.message || 'Gagal insert'}`);
+          return;
         }
       }
 
