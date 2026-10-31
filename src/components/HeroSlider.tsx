@@ -78,8 +78,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
     image: '',
     link: '',
   });
-  const [quickImageMode, setQuickImageMode] = useState<'upload' | 'url'>('upload');
-  const [quickCompressing, setQuickCompressing] = useState(false);
+    const [quickCompressing, setQuickCompressing] = useState(false);
   const quickFileInputRef = useRef<HTMLInputElement | null>(null);
 
   // Check if admin is currently logged in via RBAC profile
@@ -397,8 +396,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       image: '',
       link: '',
     });
-    setQuickImageMode('upload');
-    setIsAddingSlide(true);
+        setIsAddingSlide(true);
   };
 
   const handleQuickStartEdit = (slide: HeroSlide) => {
@@ -411,8 +409,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       image: slide.image || '',
       link: slide.link || '',
     });
-    setQuickImageMode(slide.image.startsWith('data:image/') ? 'upload' : 'url');
-    setIsAddingSlide(true);
+        setIsAddingSlide(true);
   };
 
   const handleQuickFileUpload = async (file: File) => {
@@ -999,76 +996,42 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                         </button>
                       </div>
 
-                      {/* Pilih Mode Gambar */}
+                      {/* Upload Gambar Flyer dari Komputer (WebP Auto-Compress) */}
                       <div className="space-y-1.5">
-                        <div className="flex items-center gap-1.5">
+                        <label className="block text-[11px] font-bold text-slate-700">
+                          Gambar Flyer Slide (Upload dari Komputer • WebP Auto-Compress): <span className="text-red-500">*</span>
+                        </label>
+                        <div>
+                          <input
+                            ref={quickFileInputRef}
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              if (e.target.files?.[0]) {
+                                handleQuickFileUpload(e.target.files[0]);
+                              }
+                            }}
+                            className="hidden"
+                          />
                           <button
                             type="button"
-                            onClick={() => setQuickImageMode('upload')}
-                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 cursor-pointer ${
-                              quickImageMode === 'upload'
-                                ? 'bg-emerald-800 text-white'
-                                : 'bg-white border border-slate-200 text-slate-600'
-                            }`}
+                            onClick={() => quickFileInputRef.current?.click()}
+                            disabled={quickCompressing}
+                            className="w-full py-2.5 px-3 rounded-xl border-2 border-dashed border-emerald-400 bg-emerald-50/40 hover:bg-emerald-50 text-emerald-900 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition shadow-2xs"
                           >
-                            <Upload className="w-3 h-3" />
-                            <span>Upload Gambar (WebP)</span>
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setQuickImageMode('url')}
-                            className={`px-2.5 py-1 rounded-lg text-[11px] font-bold flex items-center gap-1 cursor-pointer ${
-                              quickImageMode === 'url'
-                                ? 'bg-emerald-800 text-white'
-                                : 'bg-white border border-slate-200 text-slate-600'
-                            }`}
-                          >
-                            <LinkIcon className="w-3 h-3" />
-                            <span>Link URL</span>
+                            {quickCompressing ? (
+                              <>
+                                <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-700" />
+                                <span>Mengompres ke WebP...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Upload className="w-3.5 h-3.5 text-emerald-700" />
+                                <span>{quickForm.image ? 'Ganti Gambar dari Komputer (Auto WebP)' : 'Pilih Gambar Flyer dari Komputer (Auto WebP)'}</span>
+                              </>
+                            )}
                           </button>
                         </div>
-
-                        {quickImageMode === 'upload' ? (
-                          <div>
-                            <input
-                              ref={quickFileInputRef}
-                              type="file"
-                              accept="image/*"
-                              onChange={(e) => {
-                                if (e.target.files?.[0]) {
-                                  handleQuickFileUpload(e.target.files[0]);
-                                }
-                              }}
-                              className="hidden"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => quickFileInputRef.current?.click()}
-                              disabled={quickCompressing}
-                              className="w-full py-2 px-3 rounded-xl border border-dashed border-emerald-400 bg-white hover:bg-emerald-50/50 text-emerald-900 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer"
-                            >
-                              {quickCompressing ? (
-                                <>
-                                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                  <span>Mengompres WebP...</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Upload className="w-3.5 h-3.5" />
-                                  <span>{quickForm.image ? 'Ganti File Gambar' : 'Pilih Gambar Flyer dari Perangkat'}</span>
-                                </>
-                              )}
-                            </button>
-                          </div>
-                        ) : (
-                          <input
-                            type="url"
-                            value={quickForm.image.startsWith('data:image/') ? '' : quickForm.image}
-                            onChange={(e) => setQuickForm({ ...quickForm, image: e.target.value })}
-                            placeholder="https://images.unsplash.com/..."
-                            className="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 text-xs"
-                          />
-                        )}
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">

@@ -57,3 +57,4 @@ Semua bucket telah diverifikasi keberadaannya di schema `storage.buckets` dengan
   Diaktifkan untuk operasi `INSERT`, `UPDATE`, dan `DELETE` hanya bagi pengguna yang memiliki token JWT valid dari Supabase Auth.
 - **Audit Logging Forensik**:
   Setiap aksi pembaruan profil atau modifikasi sensitif mencatat record baru pada tabel `audit_logs` mencakup `user_id`, `role`, `action`, `module`, data lama, data baru, dan agen peramban.
+

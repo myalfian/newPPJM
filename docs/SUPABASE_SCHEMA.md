@@ -111,3 +111,4 @@ erDiagram
 | `mandarin-audios` | 10 MB | `audio/mpeg, audio/mp3, audio/wav` | Pelafalan nada HSK Mandarin |
 | `hafidz-audios` | 20 MB | `audio/mpeg, audio/mp3, audio/wav, audio/m4a` | Rekaman murottal & setoran santri |
 | `madin-flyers` | 10 MB | `application/pdf, image/jpeg, image/png, image/webp` | Flyer kitab turats salafiyah |
+

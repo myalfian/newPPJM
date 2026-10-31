@@ -2448,29 +2448,23 @@ export const WebVisualEditor: React.FC = () => {
               </div>
             </div>
 
-            {/* Input URL & Upload WebP with MIME Validation */}
+            {/* Upload Gambar dari Komputer dengan Auto-WebP Compression & MIME Validation */}
             <div className="space-y-2">
               <div>
-                <label className="text-[11px] font-bold text-zinc-300 block mb-1">URL Gambar (HTTPS Only):</label>
-                <input
-                  type="text"
-                  value={newImageUrl}
-                  onChange={(e) => setNewImageUrl(e.target.value)}
-                  placeholder="https://..."
-                  className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/20 text-xs text-white focus:outline-none"
-                />
-              </div>
-
-              <div>
                 <label className="text-[11px] font-bold text-zinc-300 block mb-1">
-                  Upload dari Perangkat (MIME Checked & Auto-WebP):
+                  Pilih Gambar Baru dari Komputer (MIME Checked &amp; Auto-WebP):
                 </label>
-                <input
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  onChange={handleSecureImageFileChange}
-                  className="text-xs text-zinc-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#0E7A4C] file:text-[#C8A951]"
-                />
+                <div className="p-3 rounded-xl border border-dashed border-emerald-500/50 bg-emerald-950/20 text-center">
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    onChange={handleSecureImageFileChange}
+                    className="text-xs text-zinc-300 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#0E7A4C] file:text-[#C8A951] cursor-pointer"
+                  />
+                  <p className="text-[10px] text-zinc-400 mt-1.5">
+                    Mendukung JPG, PNG, WebP • Otomatis dikompresi ke WebP hemat kuota
+                  </p>
+                </div>
               </div>
 
               {compressionResult && (

@@ -411,7 +411,7 @@ export const KelolaGaleri: React.FC = () => {
 
         <div className="space-y-2">
           <label className="text-xs font-bold text-slate-700 dark:text-zinc-300">
-            {tab === 'foto' ? 'Pilih Foto Sampul Agenda (WebP Auto-Compress):' : 'URL Cover Thumbnail (Opsional):'}
+            {tab === 'foto' ? 'Pilih Foto Sampul Agenda (WebP Auto-Compress):' : 'Pilih Foto Cover Thumbnail dari Komputer (WebP Auto-Compress):'}
           </label>
           <div className="border-2 border-dashed border-emerald-300 dark:border-emerald-800/60 rounded-2xl p-4 sm:p-6 text-center bg-emerald-50/40 dark:bg-emerald-950/20 space-y-2">
             <Upload className="w-7 h-7 text-emerald-700 dark:text-emerald-400 mx-auto" />

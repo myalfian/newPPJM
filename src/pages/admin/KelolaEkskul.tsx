@@ -111,7 +111,6 @@ export const KelolaEkskul: React.FC = () => {
   const [savedAlert, setSavedAlert] = useState(false);
   const [compressing, setCompressing] = useState(false);
   const [compressionResult, setCompressionResult] = useState<CompressionResult | null>(null);
-  const [imageInputMode, setImageInputMode] = useState<'upload' | 'url'>('upload');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = async (file: File) => {
@@ -184,7 +183,6 @@ export const KelolaEkskul: React.FC = () => {
     setDescription(item.description);
     setImageUrl(item.imageUrl);
     setCompressionResult(null);
-    setImageInputMode(item.imageUrl.startsWith('data:image/') ? 'upload' : 'url');
     window.scrollTo({ top: 100, behavior: 'smooth' });
   };
 
@@ -367,104 +365,76 @@ export const KelolaEkskul: React.FC = () => {
 
         {/* Foto Cover Ekskul dengan Auto WebP Compressor */}
         <div className="space-y-2 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/80 dark:border-zinc-700">
-          <div className="flex items-center justify-between">
-            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
-              <ImageIcon className="w-3.5 h-3.5 text-[#0E7A4C]" />
-              <span>Gambar Cover Ekskul (WebP Auto-Compressor):</span>
-            </label>
-            <div className="flex items-center gap-1 bg-white dark:bg-zinc-900 p-0.5 rounded-lg border border-zinc-200 dark:border-zinc-700">
-              <button
-                type="button"
-                onClick={() => setImageInputMode('upload')}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
-                  imageInputMode === 'upload'
-                    ? 'bg-[#0E7A4C] text-white shadow-2xs'
-                    : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
-                }`}
-              >
-                <UploadCloud className="w-3 h-3" />
-                <span>Dari Komputer</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setImageInputMode('url')}
-                className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition flex items-center gap-1 cursor-pointer ${
-                  imageInputMode === 'url'
-                    ? 'bg-[#0E7A4C] text-white shadow-2xs'
-                    : 'text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200'
-                }`}
-              >
-                <LinkIcon className="w-3 h-3" />
-                <span>Tempel URL</span>
-              </button>
-            </div>
-          </div>
+          <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+            <ImageIcon className="w-3.5 h-3.5 text-[#0E7A4C]" />
+            <span>Gambar Cover Ekskul (Upload dari Komputer • WebP Auto-Compress):</span>
+          </label>
 
-          {imageInputMode === 'upload' ? (
-            <div className="space-y-2">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  if (e.target.files?.[0]) {
-                    handleFileUpload(e.target.files[0]);
-                  }
-                }}
-                className="hidden"
-              />
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={compressing}
-                className="w-full py-4 px-4 rounded-xl border-2 border-dashed border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/40 dark:bg-emerald-950/20 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition text-center cursor-pointer flex flex-col items-center justify-center gap-1.5"
-              >
-                <UploadCloud className="w-6 h-6 text-[#0E7A4C]" />
-                <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">
-                  {compressing ? 'Sedang mengompres gambar ke WebP...' : 'Pilih Foto Cover dari Komputer (Otomatis WebP)'}
-                </span>
-                <span className="text-[10px] text-zinc-500 dark:text-zinc-400">
-                  Mendukung JPG, PNG, WebP • Otomatis dikompresi agar hemat kuota santri
-                </span>
-              </button>
-
-              {compressionResult && (
-                <div className="p-2.5 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 border border-emerald-300 dark:border-emerald-800 flex items-center justify-between text-xs font-bold text-emerald-900 dark:text-emerald-300">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>Terkompresi: {compressionResult.compressedSizeKB} KB (Hemat {compressionResult.savedPercent}%)</span>
-                  </div>
-                  <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-200/60 dark:bg-emerald-900">Format WebP</span>
-                </div>
-              )}
-            </div>
-          ) : (
+          <div className="space-y-2">
             <input
-              type="url"
-              placeholder="https://images.unsplash.com/..."
-              value={imageUrl}
-              onChange={(e) => setImageUrl(e.target.value)}
-              className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white"
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                if (e.target.files?.[0]) {
+                  handleFileUpload(e.target.files[0]);
+                }
+              }}
+              className="hidden"
             />
-          )}
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={compressing}
+              className="w-full py-4 px-4 rounded-xl border-2 border-dashed border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/40 dark:bg-emerald-950/20 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition text-center cursor-pointer flex flex-col items-center justify-center gap-1.5"
+            >
+              <UploadCloud className="w-6 h-6 text-[#0E7A4C]" />
+              <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">
+                {compressing ? 'Sedang mengompres gambar ke WebP...' : 'Pilih Foto Cover dari Komputer (Otomatis WebP)'}
+              </span>
+              <span className="text-[10px] text-zinc-500 dark:text-zinc-400">
+                Mendukung JPG, PNG, WebP • Otomatis dikompresi agar hemat kuota santri
+              </span>
+            </button>
+
+            {compressionResult && (
+              <div className="p-2.5 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 border border-emerald-300 dark:border-emerald-800 flex items-center justify-between text-xs font-bold text-emerald-900 dark:text-emerald-300">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>Terkompresi: {compressionResult.compressedSizeKB} KB (Hemat {compressionResult.savedPercent}%)</span>
+                </div>
+                <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-200/60 dark:bg-emerald-900">Format WebP</span>
+              </div>
+            )}
+          </div>
 
           {imageUrl && (
             <div className="flex items-center gap-3 pt-1">
               <div className="w-14 h-14 rounded-xl overflow-hidden border border-zinc-300 dark:border-zinc-700 bg-zinc-100 shrink-0 shadow-xs">
                 <img src={imageUrl} alt="Pratinjau Cover" className="w-full h-full object-cover" />
               </div>
-              <div className="text-xs space-y-0.5">
+              <div className="text-xs space-y-1">
                 <p className="font-bold text-zinc-800 dark:text-zinc-200">Pratinjau Cover Terpasang</p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setImageUrl('');
-                    setCompressionResult(null);
-                  }}
-                  className="text-[11px] text-rose-600 hover:underline font-semibold cursor-pointer"
-                >
-                  Hapus / Ganti Foto
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="text-[11px] text-[#0E7A4C] hover:underline font-bold cursor-pointer"
+                  >
+                    Ganti dari Komputer
+                  </button>
+                  <span className="text-zinc-400">•</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImageUrl('');
+                      setCompressionResult(null);
+                    }}
+                    className="text-[11px] text-rose-600 hover:underline font-semibold cursor-pointer"
+                  >
+                    Hapus Foto
+                  </button>
+                </div>
               </div>
             </div>
           )}

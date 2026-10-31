@@ -33,3 +33,4 @@ Sistem informasi Pondok Pesantren Jauharul Maknuun telah berhasil dimigrasikan d
 12. **Kalender Agenda**: Tabel `agendas` terhubung.
 13. **SPMB Terpadu**: Tabel `spmb_info` terhubung.
 14. **Keamanan & Audit**: Tabel `admin_profiles` & `audit_logs` terlindungi RLS.
+

@@ -58,7 +58,6 @@ export const KelolaSlider: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showSlideForm, setShowSlideForm] = useState<boolean>(false);
   const [formData, setFormData] = useState<SlideFormState>(EMPTY_FORM);
-  const [imageInputMode, setImageInputMode] = useState<'upload' | 'url'>('upload');
   const [compressing, setCompressing] = useState<boolean>(false);
   const [compressionInfo, setCompressionInfo] = useState<CompressionResult | null>(null);
   const [slideSaveMsg, setSlideSaveMsg] = useState<string | null>(null);
@@ -122,7 +121,6 @@ export const KelolaSlider: React.FC = () => {
       link: '',
     });
     setCompressionInfo(null);
-    setImageInputMode('upload');
     setShowSlideForm(true);
   };
 
@@ -138,7 +136,6 @@ export const KelolaSlider: React.FC = () => {
       link: slide.link || '',
     });
     setCompressionInfo(null);
-    setImageInputMode(slide.image.startsWith('data:image/') ? 'upload' : 'url');
     setShowSlideForm(true);
   };
 
@@ -168,7 +165,7 @@ export const KelolaSlider: React.FC = () => {
       return;
     }
     if (!formData.image.trim()) {
-      alert('Mohon unggah gambar flyer atau masukkan URL gambar terlebih dahulu.');
+      alert('Mohon pilih dan unggah gambar flyer dari komputer terlebih dahulu.');
       return;
     }
 
@@ -358,92 +355,49 @@ export const KelolaSlider: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-              {/* Kolom Kiri: Gambar Flyer (Upload WebP / Link URL) */}
+              {/* Kolom Kiri: Gambar Flyer (Upload WebP dari Komputer) */}
               <div className="lg:col-span-5 space-y-3">
                 <label className="block text-xs font-bold text-slate-700">
-                  1. Gambar Flyer Slide (Rasio 16:9 Lanskap) <span className="text-red-500">*</span>
+                  1. Gambar Flyer Slide (Upload dari Komputer • WebP Auto-Compress) <span className="text-red-500">*</span>
                 </label>
 
-                {/* Saklar Mode Input Gambar */}
-                <div className="grid grid-cols-2 gap-1.5 p-1 bg-slate-200/70 rounded-xl">
+                <div className="space-y-2">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) {
+                        handleFileUpload(e.target.files[0]);
+                      }
+                    }}
+                    className="hidden"
+                  />
                   <button
                     type="button"
-                    onClick={() => setImageInputMode('upload')}
-                    className={`py-1.5 px-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                      imageInputMode === 'upload'
-                        ? 'bg-white text-emerald-900 shadow-2xs'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={compressing}
+                    className="w-full py-3 px-4 rounded-xl border-2 border-dashed border-emerald-300 bg-white hover:bg-emerald-50/50 text-emerald-900 text-xs font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
                   >
-                    <Upload className="w-3.5 h-3.5" />
-                    <span>Upload File</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setImageInputMode('url')}
-                    className={`py-1.5 px-2.5 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                      imageInputMode === 'url'
-                        ? 'bg-white text-emerald-900 shadow-2xs'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                  >
-                    <LinkIcon className="w-3.5 h-3.5" />
-                    <span>Tempel URL</span>
-                  </button>
-                </div>
-
-                {imageInputMode === 'upload' ? (
-                  <div className="space-y-2">
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        if (e.target.files?.[0]) {
-                          handleFileUpload(e.target.files[0]);
-                        }
-                      }}
-                      className="hidden"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={compressing}
-                      className="w-full py-3 px-4 rounded-xl border-2 border-dashed border-emerald-300 bg-white hover:bg-emerald-50/50 text-emerald-900 text-xs font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer"
-                    >
-                      {compressing ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin text-emerald-700" />
-                          <span>Mengompres ke WebP...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Upload className="w-4 h-4 text-emerald-700" />
-                          <span>Pilih Gambar dari Perangkat (Auto WebP)</span>
-                        </>
-                      )}
-                    </button>
-
-                    {compressionInfo && (
-                      <p className="text-[11px] text-emerald-700 font-semibold">
-                        ✓ Terkompresi ke WebP ({compressionInfo.compressedSizeKB} KB, hemat {compressionInfo.savedPercent}%)
-                      </p>
+                    {compressing ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin text-emerald-700" />
+                        <span>Mengompres ke WebP...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4 text-emerald-700" />
+                        <span>{formData.image ? 'Ganti Flyer dari Komputer (Auto WebP)' : 'Pilih Gambar Flyer dari Komputer (Auto WebP)'}</span>
+                      </>
                     )}
-                  </div>
-                ) : (
-                  <div>
-                    <input
-                      type="url"
-                      value={formData.image.startsWith('data:image/') ? '' : formData.image}
-                      onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                      placeholder="https://images.unsplash.com/photo-..."
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs text-slate-800 focus:outline-none focus:border-emerald-600"
-                    />
-                    <p className="text-[11px] text-slate-500 mt-1">
-                      Tempel tautan langsung gambar berformat JPG, PNG, atau WebP.
+                  </button>
+
+                  {compressionInfo && (
+                    <p className="text-[11px] text-emerald-700 font-semibold bg-emerald-50 p-2 rounded-lg border border-emerald-200">
+                      ✓ Terkompresi ke WebP ({compressionInfo.compressedSizeKB} KB, hemat {compressionInfo.savedPercent}%)
                     </p>
-                  </div>
-                )}
+                  )}
+                </div>
 
                 {/* Pratinjau Thumbnail Gambar */}
                 <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 flex items-center justify-center">
@@ -464,6 +418,25 @@ export const KelolaSlider: React.FC = () => {
                             {formData.title}
                           </p>
                         )}
+                      </div>
+                      <div className="absolute bottom-2 right-2 flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="px-2.5 py-1 bg-black/70 hover:bg-black/90 text-white rounded-lg text-[10px] font-bold cursor-pointer"
+                        >
+                          Ganti
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, image: '' }));
+                            setCompressionInfo(null);
+                          }}
+                          className="px-2.5 py-1 bg-red-600/80 hover:bg-red-700 text-white rounded-lg text-[10px] font-bold cursor-pointer"
+                        >
+                          Hapus
+                        </button>
                       </div>
                     </>
                   ) : (
