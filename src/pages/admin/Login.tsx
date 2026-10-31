@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import {
-  ShieldCheck,
   Lock,
   Mail,
   CheckCircle2,
   ArrowRight,
-  Sparkles,
   AlertCircle,
   Eye,
   EyeOff,
-  Zap,
-  Copy,
-  Check,
-  UserCheck,
+  UserPlus,
+  KeyRound,
+  X,
+  Loader2,
+  Phone,
+  ShieldCheck,
   Crown,
   FileText,
   GraduationCap,
   Users
 } from 'lucide-react';
-import { UserRole } from '../../lib/supabase';
+import { UserRole, supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { useAuth } from '../../context/AuthContext';
 import { EnvAlertBanner } from '../../components/common/EnvAlertBanner';
 
@@ -107,45 +107,15 @@ export const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [activeAutofillRole, setActiveAutofillRole] = useState<UserRole | null>(null);
-  const [feedbackToast, setFeedbackToast] = useState<string | null>(null);
-  const [isFieldHighlighted, setIsFieldHighlighted] = useState(false);
+
+  // Modal Lupa Password State
+  const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetSuccess, setResetSuccess] = useState<string | null>(null);
+  const [resetError, setResetError] = useState<string | null>(null);
 
   const destination = (location.state as any)?.from?.pathname || '/admin';
-
-  // 1-Klik Isi Form Kredensial
-  const handleAutofill = (cred: RoleCredential) => {
-    setEmail(cred.email);
-    setPassword(cred.password);
-    setActiveAutofillRole(cred.role);
-    setErrorMessage(null);
-    setIsFieldHighlighted(true);
-    setFeedbackToast(`Kredensial ${cred.title} berhasil diisi!`);
-
-    setTimeout(() => setIsFieldHighlighted(false), 1200);
-    setTimeout(() => setFeedbackToast(null), 3000);
-  };
-
-  // 1-Klik Langsung Masuk (Instant Sign-In)
-  const handleInstantSignIn = async (cred: RoleCredential, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setEmail(cred.email);
-    setPassword(cred.password);
-    setActiveAutofillRole(cred.role);
-    setLoading(true);
-    setErrorMessage(null);
-
-    // Coba sign in supabase GoTrue
-    const { error } = await signIn(cred.email, cred.password);
-
-    if (error) {
-      // Jika remote gagal (misal koneksi/mock), fallback ke mock role session
-      switchMockRole(cred.role);
-    }
-
-    setLoading(false);
-    navigate(destination, { replace: true });
-  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -161,7 +131,7 @@ export const Login: React.FC = () => {
     setLoading(false);
 
     if (error) {
-      // Cek apakah email cocok dengan kredensial mock untuk fallback
+      // Cek apakah email cocok dengan kredensial mock untuk fallback offline
       const match = ROLE_CREDENTIALS.find((c) => c.email.toLowerCase() === email.toLowerCase());
       if (match && password === match.password) {
         switchMockRole(match.role);
@@ -176,18 +146,52 @@ export const Login: React.FC = () => {
     navigate(destination, { replace: true });
   };
 
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resetEmail) {
+      setResetError('Silakan masukkan alamat email yang terdaftar.');
+      return;
+    }
+
+    try {
+      setResetLoading(true);
+      setResetError(null);
+      setResetSuccess(null);
+
+      if (isSupabaseConfigured()) {
+        const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+          redirectTo: `${window.location.origin}/profil`,
+        });
+
+        if (error) {
+          setResetError(error.message || 'Gagal mengirim instruksi pemulihan kata sandi.');
+          return;
+        }
+      }
+
+      setResetSuccess(
+        'Alhamdulillah! Instruksi pemulihan kata sandi telah dikirimkan ke email Anda. Silakan periksa kotak masuk atau folder spam.'
+      );
+    } catch (err: any) {
+      setResetError(err.message || 'Terjadi kesalahan sistem saat memproses pemulihan kata sandi.');
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-[100dvh] bg-gradient-to-br from-emerald-950 via-emerald-900 to-slate-900 flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
+    <div className="min-h-[100dvh] bg-gradient-to-br from-emerald-950 via-[#0A2116] to-slate-900 flex items-center justify-center p-4 sm:p-6 relative overflow-hidden">
       
       {/* Background Ambience */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-[#C8A951]/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-lg w-full bg-white rounded-3xl shadow-2xl p-6 sm:p-9 space-y-6 relative overflow-hidden border border-emerald-100 z-10 animate-fadeIn">
+      {/* Main Login Card */}
+      <div className="max-w-md w-full bg-white dark:bg-zinc-900 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 relative overflow-hidden border border-emerald-100 dark:border-zinc-800 z-10 animate-fade-in">
         
         {/* Header Logo */}
         <div className="text-center space-y-2">
-          <div className="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-emerald-600 via-gold-400 to-emerald-400 mx-auto shadow-md">
+          <div className="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-[#0E7A4C] via-[#C8A951] to-emerald-400 mx-auto shadow-md">
             <img
               src="/logo-ppjm.svg"
               alt="PPJM Logo"
@@ -195,29 +199,18 @@ export const Login: React.FC = () => {
             />
           </div>
           <div>
-            <h1 className="text-xl sm:text-2xl font-black text-emerald-950">
-              Masuk Ruang Pengurus
+            <h1 className="text-xl sm:text-2xl font-black text-emerald-950 dark:text-white">
+              Masuk Akun PPJM
             </h1>
-            <p className="text-xs text-slate-500 font-medium">
+            <p className="text-xs text-slate-500 dark:text-zinc-400 font-medium">
               Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik
             </p>
           </div>
         </div>
 
-        {/* Feedback Toast Notification */}
-        {feedbackToast && (
-          <div className="p-3 rounded-2xl bg-emerald-100 border border-emerald-200 text-emerald-900 text-xs font-bold flex items-center justify-between animate-fadeIn shadow-xs">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
-              <span>{feedbackToast}</span>
-            </div>
-            <span className="text-[10px] text-emerald-700 font-mono">1-Klik Terisi</span>
-          </div>
-        )}
-
         {/* Error Alert */}
         {errorMessage && (
-          <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-start gap-2.5 animate-fadeIn">
+          <div className="p-3.5 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900/60 text-red-700 dark:text-red-300 text-xs flex items-start gap-2.5 animate-fade-in">
             <AlertCircle className="w-4 h-4 shrink-0 text-red-600 mt-0.5" />
             <span className="font-semibold leading-relaxed">{errorMessage}</span>
           </div>
@@ -225,51 +218,54 @@ export const Login: React.FC = () => {
 
         {/* Form Login */}
         <form onSubmit={handleLogin} className="space-y-4">
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Email Akun Pengurus: *</label>
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-slate-700 dark:text-zinc-300">
+              Email Akun: *
+            </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+              <Mail className="w-4 h-4 text-slate-400 dark:text-zinc-500 absolute left-3.5 top-3.5" />
               <input
                 type="email"
                 required
-                placeholder="pengurus@ppjauharulmaknuun.sch.id"
+                placeholder="nama@ppjauharulmaknuun.sch.id"
                 value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  setActiveAutofillRole(null);
-                }}
-                className={`w-full pl-10 pr-4 py-3 text-xs sm:text-sm rounded-2xl border transition-all bg-slate-50/50 ${
-                  isFieldHighlighted
-                    ? 'border-emerald-600 ring-2 ring-emerald-500/40 bg-emerald-50/30'
-                    : 'border-slate-200 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600'
-                }`}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 dark:border-zinc-700 bg-slate-50/50 dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             </div>
           </div>
 
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700">Kata Sandi (Password): *</label>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <label className="text-xs font-bold text-slate-700 dark:text-zinc-300">
+                Kata Sandi: *
+              </label>
+              {/* LUPA PASSWORD LINK */}
+              <button
+                type="button"
+                onClick={() => {
+                  setResetEmail(email);
+                  setIsForgotPasswordOpen(true);
+                }}
+                className="text-xs font-semibold text-[#0E7A4C] hover:text-[#0A2116] dark:text-emerald-400 dark:hover:text-emerald-300 hover:underline cursor-pointer"
+              >
+                Lupa Password?
+              </button>
+            </div>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+              <Lock className="w-4 h-4 text-slate-400 dark:text-zinc-500 absolute left-3.5 top-3.5" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
                 placeholder="••••••••"
                 value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                  setActiveAutofillRole(null);
-                }}
-                className={`w-full pl-10 pr-11 py-3 text-xs sm:text-sm rounded-2xl border transition-all bg-slate-50/50 ${
-                  isFieldHighlighted
-                    ? 'border-emerald-600 ring-2 ring-emerald-500/40 bg-emerald-50/30'
-                    : 'border-slate-200 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600'
-                }`}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full pl-10 pr-11 py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 dark:border-zinc-700 bg-slate-50/50 dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600"
+                className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-zinc-200 cursor-pointer"
                 title={showPassword ? 'Sembunyikan password' : 'Lihat password'}
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -277,26 +273,10 @@ export const Login: React.FC = () => {
             </div>
           </div>
 
-          {/* Cloudflare Turnstile Badge */}
-          <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded-md bg-emerald-600 text-white flex items-center justify-center">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-              </div>
-              <div className="leading-tight">
-                <div className="font-bold text-slate-800">Cloudflare Turnstile Verified</div>
-                <div className="text-[10px] text-slate-400">Verifikasi bot otomatis lolos</div>
-              </div>
-            </div>
-            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full">
-              Terlindungi
-            </span>
-          </div>
-
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 rounded-2xl bg-emerald-800 hover:bg-emerald-700 text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 min-h-[48px]"
+            className="w-full py-3.5 rounded-2xl bg-[#0E7A4C] hover:bg-[#0A2116] text-white font-extrabold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 min-h-[48px] cursor-pointer disabled:opacity-50"
           >
             {loading ? (
               <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -309,89 +289,186 @@ export const Login: React.FC = () => {
           </button>
         </form>
 
-        {/* ================================================================= */}
-        {/* AUTO-GENERATE TOMBOL AUTOFILL 1-KLIK PER ROLE (HARDENED)          */}
-        {/* ================================================================= */}
-        <div className="space-y-3 pt-3 border-t border-slate-100">
-          <div className="flex items-center justify-between text-[11px] font-black text-slate-500 uppercase tracking-wider">
-            <span className="flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-amber-500" />
-              <span>Autofill 1-Klik Kredensial (4 Peran):</span>
-            </span>
-            <span className="text-emerald-700 font-mono text-[10px]">Siap Evaluasi</span>
-          </div>
+        {/* SECTION DAFTAR (PENGGANTI AUTOFILL ITEM) */}
+        <div className="pt-4 border-t border-slate-100 dark:border-zinc-800 space-y-3">
+          <div className="p-4 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/60 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-[#0E7A4C] text-white flex items-center justify-center shrink-0 shadow-xs">
+                <UserPlus className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-slate-800 dark:text-zinc-200 truncate">
+                  Belum memiliki akun?
+                </p>
+                <p className="text-[11px] text-slate-500 dark:text-zinc-400 truncate">
+                  Pendaftaran Santri Baru (SPMB)
+                </p>
+              </div>
+            </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            {ROLE_CREDENTIALS.map((cred) => {
-              const IconComp = cred.icon;
-              const isSelected = activeAutofillRole === cred.role;
-
-              return (
-                <div
-                  key={cred.role}
-                  onClick={() => handleAutofill(cred)}
-                  className={`p-3 rounded-2xl border transition-all text-left cursor-pointer flex flex-col justify-between space-y-2 group ${
-                    isSelected
-                      ? cred.highlightRing
-                      : `${cred.cardBg} ${cred.borderClass}`
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-1.5">
-                    <div className="flex items-center gap-2">
-                      <div className="p-1 rounded-lg bg-white/80 shadow-xs">
-                        <IconComp className={`w-3.5 h-3.5 ${cred.iconColor}`} />
-                      </div>
-                      <div className="leading-tight">
-                        <div className="text-xs font-black text-slate-900 group-hover:text-emerald-950">
-                          {cred.title}
-                        </div>
-                        <div className="text-[10px] text-slate-500 truncate max-w-[120px]">
-                          {cred.subtitle}
-                        </div>
-                      </div>
-                    </div>
-
-                    <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-md shrink-0 ${cred.badgeClass}`}>
-                      {cred.badge}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-1 border-t border-black/5 text-[10px]">
-                    <span className="font-mono text-slate-500 text-[10px] truncate max-w-[110px]" title={cred.email}>
-                      {cred.email.split('@')[0]}
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={(e) => handleInstantSignIn(cred, e)}
-                      disabled={loading}
-                      className="px-2 py-0.5 rounded-lg bg-white/90 hover:bg-emerald-800 hover:text-white text-slate-700 font-black text-[10px] shadow-xs border border-black/10 transition-colors flex items-center gap-1 shrink-0"
-                      title="Klik untuk langsung login tanpa submit manual"
-                    >
-                      <Zap className="w-2.5 h-2.5 text-amber-500 fill-amber-500" />
-                      <span>Masuk Langsung</span>
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
+            <Link
+              to="/spmb"
+              className="px-3.5 py-2 rounded-xl bg-white dark:bg-zinc-800 hover:bg-emerald-700 hover:text-white dark:hover:bg-emerald-600 text-[#0E7A4C] dark:text-emerald-400 font-bold text-xs border border-emerald-300 dark:border-emerald-700 shadow-2xs transition-all flex items-center gap-1.5 shrink-0"
+            >
+              <span>Daftar</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
 
+        {/* Footer Navigation */}
         <div className="text-center pt-1">
           <Link
             to="/"
-            className="text-xs text-slate-500 hover:text-emerald-800 font-semibold underline transition-colors"
+            className="text-xs text-slate-500 hover:text-[#0E7A4C] dark:text-zinc-400 dark:hover:text-emerald-400 font-semibold underline transition-colors"
           >
-            &larr; Kembali ke Beranda Website Santri
+            &larr; Kembali ke Beranda Website
           </Link>
         </div>
 
       </div>
 
-      {/* Supabase Dataset Warning Modal */}
+      {/* =================================================================== */}
+      {/* MODAL LUPA PASSWORD                                                */}
+      {/* =================================================================== */}
+      {isForgotPasswordOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in overflow-y-auto">
+          <div className="w-full max-w-md bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col my-auto animate-scale-in">
+            
+            {/* Modal Header */}
+            <div className="px-6 py-5 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-[#C8A951] flex items-center justify-center border border-amber-200/60 dark:border-amber-800/60">
+                  <KeyRound className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-zinc-900 dark:text-white">
+                    Lupa Kata Sandi
+                  </h3>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                    Pemulihan akses akun resmi PPJM
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsForgotPasswordOpen(false);
+                  setResetSuccess(null);
+                  setResetError(null);
+                }}
+                className="p-2 rounded-xl text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <form onSubmit={handleResetPassword} className="p-6 space-y-4">
+              {resetError && (
+                <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-700 dark:text-rose-300 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{resetError}</span>
+                </div>
+              )}
+
+              {resetSuccess ? (
+                <div className="space-y-4">
+                  <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/60 text-emerald-800 dark:text-emerald-300 text-xs space-y-2">
+                    <div className="flex items-center gap-2 font-bold">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>Instruksi Terkirim!</span>
+                    </div>
+                    <p className="leading-relaxed">{resetSuccess}</p>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsForgotPasswordOpen(false);
+                      setResetSuccess(null);
+                    }}
+                    className="w-full py-3 rounded-xl bg-[#0E7A4C] text-white text-xs font-bold transition-all hover:bg-[#0A2116] cursor-pointer"
+                  >
+                    Kembali ke Halaman Login
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    Masukkan alamat email yang terdaftar pada akun Anda. Kami akan mengirimkan tautan aman untuk mengatur ulang kata sandi Anda.
+                  </p>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                      Alamat Email Terdaftar: *
+                    </label>
+                    <div className="relative">
+                      <Mail className="w-4 h-4 text-zinc-400 absolute left-3.5 top-3.5" />
+                      <input
+                        type="email"
+                        required
+                        value={resetEmail}
+                        onChange={(e) => setResetEmail(e.target.value)}
+                        placeholder="contoh@ppjauharulmaknuun.sch.id"
+                        className="w-full pl-10 pr-4 py-3 text-xs sm:text-sm rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-600"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Bantuan Kontak Sekretariat */}
+                  <div className="p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/60 space-y-1 text-xs text-zinc-600 dark:text-zinc-400">
+                    <div className="flex items-center gap-1.5 font-bold text-zinc-800 dark:text-zinc-200">
+                      <ShieldCheck className="w-3.5 h-3.5 text-[#0E7A4C]" />
+                      <span>Butuh Bantuan Lebih Lanjut?</span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed">
+                      Hubungi Layanan Administrasi & IT Pondok Pesantren Jauharul Maknuun via WhatsApp:{' '}
+                      <a
+                        href="https://wa.me/6281234567801?text=Assalamu'alaikum%20Admin%20PPJM,%20saya%20mengalami%20kendala%20lupa%20password%20akun."
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold text-[#0E7A4C] hover:underline"
+                      >
+                        +62 812-3456-7801
+                      </a>
+                    </p>
+                  </div>
+
+                  <div className="pt-2 flex items-center justify-end gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setIsForgotPasswordOpen(false)}
+                      className="px-4 py-2.5 rounded-xl border border-zinc-200 dark:border-zinc-700 text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
+                    >
+                      Batal
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={resetLoading || !resetEmail}
+                      className="px-5 py-2.5 rounded-xl bg-[#0E7A4C] hover:bg-[#0A2116] text-white text-xs font-bold transition-all shadow-sm flex items-center gap-2 disabled:opacity-50 cursor-pointer"
+                    >
+                      {resetLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>Mengirimkan...</span>
+                        </>
+                      ) : (
+                        <span>Kirim Link Reset</span>
+                      )}
+                    </button>
+                  </div>
+                </>
+              )}
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Supabase Dataset Warning Banner */}
       <EnvAlertBanner />
     </div>
   );
 };
+
 export default Login;
