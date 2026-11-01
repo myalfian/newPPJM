@@ -2,7 +2,6 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import {
   Sparkles,
-  Search,
   Award,
   Users2,
   Calendar,
@@ -86,7 +85,6 @@ export const EkskulPage: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<EkskulCategory>(() =>
     parseCategoryParam(urlCategoryParam)
   );
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeDetailItem, setActiveDetailItem] = useState<DetailedEkskulItem | null>(null);
 
   // Sync state if URL changes externally
@@ -169,14 +167,9 @@ export const EkskulPage: React.FC = () => {
         }
       }
 
-      const matchSearch =
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.coach.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.description.toLowerCase().includes(searchQuery.toLowerCase());
-
-      return matchCategory && matchSearch;
+      return matchCategory;
     });
-  }, [ekskuls, selectedCategory, searchQuery]);
+  }, [ekskuls, selectedCategory]);
 
   return (
     <div className="w-full max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2.5 space-y-2.5 sm:space-y-3.5 overflow-x-hidden select-none">
@@ -238,27 +231,7 @@ export const EkskulPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Real-time Search Toolbar */}
-      <div className="bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md p-2.5 sm:p-3 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/80 shadow-xs flex items-center justify-between gap-3">
-        <div className="relative flex-1 max-w-md">
-          <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-zinc-400">
-            <Search className="w-4 h-4" />
-          </div>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari ekstrakurikuler, pembina, atau kegiatan..."
-            className="w-full pl-9 pr-4 py-2 rounded-xl text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:outline-hidden focus:ring-2 focus:ring-purple-500/40 transition-all"
-          />
-        </div>
-
-        <div className="text-xs text-zinc-500 dark:text-zinc-400 font-medium hidden sm:block">
-          Menampilkan <span className="font-bold text-zinc-800 dark:text-zinc-200">{filteredEkskuls.length}</span> kegiatan ekskul
-        </div>
-      </div>
-
-      {/* 4. Grid of Ekskul Cards */}
+      {/* 3. Grid of Ekskul Cards */}
       {filteredEkskuls.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
           {filteredEkskuls.map((item) => (
@@ -276,17 +249,14 @@ export const EkskulPage: React.FC = () => {
             Ekstrakurikuler Tidak Ditemukan
           </h3>
           <p className="text-xs text-zinc-500 max-w-sm mx-auto">
-            Tidak ada kegiatan ekskul yang sesuai dengan kata kunci &quot;{searchQuery}&quot;. Silakan coba kata kunci lain.
+            Tidak ada kegiatan ekskul untuk kategori ini. Silakan pilih kategori ekskul lainnya.
           </p>
           <button
             type="button"
-            onClick={() => {
-              setSelectedCategory('Semua Kategori');
-              setSearchQuery('');
-            }}
+            onClick={() => handleSelectCategory('Semua Kategori')}
             className="px-4 py-2 rounded-xl bg-purple-800 text-white font-bold text-xs hover:bg-purple-900 cursor-pointer"
           >
-            Reset Pencarian
+            Tampilkan Semua Kategori
           </button>
         </div>
       )}
