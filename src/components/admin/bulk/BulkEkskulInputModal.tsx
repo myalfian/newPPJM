@@ -169,14 +169,10 @@ export const BulkEkskulInputModal: React.FC<BulkEkskulInputModalProps> = ({
           return {
             id: uuid,
             name: r.name.trim(),
-            category: r.category,
             schedule: r.schedule || 'Sabtu Sore',
             mentor_name: r.coach || 'Pembina PPJM',
-            location: r.location || 'Komplek Kampus PPJM',
             description: r.description || `Kegiatan ${r.name}`,
-            cover_image: r.imageUrl,
-            is_active: true,
-            updated_at: new Date().toISOString()
+            cover_image: r.imageUrl || null
           };
         });
 
@@ -186,18 +182,15 @@ export const BulkEkskulInputModal: React.FC<BulkEkskulInputModalProps> = ({
         }
 
         // Parallel insert into 'ekskul' table for dual compatibility
-        const payloadEkskul = payloadExtra.map((item) => ({
-          id: item.id,
-          name: item.name,
+        const payloadEkskul = validRows.map((item) => ({
+          name: item.name.trim(),
           category: item.category,
-          coach: item.mentor_name,
-          instructor_name: item.mentor_name,
-          schedule: item.schedule,
-          location: item.location,
-          description: item.description,
-          photo_url: item.cover_image,
+          instructor_name: item.coach || 'Pembina PPJM',
+          schedule: item.schedule || 'Sabtu Sore',
+          location: item.location || 'Komplek Kampus PPJM',
+          description: item.description || `Kegiatan ${item.name}`,
           is_active: true,
-          updated_at: new Date().toISOString()
+          images: item.imageUrl ? [item.imageUrl] : null
         }));
         await supabase.from('ekskul').insert(payloadEkskul);
       }

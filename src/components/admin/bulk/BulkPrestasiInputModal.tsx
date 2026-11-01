@@ -183,13 +183,9 @@ export const BulkPrestasiInputModal: React.FC<BulkPrestasiInputModalProps> = ({
           winner_name: r.winner_name.trim(),
           category: r.category,
           medal_type: r.medal_type,
-          level: r.tingkat,
           year: r.year,
-          coach: r.coach,
           description: r.description || `Meraih prestasi ${r.title} oleh ${r.winner_name}`,
-          certificate_url: r.certificate_url || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=600&q=80',
-          is_active: true,
-          updated_at: new Date().toISOString()
+          certificate_url: r.certificate_url || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=600&q=80'
         }));
 
         const { error: err1 } = await supabase.from('achievements').insert(payloadAchievements);
@@ -200,15 +196,13 @@ export const BulkPrestasiInputModal: React.FC<BulkPrestasiInputModalProps> = ({
         // Parallel insert into 'prestasi' table for dual compatibility
         const payloadPrestasi = validRows.map((r) => ({
           title: r.title.trim(),
-          student_name: r.winner_name.trim(),
+          santri_name: r.winner_name.trim(),
           category: r.category,
-          rank: r.medal_type,
           level: r.tingkat,
+          pembina_name: r.coach,
           year: r.year,
-          description: r.description || `Meraih prestasi ${r.title} oleh ${r.winner_name}`,
-          image_url: r.certificate_url || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=600&q=80',
-          is_published: true,
-          updated_at: new Date().toISOString()
+          certificate_url: r.certificate_url || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=600&q=80',
+          photo_url: r.certificate_url || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=600&q=80'
         }));
         await supabase.from('prestasi').insert(payloadPrestasi);
       }
