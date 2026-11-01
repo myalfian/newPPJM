@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Landmark } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { HistoryMilestone } from './types';
+import { SafeRichContent } from '../../components/common/SafeRichContent';
 
 export const SejarahSection: React.FC = () => {
   const [history, setHistory] = useState<HistoryMilestone[]>([]);
@@ -62,8 +63,8 @@ export const SejarahSection: React.FC = () => {
         </div>
 
         {content && (
-          <div className="prose prose-sm dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed text-xs bg-zinc-50 dark:bg-zinc-800/40 p-2.5 sm:p-3 rounded-lg sm:rounded-xl border border-zinc-200/60 dark:border-zinc-700/60 whitespace-pre-line">
-            {content}
+          <div className="bg-zinc-50 dark:bg-zinc-800/40 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-zinc-200/60 dark:border-zinc-700/60 shadow-2xs">
+            <SafeRichContent content={content} leadParagraph={true} />
           </div>
         )}
 

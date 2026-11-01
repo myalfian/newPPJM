@@ -323,3 +323,132 @@ export function estimateReadingTime(content: string): number {
   return Math.max(1, Math.ceil(wordCount / 180));
 }
 
+/**
+ * Standardisasi penulisan lafaz keagamaan & honorifik islami sesuai EYD dan konvensi resmi pesantren:
+ * - Allah Swt.
+ * - Nabi Muhammad saw. / Rasulullah saw.
+ * - Al-Qur'an
+ * - hadis (bukan hadist)
+ * - insya Allah
+ */
+export function standardizeIslamicHonorifics(text: string): string {
+  if (!text || typeof text !== 'string') return '';
+  let res = text;
+  // Allah Swt.
+  res = res.replace(/\bAllah\s+(SWT|swt|Swt\.?)\b/gi, 'Allah Swt.');
+  // Nabi Muhammad saw.
+  res = res.replace(/\b(Nabi\s+Muhammad|Rasulullah)\s+(SAW|saw|Saw\.?)\b/gi, '$1 saw.');
+  // Al-Qur'an
+  res = res.replace(/\b(al[- ]?qur['’`]?an|alquran)\b/gi, "Al-Qur'an");
+  // hadist -> hadis
+  res = res.replace(/\b(hadits|hadist)\b/gi, 'hadis');
+  // insya Allah
+  res = res.replace(/\b(insha\s*allah|insyaallah|insya-allah)\b/gi, 'insya Allah');
+  // Subhanahu wa Ta'ala
+  res = res.replace(/\bsubhanahu\s+wa\s+ta'?ala\b/gi, "Subhanahu wa Ta'ala");
+  // Shallallahu 'Alaihi wa Sallam
+  res = res.replace(/\bshallallahu\s+'?alaihi\s+wa\s+sallam\b/gi, "Shallallahu 'Alaihi wa Sallam");
+  return res;
+}
+
+/**
+ * Istilah kepesantrenan, akademis, dan bahasa asing yang wajib dicetak miring (*italic*).
+ */
+export const SCHOOL_ITALIC_TERMS = [
+  'tafaqquh fiddin',
+  'kutubut turats',
+  'dirosah islamiyah',
+  'tahfidzul qur\'an',
+  'mutafaqqih fiddin',
+  'murojaah',
+  'ziyadah',
+  'madrasah diniyah takmiliyah',
+  'sanad muttashil',
+  'insan kamil',
+  'akhlakul karimah',
+  'leadership',
+  'full day education',
+  'boarding school',
+  'smart campus',
+  'green campus',
+  'science, technology, engineering, & math',
+  'Bismillahirrohmanirrohim',
+  'Assalamu’alaikum Warahmatullahi Wabarakatuh',
+  'Assalamu\'alaikum Warahmatullahi Wabarakatuh',
+  'Wassalamu’alaikum Warahmatullahi Wabarakatuh',
+  'Wassalamu\'alaikum Warahmatullahi Wabarakatuh',
+  'Alhamdulillahi rabbil \'alamin',
+  'Aamiin ya Rabbal \'Alamin'
+];
+
+/**
+ * Menerapkan cetak miring pada istilah pesantren dan istilah asing tanpa merusak tag HTML yang sudah ada.
+ */
+export function italicizeSchoolTerms(text: string): string {
+  if (!text || typeof text !== 'string') return '';
+  let res = text;
+  for (const term of SCHOOL_ITALIC_TERMS) {
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // Hanya ganti jika belum berada di dalam tag <em>, <i>, <a>, dsb.
+    const regex = new RegExp(`(?<![<*_/])\\b(${escaped})\\b(?![>*_/])`, 'gi');
+    res = res.replace(regex, '<em>$1</em>');
+  }
+  return res;
+}
+
+/**
+ * Memperbaiki kalimat yang menempel tanpa spasi setelah tanda titik, serta merapikan spasi ganda.
+ */
+export function cleanSpacingAndJoinedWords(text: string): string {
+  if (!text || typeof text !== 'string') return '';
+  let clean = text;
+  // Perbaiki kalimat menempel (contoh: "Saw.Pondok" -> "Saw. Pondok", "santri.Berangkat" -> "santri. Berangkat")
+  clean = clean.replace(/([a-zA-Z0-9\.\'\’\”\)])\.([A-Z\u0600-\u06FF])/g, '$1. $2');
+  // Kompres spasi horizontal ganda tetapi pertahankan newline
+  clean = clean.replace(/[^\S\r\n]{2,}/g, ' ');
+  return clean;
+}
+
+export interface SchoolFormatOptions {
+  mode?: 'full' | 'eyd_only' | 'speech' | 'news';
+}
+
+/**
+ * Enterprise School Article Formatter & Style Optimizer.
+ * Mengubah draf mentah, pengumuman, atau sambutan pimpinan menjadi artikel web terstruktur
+ * sesuai School Website Style Guide resmi:
+ * - Struktur anatomi: Judul H1, Salam Iftitah, Teras/Lead, Subjudul H2/H3, Poin Sintesa, Penutup.
+ * - Standardisasi honorifik keagamaan dan cetak miring istilah pesantren/asing.
+ * - Siap dirender di SafeRichContent maupun diedit kembali di WordLikeEditor (TipTap).
+ */
+export function autoFormatSchoolArticle(content: string, options: SchoolFormatOptions = { mode: 'full' }): string {
+  if (!content || typeof content !== 'string') return '';
+
+  const mode = options.mode || 'full';
+
+  // 1. Bersihkan spasi dan kalimat yang menempel
+  let processed = cleanSpacingAndJoinedWords(content.trim());
+
+  // 2. Terapkan EYD honorifik keagamaan
+  processed = standardizeIslamicHonorifics(processed);
+
+  // Jika hanya mode EYD saja, langsung kembalikan
+  if (mode === 'eyd_only') {
+    return italicizeSchoolTerms(processed);
+  }
+
+  // 3. Jika input belum berupa HTML blok, ubah menjadi HTML terstruktur semantik
+  const isHtml = /<(p|div|h[1-6]|ul|ol|li|blockquote|table|section|article)\b/i.test(processed);
+
+  if (!isHtml) {
+    // Jalankan konversi markdown / plain text ke semantic HTML
+    processed = markdownToHtml(processed);
+  }
+
+  // 4. Terapkan cetak miring istilah pesantren
+  processed = italicizeSchoolTerms(processed);
+
+  // 5. Normalisasi HTML akhir
+  return cleanAndNormalizeHtml(processed);
+}
+
