@@ -677,3 +677,4 @@ export const BulkCertificateUploaderModal: React.FC<BulkCertificateUploaderModal
     </div>
   );
 };
+

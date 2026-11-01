@@ -103,7 +103,6 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentHref: '/prestasi',
     parentIcon: Trophy,
     tabs: [
-      { id: 'prestasi-semua', label: 'Semua Prestasi', href: '/prestasi', icon: Trophy },
       { id: 'prestasi-sains', label: 'Sains', href: '/prestasi?kategori=Sains', icon: Award },
       { id: 'prestasi-olahraga', label: 'Olahraga', href: '/prestasi?kategori=Olahraga', icon: Activity },
       { id: 'prestasi-seni', label: 'Seni', href: '/prestasi?kategori=Seni', icon: Palette },
@@ -279,9 +278,7 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
       // 2. Prestasi Category Matching
       if (!activeTab && (pathname === '/prestasi' || pathname.startsWith('/prestasi'))) {
         const query = new URLSearchParams(location.search).get('kategori')?.toLowerCase();
-        if (!query || query === 'semua') {
-          activeTab = subMenuTabs.find((t) => t.id === 'prestasi-semua');
-        } else if (query === 'sains' || query === 'olimpiade') {
+        if (query === 'sains' || query === 'olimpiade') {
           activeTab = subMenuTabs.find((t) => t.id === 'prestasi-sains');
         } else if (query === 'olaraga' || query === 'olahraga') {
           activeTab = subMenuTabs.find((t) => t.id === 'prestasi-olahraga');
@@ -386,19 +383,23 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
         activeTab = subMenuTabs.find((t) => t.id === 'jm-news') || subMenuTabs[0];
       }
 
-      // 7. Fallback to path without query string match (ONLY IF no query params present)
+      // 7. Fallback to path without query string match (ONLY IF no query params present and tab href has no query)
       if (!activeTab && !location.search) {
-        activeTab = subMenuTabs.find((t) => pathname === t.href.split('?')[0]);
+        activeTab = subMenuTabs.find((t) => !t.href.includes('?') && pathname === t.href.split('?')[0]);
       }
 
       // 8. Check sub-menu prefix
       if (!activeTab) {
-        activeTab = subMenuTabs.find((t) => t.href !== '/' && pathname.startsWith(t.href.split('?')[0]));
+        activeTab = subMenuTabs.find((t) => !t.href.includes('?') && t.href !== '/' && pathname.startsWith(t.href.split('?')[0]));
       }
 
-      // 9. Fallback to any matching tab or first
+      // 9. Fallback to any matching tab or first (avoid falsely selecting beranda when on prestasi page)
       if (!activeTab) {
-        activeTab = tabs.find((t) => pathname === t.href || (t.href !== '/' && pathname.startsWith(t.href))) || tabs[0];
+        if (pathname === '/prestasi' || pathname.startsWith('/prestasi')) {
+          activeTab = undefined;
+        } else {
+          activeTab = tabs.find((t) => pathname === t.href || (t.href !== '/' && pathname.startsWith(t.href))) || tabs[0];
+        }
       }
     }
   }

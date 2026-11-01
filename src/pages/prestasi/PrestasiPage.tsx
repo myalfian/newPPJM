@@ -164,7 +164,7 @@ export const PrestasiPage: React.FC = () => {
         return 'prestasi-umum';
       case 'Semua':
       default:
-        return 'prestasi-semua';
+        return undefined;
     }
   }, [selectedCategory]);
 
@@ -184,9 +184,6 @@ export const PrestasiPage: React.FC = () => {
         break;
       case 'prestasi-umum':
         handleSelectCategory('Umum');
-        break;
-      case 'prestasi-semua':
-        handleSelectCategory('Semua');
         break;
     }
   };
