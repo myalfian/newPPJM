@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   HeartHandshake,
   MessageSquare,
@@ -15,7 +15,9 @@ import {
   Eye,
   X,
   Copy,
-  Check
+  Check,
+  AlertTriangle,
+  RefreshCw
 } from 'lucide-react';
 import {
   WhatsAppIcon,
@@ -24,6 +26,7 @@ import {
   YoutubeIcon
 } from '../../components/common/SocialIcons';
 import { MedsosModal } from '../../components/common/MedsosModal';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 export interface ContactSettings {
   // 1. WhatsApp Admin Hotline
@@ -113,7 +116,60 @@ export const KelolaKontak: React.FC = () => {
 
   const [isSaving, setIsSaving] = useState(false);
   const [savedAlert, setSavedAlert] = useState<string | null>(null);
+  const [errorAlert, setErrorAlert] = useState<string | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  // Load from Supabase on Mount & Listen to Realtime
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadSettingsFromSupabase = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('value')
+          .eq('key', 'contact_settings')
+          .maybeSingle();
+
+        if (error) {
+          console.warn('Gagal memuat contact_settings dari site_settings:', error.message);
+          return;
+        }
+
+        if (data && data.value && isMounted) {
+          const remoteSettings = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
+          setSettings(prev => ({ ...prev, ...remoteSettings }));
+          localStorage.setItem('ppjm_contact_settings', JSON.stringify(remoteSettings));
+        }
+      } catch (err) {
+        console.warn('Error loading settings from Supabase:', err);
+      }
+    };
+
+    loadSettingsFromSupabase();
+
+    // Setup Supabase Realtime channel
+    const channel = supabase
+      .channel('realtime-kontak-medsos-admin')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'site_settings', filter: 'key=eq.contact_settings' },
+        (payload: any) => {
+          if (payload.new && payload.new.value) {
+            const fresh = typeof payload.new.value === 'string' ? JSON.parse(payload.new.value) : payload.new.value;
+            setSettings(prev => ({ ...prev, ...fresh }));
+            localStorage.setItem('ppjm_contact_settings', JSON.stringify(fresh));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const handleFieldChange = (field: keyof ContactSettings, value: string) => {
     setSettings((prev) => ({ ...prev, [field]: value }));
@@ -122,12 +178,81 @@ export const KelolaKontak: React.FC = () => {
   const handleSave = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     setIsSaving(true);
+    setErrorAlert(null);
     try {
+      // 1. Update local cache immediately
       localStorage.setItem('ppjm_contact_settings', JSON.stringify(settings));
       window.dispatchEvent(new CustomEvent('ppjm-contact-settings-updated', { detail: settings }));
-      await new Promise((r) => setTimeout(r, 400));
-      setSavedAlert('Pengaturan kontak & 7 kanal medsos pop-up berhasil disimpan!');
+
+      // 2. Persist to Supabase site_settings
+      if (isSupabaseConfigured()) {
+        const { error: settingsError } = await supabase
+          .from('site_settings')
+          .upsert(
+            {
+              key: 'contact_settings',
+              value: settings as any,
+              updated_at: new Date().toISOString()
+            },
+            { onConflict: 'key' }
+          );
+
+        if (settingsError) {
+          console.error('Error saving to site_settings:', settingsError);
+          if (settingsError.code === '42501') {
+            setErrorAlert('Akses database ditolak (RLS 42501). Perubahan hanya tersimpan di cache lokal.');
+            return;
+          }
+        }
+
+        // 3. Sync to kontak_medsos table
+        const channelsToSync = [
+          { type: 'wa_admin', label: settings.waAdminLabel || 'WhatsApp Admin', url: `https://wa.me/${settings.waAdminNumber.replace(/[^0-9]/g, '')}`, order_index: 1, is_active: true },
+          { type: 'saluran_wa', label: settings.waChannelTitle || 'Saluran WhatsApp', url: settings.waChannelUrl, order_index: 2, is_active: true },
+          { type: 'instagram', label: settings.igPpjmHandle || 'Instagram PPJM', url: settings.igPpjmUrl, order_index: 3, is_active: true },
+          { type: 'instagram_smp', label: settings.igSmpjmHandle || 'Instagram SMP Plus', url: settings.igSmpjmUrl, order_index: 4, is_active: true },
+          { type: 'instagram_osis', label: settings.igOsisHandle || 'Instagram OSIS', url: settings.igOsisUrl, order_index: 5, is_active: true },
+          { type: 'tiktok', label: settings.tiktokHandle || 'TikTok', url: settings.tiktokUrl, order_index: 6, is_active: true },
+          { type: 'youtube', label: settings.youtubeHandle || 'YouTube', url: settings.youtubeUrl, order_index: 7, is_active: true }
+        ];
+
+        for (const item of channelsToSync) {
+          await supabase.from('kontak_medsos').upsert(
+            {
+              type: item.type,
+              label: item.label,
+              url: item.url,
+              order_index: item.order_index,
+              is_active: item.is_active
+            },
+            { onConflict: 'type' }
+          ).select().maybeSingle();
+        }
+
+        // 4. Record Audit Log
+        try {
+          const { data: userAuth } = await supabase.auth.getUser();
+          await supabase.from('audit_logs').insert({
+            user_id: userAuth?.user?.id || null,
+            email: userAuth?.user?.email || 'admin@ppjauharulmaknuun.sch.id',
+            role: 'super_admin',
+            action: 'UPDATE',
+            module: 'kontak_medsos',
+            section_id: 'contact_settings',
+            new_data: settings as any,
+            created_at: new Date().toISOString()
+          });
+        } catch {
+          // ignore audit log failure
+        }
+      }
+
+      setSavedAlert('Pengaturan kontak & 7 kanal medsos pop-up berhasil disimpan ke Supabase Cloud!');
       setTimeout(() => setSavedAlert(null), 3500);
+    } catch (err: any) {
+      console.error('Fatal saving error:', err);
+      setErrorAlert('Gagal menyimpan: ' + (err?.message || 'Koneksi terputus'));
+      setTimeout(() => setErrorAlert(null), 5000);
     } finally {
       setIsSaving(false);
     }
@@ -177,6 +302,13 @@ export const KelolaKontak: React.FC = () => {
         <div className="p-4 rounded-2xl bg-emerald-100 border border-emerald-200 text-emerald-900 font-bold text-xs flex items-center gap-2 animate-fadeIn">
           <CheckCircle2 className="w-5 h-5 text-emerald-700 shrink-0" />
           <span>{savedAlert}</span>
+        </div>
+      )}
+
+      {errorAlert && (
+        <div className="p-4 rounded-2xl bg-rose-100 border border-rose-200 text-rose-900 font-bold text-xs flex items-center gap-2 animate-fadeIn">
+          <AlertTriangle className="w-5 h-5 text-rose-700 shrink-0" />
+          <span>{errorAlert}</span>
         </div>
       )}
 

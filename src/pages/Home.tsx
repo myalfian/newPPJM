@@ -105,12 +105,13 @@ export const Home: React.FC = () => {
           .from('sambutan_persons')
           .select('*')
           .eq('is_active', true)
-          .order('order_index', { ascending: true })
-          .limit(1)
-          .maybeSingle();
+          .order('order_index', { ascending: true });
 
-        if (!error && data && isMounted) {
-          setLiveSambutan(data as SambutanPerson);
+        if (!error && data && data.length > 0 && isMounted) {
+          // Pilih yang is_featured terlebih dahulu, atau urutan order_index pertama
+          const rows = data as SambutanPerson[];
+          const featured = rows.find((s) => s.is_featured) || rows[0];
+          setLiveSambutan(featured);
         }
       } catch (err) {
         console.warn('Error fetching live sambutan for Home:', err);

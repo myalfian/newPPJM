@@ -127,6 +127,15 @@ export function sanitizeUrl(url: string): string {
 }
 
 /**
+ * Validasi Image URL aman
+ */
+export function isValidImageUrl(url: string): boolean {
+  if (!url || typeof url !== 'string') return false;
+  const clean = url.trim();
+  return /^(https?:\/\/|data:image\/(jpeg|png|webp|gif);base64,|\/)/i.test(clean);
+}
+
+/**
  * Validasi Magic Number file gambar (Binary Header Check)
  * Membaca 4-8 byte pertama dari file untuk memvalidasi tipe asli (bukan hanya ekstensi palsu).
  */

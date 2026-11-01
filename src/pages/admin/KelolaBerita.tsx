@@ -60,21 +60,32 @@ export const KelolaBerita: React.FC = () => {
   const loadNews = async () => {
     if (!isSupabaseConfigured()) return;
     try {
-      const { data, error } = await supabase
-        .from('news')
+      // 1. Coba baca dari tabel berita utama
+      const { data: bData, error } = await supabase
+        .from('berita')
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (!error && data && data.length > 0) {
+      let rows: any[] = bData || [];
+
+      // 2. Jika kosong di berita, coba tabel news
+      if (!error && rows.length === 0) {
+        const res = await supabase.from('news').select('*').order('created_at', { ascending: false });
+        if (!res.error && res.data && res.data.length > 0) {
+          rows = res.data;
+        }
+      }
+
+      if (rows.length > 0) {
         setNewsList(
-          data.map((row) => ({
+          rows.map((row: any) => ({
             id: row.id,
             title: row.title,
             slug: row.slug,
             category: row.category,
-            summary: row.summary || '',
+            summary: row.summary || row.excerpt || '',
             content: row.content,
-            thumbnail: row.thumbnail || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
+            thumbnail: row.thumbnail || row.image_url || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
             is_pinned: row.is_pinned ?? false,
             is_published: row.is_published ?? true,
             author: row.author || 'Tim Media PPJM',
@@ -100,6 +111,9 @@ export const KelolaBerita: React.FC = () => {
     const channel = supabase
       .channel('admin-news-realtime')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'berita' }, () => {
+        loadNews();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'news' }, () => {
         loadNews();
       })
       .subscribe();
@@ -199,6 +213,7 @@ export const KelolaBerita: React.FC = () => {
     if (isSupabaseConfigured() && !id.startsWith('news-')) {
       try {
         await supabase.from('news').delete().eq('id', id);
+        await supabase.from('berita').delete().eq('id', id);
         setStatusMessage('Berita berhasil dihapus dari sistem.');
         setTimeout(() => setStatusMessage(null), 3000);
       } catch (err) {
@@ -249,20 +264,27 @@ export const KelolaBerita: React.FC = () => {
 
       if (isSupabaseConfigured() && !editingId.startsWith('news-')) {
         try {
+          const payload = {
+            title: judul,
+            category: kategori,
+            summary: ringkasan || isiBerita.substring(0, 160) + '...',
+            content: isiBerita,
+            thumbnail: finalThumbnail,
+            author,
+            is_pinned: isHeadline,
+            is_published: isPublished,
+            updated_at: new Date().toISOString()
+          };
           const { error: updateError } = await supabase
             .from('news')
-            .update({
-              title: judul,
-              category: kategori,
-              summary: ringkasan || isiBerita.substring(0, 160) + '...',
-              content: isiBerita,
-              thumbnail: finalThumbnail,
-              author,
-              is_pinned: isHeadline,
-              is_published: isPublished,
-              updated_at: new Date().toISOString()
-            })
+            .update(payload)
             .eq('id', editingId);
+
+          await supabase.from('berita').update({
+            ...payload,
+            excerpt: payload.summary,
+            image_url: finalThumbnail
+          } as any).eq('id', editingId);
 
           if (updateError) {
             console.error('Failed to update news on Supabase:', updateError);
@@ -281,19 +303,20 @@ export const KelolaBerita: React.FC = () => {
 
       if (isSupabaseConfigured()) {
         try {
+          const payload = {
+            title: judul,
+            slug: generatedUniqueSlug,
+            category: kategori,
+            summary: ringkasan || isiBerita.substring(0, 160) + '...',
+            content: isiBerita,
+            thumbnail: finalThumbnail,
+            author,
+            is_pinned: isHeadline,
+            is_published: isPublished
+          };
           const { data, error: insertError } = await supabase
             .from('news')
-            .insert({
-              title: judul,
-              slug: generatedUniqueSlug,
-              category: kategori,
-              summary: ringkasan || isiBerita.substring(0, 160) + '...',
-              content: isiBerita,
-              thumbnail: finalThumbnail,
-              author,
-              is_pinned: isHeadline,
-              is_published: isPublished
-            })
+            .insert(payload)
             .select()
             .single();
 
@@ -305,6 +328,12 @@ export const KelolaBerita: React.FC = () => {
 
           if (data?.id) {
             createdId = data.id;
+            await supabase.from('berita').upsert({
+              ...payload,
+              id: data.id,
+              excerpt: payload.summary,
+              image_url: finalThumbnail
+            } as any);
             if (data.slug) {
               effectiveSlug = data.slug;
             }

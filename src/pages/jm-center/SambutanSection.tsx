@@ -32,15 +32,14 @@ export const SambutanSection: React.FC = () => {
 
     try {
       // 1. Fetch from sambutan_persons (Primary Dynamic Source)
-      const { data: person, error: personError } = await supabase
+      const { data: persons, error: personError } = await supabase
         .from('sambutan_persons')
         .select('*')
         .eq('is_active', true)
-        .order('order_index', { ascending: true })
-        .limit(1)
-        .maybeSingle();
+        .order('order_index', { ascending: true });
 
-      if (person && !personError) {
+      if (persons && persons.length > 0 && !personError) {
+        const person = (persons as SambutanPerson[]).find((s) => s.is_featured) || persons[0];
         const fullMsg = person.message_full
           ? person.message_full.split('\n\n').filter(Boolean)
           : [];

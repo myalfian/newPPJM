@@ -33,6 +33,7 @@ import {
   resetHeroSlidesToDefault
 } from '../lib/sliderSettings';
 import { compressImageToWebP } from '../lib/imageCompressor';
+import { supabase } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
 
 interface HeroSliderProps {
@@ -94,6 +95,25 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       setStoredSlides(remote);
     });
 
+    // Supabase Realtime Channel for live slide synchronization
+    const channel = supabase
+      .channel('public-hero-slider-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'sliders' },
+        () => {
+          fetchHeroSlidesFromSupabase().then(setStoredSlides);
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'site_settings' },
+        () => {
+          fetchHeroSlidesFromSupabase().then(setStoredSlides);
+        }
+      )
+      .subscribe();
+
     const handleSettingsChanged = (e: Event) => {
       const customEvent = e as CustomEvent<SliderSettings>;
       if (customEvent.detail) {
@@ -124,6 +144,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
       window.removeEventListener('ppjm-slider-settings-changed', handleSettingsChanged);
       window.removeEventListener('ppjm-hero-slides-changed', handleSlidesChanged);
       window.removeEventListener('storage', handleStorageEvent);
+      supabase.removeChannel(channel);
     };
   }, []);
 

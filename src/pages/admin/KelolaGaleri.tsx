@@ -114,6 +114,23 @@ export const KelolaGaleri: React.FC = () => {
       }
     };
     loadGalleries();
+
+    const channel = supabase
+      .channel('admin-galeri-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'galleries' }, () => {
+        loadGalleries();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'galeri_foto' }, () => {
+        loadGalleries();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'galeri_videos' }, () => {
+        loadGalleries();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {

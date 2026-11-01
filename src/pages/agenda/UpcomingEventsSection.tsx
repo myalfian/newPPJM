@@ -11,6 +11,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { UpcomingEventItem } from './types';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 const UPCOMING_EVENTS: UpcomingEventItem[] = [
   {
@@ -79,10 +80,55 @@ const UPCOMING_EVENTS: UpcomingEventItem[] = [
 ];
 
 export const UpcomingEventsSection: React.FC = () => {
+  const [events, setEvents] = useState<UpcomingEventItem[]>(UPCOMING_EVENTS);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // Time remaining calculator helper
   const [now, setNow] = useState(new Date());
+
+  useEffect(() => {
+    const fetchAgendas = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('agendas')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!error && data && data.length > 0) {
+          const mapped: UpcomingEventItem[] = data.map((row: any, idx: number) => ({
+            id: row.id || `up-${idx}`,
+            title: row.title,
+            targetDate: `${row.iso_date || '2026-11-01'}T${(row.time_display || '08:00').slice(0, 5)}:00`,
+            dateDisplay: row.date_display || row.iso_date || 'Segera Hadir',
+            time: row.time_display || '08.00 WIB',
+            category: (row.category as any) || 'Pondok',
+            location: row.location || 'PP Jauharul Maknuun',
+            coordinator: row.coordinator || 'Pengurus PPJM',
+            badgeType: row.category === 'Event Akbar' ? 'gold' : row.category === 'Sekolah' ? 'emerald' : 'sapphire',
+            description: row.description || '',
+            rundown: Array.isArray(row.rundown) ? row.rundown : undefined
+          }));
+          setEvents(mapped);
+        }
+      } catch (err) {
+        console.warn('Failed to fetch live agendas:', err);
+      }
+    };
+
+    fetchAgendas();
+
+    const channel = supabase
+      .channel('public-upcoming-agendas-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'agendas' }, () => {
+        fetchAgendas();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -158,7 +204,7 @@ export const UpcomingEventsSection: React.FC = () => {
 
       {/* Grid 1 Col Mobile, 2 Cols Tablet & Desktop */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3.5">
-        {UPCOMING_EVENTS.map((item) => {
+        {events.map((item) => {
           const { days, hours, minutes, seconds, isPast } = calculateCountdown(item.targetDate);
 
           const badgeClasses =

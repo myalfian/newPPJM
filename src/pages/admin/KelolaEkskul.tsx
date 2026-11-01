@@ -159,6 +159,20 @@ export const KelolaEkskul: React.FC = () => {
       }
     };
     loadFromSupabase();
+
+    const channel = supabase
+      .channel('admin-ekskul-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'extracurriculars' }, () => {
+        loadFromSupabase();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'ekskul' }, () => {
+        loadFromSupabase();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const resetForm = () => {

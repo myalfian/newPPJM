@@ -194,6 +194,17 @@ export const OsisStructureSection: React.FC = () => {
       }
     };
     fetchStructure();
+
+    const channel = supabase
+      .channel('public-osis-structure-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'osis_structure' }, () => {
+        fetchStructure();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const leaders = members.filter((m) => m.hierarchy === 'pimpinan');

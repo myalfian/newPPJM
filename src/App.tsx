@@ -171,7 +171,7 @@ const KelolaHafidz = lazy(() => import('./pages/admin/KelolaHafidz').then(m => (
 const KelolaPrestasi = lazy(() => import('./pages/admin/KelolaPrestasi').then(m => ({ default: m.KelolaPrestasi })));
 const KelolaEkskul = lazy(() => import('./pages/admin/KelolaEkskul').then(m => ({ default: m.KelolaEkskul })));
 const KelolaProfil = lazy(() => import('./pages/admin/KelolaProfil').then(m => ({ default: m.KelolaProfil })));
-const KelolaSambutan_FIXED = lazy(() => import('./pages/admin/KelolaSambutan_FIXED').then(m => ({ default: m.KelolaSambutan_FIXED })));
+const KelolaSambutan = lazy(() => import('./pages/admin/KelolaSambutan').then(m => ({ default: m.KelolaSambutan })));
 const KelolaOsis = lazy(() => import('./pages/admin/KelolaOsis').then(m => ({ default: m.KelolaOsis })));
 const KelolaKontak = lazy(() => import('./pages/admin/KelolaKontak').then(m => ({ default: m.KelolaKontak })));
 const KelolaUsers = lazy(() => import('./pages/admin/KelolaUsers').then(m => ({ default: m.KelolaUsers })));
@@ -181,8 +181,15 @@ const IntegrationTestPage = lazy(() => import('./pages/admin/IntegrationTestPage
 const GoLiveCheckPage = lazy(() => import('./pages/admin/GoLiveCheckPage').then(m => ({ default: m.GoLiveCheckPage })));
 const DataFlowAuditPage = lazy(() => import('./pages/admin/DataFlowAuditPage').then(m => ({ default: m.DataFlowAuditPage })));
 
+import { clearOldSeedCache } from './utils/clearOldCache';
+
 export const App: React.FC = () => {
   const navigate = useNavigate();
+
+  // Clear obsolete seed cache once on app initialization
+  useEffect(() => {
+    clearOldSeedCache();
+  }, []);
 
   // Dukung akses via hash URL (misal #admin atau #/admin)
   useEffect(() => {
@@ -317,7 +324,7 @@ export const App: React.FC = () => {
             <Route path="prestasi" element={<KelolaPrestasi />} />
             <Route path="ekskul" element={<KelolaEkskul />} />
             <Route path="ekstrakurikuler" element={<Navigate to="/admin/ekskul" replace />} />
-            <Route path="sambutan" element={<KelolaSambutan_FIXED />} />
+            <Route path="sambutan" element={<KelolaSambutan />} />
             <Route path="profil" element={<KelolaProfil />} />
             <Route path="program" element={<KelolaProfil />} />
             <Route path="osis" element={<KelolaOsis />} />

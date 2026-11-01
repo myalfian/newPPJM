@@ -30,25 +30,39 @@ const fetchPublicNews = async (): Promise<NewsItem[]> => {
     return INITIAL_NEWS;
   }
   try {
-    const { data, error } = await supabase
-      .from('news')
+    const { data: bData, error } = await supabase
+      .from('berita')
       .select('*')
       .eq('is_published', true)
       .order('is_pinned', { ascending: false })
       .order('created_at', { ascending: false });
 
-    if (error || !data || data.length === 0) {
+    let rows: any[] = bData || [];
+
+    if (!error && rows.length === 0) {
+      const res = await supabase
+        .from('news')
+        .select('*')
+        .eq('is_published', true)
+        .order('is_pinned', { ascending: false })
+        .order('created_at', { ascending: false });
+      if (!res.error && res.data && res.data.length > 0) {
+        rows = res.data;
+      }
+    }
+
+    if (rows.length === 0) {
       return INITIAL_NEWS;
     }
 
-    return data.map((row) => ({
+    return rows.map((row: any) => ({
       id: row.id,
       title: row.title,
       slug: row.slug,
       category: row.category || 'Warta Pondok',
-      summary: row.summary || (row.content ? row.content.substring(0, 160) + '...' : ''),
+      summary: row.summary || row.excerpt || (row.content ? row.content.substring(0, 160) + '...' : ''),
       content: row.content,
-      thumbnail: row.thumbnail || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
+      thumbnail: row.thumbnail || row.image_url || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
       is_pinned: !!row.is_pinned,
       is_published: !!row.is_published,
       author: row.author || 'Humas PPJM',
@@ -80,6 +94,14 @@ export const Berita: React.FC = () => {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'berita' },
+        () => {
+          invalidateCache('public-news-list');
+          refetch();
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'news' },
         () => {
           invalidateCache('public-news-list');
           refetch();

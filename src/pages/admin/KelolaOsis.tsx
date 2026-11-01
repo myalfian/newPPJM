@@ -20,6 +20,7 @@ import {
   Link as LinkIcon
 } from 'lucide-react';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 export interface OsisMember {
   id: string;
@@ -174,6 +175,59 @@ export const KelolaOsis: React.FC = () => {
   const [compressionResult, setCompressionResult] = useState<CompressionResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Load OSIS structure from Supabase on mount & listen to realtime
+  useEffect(() => {
+    const loadOsisFromSupabase = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('osis_structure')
+          .select('*')
+          .order('level', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          setMembers(
+            data.map((row: any) => ({
+              id: row.id,
+              name: row.name,
+              role: row.position,
+              level: row.level === 1 ? 'Presidium' : row.level === 2 ? 'BPH' : 'Sekbid',
+              classGrade: row.class || 'Kelas IX SMP Plus JM',
+              motto: row.motto || 'Mengabdi untuk kemaslahatan santri.',
+              photoUrl: row.photo_url || ''
+            }))
+          );
+        }
+      } catch (err) {
+        console.warn('Failed to load osis from Supabase:', err);
+      }
+    };
+    loadOsisFromSupabase();
+
+    const channel = supabase
+      .channel('admin-osis-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'osis_structure' }, () => {
+        loadOsisFromSupabase();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  const handleDeleteMember = async (id: string) => {
+    if (!confirm('Hapus anggota pengurus OSIS ini?')) return;
+    setMembers(prev => prev.filter((m) => m.id !== id));
+    if (isSupabaseConfigured() && !id.startsWith('m-')) {
+      try {
+        await supabase.from('osis_structure').delete().eq('id', id);
+      } catch (e) {
+        console.warn('Failed to delete osis_structure from Supabase:', e);
+      }
+    }
+  };
+
   const handleFileUpload = async (file: File) => {
     if (!file.type.startsWith('image/')) {
       alert('Mohon pilih file gambar (JPG, PNG, WebP).');
@@ -198,7 +252,7 @@ export const KelolaOsis: React.FC = () => {
   const [pTimeline, setPTimeline] = useState('');
   const [pTarget, setPTarget] = useState('');
 
-  const handleAddMember = (e: React.FormEvent) => {
+  const handleAddMember = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!mName || !mRole) return;
     const newMember: OsisMember = {
@@ -210,6 +264,28 @@ export const KelolaOsis: React.FC = () => {
       motto: mMotto || 'Mengabdi untuk kemaslahatan santri.',
       photoUrl: mPhoto || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80'
     };
+
+    if (isSupabaseConfigured()) {
+      try {
+        const numLevel = mLevel === 'Presidium' ? 1 : mLevel === 'BPH' ? 2 : 3;
+        const { data, error } = await supabase.from('osis_structure').insert({
+          name: mName,
+          position: mRole,
+          level: numLevel,
+          class: mGrade || 'Kelas IX SMP Plus JM',
+          motto: mMotto || 'Mengabdi untuk kemaslahatan santri.',
+          photo_url: mPhoto || null,
+          period: '2026/2027'
+        }).select().single();
+
+        if (!error && data) {
+          newMember.id = data.id;
+        }
+      } catch (err) {
+        console.warn('Failed to insert to osis_structure:', err);
+      }
+    }
+
     setMembers([...members, newMember]);
     setMName('');
     setMRole('');
@@ -516,7 +592,7 @@ export const KelolaOsis: React.FC = () => {
 
                 <button
                   type="button"
-                  onClick={() => setMembers(members.filter((m) => m.id !== member.id))}
+                  onClick={() => handleDeleteMember(member.id)}
                   className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 shrink-0"
                 >
                   <Trash2 className="w-3.5 h-3.5" />

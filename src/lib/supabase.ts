@@ -66,6 +66,7 @@ export interface SambutanPerson {
   message_full?: string | null;
   order_index: number;
   is_active: boolean;
+  is_featured?: boolean;
   location: string[];
   created_at?: string;
   updated_at?: string;

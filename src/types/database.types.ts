@@ -1245,6 +1245,7 @@ export type Database = {
           created_by: string | null
           id: string
           is_active: boolean
+          is_featured: boolean
           location: string[] | null
           message_full: string | null
           message_short: string | null
@@ -1261,6 +1262,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           is_active?: boolean
+          is_featured?: boolean
           location?: string[] | null
           message_full?: string | null
           message_short?: string | null
@@ -1277,6 +1279,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           is_active?: boolean
+          is_featured?: boolean
           location?: string[] | null
           message_full?: string | null
           message_short?: string | null

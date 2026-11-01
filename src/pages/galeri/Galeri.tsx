@@ -20,8 +20,8 @@ import {
 } from 'lucide-react';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
 import { YoutubeIcon } from '../../components/common/SocialIcons';
-import { supabase, GalleryItem } from '../../lib/supabase';
-import { useCachedQuery } from '../../lib/queryCache';
+import { supabase, GalleryItem, isSupabaseConfigured } from '../../lib/supabase';
+import { useCachedQuery, invalidateCache } from '../../lib/queryCache';
 
 // Helper to reliably extract YouTube Video ID from any URL format
 export const getYouTubeId = (urlOrId?: string): string => {
@@ -354,17 +354,42 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
   };
 
   // Queries for Foto and Video with cache
-  const { data: photoActivities } = useCachedQuery<PhotoActivity[]>(
+  const { data: photoActivities, refetch: refetchPhotos } = useCachedQuery<PhotoActivity[]>(
     'gallery_photo_activities_v2',
     fetchPhotoActivitiesFromDb,
     SAMPLE_PHOTO_ACTIVITIES
   );
 
-  const { data: videoActivities } = useCachedQuery<VideoActivity[]>(
+  const { data: videoActivities, refetch: refetchVideos } = useCachedQuery<VideoActivity[]>(
     'gallery_video_activities_v2',
     fetchVideoActivitiesFromDb,
     SAMPLE_VIDEO_ACTIVITIES
   );
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    const channel = supabase
+      .channel('public-galeri-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'galleries' }, () => {
+        invalidateCache('gallery_photo_activities_v2');
+        invalidateCache('gallery_video_activities_v2');
+        refetchPhotos();
+        refetchVideos();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'galeri_foto' }, () => {
+        invalidateCache('gallery_photo_activities_v2');
+        refetchPhotos();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'galeri_videos' }, () => {
+        invalidateCache('gallery_video_activities_v2');
+        refetchVideos();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refetchPhotos, refetchVideos]);
 
   // Search query state
   const [searchQuery, setSearchQuery] = useState('');

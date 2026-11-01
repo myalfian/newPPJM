@@ -16,6 +16,7 @@ import {
   TikTokIcon,
   YoutubeIcon
 } from './SocialIcons';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 export interface MedsosModalProps {
   isOpen: boolean;
@@ -132,6 +133,152 @@ const SOCIAL_CHANNELS: SocialChannel[] = [
 
 export const MedsosModal: React.FC<MedsosModalProps> = ({ isOpen, onClose }) => {
   const [copied, setCopied] = useState(false);
+  const [channels, setChannels] = useState<SocialChannel[]>(SOCIAL_CHANNELS);
+
+  const syncChannelsWithSettings = (settings: any) => {
+    if (!settings) return;
+    setChannels([
+      {
+        id: 'wa-admin',
+        category: 'direct',
+        title: settings.waAdminLabel || 'WhatsApp Layanan & Konsultasi',
+        subtitle: `${settings.waAdminNumber || '+62 856-4619-9273'} • ${settings.waOperationalHours || 'Layanan Resmi'}`,
+        url: `https://wa.me/${(settings.waAdminNumber || '6285646199273').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(settings.waGreetingTemplate || 'Assalamu\'alaikum Admin PPJM')}`,
+        badge: 'Chat Admin',
+        badgeStyle: 'bg-emerald-600 text-white font-bold tracking-wide shadow-xs',
+        icon: WhatsAppIcon,
+        iconBg: 'bg-emerald-500/15 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400',
+        iconColor: 'text-emerald-600 dark:text-emerald-400',
+        borderHover: 'hover:border-emerald-500/50 hover:bg-emerald-50/40 dark:hover:bg-emerald-950/20',
+      },
+      {
+        id: 'wa-channel',
+        category: 'broadcast',
+        title: settings.waChannelTitle || 'Saluran WhatsApp Resmi',
+        subtitle: settings.waChannelDesc || 'Warta kilat, pengumuman, & kajian pesantren',
+        url: settings.waChannelUrl || 'https://whatsapp.com/channel/0029Vb6FZq7Jpe8cR5vR0T0D',
+        badge: 'Official Channel',
+        badgeStyle: 'bg-teal-700/10 dark:bg-teal-400/10 text-teal-700 dark:text-teal-300 border border-teal-500/30',
+        icon: Radio,
+        iconBg: 'bg-teal-500/15 dark:bg-teal-500/20 text-teal-600 dark:text-teal-400',
+        iconColor: 'text-teal-600 dark:text-teal-400',
+        borderHover: 'hover:border-teal-500/50 hover:bg-teal-50/40 dark:hover:bg-teal-950/20',
+      },
+      {
+        id: 'ig-ppjm',
+        category: 'social',
+        title: 'Instagram Pondok Pesantren',
+        subtitle: `${settings.igPpjmHandle || '@ppjauharulmaknuun'} • ${settings.igPpjmDesc || 'Kehidupan & kegiatan santri'}`,
+        url: settings.igPpjmUrl || 'https://www.instagram.com/ppjauharulmaknuun',
+        badge: 'Pondok',
+        badgeStyle: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20',
+        icon: InstagramIcon,
+        iconBg: 'bg-gradient-to-tr from-amber-500/20 via-rose-500/20 to-purple-500/20 text-pink-600 dark:text-pink-400',
+        iconColor: 'text-pink-600 dark:text-pink-400',
+        borderHover: 'hover:border-pink-500/50 hover:bg-pink-50/40 dark:hover:bg-pink-950/20',
+      },
+      {
+        id: 'ig-smpjm',
+        category: 'social',
+        title: 'Instagram SMP Plus Jauharul Maknuun',
+        subtitle: `${settings.igSmpjmHandle || '@smpplusjauharulmaknuun'} • ${settings.igSmpjmDesc || 'Akademik & prestasi formal'}`,
+        url: settings.igSmpjmUrl || 'https://www.instagram.com/smpplusjauharulmaknuun',
+        badge: 'SMP Plus',
+        badgeStyle: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20',
+        icon: InstagramIcon,
+        iconBg: 'bg-gradient-to-tr from-sky-500/20 via-indigo-500/20 to-pink-500/20 text-indigo-600 dark:text-indigo-400',
+        iconColor: 'text-indigo-600 dark:text-indigo-400',
+        borderHover: 'hover:border-indigo-500/50 hover:bg-indigo-50/40 dark:hover:bg-indigo-950/20',
+      },
+      {
+        id: 'ig-osis',
+        category: 'social',
+        title: 'Instagram OSIS SMP Plus JM',
+        subtitle: `${settings.igOsisHandle || '@osissmppjm'} • ${settings.igOsisDesc || 'Kreativitas, event, & dinamika siswa'}`,
+        url: settings.igOsisUrl || 'https://www.instagram.com/osissmppjm',
+        badge: 'OSIS JM',
+        badgeStyle: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20',
+        icon: InstagramIcon,
+        iconBg: 'bg-gradient-to-tr from-amber-500/20 via-orange-500/20 to-rose-500/20 text-amber-600 dark:text-amber-400',
+        iconColor: 'text-amber-600 dark:text-amber-400',
+        borderHover: 'hover:border-amber-500/50 hover:bg-amber-50/40 dark:hover:bg-amber-950/20',
+      },
+      {
+        id: 'tiktok-ppjm',
+        category: 'social',
+        title: 'TikTok Resmi Pesantren',
+        subtitle: `${settings.tiktokHandle || '@ppjauharulmaknuun'} • ${settings.tiktokDesc || 'Dakwah kreatif santri'}`,
+        url: settings.tiktokUrl || 'https://www.tiktok.com/@ppjauharulmaknuun',
+        badge: 'TikTok',
+        badgeStyle: 'bg-zinc-800/10 dark:bg-zinc-100/10 text-zinc-900 dark:text-zinc-100 border border-zinc-500/20',
+        icon: TikTokIcon,
+        iconBg: 'bg-zinc-900/10 dark:bg-zinc-100/10 text-zinc-900 dark:text-zinc-100',
+        iconColor: 'text-zinc-900 dark:text-zinc-100',
+        borderHover: 'hover:border-zinc-500/50 hover:bg-zinc-100/40 dark:hover:bg-zinc-800/20',
+      },
+      {
+        id: 'youtube-ppjm',
+        category: 'social',
+        title: 'YouTube Channel Resmi',
+        subtitle: `${settings.youtubeHandle || 'PP Jauharul Maknuun Official'} • ${settings.youtubeDesc || 'Live streaming, ceramah & arsip'}`,
+        url: settings.youtubeUrl || 'https://youtube.com/@ppjauharulmaknuunlasem',
+        badge: 'YouTube',
+        badgeStyle: 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20',
+        icon: YoutubeIcon,
+        iconBg: 'bg-red-500/15 dark:bg-red-500/20 text-red-600 dark:text-red-400',
+        iconColor: 'text-red-600 dark:text-red-400',
+        borderHover: 'hover:border-red-500/50 hover:bg-red-50/40 dark:hover:bg-red-950/20',
+      },
+    ]);
+  };
+
+  useEffect(() => {
+    // 1. Initial local load
+    try {
+      const cached = localStorage.getItem('ppjm_contact_settings');
+      if (cached) syncChannelsWithSettings(JSON.parse(cached));
+    } catch {}
+
+    // 2. Fetch from Supabase
+    if (isSupabaseConfigured()) {
+      supabase
+        .from('site_settings')
+        .select('value')
+        .eq('key', 'contact_settings')
+        .maybeSingle()
+        .then(({ data }) => {
+          if (data && data.value) {
+            const parsed = typeof data.value === 'string' ? JSON.parse(data.value) : data.value;
+            syncChannelsWithSettings(parsed);
+          }
+        });
+    }
+
+    // 3. Listen to local event & Supabase Realtime
+    const handleLocalUpdate = (e: any) => {
+      if (e.detail) syncChannelsWithSettings(e.detail);
+    };
+    window.addEventListener('ppjm-contact-settings-updated', handleLocalUpdate);
+
+    const channel = supabase
+      .channel('realtime-medsos-modal-public')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'site_settings', filter: 'key=eq.contact_settings' },
+        (payload: any) => {
+          if (payload.new && payload.new.value) {
+            const fresh = typeof payload.new.value === 'string' ? JSON.parse(payload.new.value) : payload.new.value;
+            syncChannelsWithSettings(fresh);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      window.removeEventListener('ppjm-contact-settings-updated', handleLocalUpdate);
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   // Body Scroll Lock & Esc Key Listener
   useEffect(() => {
@@ -260,7 +407,7 @@ export const MedsosModal: React.FC<MedsosModalProps> = ({ isOpen, onClose }) => 
               </div>
 
               <div className="space-y-2">
-                {SOCIAL_CHANNELS.map((item) => {
+                {channels.map((item) => {
                   const Icon = item.icon;
                   return (
                     <a

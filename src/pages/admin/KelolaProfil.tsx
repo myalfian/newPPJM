@@ -231,12 +231,37 @@ export const KelolaProfil: React.FC = () => {
           const lines = visiData.content.split('\n\n');
           setVisiTeks(lines[0] || visiData.content);
         }
+
+        const { data: facData } = await supabase.from('facilities').select('*').order('created_at');
+        if (facData && facData.length > 0 && isMounted) {
+          setFacilities(facData.map((f: any) => ({
+            id: f.id,
+            name: f.name,
+            category: f.category,
+            description: f.description || '',
+            imageUrl: f.image_url || ''
+          })));
+        }
       } catch (err) {
         console.warn('[KelolaProfil] Error fetching live profil data:', err);
       }
     };
     fetchProfilData();
-    return () => { isMounted = false; };
+
+    const channel = supabase
+      .channel('admin-profil-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'jm_center_pages' }, () => {
+        fetchProfilData();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'facilities' }, () => {
+        fetchProfilData();
+      })
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -275,6 +300,19 @@ export const KelolaProfil: React.FC = () => {
             console.error('Supabase error saving visi-misi:', error);
             setSaveError(error.message);
             return;
+          }
+        } else if (activeTab === 'fasilitas') {
+          for (const f of facilities) {
+            const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(f.id);
+            const payload: any = {
+              name: f.name,
+              category: f.category,
+              description: f.description,
+              image_url: f.imageUrl,
+              is_active: true
+            };
+            if (isUuid) payload.id = f.id;
+            await supabase.from('facilities').upsert(payload);
           }
         }
       } catch (err: any) {

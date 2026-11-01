@@ -159,6 +159,20 @@ export const KelolaPrestasi: React.FC = () => {
       }
     };
     loadFromSupabase();
+
+    const channel = supabase
+      .channel('admin-prestasi-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'achievements' }, () => {
+        loadFromSupabase();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'prestasi' }, () => {
+        loadFromSupabase();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const resetForm = () => {

@@ -363,6 +363,17 @@ export const KelolaAgenda: React.FC = () => {
       }
     };
     loadAgendas();
+
+    const channel = supabase
+      .channel('admin-agenda-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'agendas' }, () => {
+        loadAgendas();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const resetForm = () => {

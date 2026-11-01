@@ -123,6 +123,36 @@ export const fetchHeroSlidesFromSupabase = async (): Promise<HeroSlide[]> => {
     return getHeroSlides();
   }
   try {
+    // 1. Coba baca dari tabel utama 'sliders'
+    const { data: tableSliders, error: tableErr } = await supabase
+      .from('sliders')
+      .select('*')
+      .eq('is_active', true)
+      .order('order_index', { ascending: true });
+
+    if (!tableErr && tableSliders && tableSliders.length > 0) {
+      const mappedFromTable: HeroSlide[] = tableSliders.map((s) => ({
+        id: s.id,
+        badge: s.badge_tag || 'Unggulan',
+        title: s.title || '',
+        desc: s.description || '',
+        image: s.image_url || '',
+        btnText: s.cta_text || 'Lihat Selengkapnya',
+        link: s.cta_link || '/program',
+        website: 'https://ppjauharulmaknuun.sch.id/',
+      }));
+
+      const sanitized = sanitizeHeroSlides(mappedFromTable);
+      if (sanitized) {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(SLIDES_STORAGE_KEY, JSON.stringify(sanitized));
+          window.dispatchEvent(new CustomEvent('ppjm-hero-slides-changed', { detail: sanitized }));
+        }
+        return sanitized;
+      }
+    }
+
+    // 2. Fallback baca dari site_settings
     const { data, error } = await supabase
       .from('site_settings')
       .select('value')
@@ -165,6 +195,7 @@ export const saveHeroSlides = async (slides: HeroSlide[]): Promise<{ syncedToClo
 
   if (isSupabaseConfigured()) {
     try {
+      // 1. Simpan ke site_settings
       const { error } = await supabase
         .from('site_settings')
         .upsert(
@@ -176,6 +207,29 @@ export const saveHeroSlides = async (slides: HeroSlide[]): Promise<{ syncedToClo
           } as any,
           { onConflict: 'key' }
         );
+
+      // 2. Sinkronkan juga ke tabel 'sliders'
+      for (let i = 0; i < sanitized.length; i++) {
+        const sl = sanitized[i];
+        // Cek format uuid valid
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(sl.id);
+        const payload: any = {
+          title: sl.title || sl.badge,
+          description: sl.desc || '',
+          badge_tag: sl.badge,
+          image_url: sl.image,
+          cta_text: sl.btnText || 'Pelajari Kurikulum',
+          cta_link: sl.link || '/program',
+          order_index: i + 1,
+          is_active: true,
+          updated_at: new Date().toISOString(),
+        };
+        if (isUuid) {
+          payload.id = sl.id;
+        }
+        await supabase.from('sliders').upsert(payload);
+      }
+
       if (!error) {
         return { syncedToCloud: true };
       }

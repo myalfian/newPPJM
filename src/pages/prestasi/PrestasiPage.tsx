@@ -19,7 +19,7 @@ import { PrestasiLightboxModal } from './PrestasiLightboxModal';
 import { PRESTASI_DATASET } from './prestasiData';
 import { PrestasiItem, PrestasiCategory, PrestasiTingkat } from './types';
 import { supabase } from '../../lib/supabase';
-import { useCachedQuery } from '../../lib/queryCache';
+import { useCachedQuery, invalidateCache } from '../../lib/queryCache';
 
 const fetchAchievementsFromDb = async (): Promise<PrestasiItem[]> => {
   try {
@@ -77,11 +77,29 @@ export const PrestasiPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlCategory = searchParams.get('kategori');
 
-  const { data: achievements = [] } = useCachedQuery<PrestasiItem[]>(
+  const { data: achievements = [], refetch } = useCachedQuery<PrestasiItem[]>(
     'prestasi_modular_dataset',
     fetchAchievementsFromDb,
     []
   );
+
+  useEffect(() => {
+    const channel = supabase
+      .channel('public-achievements-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'achievements' }, () => {
+        invalidateCache('prestasi_modular_dataset');
+        refetch();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'prestasi' }, () => {
+        invalidateCache('prestasi_modular_dataset');
+        refetch();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [refetch]);
 
   const mapUrlToCategory = (val: string | null): PrestasiCategory => {
     if (!val) return 'Semua';
