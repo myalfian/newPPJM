@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { InstitutionItem } from './types';
+import { SafeRichContent } from '../../components/common/SafeRichContent';
 
 export interface InstitutionsSectionProps {
   initialFilter?: 'all' | 'pesantren' | 'formal' | 'madin';
@@ -36,32 +37,75 @@ export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initia
 
         if (!error && data && data.length > 0 && isMounted) {
           const mapped: InstitutionItem[] = data.map((row: any) => {
-            const shortName =
-              row.type === 'pesantren'
-                ? 'Pondok Pesantren (PPJM)'
-                : row.type === 'formal'
-                ? 'SMP Plus JM'
-                : 'Madin Salafiyah';
+            const isMadin = row.type === 'diniyah' || row.type === 'madin' || row.name?.toLowerCase().includes('mdt') || row.name?.toLowerCase().includes('diniyah');
+            const isFormal = row.type === 'formal' || row.name?.toLowerCase().includes('smp');
 
-            const categoryTag =
-              row.type === 'pesantren'
-                ? 'Lembaga Kepesantrenan'
-                : row.type === 'formal'
-                ? 'Lembaga Pendidikan Formal'
-                : 'Lembaga Keilmuan Turats';
+            const shortName = isMadin
+              ? 'MDT Wustho Jauharul Maknuun'
+              : isFormal
+              ? 'SMP Plus JM'
+              : 'Pondok Pesantren (PPJM)';
 
-            const tagline =
-              row.type === 'pesantren'
-                ? 'Kawah Candradimuka Santri Mukim, Tahfidz 30 Juz Bersanad & Karakter Salaf'
-                : row.type === 'formal'
-                ? 'Terakreditasi "A" BAN-PDM, Unggul Akademik & Inovasi Sains Teknologi STEM'
-                : 'Mengkaji Khazanah Kitab Kuning Turats Salaf dengan Metode Pemaknaan Gandul';
+            const categoryTag = isMadin
+              ? 'Pendidikan Keagamaan Formal/Salaf'
+              : isFormal
+              ? 'Lembaga Pendidikan Formal'
+              : 'Lembaga Kepesantrenan';
+
+            const tagline = isMadin
+              ? 'Pembelajaran Agama & Bahasa Arab Pengantar Turats Berizin Kemenag RI'
+              : isFormal
+              ? 'Terakreditasi "A" BAN-PDM, Unggul Akademik & Inovasi Sains Teknologi STEM'
+              : 'Kawah Candradimuka Santri Mukim, Tahfidz 30 Juz Bersanad & Karakter Salaf';
 
             const curriculumList = Array.isArray(row.curriculum)
               ? row.curriculum
               : typeof row.curriculum === 'string'
               ? JSON.parse(row.curriculum)
               : [];
+
+            const features = isMadin
+              ? [
+                  'Pembelajaran agama dan tata bahasa Arab pengantar Al-Qur’an & Hadis',
+                  'Kurikulum pesantren salaf dengan sistem klasik maknani Jawa',
+                  'Mata pelajaran: Fikih, Nahwu, Shorof, Hadits, Akhlak, Tauhid, Faraidh, Tarikh',
+                  'Lembaga terdaftar resmi di Kantor Kementerian Agama RI',
+                  'Di bawah naungan resmi Yayasan Al Jauharu Al Maknuun Lasem',
+                  'Alamat: Jl. Raya Dukun – Lasem RT 01 RW 01 Lasem, Sidayu, Gresik',
+                ]
+              : isFormal
+              ? [
+                  'Kurikulum Merdeka terintegrasi nilai-nilai kepesantrenan',
+                  'Laboratorium riset STEM aplikatif, robotika, & komputer multimedia',
+                  'Tenaga pendidik profesional linier berdedikasi tinggi',
+                  'Program pembinaan olimpiade sains & literasi adaptif',
+                ]
+              : [
+                  'Bimbingan talaqqi dan sanad keilmuan muttashil 30 Juz',
+                  'Pengasuhan asrama penuh disiplin, asri, dan berbasis kekeluargaan',
+                  'Pembiasaan bahasa Arab & bahasa Inggris percakapan harian',
+                  'Evaluasi tasmi’ hafalan terbuka dan wisuda haflah berkala',
+                ];
+
+            const stats = isMadin
+              ? [
+                  { label: 'Tingkat', value: 'Wustho' },
+                  { label: 'No. Statistik (NSDT)', value: '322235251146' },
+                  { label: 'Tahun Berdiri', value: '21 – 08 – 2022' },
+                  { label: 'Nama Yayasan', value: 'Al Jauharu Al Maknuun' },
+                  { label: 'Legalitas', value: 'Terdaftar Kemenag RI' },
+                ]
+              : isFormal
+              ? [
+                  { label: 'Akreditasi', value: 'A (Unggul) BAN-PDM' },
+                  { label: 'Jenjang', value: 'SMP Formal Terpadu' },
+                  { label: 'Sistem', value: 'Boarding & Full Day' },
+                ]
+              : [
+                  { label: 'Sistem Pembelajaran', value: 'Terpadu 24 Jam' },
+                  { label: 'Sanad Keilmuan', value: 'Muttashil' },
+                  { label: 'Predikat Lembaga', value: 'Unggul & Mutqin' },
+                ];
 
             return {
               id: row.id,
@@ -72,17 +116,8 @@ export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initia
               description: row.description,
               image: row.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80',
               curriculumHighlight: curriculumList.join(', ') || 'Kurikulum Terpadu Pesantren & Riset',
-              features: [
-                'Bimbingan talaqqi dan sanad keilmuan muttashil',
-                'Pengasuhan asrama penuh disiplin, asri, dan berbasis kekeluargaan',
-                'Pembiasaan bahasa Arab & bahasa Inggris percakapan harian',
-                'Evaluasi tasmi’ hafalan terbuka dan wisuda haflah berkala',
-              ],
-              stats: [
-                { label: 'Sistem Pembelajaran', value: 'Terpadu 24 Jam' },
-                { label: 'Sanad Keilmuan', value: 'Muttashil' },
-                { label: 'Predikat Lembaga', value: 'Unggul & Mutqin' },
-              ],
+              features,
+              stats,
             };
           });
           setInstitutions(mapped);
@@ -253,9 +288,9 @@ export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initia
                       </p>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                      {inst.description}
-                    </p>
+                    <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-2">
+                      <SafeRichContent content={inst.description} />
+                    </div>
 
                     {/* Curriculum Highlight Box */}
                     <div className="p-2 sm:p-2.5 rounded-lg bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/50 text-xs">
