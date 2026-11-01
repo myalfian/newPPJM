@@ -234,7 +234,7 @@ export const Home: React.FC = () => {
 
       {/* 4. WARTA & BERITA TERKINI DENGAN 1-KLIK WHATSAPP WALI SANTRI */}
       {editorConfig.sections.beritaTerkini?.isVisible !== false && (
-        <section id="warta-berita" className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-1.5 sm:space-y-2 scroll-mt-24">
+        <section id="warta-berita" className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-4 space-y-1.5 sm:space-y-2 scroll-mt-24">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1 border-b border-slate-200 pb-1.5">
             <div>
               <span className="text-xs sm:text-sm font-bold text-gold-700 uppercase tracking-widest">
@@ -257,7 +257,7 @@ export const Home: React.FC = () => {
             {newsItems.map((news) => (
               <div
                 key={news.id}
-                className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-m3-2 border border-slate-200 transition-all flex flex-col justify-between group"
+                className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-xs border border-slate-200 card-hover-smooth flex flex-col justify-between group"
               >
                 <div>
                   <div className="relative h-36 sm:h-44 overflow-hidden bg-slate-100">
@@ -271,7 +271,7 @@ export const Home: React.FC = () => {
                     </span>
                   </div>
 
-                  <div className="p-3 sm:p-4 space-y-2">
+                  <div className="p-2.5 sm:p-3.5 space-y-1.5">
                     <div className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 font-semibold">
                       <Calendar className="w-4 h-4 text-emerald-700" />
                       <span>{news.date}</span>
@@ -288,7 +288,7 @@ export const Home: React.FC = () => {
                 </div>
 
                 {/* 1-Click WhatsApp Broadcast Button */}
-                <div className="p-3 sm:p-4 pt-0 border-t border-slate-100 flex items-center justify-between gap-2 mt-2">
+                <div className="p-2.5 sm:p-3.5 pt-0 border-t border-slate-100 flex items-center justify-between gap-2 mt-1.5">
                   <Link
                     to={news.link}
                     className="text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950 hover:underline flex items-center gap-1"
@@ -313,8 +313,8 @@ export const Home: React.FC = () => {
       )}
 
       {/* 5. CTA PENERIMAAN SANTRI BARU */}
-      <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6">
-        <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-2xl p-3.5 sm:p-5 lg:p-6 text-white shadow-m3-3 relative overflow-hidden text-center sm:text-left flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+      <section className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-4">
+        <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-xl sm:rounded-2xl p-2.5 sm:p-4 lg:p-4.5 text-white shadow-m3-3 relative overflow-hidden text-center sm:text-left flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
           <div className="space-y-2 max-w-xl">
             <span className="text-xs sm:text-sm font-bold text-gold-400 uppercase tracking-widest">
               Penerimaan Santri Baru (PSB)

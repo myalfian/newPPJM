@@ -85,15 +85,15 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
   };
 
   return (
-    <div className="space-y-2.5 sm:space-y-3.5">
+    <div className="space-y-2 sm:space-y-2.5">
       {/* 1. Curved Emerald Notch TabBar: Balanced 4-Column Grid Across All Screen Sizes */}
       <nav
         aria-label="Navigasi Menu Bagian Profil JM Center"
-        className="w-full sticky top-14 sm:top-16 z-20 py-0.5 sm:py-1"
+        className="w-full sticky top-14 sm:top-16 z-20 py-0.5"
       >
-        <div className="w-full rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#0a6847] via-[#0f5132] to-[#073a23] dark:from-[#064e3b] dark:via-[#022c22] dark:to-[#042018] shadow-[0_10px_28px_-8px_rgba(15,81,50,0.45),0_4px_14px_-2px_rgba(15,23,42,0.12)] border border-emerald-600/30 dark:border-emerald-700/40 p-1 sm:p-1.5 backdrop-blur-md">
+        <div className="w-full rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#0a6847] via-[#0f5132] to-[#073a23] dark:from-[#064e3b] dark:via-[#022c22] dark:to-[#042018] shadow-[0_8px_24px_-6px_rgba(15,81,50,0.4),0_3px_10px_-2px_rgba(15,23,42,0.1)] border border-emerald-600/30 dark:border-emerald-700/40 p-0.5 sm:p-1 backdrop-blur-md">
           {/* Equal 4-Column Balanced Grid */}
-          <ul className="grid grid-cols-4 gap-1 sm:gap-2 w-full m-0 p-0 list-none">
+          <ul className="grid grid-cols-4 gap-1 sm:gap-1.5 w-full m-0 p-0 list-none">
             {SUB_NAV_ITEMS.map((item) => {
               const isActive = activeSubTab === item.id;
               return (
@@ -102,7 +102,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
                     type="button"
                     onClick={() => handleSelectTab(item.id)}
                     aria-pressed={isActive}
-                    className={`group relative flex items-center justify-center w-full h-10 sm:h-11 px-1 sm:px-2 rounded-xl sm:rounded-2xl transition-all duration-200 cursor-pointer select-none outline-none ${
+                    className={`group relative flex items-center justify-center w-full h-8.5 sm:h-9.5 px-1 sm:px-1.5 rounded-lg sm:rounded-xl transition-all duration-250 cursor-pointer select-none outline-none ${
                       isActive
                         ? 'text-[#facc15] font-extrabold'
                         : 'text-white/80 hover:text-white hover:bg-white/10 active:scale-98 font-semibold sm:font-bold'
@@ -112,12 +112,12 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
                     {isActive && (
                       <motion.div
                         layoutId="profileCurvedCutoutPointer"
-                        className="absolute -bottom-1 sm:-bottom-1.5 left-1/2 -translate-x-1/2 w-[74px] h-[22px] pointer-events-none z-10"
+                        className="absolute -bottom-0.5 sm:-bottom-1 left-1/2 -translate-x-1/2 w-[68px] h-[20px] pointer-events-none z-10"
                         transition={{
                           type: 'spring',
-                          stiffness: 420,
-                          damping: 28,
-                          mass: 0.58,
+                          stiffness: 360,
+                          damping: 26,
+                          mass: 0.5,
                         }}
                       >
                         <svg
@@ -153,7 +153,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
                     )}
 
                     {/* Adaptive Label with Clearance above bottom notch - No Icon, Smaller Typography */}
-                    <span className="text-[10px] sm:text-[11.5px] md:text-[12px] tracking-tight truncate leading-none pb-1 sm:pb-1.5 text-center">
+                    <span className="text-[9.5px] sm:text-[11px] md:text-[11.5px] tracking-tight truncate leading-none pb-0.5 sm:pb-1 text-center">
                       <span className="sm:hidden">{item.shortLabel}</span>
                       <span className="hidden sm:inline">{item.label}</span>
                     </span>
@@ -172,13 +172,13 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
           {activeSubTab === 'sambutan' && (
             <motion.div
               key="dedicated-section-sambutan"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, y: 10, scale: 0.995 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.995 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
               className="w-full"
             >
-              <section id="sambutan" className="scroll-mt-28">
+              <section id="sambutan" className="scroll-mt-24">
                 <SambutanSection />
               </section>
             </motion.div>
@@ -188,13 +188,13 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
           {activeSubTab === 'sejarah' && (
             <motion.div
               key="dedicated-section-sejarah"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, y: 10, scale: 0.995 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.995 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
               className="w-full"
             >
-              <section id="sejarah" className="scroll-mt-28">
+              <section id="sejarah" className="scroll-mt-24">
                 <SejarahSection />
               </section>
             </motion.div>
@@ -204,13 +204,13 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
           {activeSubTab === 'visi-misi' && (
             <motion.div
               key="dedicated-section-visi-misi"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              initial={{ opacity: 0, y: 10, scale: 0.995 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.995 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
               className="w-full"
             >
-              <section id="visi-misi" className="scroll-mt-28">
+              <section id="visi-misi" className="scroll-mt-24">
                 <VisiMisiSection />
               </section>
             </motion.div>
@@ -220,24 +220,24 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
           {activeSubTab === 'all' && (
             <motion.div
               key="dedicated-section-all"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              className="space-y-2.5 sm:space-y-3.5 w-full"
+              initial={{ opacity: 0, y: 10, scale: 0.995 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.995 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              className="space-y-2 sm:space-y-2.5 w-full"
             >
               {/* Seksi Sambutan */}
-              <section id="sambutan" className="scroll-mt-28">
+              <section id="sambutan" className="scroll-mt-24">
                 <SambutanSection />
               </section>
 
               {/* Separator Accent */}
-              <div className="relative py-1">
+              <div className="relative py-0.5">
                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
                   <div className="w-full border-t border-dashed border-emerald-300/50 dark:border-emerald-800/50" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-[#FBFBFA] dark:bg-zinc-900 px-4 text-xs font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-widest inline-flex items-center gap-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 py-1 shadow-xs">
+                  <span className="bg-[#FBFBFA] dark:bg-zinc-900 px-3 text-[11px] font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-widest inline-flex items-center gap-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 py-0.5 shadow-2xs">
                     <Landmark className="w-3.5 h-3.5 text-amber-500" />
                     Napak Tilas Dakwah
                   </span>
@@ -245,17 +245,17 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
               </div>
 
               {/* Seksi Sejarah */}
-              <section id="sejarah" className="scroll-mt-28">
+              <section id="sejarah" className="scroll-mt-24">
                 <SejarahSection />
               </section>
 
               {/* Separator Accent */}
-              <div className="relative py-1">
+              <div className="relative py-0.5">
                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
                   <div className="w-full border-t border-dashed border-emerald-300/50 dark:border-emerald-800/50" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-[#FBFBFA] dark:bg-zinc-900 px-4 text-xs font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-widest inline-flex items-center gap-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 py-1 shadow-xs">
+                  <span className="bg-[#FBFBFA] dark:bg-zinc-900 px-3 text-[11px] font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-widest inline-flex items-center gap-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 py-0.5 shadow-2xs">
                     <Star className="w-3.5 h-3.5 text-amber-500" />
                     Visi, Misi &amp; Nilai Karakter
                   </span>
@@ -263,7 +263,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
               </div>
 
               {/* Seksi Visi Misi */}
-              <section id="visi-misi" className="scroll-mt-28">
+              <section id="visi-misi" className="scroll-mt-24">
                 <VisiMisiSection />
               </section>
             </motion.div>

@@ -127,12 +127,12 @@ export const Berita: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2 space-y-2 sm:space-y-2.5">
+    <div className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 space-y-2 sm:space-y-2.5">
       {/* Navigation Tabs */}
       <NavBarTabs activeTabId="jm-news" />
 
       {/* Hero Header */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-2xl p-3.5 sm:p-4.5 text-white shadow-m3-2 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-xl sm:rounded-2xl p-2.5 sm:p-4 text-white shadow-m3-2 relative overflow-hidden">
         <div className="relative z-10 space-y-1.5">
           <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Newspaper className="w-3.5 h-3.5" />
@@ -149,21 +149,21 @@ export const Berita: React.FC = () => {
 
       {/* Press Release Grid (Foto & Deskripsi) */}
       {filteredNews.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-slate-200 space-y-3">
-          <Newspaper className="w-12 h-12 text-slate-300 mx-auto" />
-          <h3 className="text-base font-bold text-slate-700">Tidak ada siaran pers yang dipublikasikan</h3>
+        <div className="bg-white rounded-2xl p-8 sm:p-12 text-center border border-slate-200 space-y-2">
+          <Newspaper className="w-10 h-10 sm:w-12 sm:h-12 text-slate-300 mx-auto" />
+          <h3 className="text-sm sm:text-base font-bold text-slate-700">Tidak ada siaran pers yang dipublikasikan</h3>
           <p className="text-xs text-slate-500">Siaran pers dan liputan kegiatan pesantren sedang dipersiapkan.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3 lg:gap-3.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5">
           {filteredNews.map((news) => (
             <article
               key={news.id}
-              className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-m3-2 border border-slate-200 transition-all flex flex-col justify-between group"
+              className="bg-white rounded-xl sm:rounded-2xl overflow-hidden shadow-xs border border-slate-200 card-hover-smooth flex flex-col justify-between group"
             >
               <div>
                 {/* 1. Foto Dokumentasi Press Release */}
-                <div className="relative h-48 sm:h-52 overflow-hidden bg-slate-100">
+                <div className="relative h-44 sm:h-48 overflow-hidden bg-slate-100">
                   <img
                     src={news.thumbnail}
                     alt={news.title}
@@ -184,8 +184,8 @@ export const Berita: React.FC = () => {
                 </div>
 
                 {/* 2. Tanggal, Judul & Deskripsi Narasi */}
-                <div className="p-4 sm:p-5 space-y-2.5">
-                  <div className="flex items-center gap-3 text-xs text-slate-500 font-semibold">
+                <div className="p-2.5 sm:p-3.5 space-y-1.5">
+                  <div className="flex items-center gap-2.5 text-xs text-slate-500 font-semibold">
                     <div className="flex items-center gap-1 text-emerald-800">
                       <Calendar className="w-3.5 h-3.5" />
                       <span>{news.date_display || 'Terbaru'}</span>
@@ -201,14 +201,14 @@ export const Berita: React.FC = () => {
                   </h3>
 
                   {/* Deskripsi Lengkap Rilis Pers */}
-                  <p className="text-xs sm:text-sm text-slate-600 line-clamp-4 leading-relaxed font-normal">
+                  <p className="text-xs sm:text-sm text-slate-600 line-clamp-3 sm:line-clamp-4 leading-relaxed font-normal">
                     {news.summary}
                   </p>
                 </div>
               </div>
 
               {/* 3. Aksi Baca & WhatsApp Broadcast */}
-              <div className="p-4 sm:p-5 pt-0 border-t border-slate-100 flex items-center justify-between gap-2 mt-3">
+              <div className="p-2.5 sm:p-3.5 pt-0 border-t border-slate-100 flex items-center justify-between gap-2 mt-2">
                 <Link
                   to={`/jm-news/press-release/${news.slug}`}
                   className="text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950 hover:underline flex items-center gap-1"

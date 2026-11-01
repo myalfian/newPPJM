@@ -172,7 +172,7 @@ export const EkskulPage: React.FC = () => {
   }, [ekskuls, selectedCategory]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 sm:py-2.5 space-y-2.5 sm:space-y-3.5 overflow-x-hidden select-none">
+    <div className="w-full max-w-7xl mx-auto px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 space-y-2 sm:space-y-2.5 overflow-x-hidden select-none">
       {/* 1. Folder-style Navigation Breadcrumb */}
       <NavBarTabs
         activeTabId={currentTabId}
@@ -180,18 +180,18 @@ export const EkskulPage: React.FC = () => {
       />
 
       {/* 2. Hero Header Banner (Modern Lux Royal Indigo & Violet Styling) */}
-      <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-br from-[#1e1b4b] via-[#2e1065] to-[#0f172a] border border-purple-500/30 p-3.5 sm:p-5 lg:p-6 text-white shadow-lg shadow-purple-950/20">
+      <div className="relative rounded-xl sm:rounded-2xl overflow-hidden bg-gradient-to-br from-[#1e1b4b] via-[#2e1065] to-[#0f172a] border border-purple-500/30 p-2.5 sm:p-4 lg:p-4.5 text-white shadow-md shadow-purple-950/20 card-hover-smooth">
         {/* Glow Spheres */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/15 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
         <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
-          <div className="space-y-1.5 sm:space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-500/20 border border-purple-400/40 text-purple-200 text-[11px] font-black uppercase tracking-wider">
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 sm:gap-3.5">
+          <div className="space-y-1 sm:space-y-1.5 max-w-2xl">
+            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-purple-500/20 border border-purple-400/40 text-purple-200 text-[10.5px] font-black uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5 text-[#d4af37]" />
               <span>Katalog Pengembangan Minat &amp; Bakat Santri</span>
             </div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight leading-tight">
+            <h1 className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tight leading-tight">
               Ekstrakurikuler Unggulan Santri
             </h1>
             <p className="text-xs sm:text-sm text-purple-100/90 leading-relaxed font-normal">
@@ -200,30 +200,30 @@ export const EkskulPage: React.FC = () => {
           </div>
 
           {/* Quick Stats Pills */}
-          <div className="grid grid-cols-3 gap-2 sm:gap-2.5 shrink-0">
-            <div className="p-2 sm:p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
-              <div className="text-lg sm:text-xl font-black text-[#d4af37]">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2 shrink-0">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 text-center">
+              <div className="text-base sm:text-lg font-black text-[#d4af37]">
                 {ekskuls.length}
               </div>
-              <div className="text-[10px] sm:text-xs text-purple-200 font-bold mt-0.5">
+              <div className="text-[9.5px] sm:text-[10px] text-purple-200 font-bold mt-0.5">
                 Klub Ekskul
               </div>
             </div>
 
-            <div className="p-2 sm:p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
-              <div className="text-lg sm:text-xl font-black text-white">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 text-center">
+              <div className="text-base sm:text-lg font-black text-white">
                 100%
               </div>
-              <div className="text-[10px] sm:text-xs text-purple-200 font-bold mt-0.5">
+              <div className="text-[9.5px] sm:text-[10px] text-purple-200 font-bold mt-0.5">
                 Pembina Ahli
               </div>
             </div>
 
-            <div className="p-2 sm:p-2.5 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-center">
-              <div className="text-lg sm:text-xl font-black text-purple-300">
+            <div className="p-1.5 sm:p-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/15 text-center">
+              <div className="text-base sm:text-lg font-black text-purple-300">
                 6 Bidang
               </div>
-              <div className="text-[10px] sm:text-xs text-purple-200 font-bold mt-0.5">
+              <div className="text-[9.5px] sm:text-[10px] text-purple-200 font-bold mt-0.5">
                 Kategori
               </div>
             </div>
@@ -233,7 +233,7 @@ export const EkskulPage: React.FC = () => {
 
       {/* 3. Grid of Ekskul Cards */}
       {filteredEkskuls.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5">
           {filteredEkskuls.map((item) => (
             <EkskulCard
               key={item.id}

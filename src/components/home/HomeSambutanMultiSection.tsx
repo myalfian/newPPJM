@@ -141,38 +141,38 @@ export const HomeSambutanMultiSection: React.FC = () => {
   const otherLeaders = sambutans.filter((s) => s.id !== featured.id);
 
   return (
-    <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-0 space-y-3">
+    <section className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-4 py-0 space-y-2 sm:space-y-2.5">
       {/* 1. FEATURED HERO (Tokoh Utama / Mudir) */}
-      <div className="bg-white dark:bg-zinc-900 rounded-2xl sm:rounded-3xl p-3 sm:p-5 lg:p-6 shadow-m3-1 border border-slate-200/90 dark:border-zinc-800 relative overflow-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-center">
+      <div className="bg-white dark:bg-zinc-900 rounded-xl sm:rounded-2xl p-2.5 sm:p-4 lg:p-4.5 shadow-sm border border-slate-200/90 dark:border-zinc-800 relative overflow-hidden card-hover-smooth">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-6 items-center">
           {/* Foto Tokoh Utama */}
           <div className="lg:col-span-4 flex justify-center">
             <div className="relative group">
-              <div className="w-44 h-56 sm:w-56 sm:h-72 rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border-4 border-emerald-50 dark:border-emerald-950 bg-slate-100 dark:bg-zinc-800">
+              <div className="w-36 h-48 sm:w-48 sm:h-60 rounded-xl sm:rounded-2xl overflow-hidden shadow-lg border-2 border-emerald-50 dark:border-emerald-950 bg-slate-100 dark:bg-zinc-800">
                 <img
                   src={featured.photo_url || '/logo-ppjm.svg'}
                   alt={featured.name}
                   className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
                 />
               </div>
-              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-emerald-900 text-gold-300 px-3.5 py-1 rounded-full text-[11px] font-bold shadow-md whitespace-nowrap border border-gold-400/20">
+              <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 bg-emerald-900 text-gold-300 px-2.5 py-0.5 rounded-full text-[10px] font-bold shadow-md whitespace-nowrap border border-gold-400/20">
                 {featured.title}
               </div>
             </div>
           </div>
 
           {/* Narasi & Konten Tokoh Utama */}
-          <div className="lg:col-span-8 space-y-3 text-center lg:text-left">
-            <div className="flex items-center gap-2 justify-center lg:justify-start flex-wrap">
-              <span className="text-xs sm:text-sm font-bold text-gold-700 tracking-wider uppercase bg-gold-50 dark:bg-amber-950/40 px-3 py-0.5 rounded-full border border-gold-200 dark:border-amber-800/60">
-                Kalam Hikmah & Ma'had Barokah
+          <div className="lg:col-span-8 space-y-2 sm:space-y-2.5 text-center lg:text-left">
+            <div className="flex items-center gap-1.5 justify-center lg:justify-start flex-wrap">
+              <span className="text-[11px] sm:text-xs font-bold text-gold-700 tracking-wider uppercase bg-gold-50 dark:bg-amber-950/40 px-2.5 py-0.5 rounded-full border border-gold-200 dark:border-amber-800/60">
+                Kalam Hikmah &amp; Ma'had Barokah
               </span>
               {featured.credentials && featured.credentials.length > 0 && (
                 <div className="flex items-center gap-1">
                   {featured.credentials.map((cr, idx) => (
                     <span
                       key={idx}
-                      className="text-[11px] font-mono font-bold px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200/50"
+                      className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200/50"
                     >
                       {cr}
                     </span>
@@ -181,7 +181,7 @@ export const HomeSambutanMultiSection: React.FC = () => {
               )}
             </div>
 
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-950 dark:text-white tracking-tight">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950 dark:text-white tracking-tight">
               {featured.name}
             </h2>
 
@@ -189,25 +189,25 @@ export const HomeSambutanMultiSection: React.FC = () => {
               {featured.title}
             </p>
 
-            <blockquote className="text-sm sm:text-base lg:text-lg text-slate-800 dark:text-zinc-200 font-medium italic leading-relaxed border-l-0 lg:border-l-4 lg:border-emerald-700 lg:pl-4 bg-emerald-50/30 dark:bg-emerald-950/10 p-2 sm:p-0 rounded-xl">
+            <blockquote className="text-xs sm:text-sm lg:text-base text-slate-800 dark:text-zinc-200 font-medium italic leading-relaxed border-l-0 lg:border-l-3 lg:border-emerald-700 lg:pl-3 bg-emerald-50/30 dark:bg-emerald-950/10 p-2 sm:p-0 rounded-lg">
               &ldquo;{featured.quote || featured.message_short}&rdquo;
             </blockquote>
 
-            <div className="pt-2 flex items-center gap-3 justify-center lg:justify-start flex-wrap">
+            <div className="pt-1 flex items-center gap-2 justify-center lg:justify-start flex-wrap">
               <button
                 onClick={() => setActiveModalPerson(featured)}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold transition shadow-sm cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg text-xs font-bold transition shadow-2xs cursor-pointer"
               >
                 <span>Baca Sambutan Lengkap</span>
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
 
               {featured.video_url && (
                 <button
                   onClick={() => setActiveModalPerson(featured)}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 rounded-xl text-xs font-bold transition border border-rose-200"
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 rounded-lg text-xs font-bold transition border border-rose-200 cursor-pointer"
                 >
-                  <Play className="w-3.5 h-3.5 fill-rose-600" />
+                  <Play className="w-3 h-3 fill-rose-600" />
                   <span>Tonton Video</span>
                 </button>
               )}
@@ -281,12 +281,12 @@ export const HomeSambutanMultiSection: React.FC = () => {
 
       {/* 3. MODAL DETAIL POPUP */}
       {activeModalPerson && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-          <div className="bg-white dark:bg-zinc-900 rounded-3xl max-w-2xl w-full border border-slate-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col max-h-[85vh] animate-scale-up">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-2.5 sm:p-4 overflow-y-auto modal-smooth-backdrop">
+          <div className="bg-white dark:bg-zinc-900 rounded-2xl sm:rounded-3xl max-w-2xl w-full border border-slate-200 dark:border-zinc-800 shadow-2xl overflow-hidden flex flex-col max-h-[88vh] modal-smooth-dialog">
             {/* Modal Header */}
-            <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between bg-slate-50/50 dark:bg-zinc-800/40">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-emerald-600 shrink-0">
+            <div className="p-3 sm:p-3.5 border-b border-slate-100 dark:border-zinc-800 flex items-center justify-between bg-slate-50/50 dark:bg-zinc-800/40">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden border border-emerald-600 shrink-0">
                   <img
                     src={activeModalPerson.photo_url || '/logo-ppjm.svg'}
                     alt={activeModalPerson.name}
@@ -294,32 +294,32 @@ export const HomeSambutanMultiSection: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
                     {activeModalPerson.name}
                   </h3>
-                  <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">
+                  <p className="text-[11px] text-emerald-700 dark:text-emerald-400 font-medium">
                     {activeModalPerson.title}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setActiveModalPerson(null)}
-                className="p-1.5 rounded-xl hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-400"
+                className="p-1 rounded-lg hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-400 cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-4">
+            <div className="flex-1 overflow-y-auto p-3.5 sm:p-4 space-y-3">
               {/* Gelar Badges */}
               {activeModalPerson.credentials && activeModalPerson.credentials.length > 0 && (
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[11px] font-bold text-slate-500">Gelar:</span>
+                <div className="flex items-center gap-1 flex-wrap">
+                  <span className="text-[10.5px] font-bold text-slate-500">Gelar:</span>
                   {activeModalPerson.credentials.map((cr, idx) => (
                     <span
                       key={idx}
-                      className="px-2 py-0.5 rounded text-xs font-mono font-bold bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200/50"
+                      className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-emerald-50 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-200/50"
                     >
                       {cr}
                     </span>
@@ -329,14 +329,14 @@ export const HomeSambutanMultiSection: React.FC = () => {
 
               {/* Quote Highlight */}
               {activeModalPerson.quote && (
-                <blockquote className="p-3 rounded-2xl bg-amber-50/60 dark:bg-amber-950/30 border-l-4 border-amber-500 text-slate-800 dark:text-amber-200 italic font-serif text-sm">
+                <blockquote className="p-2 sm:p-2.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border-l-3 border-amber-500 text-slate-800 dark:text-amber-200 italic font-serif text-xs sm:text-sm">
                   &ldquo;{activeModalPerson.quote}&rdquo;
                 </blockquote>
               )}
 
               {/* Video Embed jika ada */}
               {activeModalPerson.video_url && activeModalPerson.video_url.includes('youtube') && (
-                <div className="aspect-video rounded-2xl overflow-hidden border border-slate-200">
+                <div className="aspect-video rounded-xl overflow-hidden border border-slate-200">
                   <iframe
                     className="w-full h-full"
                     src={`https://www.youtube.com/embed/${
@@ -350,11 +350,11 @@ export const HomeSambutanMultiSection: React.FC = () => {
               )}
 
               {/* Full Message */}
-              <div className="space-y-2">
-                <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              <div className="space-y-1.5">
+                <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                   Naskah Sambutan Lengkap:
                 </h4>
-                <div className="text-xs sm:text-sm text-slate-700 dark:text-zinc-300 leading-relaxed font-normal bg-slate-50 dark:bg-zinc-800/40 p-4 rounded-2xl border border-slate-100 dark:border-zinc-800">
+                <div className="text-xs sm:text-sm text-slate-700 dark:text-zinc-300 leading-relaxed font-normal bg-slate-50 dark:bg-zinc-800/40 p-2.5 sm:p-3 rounded-xl border border-slate-100 dark:border-zinc-800">
                   <SafeRichContent
                     content={activeModalPerson.message_full || activeModalPerson.message_short || ''}
                   />
@@ -363,16 +363,16 @@ export const HomeSambutanMultiSection: React.FC = () => {
 
               {/* Prestasi / Achievements List */}
               {activeModalPerson.achievements && activeModalPerson.achievements.length > 0 && (
-                <div className="space-y-2 pt-1">
-                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                <div className="space-y-1.5 pt-0.5">
+                  <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                     <Award className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Rekam Jejak & Pengabdian:</span>
+                    <span>Rekam Jejak &amp; Pengabdian:</span>
                   </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                     {activeModalPerson.achievements.map((ach, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-2 p-2 rounded-xl bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-xs text-slate-700 dark:text-zinc-200"
+                        className="flex items-center gap-1.5 p-1.5 rounded-lg bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 text-xs text-slate-700 dark:text-zinc-200"
                       >
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                         <span className="truncate">{ach}</span>
@@ -384,26 +384,26 @@ export const HomeSambutanMultiSection: React.FC = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between bg-slate-50/50 dark:bg-zinc-800/40">
-              <div className="flex items-center gap-2">
+            <div className="p-2.5 sm:p-3 border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between bg-slate-50/50 dark:bg-zinc-800/40">
+              <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => handleShareWa(activeModalPerson)}
-                  className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5"
+                  className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer"
                 >
-                  <MessageCircle className="w-3.5 h-3.5" />
+                  <MessageCircle className="w-3 h-3" />
                   <span>Bagikan</span>
                 </button>
                 <button
                   onClick={handleCopyLink}
-                  className="px-3 py-1.5 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200 rounded-xl text-xs font-bold transition flex items-center gap-1"
+                  className="px-2.5 py-1 bg-zinc-200 hover:bg-zinc-300 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200 rounded-lg text-xs font-bold transition flex items-center gap-1 cursor-pointer"
                 >
-                  {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copiedLink ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
                   <span>{copiedLink ? 'Tersalin' : 'Salin Link'}</span>
                 </button>
               </div>
               <button
                 onClick={() => setActiveModalPerson(null)}
-                className="px-4 py-1.5 bg-slate-200 hover:bg-slate-300 dark:bg-zinc-700 text-slate-700 dark:text-zinc-200 rounded-xl text-xs font-bold transition"
+                className="px-3 py-1 bg-slate-200 hover:bg-slate-300 dark:bg-zinc-700 text-slate-700 dark:text-zinc-200 rounded-lg text-xs font-bold transition cursor-pointer"
               >
                 Tutup
               </button>

@@ -66,44 +66,44 @@ export const KaryaSiswa: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-50 min-h-screen pb-16">
+    <div className="bg-slate-50 min-h-screen pb-8">
       {/* 1. HERO HEADER SECTION */}
-      <section className="bg-gradient-to-b from-[#0E7A4C] via-[#095736] to-[#042818] text-white py-12 px-4 sm:px-6 relative overflow-hidden">
+      <section className="bg-gradient-to-b from-[#0E7A4C] via-[#095736] to-[#042818] text-white py-6 sm:py-8 px-3 sm:px-5 relative overflow-hidden">
         {/* Ambient Lights */}
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#C8A951]/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 -right-24 w-80 h-80 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-6xl mx-auto relative z-10 space-y-4 text-center">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#C8A951] text-xs font-bold uppercase tracking-widest shadow-xs">
+        <div className="max-w-6xl mx-auto relative z-10 space-y-2.5 text-center">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#C8A951] text-[11px] font-bold uppercase tracking-widest shadow-2xs">
             <Sparkles className="w-3.5 h-3.5 text-[#C8A951]" />
             <span>Kreativitas, Vokasi &amp; Mahabbah Santri</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white drop-shadow-xs">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white drop-shadow-2xs">
             Galeri &amp; Etalase Karya Siswa
           </h1>
 
-          <p className="max-w-2xl mx-auto text-sm sm:text-base text-emerald-100/90 leading-relaxed font-normal">
+          <p className="max-w-2xl mx-auto text-xs sm:text-sm text-emerald-100/90 leading-relaxed font-normal">
             Etalase dedikasi santri Pondok Pesantren Jauharul Maknuun: mulai dari penerbitan buku literatur, karya kriya batik tulis Lasem, video lagu orisinal, persembahan khidmat untuk asatidz, hingga pameran riset inovasi santri.
           </p>
 
           {/* Search Bar Input */}
-          <div className="pt-4 max-w-xl mx-auto">
+          <div className="pt-2 max-w-lg mx-auto">
             <div className="relative">
-              <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
                 placeholder="Cari karya buku, batik, lagu, atau nama santri..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 bg-white text-slate-800 placeholder-slate-400 rounded-2xl shadow-lg focus:outline-none focus:ring-2 focus:ring-[#C8A951] text-sm"
+                className="w-full pl-10 pr-4 py-2 bg-white text-slate-800 placeholder-slate-400 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#C8A951] text-xs sm:text-sm"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-3.5 h-3.5" />
                 </button>
               )}
             </div>
@@ -112,8 +112,8 @@ export const KaryaSiswa: React.FC = () => {
       </section>
 
       {/* 3. CATEGORY CHIP TABS */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 -mt-6 relative z-20">
-        <div className="bg-white rounded-2xl p-2.5 shadow-md border border-slate-200/80 flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <section className="max-w-6xl mx-auto px-2.5 sm:px-4 -mt-4 relative z-20">
+        <div className="bg-white rounded-xl sm:rounded-2xl p-1.5 sm:p-2 shadow-md border border-slate-200/80 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
           {CATEGORY_TABS.map((tab) => {
             const Icon = tab.icon;
             const isActive = selectedCategory === tab.id;
@@ -123,16 +123,16 @@ export const KaryaSiswa: React.FC = () => {
               <button
                 key={tab.id}
                 onClick={() => setSelectedCategory(tab.id)}
-                className={`px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 whitespace-nowrap transition-all cursor-pointer ${
+                className={`px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5 whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   isActive
-                    ? 'bg-[#0E7A4C] text-white shadow-md shadow-emerald-900/20'
+                    ? 'bg-[#0E7A4C] text-white shadow-2xs'
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-[#C8A951]' : 'text-slate-500'}`} />
+                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#C8A951]' : 'text-slate-500'}`} />
                 <span>{tab.label}</span>
                 <span
-                  className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold ${
+                  className={`text-[9.5px] px-1.5 py-0.2 rounded-full font-extrabold ${
                     isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
                   }`}
                 >
@@ -145,22 +145,22 @@ export const KaryaSiswa: React.FC = () => {
       </section>
 
       {/* 4. MAIN CONTENT CARDS GRID */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 pt-10">
+      <main className="max-w-6xl mx-auto px-2.5 sm:px-4 pt-4 sm:pt-6">
         {filteredItems.length === 0 ? (
-          <div className="p-16 text-center bg-white rounded-2xl border border-slate-200 space-y-3">
-            <Layers className="w-12 h-12 text-slate-300 mx-auto" />
-            <h3 className="text-base font-bold text-slate-700">Tidak ada karya yang sesuai dengan pencarian</h3>
+          <div className="p-10 text-center bg-white rounded-xl border border-slate-200 space-y-2">
+            <Layers className="w-10 h-10 text-slate-300 mx-auto" />
+            <h3 className="text-sm font-bold text-slate-700">Tidak ada karya yang sesuai dengan pencarian</h3>
             <p className="text-xs text-slate-400">Coba gunakan kata kunci lain atau pilih tab kategori yang berbeda.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
             {filteredItems.map((item) => {
               const isVideo = item.category === 'video-lagu-batik' || item.category === 'video-lagu-ustad';
 
               return (
                 <article
                   key={item.id}
-                  className="bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-xs hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group"
+                  className="bg-white rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200 shadow-xs hover:shadow-md card-hover-smooth flex flex-col justify-between group"
                 >
                   <div>
                     {/* Media Thumbnail Container */}
@@ -174,7 +174,7 @@ export const KaryaSiswa: React.FC = () => {
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-80" />
 
                       {/* Category Badge */}
-                      <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-black/60 backdrop-blur-md text-[#C8A951] border border-white/20 shadow-xs">
+                      <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[9.5px] font-black uppercase tracking-wider bg-black/60 backdrop-blur-md text-[#C8A951] border border-white/20 shadow-xs">
                         {item.category === 'buku' && 'Flyer Buku Santri'}
                         {item.category === 'batik' && 'Katalog Batik Lasem'}
                         {item.category === 'video-lagu-batik' && 'Video Lagu Batik'}
@@ -186,40 +186,40 @@ export const KaryaSiswa: React.FC = () => {
                       {isVideo && (
                         <button
                           onClick={() => setActiveModalItem(item)}
-                          className="absolute inset-0 m-auto w-12 h-12 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:bg-red-600 transition-all cursor-pointer"
+                          className="absolute inset-0 m-auto w-10 h-10 rounded-full bg-red-600/90 text-white flex items-center justify-center shadow-md group-hover:scale-110 group-hover:bg-red-600 transition-all cursor-pointer"
                           title="Putar Video Lagu"
                         >
-                          <Play className="w-5 h-5 fill-white ml-0.5" />
+                          <Play className="w-4 h-4 fill-white ml-0.5" />
                         </button>
                       )}
 
                       {/* Year pill */}
-                      <span className="absolute bottom-3 right-3 text-[11px] font-bold text-white/90 bg-white/20 backdrop-blur-xs px-2.5 py-0.5 rounded-full">
+                      <span className="absolute bottom-2.5 right-2.5 text-[10px] font-bold text-white/90 bg-white/20 backdrop-blur-xs px-2 py-0.5 rounded-full">
                         Tahun {item.year}
                       </span>
                     </div>
 
                     {/* Card Body */}
-                    <div className="p-5 space-y-3">
+                    <div className="p-3 sm:p-3.5 space-y-2">
                       <div>
-                        <span className="text-[11px] font-bold text-emerald-800 tracking-wider uppercase block">
+                        <span className="text-[10px] font-bold text-emerald-800 tracking-wider uppercase block">
                           {item.authorRole}
                         </span>
-                        <h2 className="text-lg font-bold text-slate-800 group-hover:text-emerald-700 transition-colors line-clamp-2 mt-0.5">
+                        <h2 className="text-sm sm:text-base font-bold text-slate-800 group-hover:text-emerald-700 transition-colors line-clamp-2 mt-0.5">
                           {item.title}
                         </h2>
                       </div>
 
-                      <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-3">
+                      <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
                         {item.description}
                       </p>
 
                       {/* Tags */}
-                      <div className="flex flex-wrap gap-1.5 pt-1">
+                      <div className="flex flex-wrap gap-1 pt-0.5">
                         {item.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 border border-slate-200"
+                            className="inline-flex items-center gap-1 text-[9.5px] font-semibold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 border border-slate-200"
                           >
                             <Tag className="w-2.5 h-2.5 text-emerald-600" />
                             {tag}
@@ -230,21 +230,21 @@ export const KaryaSiswa: React.FC = () => {
                   </div>
 
                   {/* Card Footer Actions */}
-                  <div className="px-5 py-3.5 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between">
+                  <div className="px-3.5 py-2.5 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between">
                     <button
                       onClick={() => handleShare(item)}
-                      className="p-2 text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl transition-colors cursor-pointer"
+                      className="p-1.5 text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
                       title="Bagikan ke WhatsApp"
                     >
-                      <Share2 className="w-4 h-4" />
+                      <Share2 className="w-3.5 h-3.5" />
                     </button>
 
                     <button
                       onClick={() => setActiveModalItem(item)}
-                      className="px-4 py-2 bg-[#0E7A4C] hover:bg-[#095736] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
+                      className="px-3 py-1.5 bg-[#0E7A4C] hover:bg-[#095736] text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
                     >
                       <span>Lihat Rincian</span>
-                      <ExternalLink className="w-3.5 h-3.5 text-[#C8A951]" />
+                      <ExternalLink className="w-3 h-3 text-[#C8A951]" />
                     </button>
                   </div>
                 </article>
@@ -256,23 +256,23 @@ export const KaryaSiswa: React.FC = () => {
 
       {/* 5. MODAL DETAIL POPUP */}
       {activeModalItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] flex flex-col shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-4 bg-slate-950/70 backdrop-blur-xs overflow-y-auto modal-smooth-backdrop">
+          <div className="bg-white rounded-2xl sm:rounded-3xl max-w-2xl lg:max-w-3xl w-full max-h-[88vh] flex flex-col shadow-2xl border border-slate-100 overflow-hidden modal-smooth-dialog">
             {/* Modal Header */}
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
+            <div className="p-3 sm:p-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
               <div className="flex items-center gap-2">
-                <span className="p-2 bg-emerald-100 text-emerald-800 rounded-xl">
-                  {activeModalItem.category === 'buku' && <BookOpen className="w-5 h-5" />}
-                  {activeModalItem.category === 'batik' && <Palette className="w-5 h-5" />}
-                  {activeModalItem.category === 'video-lagu-batik' && <Music className="w-5 h-5" />}
-                  {activeModalItem.category === 'video-lagu-ustad' && <Heart className="w-5 h-5" />}
-                  {activeModalItem.category === 'showroom' && <Sparkles className="w-5 h-5" />}
+                <span className="p-1.5 bg-emerald-100 text-emerald-800 rounded-lg">
+                  {activeModalItem.category === 'buku' && <BookOpen className="w-4 h-4" />}
+                  {activeModalItem.category === 'batik' && <Palette className="w-4 h-4" />}
+                  {activeModalItem.category === 'video-lagu-batik' && <Music className="w-4 h-4" />}
+                  {activeModalItem.category === 'video-lagu-ustad' && <Heart className="w-4 h-4" />}
+                  {activeModalItem.category === 'showroom' && <Sparkles className="w-4 h-4" />}
                 </span>
                 <div>
                   <span className="text-[10px] font-bold text-emerald-800 uppercase tracking-widest">
                     Detail Karya Siswa
                   </span>
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900 line-clamp-1">
+                  <h3 className="text-sm sm:text-base font-bold text-slate-900 line-clamp-1">
                     {activeModalItem.title}
                   </h3>
                 </div>
@@ -280,17 +280,17 @@ export const KaryaSiswa: React.FC = () => {
 
               <button
                 onClick={() => setActiveModalItem(null)}
-                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer"
+                className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
 
             {/* Modal Body */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className="flex-1 overflow-y-auto p-3.5 sm:p-5 space-y-3 sm:space-y-4">
               {/* Media Player or Large Image */}
               {activeModalItem.videoUrl ? (
-                <div className="w-full aspect-video rounded-2xl overflow-hidden border border-slate-200 shadow-md bg-black">
+                <div className="w-full aspect-video rounded-xl overflow-hidden border border-slate-200 shadow-sm bg-black">
                   <iframe
                     src={activeModalItem.videoUrl}
                     title={activeModalItem.title}
@@ -300,7 +300,7 @@ export const KaryaSiswa: React.FC = () => {
                   />
                 </div>
               ) : activeModalItem.imageUrl ? (
-                <div className="w-full max-h-80 rounded-2xl overflow-hidden border border-slate-200 shadow-xs">
+                <div className="w-full max-h-72 rounded-xl overflow-hidden border border-slate-200 shadow-2xs">
                   <img
                     src={activeModalItem.imageUrl}
                     alt={activeModalItem.title}
@@ -310,12 +310,12 @@ export const KaryaSiswa: React.FC = () => {
               ) : null}
 
               {/* Title & Author Info */}
-              <div className="space-y-1.5 border-b border-slate-100 pb-4">
-                <h2 className="text-xl sm:text-2xl font-black text-slate-900">
+              <div className="space-y-1 border-b border-slate-100 pb-2.5">
+                <h2 className="text-lg sm:text-xl font-black text-slate-900">
                   {activeModalItem.title}
                 </h2>
-                <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
-                  <span className="font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-100">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                  <span className="font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
                     Oleh: {activeModalItem.author}
                   </span>
                   <span>({activeModalItem.authorRole})</span>
@@ -325,25 +325,25 @@ export const KaryaSiswa: React.FC = () => {
               </div>
 
               {/* Description */}
-              <div className="space-y-2">
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Deskripsi &amp; Makna Karya</h4>
-                <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+              <div className="space-y-1">
+                <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Deskripsi &amp; Makna Karya</h4>
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
                   {activeModalItem.description}
                 </p>
               </div>
 
               {/* Specifications / Detail Teknis */}
               {activeModalItem.specs && (
-                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 space-y-2.5">
-                  <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-                    <Info className="w-4 h-4 text-emerald-700" />
+                <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 space-y-2">
+                  <h4 className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                    <Info className="w-3.5 h-3.5 text-emerald-700" />
                     <span>Spesifikasi &amp; Detail Teknis Karya</span>
                   </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     {Object.entries(activeModalItem.specs).map(([key, value]) => (
-                      <div key={key} className="bg-white p-2.5 rounded-xl border border-slate-100 shadow-2xs">
-                        <span className="text-slate-400 block text-[10px] font-semibold uppercase">{key}</span>
-                        <span className="font-bold text-slate-800 text-xs sm:text-sm mt-0.5 block">{value}</span>
+                      <div key={key} className="bg-white p-2 rounded-lg border border-slate-100 shadow-2xs">
+                        <span className="text-slate-400 block text-[9.5px] font-semibold uppercase">{key}</span>
+                        <span className="font-bold text-slate-800 text-xs mt-0.5 block">{value}</span>
                       </div>
                     ))}
                   </div>
@@ -352,18 +352,18 @@ export const KaryaSiswa: React.FC = () => {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
+            <div className="p-2.5 sm:p-3 border-t border-slate-100 bg-slate-50 flex items-center justify-between">
               <button
                 onClick={() => handleShare(activeModalItem)}
-                className="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors cursor-pointer"
+                className="px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
               >
-                <Share2 className="w-4 h-4" />
+                <Share2 className="w-3.5 h-3.5" />
                 <span>Bagikan Karya (WA)</span>
               </button>
 
               <button
                 onClick={() => setActiveModalItem(null)}
-                className="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                className="px-4 py-1.5 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold transition-colors cursor-pointer"
               >
                 Tutup
               </button>

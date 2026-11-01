@@ -60,28 +60,28 @@ export const EkskulDetailModal: React.FC<EkskulDetailModalProps> = ({ item, onCl
       {/* ADAPTIVE MODAL: BOTTOM SHEET (MOBILE) / CENTER DIALOG (DESKTOP) */}
       {/* ========================================================= */}
       <div
-        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-200 overscroll-contain select-none"
+        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-3 bg-black/60 backdrop-blur-xs overscroll-contain select-none modal-smooth-backdrop"
         onClick={onClose}
       >
         <div
           onClick={(e) => e.stopPropagation()}
-          className="relative w-full sm:max-w-3xl bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-t-3xl sm:rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl flex flex-col max-h-[88vh] sm:max-h-[90vh] overflow-hidden animate-in slide-in-from-bottom sm:zoom-in-95 duration-250"
+          className="relative w-full sm:max-w-3xl bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md rounded-t-2xl sm:rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xl flex flex-col max-h-[88vh] sm:max-h-[90vh] overflow-hidden modal-smooth-dialog"
         >
           {/* Mobile Drag Bar Handle */}
-          <div className="sm:hidden pt-3 pb-1 flex justify-center">
-            <div className="w-12 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+          <div className="sm:hidden pt-2.5 pb-1 flex justify-center">
+            <div className="w-10 h-1 rounded-full bg-zinc-300 dark:bg-zinc-700" />
           </div>
 
           {/* Modal Header */}
-          <div className="p-5 sm:p-6 border-b border-zinc-100 dark:border-zinc-800 flex items-start justify-between gap-4">
+          <div className="p-3.5 sm:p-4.5 border-b border-zinc-100 dark:border-zinc-800 flex items-start justify-between gap-3">
             <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-800/60">
+              <div className="flex items-center gap-1.5 mb-1">
+                <span className="text-[9.5px] font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-800/60">
                   {item.category}
                 </span>
-                <span className="text-xs text-zinc-400">• Santri PPJM</span>
+                <span className="text-[11px] text-zinc-400">• Santri PPJM</span>
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white tracking-tight">
+              <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight">
                 {item.name}
               </h2>
             </div>
@@ -89,21 +89,21 @@ export const EkskulDetailModal: React.FC<EkskulDetailModalProps> = ({ item, onCl
             <button
               type="button"
               onClick={onClose}
-              className="w-10 h-10 rounded-full bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300 flex items-center justify-center shrink-0 transition-all cursor-pointer active:scale-95"
+              className="w-8 h-8 rounded-full bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300 flex items-center justify-center shrink-0 transition-all cursor-pointer active:scale-95"
               title="Tutup Modal"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
 
           {/* Modal Scrollable Body */}
-          <div className="p-5 sm:p-7 overflow-y-auto space-y-6 text-zinc-700 dark:text-zinc-300 text-xs sm:text-sm leading-relaxed">
+          <div className="p-3.5 sm:p-5 overflow-y-auto space-y-3.5 sm:space-y-4 text-zinc-700 dark:text-zinc-300 text-xs sm:text-sm leading-relaxed">
             {/* Metadata Card: Jadwal, Pembina, Tempat, Target */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-800/60">
-              <div className="flex items-start gap-2.5">
-                <Clock className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-800/60">
+              <div className="flex items-start gap-2">
+                <Clock className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                 <div>
-                  <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
                     Jadwal Latihan:
                   </span>
                   <span className="font-semibold text-zinc-900 dark:text-white">
@@ -112,10 +112,10 @@ export const EkskulDetailModal: React.FC<EkskulDetailModalProps> = ({ item, onCl
                 </div>
               </div>
 
-              <div className="flex items-start gap-2.5">
-                <UserCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2">
+                <UserCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                 <div>
-                  <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
+                  <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block">
                     Pelatih / Pembina:
                   </span>
                   <span className="font-semibold text-zinc-900 dark:text-white">
@@ -125,8 +125,8 @@ export const EkskulDetailModal: React.FC<EkskulDetailModalProps> = ({ item, onCl
               </div>
 
               {item.tempatLatihan && (
-                <div className="flex items-start gap-2.5">
-                  <MapPin className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                <div className="flex items-start gap-2">
+                  <MapPin className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
                   <div>
                     <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider block">
                       Lokasi Latihan:

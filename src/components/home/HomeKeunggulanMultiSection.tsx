@@ -85,21 +85,21 @@ export const HomeKeunggulanMultiSection: React.FC = () => {
   if (items.length === 0) return null;
 
   return (
-    <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-3 sm:space-y-4">
+    <section className="max-w-7xl mx-auto px-2 sm:px-3 lg:px-4 space-y-2 sm:space-y-2.5">
       <div className="text-center max-w-2xl mx-auto space-y-1">
-        <span className="text-xs sm:text-sm font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100 inline-block">
+        <span className="text-xs sm:text-sm font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100 inline-block">
           Karakteristik & Keistimewaan
         </span>
         <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950 tracking-tight">
           Pilar Keunggulan Pendidikan PPJM
         </h2>
-        <p className="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
+        <p className="text-xs sm:text-sm text-slate-600 font-medium leading-relaxed">
           Integrasi harmonis antara kurikulum keagamaan tradisional, kompetensi teknologi modern, dan penguasaan bahasa internasional.
         </p>
       </div>
 
       <div
-        className={`grid gap-3 sm:gap-4 ${
+        className={`grid gap-2 sm:gap-2.5 ${
           items.length === 1
             ? 'grid-cols-1 max-w-md mx-auto'
             : items.length === 2
@@ -117,12 +117,12 @@ export const HomeKeunggulanMultiSection: React.FC = () => {
           return (
             <div
               key={item.id}
-              className="bg-white rounded-2xl p-4 sm:p-5 shadow-xs hover:shadow-md border border-slate-200 hover:border-emerald-300 transition-all group flex flex-col justify-between"
+              className="bg-white rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-xs border border-slate-200 card-hover-smooth flex flex-col justify-between"
             >
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <div className="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-2xs">
-                    <IconComponent className="w-5 h-5" />
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-2xs">
+                    <IconComponent className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
                   {tagBadge && (
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
@@ -132,17 +132,17 @@ export const HomeKeunggulanMultiSection: React.FC = () => {
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-base sm:text-lg text-slate-800 tracking-tight group-hover:text-emerald-700 transition-colors">
+                  <h3 className="font-bold text-sm sm:text-base text-slate-800 tracking-tight group-hover:text-emerald-700 transition-colors">
                     {item.title}
                   </h3>
-                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-1 line-clamp-3">
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mt-0.5 line-clamp-3">
                     {item.description}
                   </p>
                 </div>
               </div>
 
               {statsBadge && (
-                <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
+                <div className="pt-2 mt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500 font-medium">
                   <span>Highlight:</span>
                   <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-100">
                     {statsBadge}

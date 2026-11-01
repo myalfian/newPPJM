@@ -142,7 +142,7 @@ export const DetailBerita: React.FC = () => {
   }
 
   return (
-    <div className="max-w-5xl mx-auto px-2.5 sm:px-4 lg:px-6 py-1.5 space-y-3">
+    <div className="max-w-5xl mx-auto px-2 sm:px-3 lg:px-4 py-1 sm:py-1.5 space-y-2 sm:space-y-2.5">
       <NavBarTabs activeTabId="jm-news" />
 
       {/* Back button */}
@@ -157,27 +157,27 @@ export const DetailBerita: React.FC = () => {
       </div>
 
       {article && (
-        <article className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-7 border border-slate-200 shadow-sm space-y-4">
+        <article className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 border border-slate-200 shadow-xs space-y-3">
           {/* Header Metadata */}
-          <div className="space-y-3">
+          <div className="space-y-2.5">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider">
                 {article.category}
               </span>
               {article.is_pinned && (
-                <span className="px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-black flex items-center gap-1">
+                <span className="px-2.5 py-0.5 rounded-full bg-gold-400 text-emerald-950 text-xs font-black flex items-center gap-1">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>Berita Utama</span>
                 </span>
               )}
             </div>
 
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-950 leading-tight">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950 leading-tight">
               {article.title}
             </h1>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-slate-100 text-xs sm:text-sm text-slate-500 font-semibold">
-              <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100 text-xs sm:text-sm text-slate-500 font-semibold">
+              <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5">
                   <Calendar className="w-4 h-4 text-emerald-700" />
                   <span>{article.date_display}</span>
@@ -190,7 +190,7 @@ export const DetailBerita: React.FC = () => {
 
               <button
                 onClick={handleShareWA}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors cursor-pointer"
               >
                 <Share2 className="w-3.5 h-3.5 text-emerald-700" />
                 <span>Bagikan ke WhatsApp</span>
@@ -200,7 +200,7 @@ export const DetailBerita: React.FC = () => {
 
           {/* Featured Image */}
           {article.thumbnail && (
-            <div className="rounded-2xl overflow-hidden max-h-[500px] bg-slate-100">
+            <div className="rounded-xl overflow-hidden max-h-[450px] bg-slate-100">
               <img
                 src={article.thumbnail}
                 alt={article.title}
@@ -210,14 +210,14 @@ export const DetailBerita: React.FC = () => {
           )}
 
           {/* Article Body */}
-          <div className="prose prose-emerald max-w-none text-slate-800 leading-relaxed sm:leading-loose text-base sm:text-lg">
+          <div className="prose prose-emerald max-w-none text-slate-800 leading-relaxed sm:leading-loose text-sm sm:text-base">
             <SafeRichContent content={article.content} />
           </div>
 
           {/* Bottom WhatsApp Broadcast Card */}
-          <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="space-y-1">
-              <h4 className="text-sm font-black text-emerald-950">
+          <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-emerald-50 border border-emerald-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="space-y-0.5">
+              <h4 className="text-xs sm:text-sm font-black text-emerald-950">
                 Bagikan Kabar Pesantren Ini
               </h4>
               <p className="text-xs text-slate-600">
@@ -226,7 +226,7 @@ export const DetailBerita: React.FC = () => {
             </div>
             <button
               onClick={handleShareWA}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-800 text-white font-bold text-xs hover:bg-emerald-700 shadow-sm transition-all whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-emerald-800 text-white font-bold text-xs hover:bg-emerald-700 shadow-xs transition-all whitespace-nowrap cursor-pointer"
             >
               <Share2 className="w-4 h-4" />
               <span>Kirim ke WhatsApp</span>
@@ -237,29 +237,29 @@ export const DetailBerita: React.FC = () => {
 
       {/* Related News */}
       {related.length > 0 && (
-        <div className="space-y-3 pt-4">
-          <h3 className="text-lg font-black text-emerald-950">Warta Pesantren Terkait</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-2 pt-2">
+          <h3 className="text-base sm:text-lg font-black text-emerald-950">Warta Pesantren Terkait</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-2.5">
             {related.map((item) => (
               <Link
                 key={item.id}
                 to={`/berita/${item.slug}`}
-                className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm hover:shadow-m3-1 transition-all group flex flex-col justify-between"
+                className="bg-white rounded-xl sm:rounded-2xl p-2.5 sm:p-3 border border-slate-200 shadow-xs card-hover-smooth flex flex-col justify-between"
               >
-                <div className="space-y-2">
-                  <div className="h-32 rounded-xl overflow-hidden bg-slate-100">
+                <div className="space-y-1.5">
+                  <div className="h-28 sm:h-32 rounded-lg overflow-hidden bg-slate-100">
                     <img
                       src={item.thumbnail}
                       alt={item.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                     />
                   </div>
-                  <span className="text-[11px] font-bold text-gold-700">{item.category}</span>
+                  <span className="text-[10px] font-bold text-gold-700">{item.category}</span>
                   <h4 className="font-bold text-xs sm:text-sm text-emerald-950 group-hover:text-emerald-700 line-clamp-2">
                     {item.title}
                   </h4>
                 </div>
-                <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-emerald-800 font-bold">
+                <div className="mt-2 pt-1.5 border-t border-slate-100 flex items-center justify-between text-xs text-emerald-800 font-bold">
                   <span>Baca</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </div>
