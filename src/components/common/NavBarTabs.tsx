@@ -115,7 +115,6 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentHref: '/ekstrakurikuler',
     parentIcon: Sparkles,
     tabs: [
-      { id: 'ekskul-semua', label: 'Semua Ekskul', shortLabel: 'Semua Ekskul', href: '/ekstrakurikuler', icon: Sparkles },
       { id: 'ekskul-sains', label: 'Sains', shortLabel: 'Sains', href: '/ekstrakurikuler?kategori=sains', icon: Cpu },
       { id: 'ekskul-olahraga', label: 'Olahraga', shortLabel: 'Olahraga', href: '/ekstrakurikuler?kategori=olahraga', icon: Activity },
       { id: 'ekskul-seni', label: 'Seni', shortLabel: 'Seni', href: '/ekstrakurikuler?kategori=seni', icon: Palette },
@@ -294,18 +293,18 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
       // 3. Ekstrakurikuler Category Matching
       if (!activeTab && (pathname === '/ekstrakurikuler' || pathname.startsWith('/ekstrakurikuler') || pathname === '/ekskul' || pathname.startsWith('/ekskul'))) {
         const query = new URLSearchParams(location.search).get('kategori')?.toLowerCase();
-        if (!query || query === 'semua') {
-          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-semua');
-        } else if (query.includes('sains') || query.includes('robotik')) {
-          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-sains');
-        } else if (query.includes('olahraga') || query.includes('silat')) {
-          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-olahraga');
-        } else if (query.includes('seni') || query.includes('bahasa')) {
-          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-seni');
-        } else if (query.includes('agama') || query.includes('keagamaan')) {
-          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-agama');
-        } else if (query.includes('pramuka') || query.includes('kepanduan')) {
-          activeTab = subMenuTabs.find((t) => t.id === 'ekskul-pramuka');
+        if (query) {
+          if (query.includes('sains') || query.includes('robotik')) {
+            activeTab = subMenuTabs.find((t) => t.id === 'ekskul-sains');
+          } else if (query.includes('olahraga') || query.includes('silat')) {
+            activeTab = subMenuTabs.find((t) => t.id === 'ekskul-olahraga');
+          } else if (query.includes('seni') || query.includes('bahasa')) {
+            activeTab = subMenuTabs.find((t) => t.id === 'ekskul-seni');
+          } else if (query.includes('agama') || query.includes('keagamaan')) {
+            activeTab = subMenuTabs.find((t) => t.id === 'ekskul-agama');
+          } else if (query.includes('pramuka') || query.includes('kepanduan')) {
+            activeTab = subMenuTabs.find((t) => t.id === 'ekskul-pramuka');
+          }
         }
       }
 
@@ -395,7 +394,11 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
 
       // 9. Fallback to any matching tab or first (avoid falsely selecting beranda when on prestasi page)
       if (!activeTab) {
-        if (pathname === '/prestasi' || pathname.startsWith('/prestasi')) {
+        if (
+          pathname === '/prestasi' || pathname.startsWith('/prestasi') ||
+          pathname === '/ekstrakurikuler' || pathname.startsWith('/ekstrakurikuler') ||
+          pathname === '/ekskul' || pathname.startsWith('/ekskul')
+        ) {
           activeTab = undefined;
         } else {
           activeTab = tabs.find((t) => pathname === t.href || (t.href !== '/' && pathname.startsWith(t.href))) || tabs[0];

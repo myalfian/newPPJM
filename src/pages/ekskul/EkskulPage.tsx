@@ -159,7 +159,7 @@ export const EkskulPage: React.FC = () => {
         return 'ekskul-pramuka';
       case 'Semua Kategori':
       default:
-        return 'ekskul-semua';
+        return undefined;
     }
   }, [selectedCategory]);
 
@@ -179,10 +179,6 @@ export const EkskulPage: React.FC = () => {
         break;
       case 'ekskul-pramuka':
         handleSelectCategory('Pramuka');
-        break;
-      case 'ekskul-semua':
-      default:
-        handleSelectCategory('Semua Kategori');
         break;
     }
   };
