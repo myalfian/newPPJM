@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import {
   Newspaper,
   Calendar,
-  Search,
   Share2,
   ChevronRight,
   Sparkles,
@@ -114,17 +113,7 @@ export const Berita: React.FC = () => {
     };
   }, [refetch]);
 
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const filteredNews = useMemo(() => {
-    return newsItems.filter((item) => {
-      const matchQuery =
-        !searchQuery ||
-        item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.summary.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchQuery;
-    });
-  }, [newsItems, searchQuery]);
+  const filteredNews = newsItems;
 
   const handleShareWA = (news: NewsItem) => {
     const url = generateWhatsAppBroadcastUrl({
@@ -158,29 +147,12 @@ export const Berita: React.FC = () => {
         </div>
       </div>
 
-      {/* Search Bar Editorial */}
-      <div className="bg-white rounded-2xl p-2.5 sm:p-3 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-2.5">
-        <div className="relative w-full sm:w-96">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5" />
-          <input
-            type="text"
-            placeholder="Cari arsip siaran pers &amp; liputan..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-1.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 font-medium"
-          />
-        </div>
-        <div className="text-xs font-bold text-slate-500">
-          Menampilkan <span className="text-emerald-800">{filteredNews.length}</span> Siaran Pers Resmi
-        </div>
-      </div>
-
       {/* Press Release Grid (Foto & Deskripsi) */}
       {filteredNews.length === 0 ? (
         <div className="bg-white rounded-2xl p-12 text-center border border-slate-200 space-y-3">
           <Newspaper className="w-12 h-12 text-slate-300 mx-auto" />
-          <h3 className="text-base font-bold text-slate-700">Tidak ada siaran pers yang ditemukan</h3>
-          <p className="text-xs text-slate-500">Coba kata kunci pencarian lainnya.</p>
+          <h3 className="text-base font-bold text-slate-700">Tidak ada siaran pers yang dipublikasikan</h3>
+          <p className="text-xs text-slate-500">Siaran pers dan liputan kegiatan pesantren sedang dipersiapkan.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3 lg:gap-3.5">
