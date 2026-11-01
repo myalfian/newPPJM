@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Quote,
@@ -10,7 +10,6 @@ import {
 import { SambutanSection } from './SambutanSection';
 import { SejarahSection } from './SejarahSection';
 import { VisiMisiSection } from './VisiMisiSection';
-import '../../components/common/BottomNavBarTabs.css';
 
 interface ProfileSectionProps {
   defaultSection?: 'sambutan' | 'sejarah' | 'visi-misi' | 'all';
@@ -32,7 +31,6 @@ const SUB_NAV_ITEMS: SubNavItem[] = [
 
 export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection = 'all' }) => {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const [activeSubTab, setActiveSubTab] = useState<'all' | 'sambutan' | 'sejarah' | 'visi-misi'>(() => {
     const hash = (typeof window !== 'undefined' ? window.location.hash : '').toLowerCase();
@@ -90,95 +88,98 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      {/* 1. Curved Emerald Notch TabBar (Styled 1:1 like BottomNavBarTabs) */}
+    <div className="space-y-6 sm:space-y-8">
+      {/* 1. Curved Emerald Notch TabBar: Balanced 4-Column Grid Across All Screen Sizes */}
       <nav
         aria-label="Navigasi Menu Bagian Profil JM Center"
-        className="bottom-curved-navbar-wrapper w-full sticky top-14 sm:top-16 z-20"
+        className="w-full sticky top-14 sm:top-16 z-20 py-1"
       >
-        <div className="bottom-curved-navbar-bar w-full shadow-lg">
-          <div className="bottom-curved-scroll-track flex-1 min-w-0 flex items-center justify-start h-full">
-            <ul className="bottom-curved-tab-list flex items-center w-full justify-between md:justify-start">
-              {SUB_NAV_ITEMS.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeSubTab === item.id;
-                return (
-                  <li
-                    key={item.id}
-                    className="bottom-curved-tab-col flex-1 md:flex-none h-full flex items-center justify-center min-w-0"
+        <div className="w-full rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#0a6847] via-[#0f5132] to-[#073a23] dark:from-[#064e3b] dark:via-[#022c22] dark:to-[#042018] shadow-[0_10px_28px_-8px_rgba(15,81,50,0.45),0_4px_14px_-2px_rgba(15,23,42,0.12)] border border-emerald-600/30 dark:border-emerald-700/40 p-1 sm:p-1.5 backdrop-blur-md">
+          {/* Equal 4-Column Balanced Grid */}
+          <ul className="grid grid-cols-4 gap-1 sm:gap-2 w-full m-0 p-0 list-none">
+            {SUB_NAV_ITEMS.map((item) => {
+              const Icon = item.icon;
+              const isActive = activeSubTab === item.id;
+              return (
+                <li key={item.id} className="relative flex items-center justify-center min-w-0">
+                  <button
+                    type="button"
+                    onClick={() => handleSelectTab(item.id)}
+                    aria-pressed={isActive}
+                    className={`group relative flex items-center justify-center gap-1.5 sm:gap-2.5 w-full h-12 sm:h-14 px-1.5 sm:px-4 rounded-xl sm:rounded-2xl transition-all duration-200 cursor-pointer select-none outline-none ${
+                      isActive
+                        ? 'text-[#facc15] font-extrabold'
+                        : 'text-white/80 hover:text-white hover:bg-white/10 active:scale-98 font-bold'
+                    }`}
                   >
-                    <button
-                      type="button"
-                      onClick={() => handleSelectTab(item.id)}
-                      aria-pressed={isActive}
-                      className={`bottom-curved-tab-btn w-full md:w-auto ${isActive ? 'active' : ''}`}
-                    >
-                      {/* Animated Sliding Notch Pointer & Floating Gold Jewel */}
-                      {isActive && (
-                        <motion.div
-                          layoutId="profileCurvedCutoutPointer"
-                          className="bottom-curved-pointer"
-                          transition={{
-                            type: 'spring',
-                            stiffness: 420,
-                            damping: 28,
-                            mass: 0.58,
-                          }}
+                    {/* Animated Sliding Notch Pointer & Radiant Floating Gold Jewel at the BOTTOM */}
+                    {isActive && (
+                      <motion.div
+                        layoutId="profileCurvedCutoutPointer"
+                        className="absolute -bottom-1 sm:-bottom-1.5 left-1/2 -translate-x-1/2 w-[74px] h-[22px] pointer-events-none z-10"
+                        transition={{
+                          type: 'spring',
+                          stiffness: 420,
+                          damping: 28,
+                          mass: 0.58,
+                        }}
+                      >
+                        <svg
+                          viewBox="0 0 74 22"
+                          className="w-full h-full overflow-visible drop-shadow-[0_-3px_5px_rgba(0,0,0,0.08)]"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
                         >
-                          <svg
-                            viewBox="0 0 74 22"
-                            className="bottom-curved-notch-svg"
-                            width="74"
-                            height="22"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            aria-hidden="true"
-                          >
-                            <defs>
-                              <radialGradient id="profileNotchDotGrad" cx="35%" cy="35%" r="65%">
-                                <stop offset="0%" stopColor="#fffbeb" />
-                                <stop offset="35%" stopColor="#fde047" />
-                                <stop offset="75%" stopColor="#d97706" />
-                                <stop offset="100%" stopColor="#92400e" />
-                              </radialGradient>
-                            </defs>
-                            <path
-                              d="M 0 22 C 16 22, 22 4, 37 4 C 52 4, 58 22, 74 22 Z"
-                              className="bottom-curved-notch-surface fill-[#fbfbfa] dark:fill-[#09090b]"
-                              stroke="none"
-                            />
-                            {/* Radiant Jewel Gold Floating Indicator */}
-                            <circle
-                              cx="37"
-                              cy="16"
-                              r="4.8"
-                              fill="url(#profileNotchDotGrad)"
-                              className="bottom-curved-notch-dot"
-                            />
-                          </svg>
-                        </motion.div>
-                      )}
+                          <defs>
+                            <radialGradient id="profileNotchDotGrad" cx="35%" cy="35%" r="65%">
+                              <stop offset="0%" stopColor="#fffbeb" />
+                              <stop offset="35%" stopColor="#fde047" />
+                              <stop offset="75%" stopColor="#d97706" />
+                              <stop offset="100%" stopColor="#92400e" />
+                            </radialGradient>
+                          </defs>
+                          <path
+                            d="M 0 22 C 16 22, 22 4, 37 4 C 52 4, 58 22, 74 22 Z"
+                            className="fill-[#FBFBFA] dark:fill-[#09090b]"
+                            stroke="none"
+                          />
+                          {/* Radiant Floating Gold Jewel Indicator */}
+                          <circle
+                            cx="37"
+                            cy="16"
+                            r="4.8"
+                            fill="url(#profileNotchDotGrad)"
+                            className="drop-shadow-[0_-2px_4px_rgba(217,119,6,0.5)]"
+                          />
+                        </svg>
+                      </motion.div>
+                    )}
 
-                      <div className="bottom-curved-tab-text flex items-center gap-1.5 md:gap-2 px-1">
-                        <Icon
-                          className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 transition-transform duration-200 ${
-                            isActive ? 'text-amber-300 scale-110 drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]' : 'text-white/80'
-                          }`}
-                        />
-                        <span className="truncate sm:hidden">{item.shortLabel}</span>
-                        <span className="hidden sm:inline truncate">{item.label}</span>
-                      </div>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+                    {/* Icon with Gold Accent on Active */}
+                    <Icon
+                      className={`w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 shrink-0 transition-transform duration-200 ${
+                        isActive
+                          ? 'text-[#facc15] scale-110 drop-shadow-[0_0_8px_rgba(250,204,21,0.65)]'
+                          : 'text-emerald-200/90 group-hover:text-white'
+                      }`}
+                    />
+
+                    {/* Adaptive Label with Clearance above bottom notch */}
+                    <span className="text-[12px] sm:text-[14px] tracking-tight truncate leading-none pb-1 sm:pb-1.5">
+                      <span className="sm:hidden">{item.shortLabel}</span>
+                      <span className="hidden sm:inline">{item.label}</span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </nav>
 
       {/* 2. Dedicated Section Content Area with Smooth Animation */}
-      <div id="profile-content-area" className="w-full">
+      <div id="profile-content-area" className="w-full pt-1">
         <AnimatePresence mode="wait">
           {/* DEDICATED SECTION 1: SAMBUTAN PIMPINAN */}
           {activeSubTab === 'sambutan' && (
@@ -187,7 +188,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.24, ease: 'easeOut' }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
               className="w-full"
             >
               <section id="sambutan" className="scroll-mt-28">
@@ -203,7 +204,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.24, ease: 'easeOut' }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
               className="w-full"
             >
               <section id="sejarah" className="scroll-mt-28">
@@ -219,7 +220,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.24, ease: 'easeOut' }}
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
               className="w-full"
             >
               <section id="visi-misi" className="scroll-mt-28">
@@ -235,8 +236,8 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.24, ease: 'easeOut' }}
-              className="space-y-6 w-full"
+              transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+              className="space-y-6 sm:space-y-8 w-full"
             >
               {/* Seksi Sambutan */}
               <section id="sambutan" className="scroll-mt-28">
@@ -246,10 +247,10 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
               {/* Separator Accent */}
               <div className="relative py-2">
                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                  <div className="w-full border-t border-dashed border-emerald-300/40 dark:border-emerald-800/40" />
+                  <div className="w-full border-t border-dashed border-emerald-300/50 dark:border-emerald-800/50" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-white dark:bg-zinc-900 px-3.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-widest inline-flex items-center gap-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 py-0.5 shadow-2xs">
+                  <span className="bg-[#FBFBFA] dark:bg-zinc-900 px-4 text-xs font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-widest inline-flex items-center gap-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 py-1 shadow-xs">
                     <Landmark className="w-3.5 h-3.5 text-amber-500" />
                     Napak Tilas Dakwah
                   </span>
@@ -264,10 +265,10 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
               {/* Separator Accent */}
               <div className="relative py-2">
                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                  <div className="w-full border-t border-dashed border-emerald-300/40 dark:border-emerald-800/40" />
+                  <div className="w-full border-t border-dashed border-emerald-300/50 dark:border-emerald-800/50" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-white dark:bg-zinc-900 px-3.5 text-xs font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-widest inline-flex items-center gap-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 py-0.5 shadow-2xs">
+                  <span className="bg-[#FBFBFA] dark:bg-zinc-900 px-4 text-xs font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-widest inline-flex items-center gap-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 py-1 shadow-xs">
                     <Star className="w-3.5 h-3.5 text-amber-500" />
                     Visi, Misi &amp; Nilai Karakter
                   </span>
