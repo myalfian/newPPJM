@@ -82,11 +82,11 @@ export const EkskulCard: React.FC<EkskulCardProps> = ({ item, onOpenDetail }) =>
           <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 space-y-1.5 text-xs">
             <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
               <Clock className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-              <span className="truncate">{item.schedule}</span>
+              <span className="truncate">{item.schedule || 'Jadwal Mingguan Santri'}</span>
             </div>
             <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
               <UserCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
-              <span className="truncate">Pembina: {item.coach}</span>
+              <span className="truncate">Pembina: {item.coach || 'Pembina Ekskul PPJM'}</span>
             </div>
           </div>
 

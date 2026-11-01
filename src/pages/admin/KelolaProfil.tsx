@@ -33,6 +33,7 @@ import { invalidateCache } from '../../lib/queryCache';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { KelolaSambutan } from './KelolaSambutan';
 import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
+import { SafeRichContent } from '../../components/common/SafeRichContent';
 
 interface FacilityItem {
   id: string;
@@ -1260,9 +1261,9 @@ export const KelolaProfil: React.FC = () => {
               <img src={selectedFlyer.imageUrl} alt={selectedFlyer.title} className="w-full h-full object-cover" />
             </div>
 
-            <p className="text-xs text-zinc-200 leading-relaxed">
-              {selectedFlyer.description}
-            </p>
+            <div className="text-xs text-zinc-200 leading-relaxed">
+              <SafeRichContent content={selectedFlyer.description} className="text-xs text-zinc-200 leading-relaxed" />
+            </div>
 
             <div className="flex items-center justify-end gap-3 pt-2 border-t border-white/10">
               <a

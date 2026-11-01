@@ -36,9 +36,11 @@ export const EkskulDetailModal: React.FC<EkskulDetailModalProps> = ({ item, onCl
 
   if (!item) return null;
 
-  const photos = item.gallery;
+  const photos = (item.gallery && item.gallery.length > 0)
+    ? item.gallery
+    : (item.featuredPhoto ? [{ id: 'featured-1', url: item.featuredPhoto, caption: `Dokumentasi Kegiatan ${item.name}`, timeTag: 'Santri PPJM' }] : []);
   const isLightboxOpen = activePhotoIndex !== null;
-  const currentPhoto = isLightboxOpen ? photos[activePhotoIndex] : null;
+  const currentPhoto = isLightboxOpen && photos.length > 0 ? photos[activePhotoIndex] : null;
 
   const handleNextPhoto = (e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -162,74 +164,78 @@ export const EkskulDetailModal: React.FC<EkskulDetailModalProps> = ({ item, onCl
             </div>
 
             {/* Poin Capaian & Keunggulan */}
-            <div className="space-y-2.5 pt-2 border-t border-zinc-100 dark:border-zinc-800">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
-                Fokus Keahlian Santri:
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {item.highlights.map((h, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-start gap-2 p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/50 dark:border-zinc-800/50 text-xs"
-                  >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                    <span className="text-zinc-700 dark:text-zinc-300">{h}</span>
-                  </div>
-                ))}
+            {item.highlights && item.highlights.length > 0 && (
+              <div className="space-y-2.5 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
+                  Fokus Keahlian Santri:
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {item.highlights.map((h, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-start gap-2 p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/50 dark:border-zinc-800/50 text-xs"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                      <span className="text-zinc-700 dark:text-zinc-300">{h}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Galeri Multi-Foto Kegiatan (Grid 2-3 Kolom, aspect-[4/3]) */}
-            <div className="space-y-3 pt-3 border-t border-zinc-100 dark:border-zinc-800">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Images className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                  <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
-                    Galeri Dokumentasi Kegiatan ({photos.length} Foto)
-                  </h3>
-                </div>
-                <span className="text-xs text-zinc-400">Klik foto untuk perbesar</span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {photos.map((photo, idx) => (
-                  <div
-                    key={photo.id}
-                    onClick={() => setActivePhotoIndex(idx)}
-                    className="group relative aspect-[4/3] overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-zinc-800/60 cursor-pointer shadow-xs hover:shadow-md transition-all"
-                  >
-                    <img
-                      src={photo.url}
-                      alt={photo.caption}
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent opacity-60 group-hover:opacity-90 transition-opacity" />
-
-                    {photo.timeTag && (
-                      <div className="absolute top-2 left-2">
-                        <span className="text-[10px] font-bold text-white bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full">
-                          {photo.timeTag}
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="w-7 h-7 rounded-full bg-white/90 text-zinc-800 flex items-center justify-center shadow-xs">
-                        <Maximize2 className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-
-                    <div className="absolute bottom-2 left-2 right-2 text-white">
-                      <p className="text-[11px] font-medium leading-tight line-clamp-2 drop-shadow-sm">
-                        {photo.caption}
-                      </p>
-                    </div>
+            {photos.length > 0 && (
+              <div className="space-y-3 pt-3 border-t border-zinc-100 dark:border-zinc-800">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Images className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    <h3 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
+                      Galeri Dokumentasi Kegiatan ({photos.length} Foto)
+                    </h3>
                   </div>
-                ))}
+                  <span className="text-xs text-zinc-400">Klik foto untuk perbesar</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  {photos.map((photo, idx) => (
+                    <div
+                      key={photo.id}
+                      onClick={() => setActivePhotoIndex(idx)}
+                      className="group relative aspect-[4/3] overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-zinc-800/60 cursor-pointer shadow-xs hover:shadow-md transition-all"
+                    >
+                      <img
+                        src={photo.url}
+                        alt={photo.caption}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent opacity-60 group-hover:opacity-90 transition-opacity" />
+
+                      {photo.timeTag && (
+                        <div className="absolute top-2 left-2">
+                          <span className="text-[10px] font-bold text-white bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full">
+                            {photo.timeTag}
+                          </span>
+                        </div>
+                      )}
+
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="w-7 h-7 rounded-full bg-white/90 text-zinc-800 flex items-center justify-center shadow-xs">
+                          <Maximize2 className="w-3.5 h-3.5" />
+                        </div>
+                      </div>
+
+                      <div className="absolute bottom-2 left-2 right-2 text-white">
+                        <p className="text-[11px] font-medium leading-tight line-clamp-2 drop-shadow-sm">
+                          {photo.caption}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

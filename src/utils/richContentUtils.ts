@@ -298,6 +298,18 @@ export function cleanAndNormalizeHtml(content: string): string {
     .replace(/&amp;lt;/gi, '&lt;')
     .replace(/&amp;gt;/gi, '&gt;');
 
+  // 2b. Bersihkan inline style MS Word (Calibri, color rgb(0,0,0), font-size 12pt, text-indent)
+  normalized = normalized.replace(/style="([^"]*)"/gi, (match, styleContent) => {
+    let cleanedStyle = styleContent
+      .replace(/font-family:\s*[^;"]+;?/gi, '')
+      .replace(/color:\s*(rgb\(0,\s*0,\s*0\)|#000000|#000|black);?/gi, '')
+      .replace(/font-size:\s*(1[0-2]pt|12px|14px|16px);?/gi, '')
+      .replace(/text-indent:\s*[^;"]+;?/gi, '')
+      .replace(/line-height:\s*[^;"]+;?/gi, '')
+      .trim();
+    return cleanedStyle ? `style="${cleanedStyle}"` : '';
+  });
+
   // 3. Jika belum berbentuk HTML, konversikan dari format Markdown
   if (!/<[a-z][\s\S]*>/i.test(normalized)) {
     normalized = markdownToHtml(normalized);

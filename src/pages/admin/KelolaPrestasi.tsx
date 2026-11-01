@@ -25,6 +25,8 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
+import { PrestasiLightboxModal } from '../prestasi/PrestasiLightboxModal';
+import { PrestasiItem as PublicPrestasiItem } from '../prestasi/types';
 
 export interface PrestasiItem {
   id: string;
@@ -742,41 +744,25 @@ export const KelolaPrestasi: React.FC = () => {
         </div>
       )}
 
-      {/* DETAIL PIAGAM MODAL */}
+      {/* DETAIL PIAGAM MODAL (100% Identik dengan Web Publik) */}
       {selectedDetail && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-          <div className="max-w-lg w-full rounded-2xl bg-[#0A2116] border border-[#C8A951]/40 text-white p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <div>
-                <span className="text-[10px] font-black uppercase text-[#C8A951]">Tingkat {selectedDetail.level} ({selectedDetail.year})</span>
-                <h3 className="font-extrabold text-sm text-white">{selectedDetail.title}</h3>
-              </div>
-              <button onClick={() => setSelectedDetail(null)} className="p-1 rounded-md text-zinc-400 hover:text-white">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="aspect-video rounded-xl overflow-hidden bg-black/50 border border-white/10">
-              <img src={selectedDetail.imageUrl} alt={selectedDetail.title} className="w-full h-full object-cover" />
-            </div>
-
-            <div className="space-y-1 text-xs">
-              <p><span className="text-zinc-400">Santri Peraih:</span> <strong className="text-[#C8A951]">{selectedDetail.santriName}</strong></p>
-              <p><span className="text-zinc-400">Pembina / Mentor:</span> <strong>{selectedDetail.pembina}</strong></p>
-              <p className="text-zinc-300 pt-2 leading-relaxed">{selectedDetail.description}</p>
-            </div>
-
-            <div className="flex justify-end pt-2 border-t border-white/10">
-              <button
-                type="button"
-                onClick={() => setSelectedDetail(null)}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-[#0E7A4C] text-[#C8A951]"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
+        <PrestasiLightboxModal
+          item={{
+            id: selectedDetail.id,
+            title: selectedDetail.title,
+            winner_name: selectedDetail.santriName,
+            category: (selectedDetail.category === 'Robotik' ? 'Olimpiade' : selectedDetail.category === 'Tahfidz' ? 'Keagamaan' : (selectedDetail.category || 'Umum')) as any,
+            tingkat: (selectedDetail.level || 'Nasional') as any,
+            year: Number(selectedDetail.year) || new Date().getFullYear(),
+            medal_type: 'Emas / Juara',
+            event_name: selectedDetail.title,
+            description: selectedDetail.description || '',
+            photo_url: selectedDetail.imageUrl,
+            certificate_url: selectedDetail.imageUrl,
+            organizer: 'PP Jauharul Maknuun'
+          }}
+          onClose={() => setSelectedDetail(null)}
+        />
       )}
 
     </div>
