@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Trophy,
   PlusCircle,
@@ -29,6 +29,7 @@ import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 import { PrestasiLightboxModal } from '../prestasi/PrestasiLightboxModal';
 import { PrestasiItem as PublicPrestasiItem } from '../prestasi/types';
 import { BulkPrestasiInputModal } from '../../components/admin/bulk/BulkPrestasiInputModal';
+import { BulkCertificateUploaderModal } from '../../components/admin/bulk/BulkCertificateUploaderModal';
 import { useAuth } from '../../context/AuthContext';
 
 export interface PrestasiItem {
@@ -105,6 +106,7 @@ export const KelolaPrestasi: React.FC = () => {
   const [viewMode, setViewMode] = useState<'card' | 'table'>('card');
   const [selectedDetail, setSelectedDetail] = useState<PrestasiItem | null>(null);
   const [bulkModalOpen, setBulkModalOpen] = useState(false);
+  const [showBulkCertModal, setShowBulkCertModal] = useState(false);
 
   // Form State
   const [title, setTitle] = useState('');
@@ -137,35 +139,36 @@ export const KelolaPrestasi: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const loadFromSupabase = async () => {
-      if (!isSupabaseConfigured()) return;
-      try {
-        const { data, error } = await supabase
-          .from('achievements')
-          .select('*')
-          .order('year', { ascending: false });
+  const loadFromSupabase = useCallback(async () => {
+    if (!isSupabaseConfigured()) return;
+    try {
+      const { data, error } = await supabase
+        .from('achievements')
+        .select('*')
+        .order('year', { ascending: false });
 
-        if (!error && data && data.length > 0) {
-          setItems(
-            data.map((row: any) => ({
-              id: row.id,
-              title: row.title,
-              santriName: row.winner_name || row.student_name || 'Santri PPJM',
-              category: row.category || 'Prestasi',
-              level: (row.medal_type || row.level || 'Nasional') as any,
-              year: String(row.year || '2025'),
-              pembina: row.coach || 'Dewan Pembina PPJM',
-              description: row.description || '',
-              imageUrl: row.certificate_url || row.image_url || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
-              isPublished: true,
-            }))
-          );
-        }
-      } catch (err) {
-        console.warn('Fallback to local achievements:', err);
+      if (!error && data && data.length > 0) {
+        setItems(
+          data.map((row: any) => ({
+            id: row.id,
+            title: row.title,
+            santriName: row.winner_name || row.student_name || 'Santri PPJM',
+            category: row.category || 'Prestasi',
+            level: (row.medal_type || row.level || 'Nasional') as any,
+            year: String(row.year || '2025'),
+            pembina: row.coach || 'Dewan Pembina PPJM',
+            description: row.description || '',
+            imageUrl: row.certificate_url || row.image_url || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+            isPublished: true,
+          }))
+        );
       }
-    };
+    } catch (err) {
+      console.warn('Fallback to local achievements:', err);
+    }
+  }, []);
+
+  useEffect(() => {
     loadFromSupabase();
 
     const channel = supabase
@@ -181,7 +184,7 @@ export const KelolaPrestasi: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [loadFromSupabase]);
 
   const resetForm = () => {
     setTitle('');
@@ -495,9 +498,22 @@ export const KelolaPrestasi: React.FC = () => {
               <ImageIcon className="w-4 h-4 text-[#0E7A4C]" />
               <span>Unggah Foto Dokumentasi / Piagam (Otomatis WebP):</span>
             </span>
-            <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
-              Auto-Compressor Aktif
-            </span>
+            <div className="flex items-center gap-2">
+              {isSuperAdmin && (
+                <button
+                  type="button"
+                  onClick={() => setShowBulkCertModal(true)}
+                  className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-[11px] font-bold shadow-xs flex items-center gap-1.5 transition active:scale-95 cursor-pointer"
+                  title="Unggah banyak foto piagam/dokumentasi sekaligus dan simpan langsung ke Database Supabase"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+                  <span>⚡ Bulk Unggah Multi-Piagam ke Database</span>
+                </button>
+              )}
+              <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                Auto-Compressor Aktif
+              </span>
+            </div>
           </label>
 
           <input
@@ -528,6 +544,18 @@ export const KelolaPrestasi: React.FC = () => {
               <span className="text-[11px] text-zinc-500 dark:text-zinc-400 max-w-md">
                 Klik untuk memilih file dari komputer Anda (JPG, PNG, atau WebP). Sistem akan otomatis mengompresi gambar demi efisiensi kuota santri &amp; wali.
               </span>
+              {isSuperAdmin && (
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowBulkCertModal(true);
+                  }}
+                  className="mt-2 pt-2 border-t border-emerald-200 dark:border-emerald-800/60 w-full flex items-center justify-center gap-1.5 text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 font-bold text-xs"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Atau Unggah Multi-Piagam / Foto Sekaligus (Bulk Input ke Database)</span>
+                </div>
+              )}
             </button>
           ) : (
             <div className="p-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 space-y-3">
@@ -556,25 +584,37 @@ export const KelolaPrestasi: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 pt-1 border-t border-zinc-100 dark:border-zinc-800">
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-[#0E7A4C] dark:text-emerald-300 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
-                >
-                  <UploadCloud className="w-3.5 h-3.5" />
-                  <span>Ganti dari Komputer</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setImageUrl('');
-                    setCompressionResult(null);
-                  }}
-                  className="px-3 py-1.5 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-semibold transition cursor-pointer"
-                >
-                  Hapus Foto
-                </button>
+              <div className="flex items-center justify-between gap-2 pt-1 border-t border-zinc-100 dark:border-zinc-800">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-[#0E7A4C] dark:text-emerald-300 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <UploadCloud className="w-3.5 h-3.5" />
+                    <span>Ganti dari Komputer</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImageUrl('');
+                      setCompressionResult(null);
+                    }}
+                    className="px-3 py-1.5 rounded-lg text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-xs font-semibold transition cursor-pointer"
+                  >
+                    Hapus Foto
+                  </button>
+                </div>
+                {isSuperAdmin && (
+                  <button
+                    type="button"
+                    onClick={() => setShowBulkCertModal(true)}
+                    className="px-2.5 py-1.5 rounded-lg bg-emerald-600/10 hover:bg-emerald-600/20 text-[#0E7A4C] dark:text-emerald-400 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Bulk Multi-Piagam</span>
+                  </button>
+                )}
               </div>
             </div>
           )}
@@ -789,9 +829,25 @@ export const KelolaPrestasi: React.FC = () => {
           isOpen={bulkModalOpen}
           onClose={() => setBulkModalOpen(false)}
           onSuccess={() => {
+            loadFromSupabase();
             setSavedAlert(true);
             setTimeout(() => setSavedAlert(false), 2500);
           }}
+        />
+      )}
+
+      {/* BULK PRESTASI CERTIFICATE / MULTI-FOTO UPLOADER (KHUSUS SUPER ADMIN) */}
+      {isSuperAdmin && (
+        <BulkCertificateUploaderModal
+          isOpen={showBulkCertModal}
+          onClose={() => setShowBulkCertModal(false)}
+          onSuccess={() => {
+            loadFromSupabase();
+            setShowBulkCertModal(false);
+            setSavedAlert(true);
+            setTimeout(() => setSavedAlert(false), 2500);
+          }}
+          initialCategory={category}
         />
       )}
 
