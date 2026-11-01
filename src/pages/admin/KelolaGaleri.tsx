@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Image as ImageIcon,
   PlusCircle,
@@ -91,34 +91,35 @@ export const KelolaGaleri: React.FC = () => {
 
   const [saved, setSaved] = useState(false);
 
-  // Load from Supabase on mount
-  useEffect(() => {
-    const loadGalleries = async () => {
-      if (!isSupabaseConfigured()) return;
-      try {
-        const { data, error } = await supabase
-          .from('galleries')
-          .select('*')
-          .order('event_date', { ascending: false });
+  // Load from Supabase
+  const loadGalleries = useCallback(async () => {
+    if (!isSupabaseConfigured()) return;
+    try {
+      const { data, error } = await supabase
+        .from('galleries')
+        .select('*')
+        .order('event_date', { ascending: false });
 
-        if (!error && data && data.length > 0) {
-          setItems(
-            data.map((row) => ({
-              id: row.id,
-              slug: row.slug,
-              title: row.title,
-              category: (row.category as 'foto' | 'video') || 'foto',
-              event_date: row.event_date || new Date().toISOString().split('T')[0],
-              description: row.description || '',
-              cover_image: row.cover_image || undefined,
-              video_url: row.video_url || undefined,
-            }))
-          );
-        }
-      } catch (err) {
-        console.warn('Fallback to local gallery data:', err);
+      if (!error && data && data.length > 0) {
+        setItems(
+          data.map((row) => ({
+            id: row.id,
+            slug: row.slug,
+            title: row.title,
+            category: (row.category as 'foto' | 'video') || 'foto',
+            event_date: row.event_date || new Date().toISOString().split('T')[0],
+            description: row.description || '',
+            cover_image: row.cover_image || undefined,
+            video_url: row.video_url || undefined,
+          }))
+        );
       }
-    };
+    } catch (err) {
+      console.warn('Fallback to local gallery data:', err);
+    }
+  }, []);
+
+  useEffect(() => {
     loadGalleries();
 
     const channel = supabase
@@ -137,7 +138,7 @@ export const KelolaGaleri: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [loadGalleries]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -389,6 +390,7 @@ export const KelolaGaleri: React.FC = () => {
             onSuccess={() => {
               setSaved(true);
               setTab('foto');
+              loadGalleries();
             }}
           />
         </div>

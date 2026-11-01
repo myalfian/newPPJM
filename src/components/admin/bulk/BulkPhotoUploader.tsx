@@ -110,7 +110,7 @@ export const BulkPhotoUploader: React.FC<BulkPhotoUploaderProps> = ({
         const compressed = await compressImageToWebP(file, 1600, 1600, 0.82);
         newItems.push({
           id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : 'temp-' + Date.now() + '-' + i,
-          file,
+          file: compressed.file,
           previewUrl: compressed.previewUrl,
           dataUrl: compressed.dataUrl,
           title: cleanFileNameToTitle(file.name),
@@ -163,44 +163,102 @@ export const BulkPhotoUploader: React.FC<BulkPhotoUploaderProps> = ({
     setIsSubmitting(true);
     setSubmitProgress({ current: 0, total: pendingPhotos.length });
 
+    let successCount = 0;
+    const errors: string[] = [];
+
     try {
       if (isSupabaseConfigured()) {
-        const rows = pendingPhotos.map((item, idx) => {
-          const slug = item.title
+        for (let i = 0; i < pendingPhotos.length; i++) {
+          const item = pendingPhotos[i];
+          setSubmitProgress({ current: i + 1, total: pendingPhotos.length });
+
+          const cleanSlugBase = item.title
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-+|-+$/g, '') + '-' + Date.now().toString(36) + '-' + idx;
+            .replace(/^-+|-+$/g, '') || 'foto-santri';
+          const slug = `${cleanSlugBase}-${Date.now().toString(36)}-${i}`;
 
-          return {
-            title: item.title,
+          // 1. Upload compressed WebP to Supabase Storage bucket 'galeri-foto'
+          let photoUrl = item.dataUrl;
+          try {
+            const storagePath = `bulk-${Date.now()}-${i}-${cleanSlugBase}.webp`;
+            const { data: uploadData, error: uploadErr } = await supabase.storage
+              .from('galeri-foto')
+              .upload(storagePath, item.file, {
+                contentType: 'image/webp',
+                upsert: true
+              });
+
+            if (!uploadErr && uploadData) {
+              const { data: urlData } = supabase.storage
+                .from('galeri-foto')
+                .getPublicUrl(storagePath);
+              if (urlData?.publicUrl) {
+                photoUrl = urlData.publicUrl;
+              }
+            } else if (uploadErr) {
+              console.warn('Storage upload notice for item', item.title, uploadErr.message);
+            }
+          } catch (storageErr) {
+            console.warn('Storage upload fallback to WebP dataURL:', storageErr);
+          }
+
+          // 2. Primary insert into 'galleries' table
+          const galleryPayload = {
+            title: item.title.trim(),
             slug,
-            category: item.category === 'video' ? 'video' : 'foto',
+            category: item.category || 'foto',
             event_date: item.eventDate || new Date().toISOString().split('T')[0],
-            description: item.description || `Dokumentasi kegiatan santri PP Jauharul Maknuun: ${item.title}`,
-            cover_image: item.dataUrl,
+            description: item.description || `Dokumentasi kegiatan santri: ${item.title}`,
+            cover_image: photoUrl,
             updated_at: new Date().toISOString()
           };
-        });
 
-        // Insert in batches of 10 to avoid payload limits
-        const chunkSize = 10;
-        for (let i = 0; i < rows.length; i += chunkSize) {
-          const chunk = rows.slice(i, i + chunkSize);
-          const { error } = await supabase.from('galleries').insert(chunk);
-          if (error) {
-            console.warn('Gagal batch insert galleries:', error);
+          const { error: galError } = await supabase.from('galleries').insert(galleryPayload);
+
+          // 3. Parallel insert into 'galeri_foto' for dual compatibility
+          const { error: fotoError } = await supabase.from('galeri_foto').insert({
+            title: item.title.trim(),
+            category: item.category || 'foto',
+            description: item.description || `Dokumentasi kegiatan: ${item.title}`,
+            image_url: photoUrl
+          });
+
+          // 4. If target category is 'fasilitas', also insert into 'facilities'
+          if (targetCategory === 'fasilitas' || item.category === 'fasilitas') {
+            await supabase.from('facilities').insert({
+              name: item.title.trim(),
+              category: 'Akademik',
+              description: item.description || `Fasilitas PPJM: ${item.title}`,
+              image_url: photoUrl,
+              is_active: true
+            });
           }
-          setSubmitProgress({ current: Math.min(i + chunkSize, rows.length), total: rows.length });
+
+          if (galError && fotoError) {
+            errors.push(`${item.title}: ${galError.message || fotoError.message}`);
+          } else {
+            successCount++;
+          }
         }
+
+        if (errors.length > 0 && successCount === 0) {
+          throw new Error(`Gagal menyimpan ke database: ${errors[0]}`);
+        }
+      } else {
+        successCount = pendingPhotos.length;
       }
 
       invalidateCache('galleries_list');
       invalidateCache('galeri_foto_list');
+      invalidateCache('galleries_foto_list');
+      invalidateCache('admin_dashboard_metrics');
+      invalidateCache('admin_dashboard_feed');
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('ppjm-content-updated', { detail: { type: 'galeri' } }));
       }
 
-      setSuccessMessage(`Alhamdulillah, berhasil menerbitkan ${pendingPhotos.length} foto ke galeri dokumentasi!`);
+      setSuccessMessage(`Alhamdulillah, berhasil menerbitkan ${successCount} foto ke galeri dokumentasi!`);
       setTimeout(() => {
         setPendingPhotos([]);
         setSuccessMessage(null);
