@@ -191,6 +191,34 @@ export const publishEditorState = async (
       } catch (secSyncErr) {
         console.warn('[EditorStorage] Non-critical: cms_sections batch sync notice:', secSyncErr);
       }
+
+      // 5. Synchronize sambutan to sambutan_persons table if modified in visual editor
+      try {
+        const sambutanSec = updatedState.sections.sambutan;
+        if (sambutanSec && sambutanSec.data && (sambutanSec.data.pengasuhName || sambutanSec.data.kalam)) {
+          const { data: activePersons } = await supabase
+            .from('sambutan_persons')
+            .select('id')
+            .eq('is_active', true)
+            .order('is_featured', { ascending: false })
+            .limit(1);
+
+          const targetId = activePersons && activePersons[0] ? activePersons[0].id : undefined;
+          await supabase.from('sambutan_persons').upsert({
+            ...(targetId ? { id: targetId } : {}),
+            name: sambutanSec.data.pengasuhName || 'KH. M. Jauharul Maknuun',
+            title: sambutanSec.data.title || 'Pengasuh Pondok Pesantren',
+            message_short: sambutanSec.data.kalam || '',
+            message_full: sambutanSec.data.kalam || '',
+            photo_url: sambutanSec.data.imageUrl || null,
+            is_active: sambutanSec.isVisible !== false,
+            is_featured: true,
+            updated_at: publishedAt
+          }, { onConflict: 'id' });
+        }
+      } catch (sambutanSyncErr) {
+        console.warn('[EditorStorage] Non-critical sambutan_persons sync notice:', sambutanSyncErr);
+      }
     }
 
     return { success: true, timestamp: publishedAt };

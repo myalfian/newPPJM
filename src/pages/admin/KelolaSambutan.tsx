@@ -28,6 +28,7 @@ import { publishEditorState, getPublishedEditorState } from '../../lib/editorSto
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { Link } from 'react-router-dom';
 import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
+import { clearOldSeedCache } from '../../utils/clearOldCache';
 
 interface SambutanFormState {
   id?: string;
@@ -165,8 +166,8 @@ export const KelolaSambutan: React.FC = () => {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('Ukuran foto awal maksimal 5MB sebelum dikompresi.', 'error');
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('Ukuran foto maksimal 2MB (JPG, PNG, atau WebP).', 'error');
       return;
     }
 
@@ -355,6 +356,7 @@ export const KelolaSambutan: React.FC = () => {
 
       // Hapus cache lama di browser agar langsung live
       try {
+        clearOldSeedCache();
         localStorage.removeItem('sambutan');
         localStorage.removeItem('ppjm_published_public_state_v1');
       } catch {}
@@ -432,6 +434,7 @@ export const KelolaSambutan: React.FC = () => {
         }
       }
 
+      clearOldSeedCache();
       showToast(`Sambutan ${target.name} berhasil dihapus dari database.`);
     } catch (err: any) {
       showToast('Gagal menghapus: ' + err.message, 'error');

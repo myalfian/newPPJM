@@ -5,6 +5,7 @@
 -- plus Supabase Realtime publication registration for zero-lag live updates.
 -- ==============================================================================
 
+-- 1. ENABLE ROW LEVEL SECURITY ON ALL TABLES
 DO $$
 DECLARE
   tbl text;
@@ -96,6 +97,39 @@ DROP POLICY IF EXISTS "Admin read audit_logs" ON public.audit_logs;
 DROP POLICY IF EXISTS "Admin insert audit_logs" ON public.audit_logs;
 CREATE POLICY "Admin read audit_logs" ON public.audit_logs FOR SELECT USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin insert audit_logs" ON public.audit_logs FOR INSERT WITH CHECK (auth.role() = 'authenticated');
+
+-- 8. STORAGE POLICIES UNTUK 9 BUCKETS PPJM
+DROP POLICY IF EXISTS "Public can view bucket objects" ON storage.objects;
+CREATE POLICY "Public can view bucket objects" ON storage.objects
+  FOR SELECT USING (bucket_id IN (
+    'avatars', 'cms-images', 'berita-images', 'galeri-foto',
+    'prestasi-certificates', 'stem-portfolios', 'mandarin-audios',
+    'hafidz-audios', 'madin-flyers'
+  ));
+
+DROP POLICY IF EXISTS "Authenticated can upload bucket objects" ON storage.objects;
+CREATE POLICY "Authenticated can upload bucket objects" ON storage.objects
+  FOR INSERT TO authenticated WITH CHECK (bucket_id IN (
+    'avatars', 'cms-images', 'berita-images', 'galeri-foto',
+    'prestasi-certificates', 'stem-portfolios', 'mandarin-audios',
+    'hafidz-audios', 'madin-flyers'
+  ));
+
+DROP POLICY IF EXISTS "Authenticated can update bucket objects" ON storage.objects;
+CREATE POLICY "Authenticated can update bucket objects" ON storage.objects
+  FOR UPDATE TO authenticated USING (bucket_id IN (
+    'avatars', 'cms-images', 'berita-images', 'galeri-foto',
+    'prestasi-certificates', 'stem-portfolios', 'mandarin-audios',
+    'hafidz-audios', 'madin-flyers'
+  ));
+
+DROP POLICY IF EXISTS "Authenticated can delete bucket objects" ON storage.objects;
+CREATE POLICY "Authenticated can delete bucket objects" ON storage.objects
+  FOR DELETE TO authenticated USING (bucket_id IN (
+    'avatars', 'cms-images', 'berita-images', 'galeri-foto',
+    'prestasi-certificates', 'stem-portfolios', 'mandarin-audios',
+    'hafidz-audios', 'madin-flyers'
+  ));
 
 -- 7. REPLICA IDENTITY FULL & SUPABASE_REALTIME PUBLICATION ENABLER
 DO $$

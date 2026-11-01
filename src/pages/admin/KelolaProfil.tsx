@@ -31,7 +31,7 @@ import {
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
-import { KelolaSambutan_FIXED } from './KelolaSambutan_FIXED';
+import { KelolaSambutan } from './KelolaSambutan';
 import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
 
 interface FacilityItem {
@@ -570,7 +570,7 @@ export const KelolaProfil: React.FC = () => {
 
       {/* TAB A: SAMBUTAN MUDIR */}
       {activeTab === 'sambutan' && (
-        <KelolaSambutan_FIXED />
+        <KelolaSambutan />
       )}
 
       {/* TAB B: SEJARAH LASEM SIDAYU */}
