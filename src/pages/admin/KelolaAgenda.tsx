@@ -11,6 +11,8 @@ import {
   Search,
   PlusCircle,
   Upload,
+  UploadCloud,
+  Image as ImageIcon,
   Share2,
   ChevronRight,
   ChevronLeft,
@@ -1392,28 +1394,89 @@ export const KelolaAgenda: React.FC = () => {
               </div>
 
               {/* Upload Foto / Banner WebP */}
-              <div className="space-y-2 p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
-                <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
-                  <span>Banner Flyer Kegiatan (WebP Auto-Compressor):</span>
-                  {compressing && <span className="text-emerald-700 text-[10px]">Mengompres WebP...</span>}
+              <div className="space-y-2 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-850 border border-zinc-200 dark:border-zinc-700">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <ImageIcon className="w-4 h-4 text-[#0E7A4C]" />
+                    <span>Banner Flyer Kegiatan (WebP Auto-Compressor):</span>
+                  </span>
+                  <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                    Auto WebP Aktif
+                  </span>
                 </label>
-                <div className="flex items-center gap-3">
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) handleFileChange(file);
-                    }}
-                    className="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-emerald-800 file:text-white hover:file:bg-emerald-700"
-                  />
-                  {image && (
-                    <span className="text-[10px] text-emerald-800 font-bold bg-emerald-100 px-2 py-0.5 rounded-full">
-                      Foto Terpasang
+
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) handleFileChange(file);
+                  }}
+                  className="hidden"
+                />
+
+                {!image ? (
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={compressing}
+                    className="w-full py-4 px-4 rounded-xl border-2 border-dashed border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/40 dark:bg-emerald-950/20 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition text-center cursor-pointer flex flex-col items-center justify-center gap-1.5"
+                  >
+                    <UploadCloud className="w-6 h-6 text-[#0E7A4C]" />
+                    <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">
+                      {compressing ? 'Sedang mengompres gambar ke WebP...' : 'Pilih Banner Flyer dari Komputer (Otomatis WebP)'}
                     </span>
-                  )}
-                </div>
+                    <span className="text-[10px] text-zinc-500 dark:text-zinc-400">
+                      Mendukung JPG, PNG, WebP • Otomatis dikompresi agar hemat kuota santri
+                    </span>
+                  </button>
+                ) : (
+                  <div className="p-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-16 h-12 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-700 bg-zinc-100 shrink-0 shadow-xs">
+                        <img src={image} alt="Pratinjau Banner" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0 space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">
+                            Banner Terpasang
+                          </p>
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-300 text-[10px] font-black uppercase font-mono">
+                            WebP
+                          </span>
+                        </div>
+                        {compResult ? (
+                          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                            ✓ Ukuran: {compResult.compressedSizeKB} KB (Hemat {compResult.savedPercent}%)
+                          </p>
+                        ) : (
+                          <p className="text-[11px] text-zinc-500">Banner siap ditayangkan pada kalender agenda.</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 pt-1 border-t border-zinc-100 dark:border-zinc-800">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="text-xs text-[#0E7A4C] hover:underline font-bold cursor-pointer"
+                      >
+                        Ganti Foto dari Komputer
+                      </button>
+                      <span className="text-zinc-400">•</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setImage('');
+                          setCompResult(null);
+                        }}
+                        className="text-xs text-rose-600 hover:underline font-semibold cursor-pointer"
+                      >
+                        Hapus Foto
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Dynamic Rundown */}

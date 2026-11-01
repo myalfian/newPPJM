@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   Landmark,
@@ -22,11 +22,15 @@ import {
   Check,
   Eye,
   FileText,
-  Calendar
+  Calendar,
+  Edit3,
+  Image as ImageIcon,
+  Sparkles,
+  PlusCircle
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
-import { compressImageToWebP } from '../../lib/imageCompressor';
+import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { KelolaSambutan_FIXED } from './KelolaSambutan_FIXED';
 import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
 
@@ -187,6 +191,125 @@ export const KelolaProfil: React.FC = () => {
   const [facilities, setFacilities] = useState<FacilityItem[]>(DEFAULT_FACILITIES);
   const [facilityCategory, setFacilityCategory] = useState<'Semua' | 'Asrama' | 'Ibadah' | 'Akademik' | 'Lab STEM' | 'Olahraga'>('Semua');
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+
+  // Form State Tambah / Edit Fasilitas
+  const [showFacilityForm, setShowFacilityForm] = useState(false);
+  const [editingFacId, setEditingFacId] = useState<string | null>(null);
+  const [facName, setFacName] = useState('');
+  const [facCategory, setFacCategory] = useState<'Asrama' | 'Ibadah' | 'Akademik' | 'Lab STEM' | 'Olahraga'>('Asrama');
+  const [facDescription, setFacDescription] = useState('');
+  const [facImageUrl, setFacImageUrl] = useState('');
+  const [facCompressing, setFacCompressing] = useState(false);
+  const [facCompressionResult, setFacCompressionResult] = useState<CompressionResult | null>(null);
+  const facFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFacFileUpload = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Mohon pilih file gambar (JPG, PNG, WebP).');
+      return;
+    }
+    setFacCompressing(true);
+    try {
+      const res = await compressImageToWebP(file, 1400, 900, 0.82);
+      setFacCompressionResult(res);
+      setFacImageUrl(res.dataUrl);
+    } catch (err: any) {
+      alert('Gagal memproses gambar: ' + (err?.message || 'Format tidak didukung'));
+    } finally {
+      setFacCompressing(false);
+    }
+  };
+
+  const handleEditFacility = (fac: FacilityItem) => {
+    setEditingFacId(fac.id);
+    setFacName(fac.name);
+    setFacCategory(fac.category);
+    setFacDescription(fac.description);
+    setFacImageUrl(fac.imageUrl);
+    setFacCompressionResult(null);
+    setShowFacilityForm(true);
+    window.scrollTo({ top: 300, behavior: 'smooth' });
+  };
+
+  const resetFacilityForm = () => {
+    setEditingFacId(null);
+    setFacName('');
+    setFacCategory('Asrama');
+    setFacDescription('');
+    setFacImageUrl('');
+    setFacCompressionResult(null);
+    setShowFacilityForm(false);
+  };
+
+  const handleSaveFacility = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!facName.trim()) {
+      alert('Nama fasilitas wajib diisi.');
+      return;
+    }
+    const finalImage = facImageUrl || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80';
+
+    if (editingFacId) {
+      const updated = facilities.map(f => f.id === editingFacId ? {
+        ...f,
+        name: facName.trim(),
+        category: facCategory,
+        description: facDescription.trim(),
+        imageUrl: finalImage
+      } : f);
+      setFacilities(updated);
+
+      if (isSupabaseConfigured()) {
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(editingFacId);
+        const payload: any = {
+          name: facName.trim(),
+          category: facCategory,
+          description: facDescription.trim(),
+          image_url: finalImage,
+          is_active: true
+        };
+        if (isUuid) payload.id = editingFacId;
+        await supabase.from('facilities').upsert(payload);
+      }
+    } else {
+      const newId = crypto.randomUUID ? crypto.randomUUID() : `fac-${Date.now()}`;
+      const newFacility: FacilityItem = {
+        id: newId,
+        name: facName.trim(),
+        category: facCategory,
+        description: facDescription.trim(),
+        imageUrl: finalImage
+      };
+      setFacilities([newFacility, ...facilities]);
+
+      if (isSupabaseConfigured()) {
+        await supabase.from('facilities').insert({
+          id: newId,
+          name: facName.trim(),
+          category: facCategory,
+          description: facDescription.trim(),
+          image_url: finalImage,
+          is_active: true
+        });
+      }
+    }
+
+    invalidateCache('facilities');
+    setSavedAlert(true);
+    setTimeout(() => setSavedAlert(false), 2500);
+    resetFacilityForm();
+  };
+
+  const handleDeleteFacility = async (id: string, name: string) => {
+    if (!confirm(`Apakah Anda yakin ingin menghapus fasilitas "${name}"?`)) return;
+    setFacilities(facilities.filter(f => f.id !== id));
+    if (isSupabaseConfigured()) {
+      await supabase.from('facilities').delete().eq('id', id);
+    }
+    invalidateCache('facilities');
+    setSavedAlert(true);
+    setTimeout(() => setSavedAlert(false), 2500);
+  };
 
   // State Program & Jadwal 24 Jam
   const [jadwal24, setJadwal24] = useState([
@@ -543,10 +666,11 @@ export const KelolaProfil: React.FC = () => {
         </form>
       )}
 
-      {/* TAB D: FASILITAS DENGAN FILTER KATEGORI & LIGHTBOX */}
+      {/* TAB D: FASILITAS DENGAN FILTER KATEGORI, LIGHTBOX & FULL WEBP CRUD */}
       {activeTab === 'fasilitas' && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between flex-wrap gap-3 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800">
+        <div className="space-y-5">
+          {/* Action Header: Filter + Tambah Fasilitas */}
+          <div className="flex items-center justify-between flex-wrap gap-3 p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xs">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="text-xs font-bold text-zinc-500 mr-2">Filter Kategori:</span>
               {(['Semua', 'Asrama', 'Ibadah', 'Akademik', 'Lab STEM', 'Olahraga'] as const).map((cat) => (
@@ -565,11 +689,204 @@ export const KelolaProfil: React.FC = () => {
               ))}
             </div>
 
-            <span className="text-xs text-zinc-400 font-mono">
-              Total {filteredFacilities.length} Fasilitas
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-zinc-400 font-mono">
+                Total {filteredFacilities.length} Fasilitas
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  if (showFacilityForm && !editingFacId) {
+                    resetFacilityForm();
+                  } else {
+                    resetFacilityForm();
+                    setShowFacilityForm(true);
+                  }
+                }}
+                className="px-4 py-2 rounded-xl bg-[#0E7A4C] hover:bg-[#128a57] text-[#C8A951] font-bold text-xs flex items-center gap-1.5 shadow-sm cursor-pointer transition"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>{showFacilityForm && !editingFacId ? 'Tutup Formulir' : 'Tambah Fasilitas Baru'}</span>
+              </button>
+            </div>
           </div>
 
+          {/* Form Tambah / Edit Fasilitas */}
+          {showFacilityForm && (
+            <form onSubmit={handleSaveFacility} className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-emerald-500/30 dark:border-emerald-700/40 shadow-lg space-y-4 animate-fadeIn">
+              <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
+                <div className="flex items-center gap-2">
+                  <Building2 className="w-5 h-5 text-[#0E7A4C]" />
+                  <h3 className="font-extrabold text-sm sm:text-base text-zinc-900 dark:text-white">
+                    {editingFacId ? 'Edit Data Fasilitas' : 'Input Fasilitas Pesantren Baru'}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={resetFacilityForm}
+                  className="text-xs font-bold text-rose-500 hover:underline flex items-center gap-1 cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                  <span>Batal</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="sm:col-span-2 space-y-1">
+                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                    Nama Fasilitas / Gedung: <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Contoh: Gedung Laboratorium Robotika & STEM Lt. 2"
+                    value={facName}
+                    onChange={(e) => setFacName(e.target.value)}
+                    className="w-full px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white font-medium"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                    Kategori Fasilitas: <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={facCategory}
+                    onChange={(e) => setFacCategory(e.target.value as any)}
+                    className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white"
+                  >
+                    <option value="Asrama">Asrama Santri</option>
+                    <option value="Ibadah">Sarana Ibadah / Masjid</option>
+                    <option value="Akademik">Kelas &amp; Akademik</option>
+                    <option value="Lab STEM">Lab STEM &amp; Robotika</option>
+                    <option value="Olahraga">Olahraga &amp; Lapangan</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                  Deskripsi &amp; Sarana Fasilitas:
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Jelaskan fasilitas, kapasitas, perangkat, atau peruntukan untuk santri..."
+                  value={facDescription}
+                  onChange={(e) => setFacDescription(e.target.value)}
+                  className="w-full px-3.5 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white"
+                />
+              </div>
+
+              {/* Upload Foto Fasilitas dari Komputer dengan Auto-WebP Compressor */}
+              <div className="space-y-2 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/80 dark:border-zinc-700">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <ImageIcon className="w-3.5 h-3.5 text-[#0E7A4C]" />
+                    <span>Foto Dokumentasi Fasilitas (Upload dari Komputer • WebP Auto-Compress):</span>
+                  </span>
+                  <span className="text-[11px] font-mono text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+                    Auto-Compressor Aktif
+                  </span>
+                </label>
+
+                <input
+                  ref={facFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (e.target.files?.[0]) {
+                      handleFacFileUpload(e.target.files[0]);
+                    }
+                  }}
+                  className="hidden"
+                />
+
+                {!facImageUrl ? (
+                  <button
+                    type="button"
+                    onClick={() => facFileInputRef.current?.click()}
+                    disabled={facCompressing}
+                    className="w-full py-5 px-4 rounded-xl border-2 border-dashed border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/40 dark:bg-emerald-950/20 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition text-center cursor-pointer flex flex-col items-center justify-center gap-2 group"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/60 flex items-center justify-center text-[#0E7A4C] group-hover:scale-110 transition-transform">
+                      <UploadCloud className="w-5 h-5" />
+                    </div>
+                    <span className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-zinc-100">
+                      {facCompressing ? 'Sedang mengompres foto fasilitas ke WebP...' : 'Pilih Foto Fasilitas dari Komputer'}
+                    </span>
+                    <span className="text-[11px] text-zinc-500 dark:text-zinc-400 max-w-md">
+                      Mendukung JPG, PNG, atau WebP. Foto otomatis dioptimalkan agar hemat kuota santri dan wali santri.
+                    </span>
+                  </button>
+                ) : (
+                  <div className="p-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-20 h-14 rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-700 bg-zinc-100 shrink-0 shadow-xs">
+                        <img src={facImageUrl} alt="Pratinjau Fasilitas" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0 space-y-0.5">
+                        <div className="flex items-center gap-2">
+                          <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100 truncate">
+                            Foto Fasilitas Terpasang
+                          </p>
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-300 text-[10px] font-black uppercase font-mono">
+                            WebP
+                          </span>
+                        </div>
+                        {facCompressionResult ? (
+                          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                            ✓ Ukuran: {facCompressionResult.compressedSizeKB} KB (Hemat {facCompressionResult.savedPercent}%)
+                          </p>
+                        ) : (
+                          <p className="text-[11px] text-zinc-500">Foto siap ditayangkan di website publik.</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-1 border-t border-zinc-100 dark:border-zinc-800">
+                      <button
+                        type="button"
+                        onClick={() => facFileInputRef.current?.click()}
+                        className="text-xs text-[#0E7A4C] hover:underline font-bold cursor-pointer"
+                      >
+                        Ganti Foto dari Komputer
+                      </button>
+                      <span className="text-zinc-400">•</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setFacImageUrl('');
+                          setFacCompressionResult(null);
+                        }}
+                        className="text-xs text-rose-600 hover:underline font-semibold cursor-pointer"
+                      >
+                        Hapus Foto
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={resetFacilityForm}
+                  className="px-4 py-2 rounded-xl border border-zinc-200 dark:border-zinc-700 text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-[#0E7A4C] hover:bg-[#128a57] text-[#C8A951] font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{editingFacId ? 'Perbarui Fasilitas' : 'Simpan Fasilitas'}</span>
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* Grid Fasilitas Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredFacilities.map((fac) => (
               <div
@@ -606,35 +923,72 @@ export const KelolaProfil: React.FC = () => {
                 </div>
 
                 <div className="p-4 pt-0 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 mt-2">
-                  <label className="text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:text-[#0E7A4C] flex items-center gap-1 cursor-pointer">
-                    <UploadCloud className="w-3.5 h-3.5 text-[#0E7A4C]" />
-                    <span>Ganti Foto WebP</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          try {
-                            const res = await compressImageToWebP(file, 1400, 900, 0.82);
-                            setFacilities(facilities.map(f => f.id === fac.id ? { ...f, imageUrl: res.dataUrl } : f));
-                          } catch (err: any) {
-                            alert('Gagal mengompres foto: ' + err.message);
-                          }
-                        }
-                      }}
-                    />
-                  </label>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleEditFacility(fac)}
+                      className="p-1.5 rounded-lg text-zinc-500 hover:text-[#0E7A4C] hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition cursor-pointer"
+                      title="Edit Fasilitas"
+                    >
+                      <Edit3 className="w-4 h-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteFacility(fac.id, fac.name)}
+                      className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
+                      title="Hapus Fasilitas"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setLightboxImage(fac.imageUrl)}
-                    className="text-xs font-bold text-[#0E7A4C] hover:underline flex items-center gap-1 cursor-pointer"
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                    <span>Lihat Fullsize</span>
-                  </button>
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-bold text-zinc-600 dark:text-zinc-300 hover:text-[#0E7A4C] flex items-center gap-1 cursor-pointer">
+                      <UploadCloud className="w-3.5 h-3.5 text-[#0E7A4C]" />
+                      <span>Ganti WebP</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            try {
+                              const res = await compressImageToWebP(file, 1400, 900, 0.82);
+                              const updated = facilities.map(f => f.id === fac.id ? { ...f, imageUrl: res.dataUrl } : f);
+                              setFacilities(updated);
+                              if (isSupabaseConfigured()) {
+                                const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(fac.id);
+                                const payload: any = {
+                                  name: fac.name,
+                                  category: fac.category,
+                                  description: fac.description,
+                                  image_url: res.dataUrl,
+                                  is_active: true
+                                };
+                                if (isUuid) payload.id = fac.id;
+                                await supabase.from('facilities').upsert(payload);
+                              }
+                              invalidateCache('facilities');
+                              setSavedAlert(true);
+                              setTimeout(() => setSavedAlert(false), 2000);
+                            } catch (err: any) {
+                              alert('Gagal mengompres foto: ' + err.message);
+                            }
+                          }
+                        }}
+                      />
+                    </label>
+
+                    <button
+                      type="button"
+                      onClick={() => setLightboxImage(fac.imageUrl)}
+                      className="text-xs font-bold text-[#0E7A4C] hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Lihat</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}

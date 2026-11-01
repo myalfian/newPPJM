@@ -110,3 +110,4 @@ Setiap data HTML yang dihasilkan oleh editor secara otomatis dirender di halaman
 ```
 - Menjaga keindahan visual CSS (*line-height, letter-spacing, text-indent, paragraph spacing*).
 - Menjamin keamanan dari serangan XSS atau skrip berbahaya via whitelist ketat DOMPurify.
+

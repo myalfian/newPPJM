@@ -1548,3 +1548,4 @@ export function getSectionToolbarConfig(
 
   return sectionConfig.fields.content || SECTION_TOOLBAR_CONFIGS.default.fields.content;
 }
+
