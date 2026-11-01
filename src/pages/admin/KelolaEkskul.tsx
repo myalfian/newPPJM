@@ -204,8 +204,9 @@ export const KelolaEkskul: React.FC = () => {
   const handleDelete = async (id: string) => {
     if (confirm('Hapus kegiatan ekstrakurikuler ini?')) {
       setItems(items.filter((i) => i.id !== id));
-      if (isSupabaseConfigured() && !id.startsWith('ek-')) {
+      if (isSupabaseConfigured()) {
         try {
+          await supabase.from('ekskul').delete().eq('id', id);
           await supabase.from('extracurriculars').delete().eq('id', id);
         } catch (err) {
           console.warn('Failed to delete on Supabase:', err);
@@ -222,6 +223,48 @@ export const KelolaEkskul: React.FC = () => {
     const finalImage =
       imageUrl ||
       'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80';
+
+    let savedId = editingId || `ek-${Date.now()}`;
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(editingId || '');
+
+    if (isSupabaseConfigured()) {
+      try {
+        const payload: any = {
+          name: name.trim(),
+          category,
+          instructor_name: coach.trim() || 'Pembina PPJM',
+          schedule: schedule.trim() || 'Sabtu Sore',
+          location: location.trim() || 'Komplek Pondok Pesantren',
+          description: description.trim(),
+          photo_url: finalImage,
+          is_active: true,
+          updated_at: new Date().toISOString()
+        };
+        if (isUuid) payload.id = editingId;
+
+        const { data, error } = await supabase.from('ekskul').upsert(payload).select().maybeSingle();
+        if (error) {
+          console.warn('Ekskul upsert notice, trying extracurriculars view:', error.message);
+          const viewPayload: any = {
+            name: name.trim(),
+            category,
+            coach: coach.trim() || 'Pembina PPJM',
+            schedule: schedule.trim() || 'Sabtu Sore',
+            location: location.trim() || 'Komplek Pondok Pesantren',
+            description: description.trim(),
+            image_url: finalImage,
+            is_active: true
+          };
+          if (isUuid) viewPayload.id = editingId;
+          const { data: vData } = await supabase.from('extracurriculars').upsert(viewPayload).select().maybeSingle();
+          if (vData?.id) savedId = vData.id;
+        } else if (data?.id) {
+          savedId = data.id;
+        }
+      } catch (err) {
+        console.error('Error persisting ekskul to Supabase:', err);
+      }
+    }
 
     if (editingId) {
       setItems(
@@ -242,7 +285,7 @@ export const KelolaEkskul: React.FC = () => {
       );
     } else {
       const newItem: EkskulItem = {
-        id: `ek-${Date.now()}`,
+        id: savedId,
         name,
         category,
         coach,

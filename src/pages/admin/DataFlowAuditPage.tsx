@@ -48,7 +48,44 @@ export const DataFlowAuditPage: React.FC = () => {
   }, []);
 
   const handleCopySqlFix = () => {
-    const sql = `-- FIX RLS POLICIES FOR PUBLIC READ & ADMIN WRITE
+    const sql = `-- FIX RLS POLICIES FOR PUBLIC READ & ADMIN WRITE (PP JAUHARUL MAKNUUN)
+-- 1. Enable RLS
+ALTER TABLE IF EXISTS public.site_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.cms_sections ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.sliders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.quick_menus ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.berita ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.facilities ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.prestasi ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.ekskul ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.osis_structure ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.osis_programs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.agendas ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.galeri_foto ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.galleries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.kontak_medsos ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.sambutan_persons ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.jm_center_pages ENABLE ROW LEVEL SECURITY;
+
+-- 2. Drop legacy policies safely
+DROP POLICY IF EXISTS "Public can read visible cms_sections" ON public.cms_sections;
+DROP POLICY IF EXISTS "Public Read Settings" ON public.site_settings;
+DROP POLICY IF EXISTS "Public can read active sliders" ON public.sliders;
+DROP POLICY IF EXISTS "Public can read active quick_menus" ON public.quick_menus;
+DROP POLICY IF EXISTS "Public can read published berita" ON public.berita;
+DROP POLICY IF EXISTS "Public can read active facilities" ON public.facilities;
+DROP POLICY IF EXISTS "Public can read prestasi" ON public.prestasi;
+DROP POLICY IF EXISTS "Public can read active ekskul" ON public.ekskul;
+DROP POLICY IF EXISTS "Public can read osis_structure" ON public.osis_structure;
+DROP POLICY IF EXISTS "Public can read osis_programs" ON public.osis_programs;
+DROP POLICY IF EXISTS "Public can read agendas" ON public.agendas;
+DROP POLICY IF EXISTS "Public can read galeri_foto" ON public.galeri_foto;
+DROP POLICY IF EXISTS "Public can read galleries" ON public.galleries;
+DROP POLICY IF EXISTS "Public can read kontak_medsos" ON public.kontak_medsos;
+DROP POLICY IF EXISTS "Public can read active sambutan_persons" ON public.sambutan_persons;
+DROP POLICY IF EXISTS "Public can read jm_center_pages" ON public.jm_center_pages;
+
+-- 3. Create Public Read Policies
 CREATE POLICY "Public can read visible cms_sections" ON public.cms_sections FOR SELECT USING (visible = true);
 CREATE POLICY "Public Read Settings" ON public.site_settings FOR SELECT USING (true);
 CREATE POLICY "Public can read active sliders" ON public.sliders FOR SELECT USING (is_active = true);
@@ -58,9 +95,31 @@ CREATE POLICY "Public can read active facilities" ON public.facilities FOR SELEC
 CREATE POLICY "Public can read prestasi" ON public.prestasi FOR SELECT USING (true);
 CREATE POLICY "Public can read active ekskul" ON public.ekskul FOR SELECT USING (is_active = true);
 CREATE POLICY "Public can read osis_structure" ON public.osis_structure FOR SELECT USING (true);
+CREATE POLICY "Public can read osis_programs" ON public.osis_programs FOR SELECT USING (true);
 CREATE POLICY "Public can read agendas" ON public.agendas FOR SELECT USING (true);
 CREATE POLICY "Public can read galeri_foto" ON public.galeri_foto FOR SELECT USING (true);
-CREATE POLICY "Public can read kontak_medsos" ON public.kontak_medsos FOR SELECT USING (is_active = true);`;
+CREATE POLICY "Public can read galleries" ON public.galleries FOR SELECT USING (true);
+CREATE POLICY "Public can read kontak_medsos" ON public.kontak_medsos FOR SELECT USING (is_active = true);
+CREATE POLICY "Public can read active sambutan_persons" ON public.sambutan_persons FOR SELECT USING (is_active = true);
+CREATE POLICY "Public can read jm_center_pages" ON public.jm_center_pages FOR SELECT USING (true);
+
+-- 4. Create Authenticated Admin Management Policies
+CREATE POLICY "Admin can manage site_settings" ON public.site_settings FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage cms_sections" ON public.cms_sections FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage sliders" ON public.sliders FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage quick_menus" ON public.quick_menus FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage berita" ON public.berita FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage facilities" ON public.facilities FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage prestasi" ON public.prestasi FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage ekskul" ON public.ekskul FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage osis_structure" ON public.osis_structure FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage osis_programs" ON public.osis_programs FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage agendas" ON public.agendas FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage galeri_foto" ON public.galeri_foto FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage galleries" ON public.galleries FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage kontak_medsos" ON public.kontak_medsos FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage sambutan_persons" ON public.sambutan_persons FOR ALL TO authenticated USING (true) WITH CHECK (true);
+CREATE POLICY "Admin can manage jm_center_pages" ON public.jm_center_pages FOR ALL TO authenticated USING (true) WITH CHECK (true);`;
 
     navigator.clipboard.writeText(sql);
     setCopiedSql(true);

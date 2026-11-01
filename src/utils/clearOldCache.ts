@@ -3,6 +3,7 @@
  * Ensuring live data always comes fresh from Supabase Database.
  */
 export function clearOldSeedCache(): void {
+  // Hanya bersihkan key legacy/obsolete lama, JANGAN menghapus draft aktif editor
   const keysToRemove = [
     'sambutan',
     'sliders',
@@ -12,8 +13,6 @@ export function clearOldSeedCache(): void {
     'berita',
     'seed',
     'ppjm_seed',
-    'ppjm_published_public_state_v1',
-    'ppjm_live_editor_state_v1',
     'ppjm_legacy_sambutan_cache',
     'ppjm_legacy_news_cache'
   ];

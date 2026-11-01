@@ -176,7 +176,7 @@ export const KelolaOsis: React.FC = () => {
   const [compressionResult, setCompressionResult] = useState<CompressionResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Load OSIS structure from Supabase on mount & listen to realtime
+  // Load OSIS structure & programs from Supabase on mount & listen to realtime
   useEffect(() => {
     const loadOsisFromSupabase = async () => {
       if (!isSupabaseConfigured()) return;
@@ -199,6 +199,24 @@ export const KelolaOsis: React.FC = () => {
             }))
           );
         }
+
+        const { data: progData, error: progErr } = await supabase
+          .from('osis_programs')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (!progErr && progData && progData.length > 0) {
+          setPrograms(
+            progData.map((row: any) => ({
+              id: row.id,
+              title: row.title,
+              department: row.department,
+              description: row.description,
+              timeline: row.timeline || 'Semester Gasal',
+              targetOutcome: row.target_outcome || 'Pemberdayaan Santri'
+            }))
+          );
+        }
       } catch (err) {
         console.warn('Failed to load osis from Supabase:', err);
       }
@@ -208,6 +226,9 @@ export const KelolaOsis: React.FC = () => {
     const channel = supabase
       .channel('admin-osis-realtime')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'osis_structure' }, () => {
+        loadOsisFromSupabase();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'osis_programs' }, () => {
         loadOsisFromSupabase();
       })
       .subscribe();
@@ -220,11 +241,23 @@ export const KelolaOsis: React.FC = () => {
   const handleDeleteMember = async (id: string) => {
     if (!confirm('Hapus anggota pengurus OSIS ini?')) return;
     setMembers(prev => prev.filter((m) => m.id !== id));
-    if (isSupabaseConfigured() && !id.startsWith('m-')) {
+    if (isSupabaseConfigured()) {
       try {
         await supabase.from('osis_structure').delete().eq('id', id);
       } catch (e) {
         console.warn('Failed to delete osis_structure from Supabase:', e);
+      }
+    }
+  };
+
+  const handleDeleteProgram = async (id: string) => {
+    if (!confirm('Hapus program kerja ini?')) return;
+    setPrograms(prev => prev.filter(p => p.id !== id));
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase.from('osis_programs').delete().eq('id', id);
+      } catch (e) {
+        console.warn('Failed to delete osis_programs from Supabase:', e);
       }
     }
   };
@@ -298,17 +331,41 @@ export const KelolaOsis: React.FC = () => {
     setTimeout(() => setSavedAlert(false), 2500);
   };
 
-  const handleAddProgram = (e: React.FormEvent) => {
+  const handleAddProgram = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!pTitle || !pDesc) return;
     const newProg: OsisProgram = {
       id: `prog-${Date.now()}`,
-      title: pTitle,
+      title: pTitle.trim(),
       department: pDept,
-      description: pDesc,
-      timeline: pTimeline || 'Semester Gasal',
-      targetOutcome: pTarget || 'Pemberdayaan Santri'
+      description: pDesc.trim(),
+      timeline: pTimeline.trim() || 'Semester Gasal',
+      targetOutcome: pTarget.trim() || 'Pemberdayaan Santri'
     };
+
+    if (isSupabaseConfigured()) {
+      try {
+        const progPayload: any = {
+          title: pTitle.trim(),
+          department: pDept,
+          description: pDesc.trim(),
+          frequency: pTimeline.trim() || 'Semester Gasal',
+          timeline: pTimeline.trim() || 'Semester Gasal',
+          output: pTarget.trim() || 'Pemberdayaan Santri',
+          target: pTarget.trim() || 'Pemberdayaan Santri',
+          target_outcome: pTarget.trim() || 'Pemberdayaan Santri',
+          is_active: true
+        };
+        const { data, error } = await supabase.from('osis_programs').insert(progPayload).select().single();
+
+        if (!error && data) {
+          newProg.id = data.id;
+        }
+      } catch (err) {
+        console.warn('Failed to insert osis_programs:', err);
+      }
+    }
+
     setPrograms([...programs, newProg]);
     setPTitle('');
     setPDesc('');
@@ -699,9 +756,19 @@ export const KelolaOsis: React.FC = () => {
                 className="p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-2.5 flex flex-col justify-between"
               >
                 <div className="space-y-1.5">
-                  <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#0E7A4C]/15 text-[#0E7A4C] dark:text-emerald-400 border border-[#0E7A4C]/30">
-                    {prog.department}
-                  </span>
+                  <div className="flex items-center justify-between">
+                    <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#0E7A4C]/15 text-[#0E7A4C] dark:text-emerald-400 border border-[#0E7A4C]/30">
+                      {prog.department}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleDeleteProgram(prog.id)}
+                      className="text-xs text-rose-500 hover:text-rose-700 hover:bg-rose-50 dark:hover:bg-rose-950/40 p-1 rounded-lg transition"
+                      title="Hapus Program Kerja"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                   <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white">
                     {prog.title}
                   </h4>

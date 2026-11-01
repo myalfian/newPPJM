@@ -169,9 +169,10 @@ export const KelolaGaleri: React.FC = () => {
 
     setItems((prev) => prev.filter((it) => it.id !== id));
 
-    if (isSupabaseConfigured() && !id.startsWith('g')) {
+    if (isSupabaseConfigured()) {
       try {
         await supabase.from('galleries').delete().eq('id', id);
+        await supabase.from('galeri_foto').delete().eq('id', id);
       } catch (err) {
         console.warn('Failed to delete gallery item from Supabase:', err);
       }
@@ -196,6 +197,42 @@ export const KelolaGaleri: React.FC = () => {
         : 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80'
     );
 
+    let savedId = editingId || `g-${Date.now()}`;
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(editingId || '');
+
+    if (isSupabaseConfigured()) {
+      try {
+        const payload: any = {
+          category: tab,
+          title: judul,
+          slug: `${slug}-${Date.now().toString().slice(-4)}`,
+          event_date: finalDate,
+          description: deskripsi,
+          cover_image: finalCover,
+          video_url: tab === 'video' ? videoUrl : null,
+          updated_at: new Date().toISOString()
+        };
+        if (isUuid) payload.id = editingId;
+
+        const { data, error } = await supabase.from('galleries').upsert(payload).select().maybeSingle();
+        if (error) {
+          console.warn('Galleries upsert notice, trying galeri_foto:', error.message);
+          if (tab === 'foto') {
+            await supabase.from('galeri_foto').upsert({
+              title: judul,
+              description: deskripsi,
+              image_url: finalCover,
+              event_date: finalDate
+            } as any);
+          }
+        } else if (data?.id) {
+          savedId = data.id;
+        }
+      } catch (err) {
+        console.warn('Failed to persist gallery to Supabase:', err);
+      }
+    }
+
     if (editingId) {
       // Edit existing
       setItems((prev) =>
@@ -213,55 +250,10 @@ export const KelolaGaleri: React.FC = () => {
             : it
         )
       );
-
-      if (isSupabaseConfigured() && !editingId.startsWith('g')) {
-        try {
-          await supabase
-            .from('galleries')
-            .update({
-              title: judul,
-              category: tab,
-              event_date: finalDate,
-              description: deskripsi,
-              cover_image: finalCover,
-              video_url: tab === 'video' ? videoUrl : null,
-              updated_at: new Date().toISOString(),
-            })
-            .eq('id', editingId);
-        } catch (err) {
-          console.warn('Failed to update gallery on Supabase:', err);
-        }
-      }
     } else {
       // Create new
-      let createdId = `g-${Date.now()}`;
-
-      if (isSupabaseConfigured()) {
-        try {
-          const { data } = await supabase
-            .from('galleries')
-            .insert({
-              category: tab,
-              title: judul,
-              slug: `${slug}-${Date.now()}`,
-              event_date: finalDate,
-              description: deskripsi,
-              cover_image: finalCover,
-              video_url: tab === 'video' ? videoUrl : null,
-            })
-            .select()
-            .single();
-
-          if (data?.id) {
-            createdId = data.id;
-          }
-        } catch (err) {
-          console.warn('Failed to insert gallery to Supabase:', err);
-        }
-      }
-
       const newItem: GalleryAdminItem = {
-        id: createdId,
+        id: savedId,
         slug: `${slug}-${Date.now()}`,
         title: judul,
         category: tab,

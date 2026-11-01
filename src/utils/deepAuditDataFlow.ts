@@ -122,9 +122,18 @@ export async function deepAuditDataFlow(): Promise<DeepAuditReport> {
     { table: 'news', filter: { is_published: true } },
     { table: 'facilities', filter: { is_active: true } },
     { table: 'prestasi', filter: {} },
+    { table: 'achievements', filter: {} },
     { table: 'ekskul', filter: { is_active: true } },
+    { table: 'extracurriculars', filter: { is_active: true } },
+    { table: 'osis_structure', filter: {} },
+    { table: 'osis_programs', filter: {} },
     { table: 'agendas', filter: {} },
+    { table: 'galeri_foto', filter: {} },
+    { table: 'galleries', filter: {} },
     { table: 'kontak_medsos', filter: { is_active: true } },
+    { table: 'stem_worksheets', filter: {} },
+    { table: 'mandarin_vocabularies', filter: {} },
+    { table: 'hafidz_surahs', filter: {} },
   ];
 
   for (const item of publicTables) {

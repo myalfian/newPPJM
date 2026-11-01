@@ -206,8 +206,9 @@ export const KelolaPrestasi: React.FC = () => {
   const handleDelete = async (id: string) => {
     if (confirm('Apakah Anda yakin ingin menghapus data prestasi ini?')) {
       setItems(items.filter((item) => item.id !== id));
-      if (isSupabaseConfigured() && !id.startsWith('pr-')) {
+      if (isSupabaseConfigured()) {
         try {
+          await supabase.from('prestasi').delete().eq('id', id);
           await supabase.from('achievements').delete().eq('id', id);
         } catch (err) {
           console.warn('Failed to delete on Supabase:', err);
@@ -227,6 +228,49 @@ export const KelolaPrestasi: React.FC = () => {
       'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80';
     const finalPembina = pembina || 'Dewan Asatidz & Pembina Prestasi PPJM';
 
+    let savedId = editingId || `pr-${Date.now()}`;
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(editingId || '');
+
+    if (isSupabaseConfigured()) {
+      try {
+        const payload: any = {
+          title: title.trim(),
+          santri_name: santriName.trim(),
+          category,
+          level,
+          year: parseInt(year, 10) || 2026,
+          organizer: finalPembina,
+          description: description.trim(),
+          certificate_url: finalImage,
+          photo_url: finalImage,
+          is_published: true,
+          updated_at: new Date().toISOString()
+        };
+        if (isUuid) payload.id = editingId;
+
+        const { data, error } = await supabase.from('prestasi').upsert(payload).select().maybeSingle();
+        if (error) {
+          console.warn('Upsert to prestasi notice, trying achievements view:', error.message);
+          const viewPayload: any = {
+            title: title.trim(),
+            winner_name: santriName.trim(),
+            category,
+            medal_type: level,
+            year: parseInt(year, 10) || 2026,
+            description: description.trim(),
+            certificate_url: finalImage
+          };
+          if (isUuid) viewPayload.id = editingId;
+          const { data: vData } = await supabase.from('achievements').upsert(viewPayload).select().maybeSingle();
+          if (vData?.id) savedId = vData.id;
+        } else if (data?.id) {
+          savedId = data.id;
+        }
+      } catch (err) {
+        console.error('Error saving prestasi to Supabase:', err);
+      }
+    }
+
     if (editingId) {
       setItems(
         items.map((item) =>
@@ -245,53 +289,9 @@ export const KelolaPrestasi: React.FC = () => {
             : item
         )
       );
-
-      if (isSupabaseConfigured() && !editingId.startsWith('pr-')) {
-        try {
-          await supabase
-            .from('achievements')
-            .update({
-              title,
-              winner_name: santriName,
-              category,
-              medal_type: level,
-              year: parseInt(year, 10) || 2026,
-              description,
-              certificate_url: finalImage,
-            } as any)
-            .eq('id', editingId);
-        } catch (err) {
-          console.warn('Failed to update achievement:', err);
-        }
-      }
     } else {
-      let createdId = `pr-${Date.now()}`;
-      if (isSupabaseConfigured()) {
-        try {
-          const { data } = await supabase
-            .from('achievements')
-            .insert({
-              title,
-              winner_name: santriName,
-              category,
-              medal_type: level,
-              year: parseInt(year, 10) || 2026,
-              description,
-              certificate_url: finalImage,
-            } as any)
-            .select()
-            .single();
-
-          if (data?.id) {
-            createdId = data.id;
-          }
-        } catch (err) {
-          console.warn('Failed to insert achievement:', err);
-        }
-      }
-
       const newItem: PrestasiItem = {
-        id: createdId,
+        id: savedId,
         title,
         santriName,
         category,

@@ -89,15 +89,8 @@ export const fetchPublishedEditorState = async (): Promise<PageEditorState> => {
       return merged;
     }
 
-    // If cloud is empty, seed initial state so subsequent visits load from cloud
-    if (!error && (!data || !data.value)) {
-      console.log('[EditorStorage] Cloud site_settings empty, seeding INITIAL_EDITOR_STATE...');
-      await supabase.from('site_settings').upsert({
-        key: 'home_sections_config',
-        value: INITIAL_EDITOR_STATE as any,
-        description: 'Konfigurasi visual layout beranda publik',
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'key' });
+    if (error) {
+      console.warn('[EditorStorage] Supabase error fetching home_sections_config:', error.message);
     }
   } catch (err) {
     console.warn('[EditorStorage] Failed to fetch remote published config, using local cache:', err);
