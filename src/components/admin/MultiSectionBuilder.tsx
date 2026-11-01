@@ -473,6 +473,9 @@ export const MultiSectionBuilder: React.FC<MultiSectionBuilderProps> = ({
         }
         resData = data;
         showToast('Perubahan berhasil disimpan ke Supabase!', 'success');
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('ppjm-content-updated', { detail: { type: tableName } }));
+        }
       } else {
         const { data, error } = await (supabase.from(tableName as any) as any).insert([payload]).select().single();
         if (error) {
@@ -483,6 +486,9 @@ export const MultiSectionBuilder: React.FC<MultiSectionBuilderProps> = ({
         }
         resData = data;
         showToast('Perubahan berhasil disimpan ke Supabase!', 'success');
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('ppjm-content-updated', { detail: { type: tableName } }));
+        }
       }
 
       // Audit Log

@@ -840,8 +840,25 @@ export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initia
     };
 
     fetchInstitutions();
+
+    // Listen for custom window event when admin updates institutions
+    const handleUpdate = () => {
+      fetchInstitutions();
+    };
+    window.addEventListener('ppjm-content-updated', handleUpdate);
+
+    // Subscribe to realtime Supabase changes
+    const channel = supabase
+      .channel('public-institutions-realtime-channel')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'institutions' }, () => {
+        fetchInstitutions();
+      })
+      .subscribe();
+
     return () => {
       isMounted = false;
+      window.removeEventListener('ppjm-content-updated', handleUpdate);
+      supabase.removeChannel(channel);
     };
   }, []);
 

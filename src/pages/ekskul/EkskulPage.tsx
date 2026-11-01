@@ -32,26 +32,36 @@ const fetchEkskulsData = async (): Promise<DetailedEkskulItem[]> => {
       return [];
     }
 
-    return data.map((item) => {
+    return data.map((rawItem: any) => {
+      const item = rawItem;
       let category: EkskulCategory = 'Sains & Teknologi';
+      const catLower = (item.category || '').toLowerCase();
       const nameLower = (item.name || '').toLowerCase();
-      if (nameLower.includes('silat') || nameLower.includes('olahraga')) category = 'Olahraga & Bela Diri';
-      else if (nameLower.includes('hadrah') || nameLower.includes('banjari') || nameLower.includes('bahasa') || nameLower.includes('mandarin') || nameLower.includes('arab')) category = 'Seni & Bahasa';
-      else if (nameLower.includes('quran') || nameLower.includes('tahfidz')) category = 'Agama';
-      else if (nameLower.includes('pramuka')) category = 'Pramuka';
+      
+      if (catLower.includes('olahraga') || nameLower.includes('silat') || nameLower.includes('olahraga') || nameLower.includes('futsal')) {
+        category = 'Olahraga & Bela Diri';
+      } else if (catLower.includes('seni') || nameLower.includes('hadrah') || nameLower.includes('banjari') || nameLower.includes('bahasa') || nameLower.includes('mandarin') || nameLower.includes('arab')) {
+        category = 'Seni & Bahasa';
+      } else if (catLower.includes('agama') || nameLower.includes('quran') || nameLower.includes('tahfidz')) {
+        category = 'Agama';
+      } else if (catLower.includes('pramuka') || nameLower.includes('pramuka') || nameLower.includes('pmr') || nameLower.includes('palang merah')) {
+        category = 'Pramuka';
+      } else if (catLower.includes('sains') || nameLower.includes('stem') || nameLower.includes('robot')) {
+        category = 'Sains & Teknologi';
+      }
 
       return {
         id: item.id,
         name: item.name,
         category,
         schedule: item.schedule || 'Jadwal Mingguan',
-        coach: item.mentor_name || 'Pembina PPJM',
+        coach: item.coach || item.mentor_name || 'Pembina PPJM',
         description: item.description || '',
-        featuredPhoto: item.cover_image || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
+        featuredPhoto: item.cover_image || item.photo_url || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
         gallery: [],
         highlights: ['Pembinaan rutin terstruktur', 'Karakter santri mandiri & berprestasi'],
         targetCapaian: 'Penguasaan keterampilan & partisipasi lomba resmi',
-        tempatLatihan: 'Area Kampus PPJM'
+        tempatLatihan: item.location || 'Area Kampus PPJM'
       };
     });
   } catch (err) {
@@ -64,11 +74,35 @@ export const EkskulPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlCategoryParam = searchParams.get('kategori');
 
-  const { data: ekskuls = [] } = useCachedQuery<DetailedEkskulItem[]>(
+  const { data: ekskuls = [], refetch } = useCachedQuery<DetailedEkskulItem[]>(
     'ekskul_dataset_modular',
     fetchEkskulsData,
     []
   );
+
+  useEffect(() => {
+    // Listen for custom window event when admin updates ekskul
+    const handleUpdate = () => {
+      refetch();
+    };
+    window.addEventListener('ppjm-content-updated', handleUpdate);
+
+    // Subscribe to realtime Supabase changes
+    const channel = supabase
+      .channel('public-ekskul-realtime-channel')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'extracurriculars' }, () => {
+        refetch();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'ekskul' }, () => {
+        refetch();
+      })
+      .subscribe();
+
+    return () => {
+      window.removeEventListener('ppjm-content-updated', handleUpdate);
+      supabase.removeChannel(channel);
+    };
+  }, [refetch]);
 
   // Map URL param to category
   const parseCategoryParam = (param: string | null): EkskulCategory => {

@@ -238,6 +238,10 @@ export const KelolaEkskul: React.FC = () => {
         }
       }
       invalidateCache('extracurriculars_list');
+    invalidateCache('ekskul_dataset_modular');
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('ppjm-content-updated', { detail: { type: 'ekskul' } }));
+    }
     }
   };
 
@@ -249,45 +253,61 @@ export const KelolaEkskul: React.FC = () => {
       imageUrl ||
       'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80';
 
-    let savedId = editingId || `ek-${Date.now()}`;
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(editingId || '');
+    const targetUuid = isUuid ? editingId! : (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : '00000000-0000-4000-8000-' + Date.now().toString(16).padStart(12, '0'));
+    let savedId = targetUuid;
 
     if (isSupabaseConfigured()) {
       try {
-        const payload: any = {
+        // 1. Upsert into canonical public table 'extracurriculars'
+        const extraPayload: any = {
+          id: targetUuid,
+          name: name.trim(),
+          category,
+          schedule: schedule.trim() || 'Sabtu Sore',
+          mentor_name: coach.trim() || 'Pembina PPJM',
+          location: location.trim() || 'Komplek Pondok Pesantren',
+          description: description.trim(),
+          cover_image: finalImage,
+          is_active: true,
+          updated_at: new Date().toISOString()
+        };
+
+        const { data: exData, error: exErr } = await supabase
+          .from('extracurriculars')
+          .upsert(extraPayload)
+          .select()
+          .maybeSingle();
+
+        if (exErr) {
+          console.error('[KelolaEkskul] Error saving to extracurriculars:', exErr);
+          alert(`Gagal menyimpan ke database Supabase (extracurriculars): ${exErr.message}`);
+          return;
+        } else if (exData?.id) {
+          savedId = exData.id;
+        }
+
+        // 2. Upsert in parallel to 'ekskul' table to ensure bidirectional compatibility
+        const ekskulPayload: any = {
+          id: savedId,
           name: name.trim(),
           category,
           instructor_name: coach.trim() || 'Pembina PPJM',
+          coach: coach.trim() || 'Pembina PPJM',
           schedule: schedule.trim() || 'Sabtu Sore',
           location: location.trim() || 'Komplek Pondok Pesantren',
           description: description.trim(),
           photo_url: finalImage,
+          images: [finalImage],
           is_active: true,
           updated_at: new Date().toISOString()
         };
-        if (isUuid) payload.id = editingId;
 
-        const { data, error } = await supabase.from('ekskul').upsert(payload).select().maybeSingle();
-        if (error) {
-          console.warn('Ekskul upsert notice, trying extracurriculars view:', error.message);
-          const viewPayload: any = {
-            name: name.trim(),
-            category,
-            coach: coach.trim() || 'Pembina PPJM',
-            schedule: schedule.trim() || 'Sabtu Sore',
-            location: location.trim() || 'Komplek Pondok Pesantren',
-            description: description.trim(),
-            image_url: finalImage,
-            is_active: true
-          };
-          if (isUuid) viewPayload.id = editingId;
-          const { data: vData } = await supabase.from('extracurriculars').upsert(viewPayload).select().maybeSingle();
-          if (vData?.id) savedId = vData.id;
-        } else if (data?.id) {
-          savedId = data.id;
-        }
-      } catch (err) {
+        await supabase.from('ekskul').upsert(ekskulPayload);
+      } catch (err: any) {
         console.error('Error persisting ekskul to Supabase:', err);
+        alert(`Gagal menyimpan data: ${err?.message || 'Koneksi database bermasalah'}`);
+        return;
       }
     }
 
@@ -324,6 +344,10 @@ export const KelolaEkskul: React.FC = () => {
     }
 
     invalidateCache('extracurriculars_list');
+    invalidateCache('ekskul_dataset_modular');
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('ppjm-content-updated', { detail: { type: 'ekskul' } }));
+    }
     setSavedAlert(true);
     setTimeout(() => setSavedAlert(false), 2500);
     resetForm();

@@ -228,14 +228,47 @@ export const KelolaPrestasi: React.FC = () => {
       'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80';
     const finalPembina = pembina || 'Dewan Asatidz & Pembina Prestasi PPJM';
 
-    let savedId = editingId || `pr-${Date.now()}`;
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(editingId || '');
+    const targetUuid = isUuid ? editingId! : (typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : '00000000-0000-4000-8000-' + Date.now().toString(16).padStart(12, '0'));
+    let savedId = targetUuid;
 
     if (isSupabaseConfigured()) {
       try {
+        // 1. Upsert into canonical public table 'achievements'
+        const viewPayload: any = {
+          id: targetUuid,
+          title: title.trim(),
+          winner_name: santriName.trim(),
+          category,
+          medal_type: level,
+          year: parseInt(year, 10) || 2026,
+          description: description.trim(),
+          certificate_url: finalImage,
+          photo_url: finalImage,
+          organizer: finalPembina,
+          is_active: true
+        };
+
+        const { data: vData, error: vErr } = await supabase
+          .from('achievements')
+          .upsert(viewPayload)
+          .select()
+          .maybeSingle();
+
+        if (vErr) {
+          console.error('[KelolaPrestasi] Error saving to achievements:', vErr);
+          alert(`Gagal menyimpan ke database Supabase (achievements): ${vErr.message}`);
+          return;
+        } else if (vData?.id) {
+          savedId = vData.id;
+        }
+
+        // 2. Parallel upsert into 'prestasi' table
         const payload: any = {
+          id: savedId,
           title: title.trim(),
           santri_name: santriName.trim(),
+          pembina_name: finalPembina,
           category,
           level,
           year: parseInt(year, 10) || 2026,
@@ -243,31 +276,16 @@ export const KelolaPrestasi: React.FC = () => {
           description: description.trim(),
           certificate_url: finalImage,
           photo_url: finalImage,
+          is_active: true,
           is_published: true,
           updated_at: new Date().toISOString()
         };
-        if (isUuid) payload.id = editingId;
 
-        const { data, error } = await supabase.from('prestasi').upsert(payload).select().maybeSingle();
-        if (error) {
-          console.warn('Upsert to prestasi notice, trying achievements view:', error.message);
-          const viewPayload: any = {
-            title: title.trim(),
-            winner_name: santriName.trim(),
-            category,
-            medal_type: level,
-            year: parseInt(year, 10) || 2026,
-            description: description.trim(),
-            certificate_url: finalImage
-          };
-          if (isUuid) viewPayload.id = editingId;
-          const { data: vData } = await supabase.from('achievements').upsert(viewPayload).select().maybeSingle();
-          if (vData?.id) savedId = vData.id;
-        } else if (data?.id) {
-          savedId = data.id;
-        }
-      } catch (err) {
+        await supabase.from('prestasi').upsert(payload);
+      } catch (err: any) {
         console.error('Error saving prestasi to Supabase:', err);
+        alert(`Gagal menyimpan data: ${err?.message || 'Koneksi database bermasalah'}`);
+        return;
       }
     }
 
@@ -307,7 +325,11 @@ export const KelolaPrestasi: React.FC = () => {
     }
 
     invalidateCache('achievements_list');
+    invalidateCache('prestasi_modular_dataset');
     invalidateCache('admin_dashboard_metrics_v2');
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('ppjm-content-updated', { detail: { type: 'prestasi' } }));
+    }
     setSavedAlert(true);
     setTimeout(() => setSavedAlert(false), 2500);
     resetForm();

@@ -1236,50 +1236,42 @@ export const WebVisualEditor: React.FC = () => {
     showToast('Seksi baru "' + template.name + '" berhasil ditambahkan!');
   };
 
-  // Request Protected Publish Action (Rate Limiting + Confirmation Modal)
-  const requestPublish = () => {
+  // Request Protected Publish Action (Instant Execution + Rate Limiting)
+  const requestPublish = async () => {
     const now = Date.now();
-    // Sliding window check: 3 publishes per 600,000ms (10 minutes)
+    // Sliding window check: 30 publishes per 600,000ms (10 minutes)
     const recentPublishes = publishTimestampsRef.current.filter((t) => now - t < 600000);
-    if (recentPublishes.length >= 3) {
-      showToast('Batas Publikasi Tercapai: Maksimal 3 kali publikasi per 10 menit demi proteksi server.', 'error');
+    if (recentPublishes.length >= 30) {
+      showToast('Batas Publikasi Tercapai: Maksimal 30 kali publikasi per 10 menit demi proteksi server.', 'error');
       return;
     }
 
-    setReAuthModal({
-      isOpen: true,
-      actionType: 'PUBLISH',
-      targetTitle: 'Website Publik Pesantren PPJM',
-      expectedKeyword: 'PUBLIKASI',
-      inputKeyword: '',
-      onConfirmed: async () => {
-        const publishNow = Date.now();
-        recentPublishes.push(publishNow);
-        publishTimestampsRef.current = recentPublishes;
+    const publishNow = Date.now();
+    recentPublishes.push(publishNow);
+    publishTimestampsRef.current = recentPublishes;
 
-        const res = await publishEditorState(editorState);
-        if (res.success) {
-          // Create automated snapshot version
-          const snapshot: VersionSnapshot = {
-            id: 'ver_' + Date.now(),
-            timestamp: new Date().toISOString(),
-            label: 'Publikasi Live (' + new Date().toLocaleTimeString('id-ID') + ')',
-            userEmail: user?.email || 'admin@jauharulmaknuun.sch.id',
-            sectionsCount: Object.keys(editorState.sections).length,
-            state: editorState
-          };
-          persistVersionSnapshot(snapshot);
-          setVersionSnapshots((prev) => [snapshot, ...prev].slice(0, 15));
+    showToast('Memproses publikasi ke website publik & Supabase...');
+    const res = await publishEditorState(editorState);
+    if (res.success) {
+      // Create automated snapshot version
+      const snapshot: VersionSnapshot = {
+        id: 'ver_' + Date.now(),
+        timestamp: new Date().toISOString(),
+        label: 'Publikasi Live (' + new Date().toLocaleTimeString('id-ID') + ')',
+        userEmail: user?.email || 'admin@jauharulmaknuun.sch.id',
+        sectionsCount: Object.keys(editorState.sections).length,
+        state: editorState
+      };
+      persistVersionSnapshot(snapshot);
+      setVersionSnapshots((prev) => [snapshot, ...prev].slice(0, 15));
 
-          recordAudit('PUBLISH_LIVE', 'global', 'Publikasi seluruh seksi ke website resmi publik PPJM');
-          setPublishSuccessMsg(true);
-          setTimeout(() => setPublishSuccessMsg(false), 4000);
-          showToast('Berhasil dipublikasikan secara aman ke website publik PPJM!');
-        } else {
-          showToast(`Gagal mempublikasikan: ${res.error || 'Server error'}`, 'error');
-        }
-      }
-    });
+      recordAudit('PUBLISH_LIVE', 'global', 'Publikasi seluruh seksi ke website resmi publik PPJM');
+      setPublishSuccessMsg(true);
+      setTimeout(() => setPublishSuccessMsg(false), 4000);
+      showToast('Berhasil dipublikasikan secara aman ke website publik PPJM!');
+    } else {
+      showToast(`Gagal mempublikasikan: ${res.error || 'Server error'}`, 'error');
+    }
   };
 
   // Request Protected Reset to Default

@@ -83,6 +83,12 @@ export const PrestasiPage: React.FC = () => {
   );
 
   useEffect(() => {
+    const handleUpdate = () => {
+      invalidateCache('prestasi_modular_dataset');
+      refetch();
+    };
+    window.addEventListener('ppjm-content-updated', handleUpdate);
+
     const channel = supabase
       .channel('public-achievements-realtime')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'achievements' }, () => {
@@ -96,6 +102,7 @@ export const PrestasiPage: React.FC = () => {
       .subscribe();
 
     return () => {
+      window.removeEventListener('ppjm-content-updated', handleUpdate);
       supabase.removeChannel(channel);
     };
   }, [refetch]);
