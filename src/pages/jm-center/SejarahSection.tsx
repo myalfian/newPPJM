@@ -45,9 +45,9 @@ export const SejarahSection: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2.5 sm:space-y-3.5">
       {/* Seksi Sejarah Kronologis (Timeline Modern Lux) */}
-      <section className="bg-white/95 dark:bg-zinc-900/90 rounded-3xl p-5 sm:p-8 lg:p-10 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs space-y-6">
+      <section className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 lg:p-6 border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs space-y-3 sm:space-y-4">
         <div className="max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200/60 dark:border-amber-800/60 text-amber-800 dark:text-amber-300 text-xs font-bold uppercase tracking-wider mb-2">
             <Landmark className="w-3.5 h-3.5" />
@@ -62,7 +62,7 @@ export const SejarahSection: React.FC = () => {
         </div>
 
         {content && (
-          <div className="prose prose-sm dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-800/40 p-5 rounded-2xl border border-zinc-200/60 dark:border-zinc-700/60 whitespace-pre-line">
+          <div className="prose prose-sm dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed text-xs sm:text-sm bg-zinc-50 dark:bg-zinc-800/40 p-3 sm:p-4 rounded-xl sm:rounded-2xl border border-zinc-200/60 dark:border-zinc-700/60 whitespace-pre-line">
             {content}
           </div>
         )}
@@ -73,7 +73,7 @@ export const SejarahSection: React.FC = () => {
             Memuat linimasa sejarah pesantren...
           </div>
         ) : history.length > 0 ? (
-          <div className="relative pl-6 sm:pl-8 border-l-2 border-zinc-200 dark:border-zinc-800 space-y-6 sm:space-y-8 my-4">
+          <div className="relative pl-6 sm:pl-8 border-l-2 border-zinc-200 dark:border-zinc-800 space-y-3 sm:space-y-4 my-2 sm:my-3">
             {history.map((item, idx) => (
               <div key={idx} className="relative group">
                 {/* Glowing Node Dot */}

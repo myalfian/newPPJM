@@ -88,7 +88,7 @@ export const JmCenter: React.FC<JmCenterProps> = ({ defaultTab = 'profil', defau
       </div>
 
       {/* 3. Active Section Content Render */}
-      <main className="pt-2">
+      <main>
         <AnimatePresence mode="wait">
           {activeTab === 'profil' && (
             <motion.div

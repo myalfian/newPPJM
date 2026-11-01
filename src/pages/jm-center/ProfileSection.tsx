@@ -88,11 +88,11 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-2.5 sm:space-y-3.5">
       {/* 1. Curved Emerald Notch TabBar: Balanced 4-Column Grid Across All Screen Sizes */}
       <nav
         aria-label="Navigasi Menu Bagian Profil JM Center"
-        className="w-full sticky top-14 sm:top-16 z-20 py-1"
+        className="w-full sticky top-14 sm:top-16 z-20 py-0.5 sm:py-1"
       >
         <div className="w-full rounded-2xl sm:rounded-3xl bg-gradient-to-r from-[#0a6847] via-[#0f5132] to-[#073a23] dark:from-[#064e3b] dark:via-[#022c22] dark:to-[#042018] shadow-[0_10px_28px_-8px_rgba(15,81,50,0.45),0_4px_14px_-2px_rgba(15,23,42,0.12)] border border-emerald-600/30 dark:border-emerald-700/40 p-1 sm:p-1.5 backdrop-blur-md">
           {/* Equal 4-Column Balanced Grid */}
@@ -179,7 +179,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
       </nav>
 
       {/* 2. Dedicated Section Content Area with Smooth Animation */}
-      <div id="profile-content-area" className="w-full pt-1">
+      <div id="profile-content-area" className="w-full">
         <AnimatePresence mode="wait">
           {/* DEDICATED SECTION 1: SAMBUTAN PIMPINAN */}
           {activeSubTab === 'sambutan' && (
@@ -237,7 +237,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
               transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              className="space-y-6 sm:space-y-8 w-full"
+              className="space-y-2.5 sm:space-y-3.5 w-full"
             >
               {/* Seksi Sambutan */}
               <section id="sambutan" className="scroll-mt-28">
@@ -245,7 +245,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
               </section>
 
               {/* Separator Accent */}
-              <div className="relative py-2">
+              <div className="relative py-1">
                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
                   <div className="w-full border-t border-dashed border-emerald-300/50 dark:border-emerald-800/50" />
                 </div>
@@ -263,7 +263,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
               </section>
 
               {/* Separator Accent */}
-              <div className="relative py-2">
+              <div className="relative py-1">
                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
                   <div className="w-full border-t border-dashed border-emerald-300/50 dark:border-emerald-800/50" />
                 </div>
