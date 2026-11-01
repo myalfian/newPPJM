@@ -64,8 +64,19 @@ import {
 import { supabase } from '../../lib/supabase';
 import { compressImageToWebP } from '../../lib/imageCompressor';
 import DOMPurify from 'dompurify';
+import { SectionType, getSectionToolbarConfig, FieldToolbarConfig } from '../../config/sectionToolbarConfig';
+import {
+  LetterSpacing,
+  WordSpacing,
+  ParagraphSpacing,
+  TextIndent,
+  LineHeight,
+  FontSize
+} from './customTipTapExtensions';
 
 export interface WordLikeEditorProps {
+  sectionType?: SectionType | string;
+  fieldName?: string;
   value?: string;
   onChange?: (html: string) => void;
   onSave?: (html: string) => void;
@@ -100,6 +111,8 @@ const PRESET_COLORS = [
 ];
 
 export const WordLikeEditor: React.FC<WordLikeEditorProps> = ({
+  sectionType,
+  fieldName,
   value = '',
   onChange,
   onSave,
@@ -108,11 +121,21 @@ export const WordLikeEditor: React.FC<WordLikeEditorProps> = ({
   minHeight = '280px',
   readOnly = false,
   showToolbar = true,
-  toolbarMode = 'full',
+  toolbarMode,
   autoSave = true,
   wordCount = true,
   className = ''
 }) => {
+  // Ambil config contextual jika sectionType diberikan
+  const config: FieldToolbarConfig | null = sectionType
+    ? getSectionToolbarConfig(sectionType, fieldName || 'content')
+    : null;
+
+  const effectiveBucket = bucket || config?.bucket || 'cms-images';
+  const effectivePlaceholder = placeholder || config?.placeholder || 'Ketik konten naskah di sini...';
+  const effectiveMinHeight = minHeight || config?.minHeight || '280px';
+  const effectiveMode = toolbarMode || (config?.toolbar.insert.table ? 'full' : 'minimal');
+
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [lastSavedTime, setLastSavedTime] = useState<string | null>(null);
@@ -182,11 +205,17 @@ export const WordLikeEditor: React.FC<WordLikeEditorProps> = ({
         }
       }),
       Placeholder.configure({
-        placeholder
+        placeholder: effectivePlaceholder
       }),
       Superscript,
       Subscript,
       Typography,
+      LetterSpacing,
+      WordSpacing,
+      ParagraphSpacing,
+      TextIndent,
+      LineHeight,
+      FontSize,
       Focus.configure({
         className: 'has-focus',
         mode: 'all'
@@ -549,6 +578,44 @@ export const WordLikeEditor: React.FC<WordLikeEditorProps> = ({
               >
                 <AlignJustify className="w-4 h-4" />
               </button>
+
+              <div className="h-4 w-px bg-slate-300 mx-1" />
+
+              {/* Line Spacing Dropdown (Word Line Heights) */}
+              <select
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === 'default') (editor.commands as any).unsetLineHeight?.();
+                  else (editor.commands as any).setLineHeight?.(val);
+                }}
+                className="text-xs px-2 py-1 bg-white border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                title="Spasi Baris (Line Height)"
+              >
+                <option value="default">Spasi Baris</option>
+                <option value="1.0">1.0 (Rapat)</option>
+                <option value="1.15">1.15 (Normal)</option>
+                <option value="1.5">1.5 (Word 1.5)</option>
+                <option value="1.8">1.8 (Sambutan Ideal)</option>
+                <option value="2.0">2.0 (Ganda)</option>
+                <option value="2.5">2.5 (Ekstra)</option>
+              </select>
+
+              {/* Letter Spacing Dropdown */}
+              <select
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === 'default') (editor.commands as any).unsetLetterSpacing?.();
+                  else (editor.commands as any).setLetterSpacing?.(val);
+                }}
+                className="text-xs px-2 py-1 bg-white border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                title="Spasi Huruf (Letter Spacing)"
+              >
+                <option value="default">Spasi Huruf</option>
+                <option value="-0.05em">Tight (-0.05em)</option>
+                <option value="normal">Normal</option>
+                <option value="0.05em">Loose (+0.05em)</option>
+                <option value="0.1em">Wide (+0.1em)</option>
+              </select>
 
               <div className="h-4 w-px bg-slate-300 mx-1" />
 
