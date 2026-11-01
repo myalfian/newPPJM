@@ -4,8 +4,6 @@ import {
   AlertCircle,
   RefreshCw,
   UserCheck,
-  Search,
-  Filter,
   Sparkles,
   ChevronRight,
   ChevronDown,
@@ -28,10 +26,6 @@ export const SambutanSection: React.FC = () => {
   const [sambutans, setSambutans] = useState<SambutanPerson[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Filters & Search
-  const [selectedLocation, setSelectedLocation] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
 
   // Expandable state for each person
   const [expandedIds, setExpandedIds] = useState<string[]>([]);
@@ -110,22 +104,9 @@ export const SambutanSection: React.FC = () => {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  // Filtered List
-  const filteredList = sambutans.filter((s) => {
-    const matchSearch =
-      s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (s.quote && s.quote.toLowerCase().includes(searchQuery.toLowerCase()));
-
-    const matchLoc =
-      selectedLocation === 'all' ||
-      (Array.isArray(s.location) && s.location.includes(selectedLocation));
-
-    return matchSearch && matchLoc;
-  });
-
-  const featured = filteredList.find((s) => s.is_featured) || filteredList[0];
-  const otherList = filteredList.filter((s) => s.id !== featured?.id);
+  // Active Sambutan List
+  const featured = sambutans.find((s) => s.is_featured) || sambutans[0];
+  const otherList = sambutans.filter((s) => s.id !== featured?.id);
 
   // 1. Loading Pulse Skeleton
   if (loading && sambutans.length === 0) {
@@ -175,54 +156,14 @@ export const SambutanSection: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Filter & Search Bar */}
-      <div className="bg-white/90 dark:bg-zinc-900/80 p-4 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
-          <span className="text-xs font-bold text-zinc-500 mr-1 flex items-center gap-1 shrink-0">
-            <Filter className="w-3.5 h-3.5" /> Unit:
-          </span>
-          {[
-            { id: 'all', label: 'Semua Unit' },
-            { id: 'home', label: 'Pondok / Mudir' },
-            { id: 'smp-plus', label: 'SMP Plus' },
-            { id: 'madin', label: 'Madrasah Diniyah' },
-            { id: 'yayasan', label: 'Yayasan' },
-          ].map((u) => (
-            <button
-              key={u.id}
-              onClick={() => setSelectedLocation(u.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition ${
-                selectedLocation === u.id
-                  ? 'bg-emerald-700 text-white shadow-xs'
-                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200'
-              }`}
-            >
-              {u.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Search Input */}
-        <div className="relative w-full md:w-64">
-          <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            placeholder="Cari nama pimpinan / amanah..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-xs bg-zinc-50 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-zinc-800 dark:text-zinc-200"
-          />
-        </div>
-      </div>
-
-      {/* Empty Filter Result */}
-      {filteredList.length === 0 ? (
+      {/* Empty Result */}
+      {sambutans.length === 0 ? (
         <div className="bg-slate-50 dark:bg-zinc-900/60 border border-slate-200 dark:border-zinc-800 rounded-3xl p-10 text-center space-y-2">
           <div className="text-base font-bold text-zinc-800 dark:text-zinc-200">
-            Tidak Ada Sambutan yang Cocok
+            Belum Ada Naskah Sambutan
           </div>
           <p className="text-xs text-zinc-500">
-            Silakan pilih filter unit lain atau bersihkan kata kunci pencarian.
+            Naskah sambutan resmi pimpinan pondok pesantren sedang dipersiapkan.
           </p>
         </div>
       ) : (
