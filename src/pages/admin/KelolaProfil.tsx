@@ -32,6 +32,7 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { KelolaSambutan } from './KelolaSambutan';
+import { KelolaLembagaTab } from '../../components/admin/KelolaLembagaTab';
 import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 import { SafeRichContent } from '../../components/common/SafeRichContent';
 import { BulkPhotoUploader } from '../../components/admin/bulk/BulkPhotoUploader';
@@ -157,6 +158,7 @@ export const KelolaProfil: React.FC = () => {
     | 'sambutan'
     | 'sejarah'
     | 'visi-misi'
+    | 'lembaga'
     | 'fasilitas'
     | 'program-pondok'
     | 'flyer-madin'
@@ -164,6 +166,7 @@ export const KelolaProfil: React.FC = () => {
     if (location.pathname.includes('program')) return 'program-pondok';
     const params = new URLSearchParams(location.search);
     const tabParam = params.get('tab');
+    if (tabParam === 'lembaga' || tabParam === 'institusi') return 'lembaga';
     if (tabParam === 'fasilitas') return 'fasilitas';
     if (tabParam === 'madin') return 'flyer-madin';
     return 'sambutan';
@@ -591,6 +594,19 @@ export const KelolaProfil: React.FC = () => {
 
         <button
           type="button"
+          onClick={() => setActiveTab('lembaga')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 shrink-0 cursor-pointer ${
+            activeTab === 'lembaga'
+              ? 'bg-[#0E7A4C] text-[#C8A951] shadow-md border border-[#C8A951]/40'
+              : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100'
+          }`}
+        >
+          <Layers className="w-4 h-4" />
+          <span>Lembaga</span>
+        </button>
+
+        <button
+          type="button"
           onClick={() => setActiveTab('fasilitas')}
           className={`px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 shrink-0 cursor-pointer ${
             activeTab === 'fasilitas'
@@ -746,6 +762,11 @@ export const KelolaProfil: React.FC = () => {
             </button>
           </div>
         </form>
+      )}
+
+      {/* TAB LEMBAGA (3 ENTITAS PENDIDIKAN PPJM) */}
+      {activeTab === 'lembaga' && (
+        <KelolaLembagaTab />
       )}
 
       {/* TAB D: FASILITAS DENGAN FILTER KATEGORI, LIGHTBOX & FULL WEBP CRUD */}
