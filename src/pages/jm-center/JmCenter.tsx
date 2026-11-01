@@ -14,7 +14,7 @@ export type JmCenterTab = 'profil' | 'fasilitas' | 'lembaga' | 'sambutan' | 'sej
 
 export interface JmCenterProps {
   defaultTab?: JmCenterTab;
-  defaultSection?: 'sambutan' | 'sejarah' | 'visi-misi';
+  defaultSection?: 'sambutan' | 'sejarah' | 'visi-misi' | 'profile';
 }
 
 export const JmCenter: React.FC<JmCenterProps> = ({ defaultTab = 'profil', defaultSection = 'sambutan' }) => {

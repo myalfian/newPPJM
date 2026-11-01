@@ -6,9 +6,20 @@ import {
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { InstitutionItem } from './types';
 
-export const InstitutionsSection: React.FC = () => {
+export interface InstitutionsSectionProps {
+  initialFilter?: 'all' | 'pesantren' | 'formal' | 'madin';
+}
+
+export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initialFilter = 'all' }) => {
   const [institutions, setInstitutions] = useState<InstitutionItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<'all' | 'pesantren' | 'formal' | 'madin'>(initialFilter);
+
+  useEffect(() => {
+    if (initialFilter) {
+      setFilter(initialFilter);
+    }
+  }, [initialFilter]);
 
   useEffect(() => {
     let isMounted = true;
@@ -89,20 +100,97 @@ export const InstitutionsSection: React.FC = () => {
     };
   }, []);
 
+  const filteredInstitutions = institutions.filter((inst) => {
+    if (filter === 'all') return true;
+    if (filter === 'pesantren') {
+      return (
+        inst.categoryTag.toLowerCase().includes('pesantren') ||
+        inst.shortName.toLowerCase().includes('pondok') ||
+        inst.name.toLowerCase().includes('pondok')
+      );
+    }
+    if (filter === 'formal') {
+      return (
+        inst.categoryTag.toLowerCase().includes('formal') ||
+        inst.shortName.toLowerCase().includes('smp') ||
+        inst.name.toLowerCase().includes('smp')
+      );
+    }
+    if (filter === 'madin') {
+      return (
+        inst.categoryTag.toLowerCase().includes('turats') ||
+        inst.shortName.toLowerCase().includes('madin') ||
+        inst.name.toLowerCase().includes('madin') ||
+        inst.name.toLowerCase().includes('madrasah')
+      );
+    }
+    return true;
+  });
+
   return (
     <div className="space-y-2 sm:space-y-2.5">
-      {/* Header Description */}
-      <div className="max-w-3xl">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-1">
-          <Layers className="w-3.5 h-3.5" />
-          <span>Tritunggal Lembaga Terpadu</span>
+      {/* Header Description & Filter Switcher */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
+        <div className="max-w-2xl">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-1">
+            <Layers className="w-3.5 h-3.5" />
+            <span>Tritunggal Lembaga Terpadu</span>
+          </div>
+          <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight">
+            Tiga Unit Entitas Pendidikan Terintegrasi
+          </h2>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Sinergi harmonis antara Pesantren Salafiyah, Sekolah Menengah Pertama Formal, dan Madrasah Diniyah untuk mewujudkan insan kamil.
+          </p>
         </div>
-        <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight">
-          Tiga Unit Entitas Pendidikan Terintegrasi
-        </h2>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-          Sinergi harmonis antara Pesantren Salafiyah, Sekolah Menengah Pertama Formal, dan Madrasah Diniyah untuk mewujudkan insan kamil.
-        </p>
+
+        {/* Filter Pills */}
+        <div className="flex items-center gap-1 p-1 bg-zinc-100 dark:bg-zinc-800/80 rounded-xl border border-zinc-200 dark:border-zinc-700/60 text-xs overflow-x-auto shrink-0">
+          <button
+            type="button"
+            onClick={() => setFilter('all')}
+            className={`px-2.5 py-1 rounded-lg font-bold transition text-xs whitespace-nowrap cursor-pointer ${
+              filter === 'all'
+                ? 'bg-emerald-700 text-white shadow-2xs'
+                : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'
+            }`}
+          >
+            Semua Unit
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter('pesantren')}
+            className={`px-2.5 py-1 rounded-lg font-bold transition text-xs whitespace-nowrap cursor-pointer ${
+              filter === 'pesantren'
+                ? 'bg-emerald-700 text-white shadow-2xs'
+                : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'
+            }`}
+          >
+            Pondok Pesantren
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter('formal')}
+            className={`px-2.5 py-1 rounded-lg font-bold transition text-xs whitespace-nowrap cursor-pointer ${
+              filter === 'formal'
+                ? 'bg-emerald-700 text-white shadow-2xs'
+                : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'
+            }`}
+          >
+            SMP Plus (Sekolah)
+          </button>
+          <button
+            type="button"
+            onClick={() => setFilter('madin')}
+            className={`px-2.5 py-1 rounded-lg font-bold transition text-xs whitespace-nowrap cursor-pointer ${
+              filter === 'madin'
+                ? 'bg-emerald-700 text-white shadow-2xs'
+                : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white'
+            }`}
+          >
+            Madrasah Diniyah
+          </button>
+        </div>
       </div>
 
       {/* Loading Skeleton */}
@@ -120,7 +208,7 @@ export const InstitutionsSection: React.FC = () => {
       {/* Split Card Display Adaptif */}
       {!loading && (
         <div className="space-y-2 sm:space-y-2.5">
-          {institutions.map((inst, idx) => {
+          {filteredInstitutions.map((inst, idx) => {
             const isEven = idx % 2 === 1;
 
             return (
