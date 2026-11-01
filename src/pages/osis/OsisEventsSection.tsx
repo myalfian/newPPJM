@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Calendar,
   User,
@@ -12,6 +12,7 @@ import {
   Clock,
   BookOpen
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { OsisArticleEvent } from './types';
 
 export const OSIS_EVENTS: OsisArticleEvent[] = [
@@ -80,8 +81,40 @@ Malam puncak diisi dengan perenungan spiritual muhasabah diri dan ikrar komitmen
 ];
 
 export const OsisEventsSection: React.FC = () => {
+  const [events, setEvents] = useState<OsisArticleEvent[]>(OSIS_EVENTS);
   const [selectedArticle, setSelectedArticle] = useState<OsisArticleEvent | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('osis_events')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!error && data && data.length > 0) {
+          const dynamicEvents: OsisArticleEvent[] = data.map((row: any) => ({
+            id: row.id,
+            slug: row.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+            title: row.title,
+            date: row.date || new Date(row.created_at).toLocaleDateString('id-ID', { dateStyle: 'long' }),
+            bannerUrl: row.image_url || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80',
+            summary: row.description || 'Dokumentasi kegiatan santri dan kepengurusan OSIS PPJM.',
+            author: 'Humas OSIS PPJM',
+            category: row.category || 'Kepemimpinan & Organisasi',
+            tags: [row.category || 'OSIS', 'PPJM', 'Santri'],
+            content: row.description || 'Dokumentasi kegiatan resmi OSIS Pondok Pesantren Jauharul Maknuun.'
+          }));
+          setEvents(dynamicEvents);
+        }
+      } catch (err) {
+        console.warn('Failed to load osis_events:', err);
+      }
+    };
+    fetchEvents();
+  }, []);
 
   const handleShareArticle = async (article: OsisArticleEvent) => {
     const shareUrl = `${window.location.origin}/osis?tab=event#${article.slug}`;
@@ -124,7 +157,7 @@ export const OsisEventsSection: React.FC = () => {
 
       {/* Editorial News Grid (1 Col Mobile, 2 Cols Tablet/Desktop) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2.5 sm:gap-3.5">
-        {OSIS_EVENTS.map((event) => (
+        {events.map((event) => (
           <article
             key={event.id}
             onClick={() => setSelectedArticle(event)}

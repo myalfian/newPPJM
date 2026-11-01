@@ -28,13 +28,12 @@ const fetchAchievementsFromDb = async (): Promise<PrestasiItem[]> => {
       .select('*')
       .order('year', { ascending: false });
 
-    if (error || !data || data.length === 0) {
-      return PRESTASI_DATASET;
+    if (error || !data) {
+      console.warn('Error fetching achievements:', error);
+      return [];
     }
 
-    // Merge database rows with default dataset
     return data.map((item) => {
-      const existing = PRESTASI_DATASET.find((d) => d.id === item.id || d.title === item.title);
       // Map category
       let category: PrestasiCategory = 'Umum';
       const catLower = (item.category || '').toLowerCase();
@@ -44,9 +43,10 @@ const fetchAchievementsFromDb = async (): Promise<PrestasiItem[]> => {
       else if (catLower.includes('kitab') || catLower.includes('mqk') || catLower.includes('tahfidz') || catLower.includes('quran') || catLower.includes('agama')) category = 'Keagamaan';
 
       // Map tingkat
-      let tingkat: 'Internasional' | 'Nasional' | 'Provinsi' | 'Kabupaten' = existing?.tingkat || 'Provinsi';
+      let tingkat: 'Internasional' | 'Nasional' | 'Provinsi' | 'Kabupaten' = 'Provinsi';
       const titleLower = item.title.toLowerCase();
-      if (titleLower.includes('nasional')) tingkat = 'Nasional';
+      if (titleLower.includes('internasional')) tingkat = 'Internasional';
+      else if (titleLower.includes('nasional') || titleLower.includes('nusantara')) tingkat = 'Nasional';
       else if (titleLower.includes('provinsi') || titleLower.includes('jawa timur') || titleLower.includes('jatim')) tingkat = 'Provinsi';
       else if (titleLower.includes('kabupaten') || titleLower.includes('gresik')) tingkat = 'Kabupaten';
 
@@ -55,20 +55,21 @@ const fetchAchievementsFromDb = async (): Promise<PrestasiItem[]> => {
         title: item.title,
         category,
         tingkat,
-        year: item.year || 2025,
+        year: item.year || new Date().getFullYear(),
         winner_name: item.winner_name || 'Santri Berprestasi',
-        winner_class: existing?.winner_class || 'SMP Plus JM',
+        winner_class: 'SMP Plus JM',
         medal_type: item.medal_type || 'Juara 1',
-        event_name: existing?.event_name || 'Kompetisi Resmi Santri',
-        organizer: existing?.organizer || 'Kemenag / Puspresnas',
-        certificate_url: item.certificate_url || existing?.certificate_url || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80',
-        photo_url: existing?.photo_url,
-        description: item.description || existing?.description || '',
-        tags: existing?.tags || [category, tingkat],
+        event_name: 'Kompetisi Resmi Santri',
+        organizer: 'Kemenag / Puspresnas',
+        certificate_url: item.certificate_url || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80',
+        photo_url: item.certificate_url || undefined,
+        description: item.description || '',
+        tags: [category, tingkat],
       };
     });
-  } catch {
-    return PRESTASI_DATASET;
+  } catch (err) {
+    console.warn('Failed to fetch achievements:', err);
+    return [];
   }
 };
 
@@ -76,10 +77,10 @@ export const PrestasiPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlCategory = searchParams.get('kategori');
 
-  const { data: achievements } = useCachedQuery<PrestasiItem[]>(
+  const { data: achievements = [] } = useCachedQuery<PrestasiItem[]>(
     'prestasi_modular_dataset',
     fetchAchievementsFromDb,
-    PRESTASI_DATASET
+    []
   );
 
   const mapUrlToCategory = (val: string | null): PrestasiCategory => {

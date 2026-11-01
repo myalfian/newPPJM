@@ -11,11 +11,14 @@ import {
   Database,
   Quote,
   User,
-  Briefcase
+  Briefcase,
+  UploadCloud,
+  Image as ImageIcon
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured, SambutanPerson } from '../../lib/supabase';
 import { sanitizeText } from '../../utils/sanitize';
 import { publishEditorState, getPublishedEditorState } from '../../lib/editorStorage';
+import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { Link } from 'react-router-dom';
 
 interface FormState {
@@ -41,6 +44,8 @@ export const KelolaSambutan_FIXED: React.FC<{ onSaveSuccess?: () => void }> = ({
   const [formData, setFormData] = useState<FormState>(INITIAL_FORM);
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
+  const [compressing, setCompressing] = useState<boolean>(false);
+  const photoInputRef = useRef<HTMLInputElement>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successToast, setSuccessToast] = useState<string | null>(null);
   const [lastSavedInfo, setLastSavedInfo] = useState<{
@@ -48,6 +53,23 @@ export const KelolaSambutan_FIXED: React.FC<{ onSaveSuccess?: () => void }> = ({
     timestamp: string;
     savedBy?: string;
   } | null>(null);
+
+  const handlePhotoUpload = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Mohon pilih file gambar (JPG, PNG, atau WebP).');
+      return;
+    }
+    setCompressing(true);
+    try {
+      const res = await compressImageToWebP(file, 800, 1000, 0.85);
+      setFormData((prev) => ({ ...prev, photoUrl: res.dataUrl }));
+      setSuccessToast(`Foto pengasuh berhasil dikompresi ke WebP (${res.compressedSizeKB} KB).`);
+    } catch (err: any) {
+      alert('Gagal mengompresi foto: ' + (err?.message || 'Format tidak didukung'));
+    } finally {
+      setCompressing(false);
+    }
+  };
 
   // Auto-dismiss toast
   useEffect(() => {
@@ -383,6 +405,60 @@ export const KelolaSambutan_FIXED: React.FC<{ onSaveSuccess?: () => void }> = ({
           </div>
         </div>
 
+        {/* Foto Pengasuh (Upload dari Komputer Auto-WebP) */}
+        <div className="space-y-2 p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/80 dark:border-zinc-700">
+          <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center justify-between">
+            <span className="flex items-center gap-1.5">
+              <ImageIcon className="w-3.5 h-3.5 text-[#0E7A4C]" />
+              <span>Foto Resmi Pengasuh (Upload dari Komputer - Otomatis WebP):</span>
+            </span>
+            <span className="text-[10px] font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
+              WebP Hemat Kuota
+            </span>
+          </label>
+
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.[0]) {
+                handlePhotoUpload(e.target.files[0]);
+              }
+            }}
+          />
+
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            {formData.photoUrl && (
+              <div className="w-20 h-24 rounded-xl overflow-hidden border-2 border-emerald-500/50 bg-zinc-100 shrink-0 shadow-md">
+                <img
+                  src={formData.photoUrl}
+                  alt={formData.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
+
+            <div className="flex-1 w-full space-y-2">
+              <button
+                type="button"
+                onClick={() => photoInputRef.current?.click()}
+                disabled={compressing || saving}
+                className="w-full py-2.5 px-4 rounded-xl border-2 border-dashed border-emerald-300 dark:border-emerald-700/60 bg-emerald-50/40 dark:bg-emerald-950/20 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition text-center cursor-pointer flex items-center justify-center gap-2 group"
+              >
+                <UploadCloud className="w-4 h-4 text-[#0E7A4C] group-hover:scale-110 transition-transform" />
+                <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                  {compressing ? 'Mengompresi foto ke format WebP...' : 'Pilih Foto Pengasuh dari Komputer'}
+                </span>
+              </button>
+              <p className="text-[10px] text-zinc-500">
+                Pilih foto JPG atau PNG dari perangkat Anda. Sistem otomatis mengompresi ke WebP agar ringan dimuat oleh wali santri.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Naskah Sambutan (Textarea) */}
         <div className="space-y-1">
           <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center justify-between">
@@ -442,3 +518,4 @@ export const KelolaSambutan_FIXED: React.FC<{ onSaveSuccess?: () => void }> = ({
 };
 
 export default KelolaSambutan_FIXED;
+

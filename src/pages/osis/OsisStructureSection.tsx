@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Users,
   Award,
@@ -11,6 +11,7 @@ import {
   ChevronDown,
   Quote
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { OsisMember, OsisHierarchyLevel } from './types';
 
 export const OSIS_MEMBERS: OsisMember[] = [
@@ -154,11 +155,50 @@ export const OSIS_MEMBERS: OsisMember[] = [
 ];
 
 export const OsisStructureSection: React.FC = () => {
+  const [members, setMembers] = useState<OsisMember[]>(OSIS_MEMBERS);
   const [activeDepartmentFilter, setActiveDepartmentFilter] = useState<string>('all');
 
-  const leaders = OSIS_MEMBERS.filter((m) => m.hierarchy === 'pimpinan');
-  const coreOfficers = OSIS_MEMBERS.filter((m) => m.hierarchy === 'inti');
-  const sekbidOfficers = OSIS_MEMBERS.filter((m) => m.hierarchy === 'sekbid');
+  useEffect(() => {
+    const fetchStructure = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('osis_structure')
+          .select('*')
+          .order('level', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          const mapped: OsisMember[] = data.map((row: any) => {
+            const hierarchy: OsisHierarchyLevel =
+              row.level === 1 ? 'pimpinan' : row.level === 2 ? 'inti' : 'sekbid';
+            const badgeColor =
+              row.level === 1 ? 'gold' : row.level === 2 ? 'sapphire' : 'emerald';
+
+            return {
+              id: row.id,
+              name: row.name,
+              role: row.position,
+              hierarchy,
+              department: hierarchy === 'pimpinan' ? 'Presidium Utama' : 'Departemen OSIS',
+              classGrade: row.class || 'SMP Plus JM',
+              photoUrl: row.photo_url || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
+              motto: row.motto || 'Berkhidmat untuk santri dan pondok pesantren.',
+              badgeLabel: row.position,
+              badgeColor
+            };
+          });
+          setMembers(mapped);
+        }
+      } catch (err) {
+        console.warn('Failed to load osis_structure:', err);
+      }
+    };
+    fetchStructure();
+  }, []);
+
+  const leaders = members.filter((m) => m.hierarchy === 'pimpinan');
+  const coreOfficers = members.filter((m) => m.hierarchy === 'inti');
+  const sekbidOfficers = members.filter((m) => m.hierarchy === 'sekbid');
 
   const getBadgeStyle = (color?: string) => {
     switch (color) {

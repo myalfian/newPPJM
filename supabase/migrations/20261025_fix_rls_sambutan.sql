@@ -94,3 +94,4 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON public.sambutan_persons TO anon, authent
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.jm_center_pages TO anon, authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.cms_sections TO anon, authenticated;
 GRANT SELECT, INSERT, UPDATE, DELETE ON public.site_settings TO anon, authenticated;
+

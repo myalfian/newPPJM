@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BookOpen,
   Layers,
@@ -12,6 +12,7 @@ import {
   HeartHandshake,
   CheckCircle2
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import {
   MadinFlyerItem,
   FlyerCategory,
@@ -148,12 +149,42 @@ const MADIN_FLYERS: MadinFlyerItem[] = [
 ];
 
 export const MadinFlyerSection: React.FC = () => {
+  const [flyers, setFlyers] = useState<MadinFlyerItem[]>(MADIN_FLYERS);
   const [categoryFilter, setCategoryFilter] = useState<'all' | FlyerCategory>('all');
   const [levelFilter, setLevelFilter] = useState<string>('all');
   const [activeFlyer, setActiveFlyer] = useState<MadinFlyerItem | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  const filteredFlyers = MADIN_FLYERS.filter((item) => {
+  useEffect(() => {
+    const fetchFlyers = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('madin_flyers')
+          .select('*')
+          .order('order_index', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          const mapped: MadinFlyerItem[] = data.map((row: any) => ({
+            id: row.id,
+            title: row.title,
+            category: (row.category as FlyerCategory) || 'kitab',
+            level: 'Ula',
+            subject: 'Kajian Kitab Salafiyah',
+            description: 'Kurikulum pembelajaran terstruktur madrasah diniyah santri.',
+            imageUrl: row.image_url || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80',
+            tags: ['Kitab Turats', 'Diniyah PPJM']
+          }));
+          setFlyers(mapped);
+        }
+      } catch (err) {
+        console.warn('Failed to load madin_flyers:', err);
+      }
+    };
+    fetchFlyers();
+  }, []);
+
+  const filteredFlyers = flyers.filter((item) => {
     if (categoryFilter !== 'all' && item.category !== categoryFilter) {
       return false;
     }

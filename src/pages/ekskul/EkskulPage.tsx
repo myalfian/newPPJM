@@ -28,29 +28,36 @@ const fetchEkskulsData = async (): Promise<DetailedEkskulItem[]> => {
       .select('*')
       .order('created_at', { ascending: true });
 
-    if (error || !data || data.length === 0) {
-      return EKSKUL_DATASET;
+    if (error || !data) {
+      console.warn('Error fetching extracurriculars:', error);
+      return [];
     }
 
-    // Merge Supabase entries with default gallery dataset
     return data.map((item) => {
-      const existing = EKSKUL_DATASET.find((d) => d.id === item.id || d.name === item.name);
+      let category: EkskulCategory = 'Sains & Teknologi';
+      const nameLower = (item.name || '').toLowerCase();
+      if (nameLower.includes('silat') || nameLower.includes('olahraga')) category = 'Olahraga & Bela Diri';
+      else if (nameLower.includes('hadrah') || nameLower.includes('banjari') || nameLower.includes('bahasa') || nameLower.includes('mandarin') || nameLower.includes('arab')) category = 'Seni & Bahasa';
+      else if (nameLower.includes('quran') || nameLower.includes('tahfidz')) category = 'Agama';
+      else if (nameLower.includes('pramuka')) category = 'Pramuka';
+
       return {
         id: item.id,
         name: item.name,
-        category: ((item as any).category as any) || existing?.category || 'Sains & Teknologi',
-        schedule: item.schedule || existing?.schedule || 'Jadwal Mingguan',
-        coach: item.mentor_name || existing?.coach || 'Pembina PPJM',
-        description: item.description || existing?.description || '',
-        featuredPhoto: item.cover_image || existing?.featuredPhoto || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
-        gallery: existing?.gallery || [],
-        highlights: existing?.highlights || ['Latihan rutin terstruktur', 'Pembinaan karakter mandiri'],
-        targetCapaian: existing?.targetCapaian,
-        tempatLatihan: existing?.tempatLatihan
+        category,
+        schedule: item.schedule || 'Jadwal Mingguan',
+        coach: item.mentor_name || 'Pembina PPJM',
+        description: item.description || '',
+        featuredPhoto: item.cover_image || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
+        gallery: [],
+        highlights: ['Pembinaan rutin terstruktur', 'Karakter santri mandiri & berprestasi'],
+        targetCapaian: 'Penguasaan keterampilan & partisipasi lomba resmi',
+        tempatLatihan: 'Area Kampus PPJM'
       };
     });
-  } catch {
-    return EKSKUL_DATASET;
+  } catch (err) {
+    console.warn('Failed to fetch extracurriculars:', err);
+    return [];
   }
 };
 
@@ -58,10 +65,10 @@ export const EkskulPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlCategoryParam = searchParams.get('kategori');
 
-  const { data: ekskuls } = useCachedQuery<DetailedEkskulItem[]>(
+  const { data: ekskuls = [] } = useCachedQuery<DetailedEkskulItem[]>(
     'ekskul_dataset_modular',
     fetchEkskulsData,
-    EKSKUL_DATASET
+    []
   );
 
   // Map URL param to category

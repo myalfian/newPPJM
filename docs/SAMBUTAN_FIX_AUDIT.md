@@ -83,3 +83,4 @@ Seluruh modul admin (`KelolaPrestasi`, `KelolaBerita`, `KelolaSlider`, `KelolaGa
 - [x] ErrorBoundary di `/profil` telah dilindungi dengan `normalizeRole` sehingga role santri/guest tidak menyebabkan crash.
 - [x] Route `/admin/sambutan` telah terdaftar di `App.tsx` dan `RoleGuard.tsx`.
 - [x] Build TypeScript & Vite production berhasil bersih (0 error).
+

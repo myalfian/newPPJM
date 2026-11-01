@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import {
   Globe,
@@ -18,6 +18,7 @@ import {
   Check,
   Languages
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import {
   MandarinTopicItem,
   MandarinQuizTopic,
@@ -261,6 +262,7 @@ const MANDARIN_QUIZZES: MandarinQuizTopic[] = [
 ];
 
 export const MandarinClassSection: React.FC = () => {
+  const [topics, setTopics] = useState<MandarinTopicItem[]>(MANDARIN_TOPICS);
   const [activeSubTab, setActiveSubTab] = useState<'materi' | 'quiz'>('materi');
   const [selectedTopic, setSelectedTopic] = useState<MandarinTopicItem>(MANDARIN_TOPICS[0]);
   const [flyerLightbox, setFlyerLightbox] = useState<string | null>(null);
@@ -272,6 +274,50 @@ export const MandarinClassSection: React.FC = () => {
   const [score, setScore] = useState<number>(0);
   const [isQuizCompleted, setIsQuizCompleted] = useState<boolean>(false);
   const [answeredState, setAnsweredState] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchMandarin = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('mandarin_lessons')
+          .select('*')
+          .order('order_index', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          const mapped: MandarinTopicItem[] = data.map((item: any, idx: number) => {
+            const dialogs = Array.isArray(item.dialog_script) ? item.dialog_script : [];
+            const vocabs = dialogs.map((d: any) => ({
+              hanzi: d.hanzi || item.hanzi,
+              pinyin: d.pinyin || item.pinyin,
+              indonesian: d.arti || item.meaning_id,
+              exampleSentence: `${d.hanzi || item.hanzi} (${d.pinyin || item.pinyin}) - ${d.arti || item.meaning_id}`
+            }));
+
+            return {
+              id: item.id,
+              topicKey: `topic-${idx}`,
+              topicName: item.topic || `Materi Mandarin ${idx + 1}`,
+              chineseName: item.hanzi || '中文学习',
+              level: item.level || 'Dasar 1',
+              posterFlyer: item.cover_image || 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?auto=format&fit=crop&w=800&q=80',
+              summary: item.meaning_id || 'Materi pembelajaran bahasa Mandarin santri.',
+              narrative: `Pembelajaran percakapan bahasa Mandarin interaktif dengan pelafalan standar dan latihan dialog di lingkungan pesantren.`,
+              culturalNote: 'Santri PPJM diajarkan menyelaraskan artikulasi suara dengan etika komunikasi islami.',
+              vocabularies: vocabs.length > 0 ? vocabs : [
+                { hanzi: item.hanzi, pinyin: item.pinyin, indonesian: item.meaning_id, exampleSentence: item.meaning_id }
+              ]
+            };
+          });
+          setTopics(mapped);
+          setSelectedTopic(mapped[0]);
+        }
+      } catch (err) {
+        console.warn('Failed to load mandarin_lessons:', err);
+      }
+    };
+    fetchMandarin();
+  }, []);
 
   // Web Speech API Pronunciation Helper
   const speakChinese = (text: string) => {
@@ -383,7 +429,7 @@ export const MandarinClassSection: React.FC = () => {
         <div className="space-y-8 animate-in fade-in duration-300">
           {/* Topik Pills Horizontal Selector */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-            {MANDARIN_TOPICS.map((topic) => {
+            {topics.map((topic) => {
               const isSelected = selectedTopic.id === topic.id;
               return (
                 <button

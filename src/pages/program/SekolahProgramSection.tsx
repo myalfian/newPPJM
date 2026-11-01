@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   GraduationCap,
   Cpu,
@@ -13,6 +13,7 @@ import {
   ExternalLink,
   X
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import {
   SekolahProgramItem,
   SekolahStoryActivity
@@ -148,7 +149,45 @@ const SEKOLAH_STORIES: SekolahStoryActivity[] = [
 ];
 
 export const SekolahProgramSection: React.FC = () => {
+  const [programs, setPrograms] = useState<SekolahProgramItem[]>(SEKOLAH_PROGRAMS);
   const [selectedStoryImage, setSelectedStoryImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('programs_sekolah')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          const mapped: SekolahProgramItem[] = data.map((row: any, idx: number) => {
+            const visual = row.visual_story || {};
+            const points = Array.isArray(visual.points) ? visual.points : [];
+
+            return {
+              id: row.id,
+              title: row.title,
+              category: idx === 0 ? 'Pilar Akademik' : 'Inovasi Teknologi',
+              badge: visual.headline || (idx === 0 ? 'Akreditasi A Unggul' : 'Sains & Robotik'),
+              description: row.curriculum || 'Kurikulum Terpadu Berstandar Nasional & Riset Terapan',
+              highlights: points.length > 0 ? points : [
+                'Pembelajaran berbasis project (Project-Based Learning)',
+                'Ruang kelas multimedia interaktif ber-AC',
+                'Laboratorium sains & komputer mandiri',
+                'Evaluasi berkala terstandar nasional'
+              ]
+            };
+          });
+          setPrograms(mapped);
+        }
+      } catch (err) {
+        console.warn('Failed to load programs_sekolah:', err);
+      }
+    };
+    fetchPrograms();
+  }, []);
 
   return (
     <div className="space-y-3 sm:space-y-4">
@@ -173,7 +212,7 @@ export const SekolahProgramSection: React.FC = () => {
 
         {/* 4 Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3.5">
-          {SEKOLAH_PROGRAMS.map((prog) => {
+          {programs.map((prog) => {
             const Icon =
               prog.id === 'sek-kurikulum'
                 ? GraduationCap

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Quote, Sparkles, Landmark, RefreshCw } from 'lucide-react';
-import { MOCK_PROFILE_DATA } from './ProfileSection';
 import { supabase, isSupabaseConfigured, SambutanPerson } from '../../lib/supabase';
 
 interface GreetingData {
@@ -12,8 +11,17 @@ interface GreetingData {
   fullMessage: string[];
 }
 
+const DEFAULT_GREETING: GreetingData = {
+  name: 'KH. Muhammad Jauharul Maknuun, Lc., M.Pd.I.',
+  title: 'Pengasuh & Pendiri Pondok Pesantren',
+  role: 'Pimpinan & Pengasuh Pesantren',
+  image: '/logo-ppjm.svg',
+  quote: '',
+  fullMessage: [],
+};
+
 export const SambutanSection: React.FC = () => {
-  const [greeting, setGreeting] = useState<GreetingData>(MOCK_PROFILE_DATA.greeting);
+  const [greeting, setGreeting] = useState<GreetingData>(DEFAULT_GREETING);
   const [loading, setLoading] = useState<boolean>(true);
 
   const fetchLiveSambutan = async () => {
@@ -35,16 +43,16 @@ export const SambutanSection: React.FC = () => {
       if (person && !personError) {
         const fullMsg = person.message_full
           ? person.message_full.split('\n\n').filter(Boolean)
-          : MOCK_PROFILE_DATA.greeting.fullMessage;
+          : [];
 
         setGreeting({
           name: person.name,
           title: person.title,
           role: 'Pimpinan & Pengasuh Pesantren',
-          image: person.photo_url || MOCK_PROFILE_DATA.greeting.image,
+          image: person.photo_url || '/logo-ppjm.svg',
           quote:
             person.message_short ||
-            (person.message_full ? person.message_full.slice(0, 240) + '...' : MOCK_PROFILE_DATA.greeting.quote),
+            (person.message_full ? person.message_full.slice(0, 240) + '...' : ''),
           fullMessage: fullMsg,
         });
         setLoading(false);
@@ -62,14 +70,14 @@ export const SambutanSection: React.FC = () => {
         const extra = (pageData.extra_data as any) || {};
         const fullMsg = pageData.content
           ? pageData.content.split('\n\n').filter(Boolean)
-          : MOCK_PROFILE_DATA.greeting.fullMessage;
+          : [];
 
         setGreeting({
-          name: pageData.quotes || extra.penceramah || MOCK_PROFILE_DATA.greeting.name,
-          title: extra.jabatan || pageData.subtitle || MOCK_PROFILE_DATA.greeting.title,
+          name: pageData.quotes || extra.penceramah || DEFAULT_GREETING.name,
+          title: extra.jabatan || pageData.subtitle || DEFAULT_GREETING.title,
           role: 'Pimpinan Yayasan Pondok Pesantren Jauharul Maknuun',
-          image: pageData.banner_image || MOCK_PROFILE_DATA.greeting.image,
-          quote: pageData.content ? pageData.content.slice(0, 240) + '...' : MOCK_PROFILE_DATA.greeting.quote,
+          image: pageData.banner_image || '/logo-ppjm.svg',
+          quote: pageData.content ? pageData.content.slice(0, 240) + '...' : '',
           fullMessage: fullMsg,
         });
       }

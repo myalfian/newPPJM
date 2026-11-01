@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   BookOpen,
   Award,
@@ -15,6 +15,7 @@ import {
   Users2,
   GraduationCap
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import {
   PondokProgramItem,
   PondokActivityPhoto,
@@ -22,9 +23,9 @@ import {
 } from './types';
 
 // ========================
-// MOCK DATA: PONDOK
+// PONDOK PROGRAM & PHOTOS FROM SUPABASE
 // ========================
-const PONDOK_PROGRAMS: PondokProgramItem[] = [
+const DEFAULT_PONDOK_PROGRAMS: PondokProgramItem[] = [
   {
     id: 'prog-tahfidz',
     title: "Tahfidzul Qur'an 30 Juz Bersanad",
@@ -68,21 +69,6 @@ const PONDOK_PROGRAMS: PondokProgramItem[] = [
       'Budaya roan (gotong royong) dan kebersihan lingkungan',
       'Latihan kepemimpinan khidmah pesantren',
       'Pendidikan adab ta’lim muta’allim aplikatif'
-    ]
-  },
-  {
-    id: 'prog-bahasa',
-    title: 'Penguasaan Bahasa Arab & Inggris Aktif',
-    category: 'Wawasan Global',
-    badge: 'Bilingual Santri',
-    description:
-      'Pengembangan kecakapan komunikasi internasional melalui program muhadatsah harian, public speaking (muhadharah 3 bahasa), serta penguasaan kosa kata tematik.',
-    iconName: 'Languages',
-    keyFeatures: [
-      'Zona wajib berbahasa Arab & Inggris berkala',
-      'Pelatihan pidato mingguan di hadapan seluruh santri',
-      'Klub debat dan penulisan artikel ilmiah',
-      'Bimbingan beasiswa ke Timur Tengah & luar negeri'
     ]
   }
 ];
@@ -235,8 +221,42 @@ const DAILY_SCHEDULES: DailyScheduleItem[] = [
 ];
 
 export const PondokProgramSection: React.FC = () => {
+  const [programs, setPrograms] = useState<PondokProgramItem[]>(DEFAULT_PONDOK_PROGRAMS);
   const [selectedPhoto, setSelectedPhoto] = useState<PondokActivityPhoto | null>(null);
   const [scheduleFilter, setScheduleFilter] = useState<string>('semua');
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('programs_pondok')
+          .select('*')
+          .eq('is_active', true)
+          .order('created_at', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          const mapped: PondokProgramItem[] = data.map((row: any, idx: number) => ({
+            id: row.id,
+            title: row.title,
+            category: idx === 0 ? 'Unggulan Qur’ani' : idx === 1 ? 'Keilmuan Islam' : 'Tarbiyah Akhlaq',
+            badge: row.schedule?.target || row.schedule?.tingkat || row.schedule?.rutinitas || 'Sanad Muttashil',
+            description: row.description,
+            iconName: idx === 0 ? 'Award' : idx === 1 ? 'BookOpen' : 'Users2',
+            keyFeatures: [
+              'Target & Jadwal: ' + (row.schedule?.harian || row.schedule?.waktu || '24 Jam Asrama'),
+              'Talaqqi musyafahah dengan asatidz bersanad',
+              'Evaluasi dan ujian berkala'
+            ]
+          }));
+          setPrograms(mapped);
+        }
+      } catch (err) {
+        console.warn('Failed to load programs_pondok:', err);
+      }
+    };
+    fetchPrograms();
+  }, []);
 
   const filteredSchedules = DAILY_SCHEDULES.filter((item) => {
     if (scheduleFilter === 'semua') return true;
@@ -266,7 +286,7 @@ export const PondokProgramSection: React.FC = () => {
 
         {/* 4 Cards Grid with subtle icon, hairline border & hover lift */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3.5">
-          {PONDOK_PROGRAMS.map((prog) => {
+          {programs.map((prog) => {
             const Icon =
               prog.iconName === 'Award'
                 ? Award

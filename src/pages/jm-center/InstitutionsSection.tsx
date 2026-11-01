@@ -1,87 +1,94 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import {
   Layers,
-  GraduationCap,
-  BookOpen,
   CheckCircle2,
-  ArrowRight,
-  Sparkles,
-  Award,
-  BookOpenCheck
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { InstitutionItem } from './types';
 
-export const MOCK_INSTITUTIONS: InstitutionItem[] = [
-  {
-    id: 'inst-pondok',
-    name: 'Pondok Pesantren Jauharul Maknuun',
-    shortName: 'Pondok Pesantren (PPJM)',
-    categoryTag: 'Lembaga Kepesantrenan',
-    tagline: 'Kawah Candradimuka Santri Mukim, Tahfidz 30 Juz Bersanad & Karakter Salaf',
-    description:
-      'Pondok Pesantren Jauharul Maknuun menaungi seluruh aktivitas santri mukim dalam bingkai tarbiyah asrama 24 jam. Santri dibina secara intensif dalam hafalan Al-Qur’an 30 juz mutqin dengan sanad keilmuan yang bersambung, pembiasaan qiyamul lail, sholat berjamaah, wirid rotibul haddad, serta adab akhlakul karimah.',
-    image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80',
-    curriculumHighlight: 'Takhassus Tahfidzul Qur’an Bersanad, Halaqah Tajwid & Tahsin, Tarbiyah Ruhiyah Asrama 24 Jam',
-    features: [
-      'Bimbingan talaqqi musyafahah tahfidz bersanad muttashil',
-      'Pengasuhan asrama penuh disiplin, asri, dan berbasis kekeluargaan',
-      'Pembiasaan bahasa Arab & bahasa Inggris dalam percakapan harian',
-      'Evaluasi tasmi’ hafalan terbuka dan wisuda haflah berkala',
-    ],
-    stats: [
-      { label: 'Target Hafalan', value: '30 Juz Mutqin' },
-      { label: 'Sistem Asrama', value: 'Mukim 24 Jam' },
-      { label: 'Sanad Keilmuan', value: 'Muttashil' },
-    ],
-  },
-  {
-    id: 'inst-smp',
-    name: 'SMP Plus Jauharul Maknuun',
-    shortName: 'SMP Plus JM',
-    categoryTag: 'Lembaga Pendidikan Formal',
-    tagline: 'Terakreditasi "A" BAN-PDM, Unggul Akademik & Inovasi Sains Teknologi STEM',
-    description:
-      'Sekolah Menengah Pertama formal terpadu yang memadukan Kurikulum Merdeka Nasional dengan kurikulum kepesantrenan. Didukung tenaga pendidik profesional linier, sarana kelas multimedia ber-AC, dan kurikulum riset terapan STEM (Sains, Teknologi, Rekayasa, dan Matematika) yang membekali santri menjadi inovator masa depan.',
-    image: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=1200&q=80',
-    curriculumHighlight: 'Kurikulum Merdeka BAN-PDM Akreditasi "A", Laboratorium Riset STEM Komputer, Bimbingan Olimpiade Sains',
-    features: [
-      'Akreditasi "A" BAN-PDM dengan predikat Unggul Nasional',
-      'Laboratorium komputer modern dengan riset IoT & mikrokontroler',
-      'Bilingual learning assistance (Bahasa Inggris & Bahasa Mandarin dasar)',
-      'Ekstrakurikuler sains club, robotika, jurnalistik & seni bela diri',
-    ],
-    stats: [
-      { label: 'Status Akreditasi', value: 'Terakreditasi "A"' },
-      { label: 'Fasilitas Lab', value: 'STEM & Robotika' },
-      { label: 'Lulusan', value: '100% Lulus PTN/SLTA Favorit' },
-    ],
-  },
-  {
-    id: 'inst-madin',
-    name: 'Madrasah Diniyah Salafiyah (Madin)',
-    shortName: 'Madin Salafiyah',
-    categoryTag: 'Lembaga Keilmuan Turats',
-    tagline: 'Mengkaji Khazanah Kitab Kuning Turats Salaf dengan Metode Pemaknaan Gandul',
-    description:
-      'Madrasah Diniyah berjenjang (Ula, Wustho, Ulya) yang diselenggarakan setiap sore dan malam hari untuk memperdalam khazanah ilmu alat (Nahwu-Shorof), Fiqih Fathul Qorib, Ushul Fiqih, Aqidah Akhlak, Hadits Arbain & Riyadhis Shalihin di bawah bimbingan para Masyayikh pesantren.',
-    image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80',
-    curriculumHighlight: 'Kajian Kitab Turots Berjenjang, Metode Maknani Gandul Pegon Jawa, Sorogan & Bandongan Mandiri',
-    features: [
-      'Metode pemaknaan gandul aksara pegon menjaga keotentikan salaf',
-      'Penjenjangan kelas diniyah terstruktur dari dasar hingga tingkat tinggi',
-      'Ujian sorogan terbuka qira’atul kutub di hadapan mushohih',
-      'Kajian rutin akhlaq lil banin/banat dan kitab tasawuf penyejuk jiwa',
-    ],
-    stats: [
-      { label: 'Penjenjangan', value: 'Ula - Wustho - Ulya' },
-      { label: 'Metode', value: 'Sorogan & Bandongan' },
-      { label: 'Kurikulum', value: 'Turats Pesantren Salaf' },
-    ],
-  },
-];
-
 export const InstitutionsSection: React.FC = () => {
+  const [institutions, setInstitutions] = useState<InstitutionItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchInstitutions = async () => {
+      if (!isSupabaseConfigured()) {
+        if (isMounted) setLoading(false);
+        return;
+      }
+      try {
+        const { data, error } = await supabase
+          .from('institutions')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (!error && data && data.length > 0 && isMounted) {
+          const mapped: InstitutionItem[] = data.map((row: any) => {
+            const shortName =
+              row.type === 'pesantren'
+                ? 'Pondok Pesantren (PPJM)'
+                : row.type === 'formal'
+                ? 'SMP Plus JM'
+                : 'Madin Salafiyah';
+
+            const categoryTag =
+              row.type === 'pesantren'
+                ? 'Lembaga Kepesantrenan'
+                : row.type === 'formal'
+                ? 'Lembaga Pendidikan Formal'
+                : 'Lembaga Keilmuan Turats';
+
+            const tagline =
+              row.type === 'pesantren'
+                ? 'Kawah Candradimuka Santri Mukim, Tahfidz 30 Juz Bersanad & Karakter Salaf'
+                : row.type === 'formal'
+                ? 'Terakreditasi "A" BAN-PDM, Unggul Akademik & Inovasi Sains Teknologi STEM'
+                : 'Mengkaji Khazanah Kitab Kuning Turats Salaf dengan Metode Pemaknaan Gandul';
+
+            const curriculumList = Array.isArray(row.curriculum)
+              ? row.curriculum
+              : typeof row.curriculum === 'string'
+              ? JSON.parse(row.curriculum)
+              : [];
+
+            return {
+              id: row.id,
+              name: row.name,
+              shortName,
+              categoryTag,
+              tagline,
+              description: row.description,
+              image: row.image_url || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80',
+              curriculumHighlight: curriculumList.join(', ') || 'Kurikulum Terpadu Pesantren & Riset',
+              features: [
+                'Bimbingan talaqqi dan sanad keilmuan muttashil',
+                'Pengasuhan asrama penuh disiplin, asri, dan berbasis kekeluargaan',
+                'Pembiasaan bahasa Arab & bahasa Inggris percakapan harian',
+                'Evaluasi tasmi’ hafalan terbuka dan wisuda haflah berkala',
+              ],
+              stats: [
+                { label: 'Sistem Pembelajaran', value: 'Terpadu 24 Jam' },
+                { label: 'Sanad Keilmuan', value: 'Muttashil' },
+                { label: 'Predikat Lembaga', value: 'Unggul & Mutqin' },
+              ],
+            };
+          });
+          setInstitutions(mapped);
+        }
+      } catch (err) {
+        console.warn('Failed to load institutions from Supabase:', err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchInstitutions();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return (
     <div className="space-y-2.5 sm:space-y-3.5">
       {/* Header Description */}
@@ -98,102 +105,115 @@ export const InstitutionsSection: React.FC = () => {
         </p>
       </div>
 
-      {/* Split Card Display Adaptif (Bergantian Foto-Kiri Teks-Kanan di Desktop, Stacked di Mobile) */}
-      <div className="space-y-2.5 sm:space-y-3.5">
-        {MOCK_INSTITUTIONS.map((inst, idx) => {
-          const isEven = idx % 2 === 1;
+      {/* Loading Skeleton */}
+      {loading && (
+        <div className="space-y-4">
+          {[1, 2, 3].map((n) => (
+            <div
+              key={n}
+              className="h-64 rounded-3xl bg-zinc-100 dark:bg-zinc-800/60 animate-pulse border border-zinc-200/60 dark:border-zinc-700/60"
+            />
+          ))}
+        </div>
+      )}
 
-          return (
-            <article
-              key={inst.id}
-              className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 p-3.5 sm:p-5 lg:p-6 shadow-sm hover:shadow-xl transition-shadow duration-300"
-            >
-              <div
-                className={`grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-5 items-center ${
-                  isEven ? 'lg:flex-row-reverse' : ''
-                }`}
+      {/* Split Card Display Adaptif */}
+      {!loading && (
+        <div className="space-y-2.5 sm:space-y-3.5">
+          {institutions.map((inst, idx) => {
+            const isEven = idx % 2 === 1;
+
+            return (
+              <article
+                key={inst.id}
+                className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 p-3.5 sm:p-5 lg:p-6 shadow-sm hover:shadow-xl transition-shadow duration-300"
               >
-                {/* Media Image Column */}
-                <div className={`lg:col-span-5 ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
-                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-zinc-200/70 dark:border-zinc-700/60 shadow-lg group">
-                    <img
-                      src={inst.image}
-                      alt={inst.name}
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
-                    <div className="absolute bottom-3 left-3 right-3 text-white">
-                      <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full">
-                        {inst.shortName}
+                <div
+                  className={`grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-5 items-center ${
+                    isEven ? 'lg:flex-row-reverse' : ''
+                  }`}
+                >
+                  {/* Media Image Column */}
+                  <div className={`lg:col-span-5 ${isEven ? 'lg:order-2' : 'lg:order-1'}`}>
+                    <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-zinc-200/70 dark:border-zinc-700/60 shadow-lg group">
+                      <img
+                        src={inst.image}
+                        alt={inst.name}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
+                      <div className="absolute bottom-3 left-3 right-3 text-white">
+                        <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full">
+                          {inst.shortName}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Content Column */}
+                  <div className={`lg:col-span-7 space-y-3.5 ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
+                    <div className="space-y-1">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/50">
+                        {inst.categoryTag}
+                      </span>
+                      <h3 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white tracking-tight pt-1">
+                        {inst.name}
+                      </h3>
+                      <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 italic">
+                        {inst.tagline}
+                      </p>
+                    </div>
+
+                    <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                      {inst.description}
+                    </p>
+
+                    {/* Curriculum Highlight Box */}
+                    <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/50 text-xs">
+                      <strong className="text-zinc-800 dark:text-zinc-200 block text-[11px] uppercase tracking-wider mb-0.5">
+                        Fokus Kurikulum:
+                      </strong>
+                      <span className="text-emerald-800 dark:text-emerald-400 font-medium">
+                        {inst.curriculumHighlight}
                       </span>
                     </div>
-                  </div>
-                </div>
 
-                {/* Content Column */}
-                <div className={`lg:col-span-7 space-y-3.5 ${isEven ? 'lg:order-1' : 'lg:order-2'}`}>
-                  <div className="space-y-1">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-800/50">
-                      {inst.categoryTag}
-                    </span>
-                    <h3 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white tracking-tight pt-1">
-                      {inst.name}
-                    </h3>
-                    <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 italic">
-                      {inst.tagline}
-                    </p>
-                  </div>
-
-                  <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    {inst.description}
-                  </p>
-
-                  {/* Curriculum Highlight Box */}
-                  <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/50 text-xs">
-                    <strong className="text-zinc-800 dark:text-zinc-200 block text-[11px] uppercase tracking-wider mb-0.5">
-                      Fokus Kurikulum:
-                    </strong>
-                    <span className="text-emerald-800 dark:text-emerald-400 font-medium">
-                      {inst.curriculumHighlight}
-                    </span>
-                  </div>
-
-                  {/* Bullet Points */}
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-700 dark:text-zinc-300 pt-1">
-                    {inst.features.map((feat, fIdx) => (
-                      <li key={fIdx} className="flex items-start gap-1.5">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Stats Pill Badges */}
-                  {inst.stats && (
-                    <div className="pt-2 flex flex-wrap gap-2">
-                      {inst.stats.map((stat, sIdx) => (
-                        <div
-                          key={sIdx}
-                          className="px-3 py-1 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40 text-xs"
-                        >
-                          <span className="text-zinc-500 dark:text-zinc-400 text-[10px] block">
-                            {stat.label}
-                          </span>
-                          <span className="font-extrabold text-emerald-900 dark:text-emerald-300">
-                            {stat.value}
-                          </span>
-                        </div>
+                    {/* Bullet Points */}
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-700 dark:text-zinc-300 pt-1">
+                      {inst.features.map((feat, fIdx) => (
+                        <li key={fIdx} className="flex items-start gap-1.5">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                          <span>{feat}</span>
+                        </li>
                       ))}
-                    </div>
-                  )}
+                    </ul>
+
+                    {/* Stats Pill Badges */}
+                    {inst.stats && (
+                      <div className="pt-2 flex flex-wrap gap-2">
+                        {inst.stats.map((stat, sIdx) => (
+                          <div
+                            key={sIdx}
+                            className="px-3 py-1 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40 text-xs"
+                          >
+                            <span className="text-zinc-500 dark:text-zinc-400 text-[10px] block">
+                              {stat.label}
+                            </span>
+                            <span className="font-extrabold text-emerald-900 dark:text-emerald-300">
+                              {stat.value}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </article>
-          );
-        })}
-      </div>
+              </article>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
-

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Cpu,
   FileCode2,
@@ -19,6 +19,7 @@ import {
   Microscope,
   Info
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import {
   StemWorksheetItem,
   StemPortfolioItem,
@@ -295,10 +296,101 @@ const STEM_PORTFOLIO: StemPortfolioItem[] = [
 ];
 
 export const StemAreaSection: React.FC = () => {
+  const [worksheets, setWorksheets] = useState<StemWorksheetItem[]>(STEM_WORKSHEETS);
+  const [portfolios, setPortfolios] = useState<StemPortfolioItem[]>(STEM_PORTFOLIO);
   const [activeSubTab, setActiveSubTab] = useState<'worksheet' | 'portfolio'>('worksheet');
   const [selectedWorksheet, setSelectedWorksheet] = useState<StemWorksheetItem>(STEM_WORKSHEETS[0]);
   const [selectedPortfolio, setSelectedPortfolio] = useState<StemPortfolioItem | null>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchStem = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('stem_projects')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          const wsList: StemWorksheetItem[] = data.map((item: any, idx: number) => {
+            const specs = item.specs || {};
+            const tools = Object.entries(specs).map(([k, v]) => `${k.toUpperCase()}: ${v}`);
+            return {
+              id: item.id,
+              title: item.title,
+              category: item.category || 'STEM & Robotika',
+              targetLevel: 'Kelas IX SMP Plus JM',
+              duration: '4 Pekan Eksperimen',
+              objective: item.description,
+              context: `Proyek penelitian sains dan rekayasa teknologi santri PPJM di Laboratorium STEM.`,
+              setupPhoto: item.cover_image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
+              toolsAndMaterials: tools.length > 0 ? tools : [
+                'Mikrokontroler ESP32 NodeMCU',
+                'Sensor Elektronika Terkalibrasi',
+                'Papan Breadboard & Modul Daya'
+              ],
+              rubric: [
+                {
+                  id: `r-${idx}-1`,
+                  category: 'Inovasi & Desain',
+                  weight: '30%',
+                  criteria: 'Orisinalitas ide dan integrasi sirkuit mikrokontroler.',
+                  scaleDescription: 'Sangat Baik (85-100): Rangkaian rapi, teruji, hemat daya.'
+                },
+                {
+                  id: `r-${idx}-2`,
+                  category: 'Metodologi & Kalibrasi',
+                  weight: '35%',
+                  criteria: 'Ketepatan pengukuran sensor dan pengolahan data.',
+                  scaleDescription: 'Sangat Baik (85-100): Margin error pembacaan sensor < 3%.'
+                },
+                {
+                  id: `r-${idx}-3`,
+                  category: 'Presentasi & Dokumentasi',
+                  weight: '35%',
+                  criteria: 'Kelengkapan worksheet laporan ilmiah dan uji lapangan.',
+                  scaleDescription: 'Sangat Baik (85-100): Dokumentasi ilmiah terstruktur rapi.'
+                }
+              ]
+            };
+          });
+          setWorksheets(wsList);
+          setSelectedWorksheet(wsList[0]);
+
+          const portList: StemPortfolioItem[] = data
+            .filter((p: any) => p.is_portfolio !== false)
+            .map((item: any) => {
+              const specs = item.specs || {};
+              const specsArr = Object.entries(specs).map(([k, v]) => ({ label: k, value: String(v) }));
+              return {
+                id: item.id,
+                title: item.title,
+                studentName: item.author_santri || 'Santri Inovator PPJM',
+                studentClass: 'SMP Plus Jauharul Maknuun',
+                category: item.category || 'Robotika & IoT',
+                photoUrl: item.cover_image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1000&q=80',
+                description: item.description,
+                procedure: [
+                  'Perancangan skema sirkuit dan integrasi mikrokontroler di laboratorium.',
+                  'Kalibrasi parameter uji sensor dan verifikasi margin error.',
+                  'Pengujian fungsi berkelanjutan pada greenhouse pesantren.'
+                ],
+                results: item.description,
+                stats: specsArr.length > 0 ? specsArr : [{ label: 'Status Uji', value: '100% Berhasil' }],
+                completionDate: new Date(item.created_at || Date.now()).toLocaleDateString('id-ID', { month: 'long', year: 'numeric' })
+              };
+            });
+          if (portList.length > 0) {
+            setPortfolios(portList);
+          }
+        }
+      } catch (err) {
+        console.warn('Failed to load stem_projects:', err);
+      }
+    };
+    fetchStem();
+  }, []);
 
   return (
     <div className="space-y-3 sm:space-y-4">
@@ -352,7 +444,7 @@ export const StemAreaSection: React.FC = () => {
         <div className="space-y-3 sm:space-y-4 animate-in fade-in duration-300">
           {/* Selector Proyek Worksheet */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
-            {STEM_WORKSHEETS.map((ws) => {
+            {worksheets.map((ws) => {
               const isSelected = selectedWorksheet.id === ws.id;
               return (
                 <button
@@ -562,13 +654,13 @@ export const StemAreaSection: React.FC = () => {
               </p>
             </div>
             <span className="text-[11px] text-zinc-400 font-medium">
-              Menampilkan {STEM_PORTFOLIO.length} Karya Terpilih
+              Menampilkan {portfolios.length} Karya Terpilih
             </span>
           </div>
 
           {/* Cards Showcase Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2.5 sm:gap-3.5">
-            {STEM_PORTFOLIO.map((item) => (
+            {portfolios.map((item) => (
               <article
                 key={item.id}
                 className="group bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 overflow-hidden shadow-xs hover:shadow-xl hover:border-blue-500/40 transition-all duration-300 flex flex-col justify-between"

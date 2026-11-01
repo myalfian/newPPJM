@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Sparkles,
   Users,
@@ -11,6 +11,7 @@ import {
   Target,
   ArrowRight
 } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { OsisDepartment } from './types';
 
 export const OSIS_DEPARTMENTS: OsisDepartment[] = [
@@ -205,10 +206,55 @@ export const OSIS_DEPARTMENTS: OsisDepartment[] = [
 ];
 
 export const OsisProgramsSection: React.FC = () => {
+  const [departments, setDepartments] = useState<OsisDepartment[]>(OSIS_DEPARTMENTS);
   const [selectedDeptId, setSelectedDeptId] = useState<string>('bph');
 
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('osis_programs')
+          .select('*')
+          .order('created_at', { ascending: true });
+
+        if (!error && data && data.length > 0) {
+          // Merge dynamic programs from Supabase into departments
+          setDepartments((prev) =>
+            prev.map((dept) => {
+              const matched = data.filter(
+                (p: any) =>
+                  p.department &&
+                  (p.department.toLowerCase().includes(dept.shortName.toLowerCase()) ||
+                    p.department.toLowerCase().includes(dept.id.toLowerCase()))
+              );
+              if (matched.length > 0) {
+                const dynamicProgs = matched.map((m: any) => ({
+                  id: m.id,
+                  title: m.title,
+                  target: m.target || 'Seluruh Santri',
+                  frequency: m.frequency || 'Mingguan',
+                  description: m.description,
+                  expectedOutput: m.output || 'Output Terverifikasi'
+                }));
+                return {
+                  ...dept,
+                  programs: [...dynamicProgs, ...dept.programs]
+                };
+              }
+              return dept;
+            })
+          );
+        }
+      } catch (err) {
+        console.warn('Failed to load osis_programs:', err);
+      }
+    };
+    fetchPrograms();
+  }, []);
+
   const activeDept =
-    OSIS_DEPARTMENTS.find((d) => d.id === selectedDeptId) || OSIS_DEPARTMENTS[0];
+    departments.find((d) => d.id === selectedDeptId) || departments[0];
 
   const getFrequencyBadge = (freq: string) => {
     switch (freq) {
