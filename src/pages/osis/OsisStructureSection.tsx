@@ -9,10 +9,16 @@ import {
   Sparkles,
   Heart,
   ChevronDown,
-  Quote
+  Quote,
+  Maximize2,
+  X,
+  Target,
+  Compass,
+  CheckCircle2
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { OsisMember, OsisHierarchyLevel } from './types';
+import { OSIS_METADATA_2026 } from './osisData';
 
 export const OSIS_MEMBERS: OsisMember[] = [
   // --- LEVEL 1: PIMPINAN (Ketua & Wakil) ---
@@ -157,6 +163,7 @@ export const OSIS_MEMBERS: OsisMember[] = [
 export const OsisStructureSection: React.FC = () => {
   const [members, setMembers] = useState<OsisMember[]>(OSIS_MEMBERS);
   const [activeDepartmentFilter, setActiveDepartmentFilter] = useState<string>('all');
+  const [showChartModal, setShowChartModal] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchStructure = async () => {
@@ -291,9 +298,9 @@ export const OsisStructureSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-3 sm:space-y-4 animate-in fade-in duration-300">
-      {/* Intro Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
+    <div className="space-y-4 sm:space-y-6 animate-in fade-in duration-300">
+      {/* 1. Intro Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-3">
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-200/80 dark:border-amber-800/80 text-amber-800 dark:text-amber-300 text-[11px] font-bold uppercase tracking-wider mb-1">
             <Crown className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
@@ -308,10 +315,105 @@ export const OsisStructureSection: React.FC = () => {
         </p>
       </div>
 
+      {/* 2. Slogan & Semboyan Card */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0E7A4C] via-emerald-800 to-[#09482c] text-white p-4 sm:p-6 shadow-md border border-[#C8A951]/40">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-400/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="relative z-10 space-y-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/30 border border-[#C8A951]/40 text-[#C8A951] text-xs font-bold tracking-wide">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Slogan &amp; Semboyan Resmi OSIS 2026/2027</span>
+          </div>
+          <blockquote className="text-base sm:text-xl font-bold text-white leading-relaxed italic border-l-4 border-[#C8A951] pl-3 sm:pl-4">
+            &quot;{OSIS_METADATA_2026.slogan}&quot;
+          </blockquote>
+          <p className="text-xs sm:text-sm text-emerald-100/90 font-medium">
+            ✨ {OSIS_METADATA_2026.motto}
+          </p>
+          <div className="inline-block px-3 py-1 rounded-lg bg-emerald-950/60 text-[#C8A951] font-mono font-bold text-xs">
+            {OSIS_METADATA_2026.mottoShort}
+          </div>
+        </div>
+      </div>
+
+      {/* 3. Official Structure Chart Preview (Lightbox Ready) */}
+      <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm">
+        <div className="p-3.5 sm:p-4 bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Compass className="w-4 h-4 text-[#0E7A4C] dark:text-emerald-400" />
+            <h3 className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white">
+              Bagan Resmi Struktur Organisasi OSIS (Dokumen Resmi 2026/2027)
+            </h3>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowChartModal(true)}
+            className="px-3 py-1.5 rounded-xl bg-[#0E7A4C] hover:bg-[#128a57] text-[#C8A951] font-bold text-xs flex items-center gap-1.5 shadow-sm transition cursor-pointer"
+          >
+            <Maximize2 className="w-3.5 h-3.5" />
+            <span>Perbesar HD</span>
+          </button>
+        </div>
+        <div 
+          onClick={() => setShowChartModal(true)}
+          className="relative group cursor-pointer aspect-[16/9] sm:aspect-[21/9] bg-zinc-900 overflow-hidden flex items-center justify-center"
+        >
+          <img
+            src={OSIS_METADATA_2026.chartImageUrl}
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).src = OSIS_METADATA_2026.chartImageFallback;
+            }}
+            alt="Bagan Struktur OSIS SMP Plus JM 2026/2027"
+            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
+          />
+          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+            <span className="px-3.5 py-1.5 rounded-full bg-black/70 text-white text-xs font-bold backdrop-blur-md flex items-center gap-2 opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all">
+              <Maximize2 className="w-3.5 h-3.5 text-[#C8A951]" />
+              Klik untuk memperbesar bagan HD
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* 4. 7 Tujuan Utama OSIS */}
+      <section className="space-y-3">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
+            <Target className="w-4 h-4" />
+          </div>
+          <div>
+            <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white">
+              7 Tujuan Utama OSIS SMP Plus Jauharul Maknuun
+            </h3>
+            <span className="text-xs text-zinc-500">Amanat pokok pembinaan karakter, adab, dan intelektual santri</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {OSIS_METADATA_2026.goals.map((g) => (
+            <div
+              key={g.id}
+              className="p-3.5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-xs hover:border-[#0E7A4C]/50 transition-all space-y-1.5"
+            >
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-[#0E7A4C]/10 dark:bg-[#0E7A4C]/30 text-[#0E7A4C] dark:text-emerald-400 font-bold text-xs flex items-center justify-center">
+                  {g.id}
+                </span>
+                <h4 className="font-bold text-xs sm:text-sm text-zinc-800 dark:text-zinc-200">
+                  {g.title}
+                </h4>
+              </div>
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed pl-8">
+                {g.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ========================================================= */}
       {/* LEVEL 1: PRESIDIUM PIMPINAN (Ketua Putra, Putri & Wakil) */}
       {/* ========================================================= */}
-      <section className="space-y-2.5 sm:space-y-3">
+      <section className="space-y-2.5 sm:space-y-3 pt-2">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 flex items-center justify-center font-bold text-xs">
             1
@@ -384,6 +486,37 @@ export const OsisStructureSection: React.FC = () => {
           {sekbidOfficers.map((m) => renderMemberCard(m, false))}
         </div>
       </section>
+
+      {/* Lightbox Modal HD for Structure Chart */}
+      {showChartModal && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col p-3 sm:p-6 animate-in fade-in duration-200">
+          <div className="flex items-center justify-between pb-3 text-white border-b border-white/20">
+            <div>
+              <h4 className="font-bold text-sm sm:text-base text-[#C8A951]">
+                Bagan Resmi Struktur OSIS SMP Plus Jauharul Maknuun 2026/2027
+              </h4>
+              <p className="text-xs text-zinc-300">Dokumen Tata Kelola Organisasi Resmi Pesantren</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowChartModal(false)}
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          <div className="flex-1 overflow-auto flex items-center justify-center p-2 sm:p-4">
+            <img
+              src={OSIS_METADATA_2026.chartImageUrl}
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = OSIS_METADATA_2026.chartImageFallback;
+              }}
+              alt="Bagan Struktur HD OSIS"
+              className="max-h-[85vh] max-w-full object-contain rounded-xl shadow-2xl"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

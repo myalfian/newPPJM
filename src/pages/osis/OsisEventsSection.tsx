@@ -10,80 +10,18 @@ import {
   Newspaper,
   Tag,
   Clock,
-  BookOpen
+  BookOpen,
+  Quote
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { OsisArticleEvent } from './types';
-
-export const OSIS_EVENTS: OsisArticleEvent[] = [
-  {
-    id: 'evt-pelantikan-2026',
-    slug: 'pelantikan-osis-2026',
-    title: 'Pelantikan & Serah Terima Jabatan Pengurus OSIS Masa Bakti 2026/2027',
-    date: '14 Oktober 2026',
-    bannerUrl: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80',
-    summary:
-      'Prosesi khidmat ikrar kepengurusan OSIS baru di hadapan Pengasuh Pesantren dan Kepala SMP Plus Jauharul Maknuun, meneguhkan komitmen khidmah santri.',
-    author: 'Departemen BPH & Humas OSIS',
-    category: 'Kepemimpinan & Organisasi',
-    tags: ['Pelantikan', 'OSIS', 'Khidmah Santri', 'BPH'],
-    content: `Prosesi pelantikan dan serah terima jabatan pengurus Organisasi Siswa Intra Sekolah (OSIS) SMP Plus Jauharul Maknuun masa bakti 2026/2027 berlangsung dengan penuh khidmat di Aula Utama Ma’had Ali, dihadiri langsung oleh Pengasuh Pesantren, segenap dewan asatidz, serta seluruh santri.
-
-Dalam sambutan taujihnya, Pengasuh berpesan bahwa amanah kepemimpinan di pesantren bukan sekadar jabatan struktural organisasi, melainkan ladang khidmah untuk menimba keberkahan ilmu dan melatih kerendahan hati.
-
-Ketua OSIS terpilih, Muhammad Faizur Rahman, dalam pidato perdananya menyampaikan tekad kabinet baru untuk memperkuat kedisiplinan shalat berjamaah, memacu prestasi sains STEM santri, serta mewujudkan lingkungan asrama yang asri dan beradab luhur.`
-  },
-  {
-    id: 'evt-bulan-bahasa-2026',
-    slug: 'gebyar-bulan-bahasa',
-    title: 'Pekan Gebyar Bulan Bahasa Santri: Pidato 3 Bahasa & Pameran Kaligrafi',
-    date: '20 Oktober 2026',
-    bannerUrl: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80',
-    summary:
-      'Ratusan santri unjuk kebolehan pidato tanpa teks dalam bahasa Arab, Inggris, dan Indonesia serta menggelar pameran lukisan kaligrafi kontemporer.',
-    author: 'Departemen Bahasa & Seni Kaligrafi',
-    category: 'Bahasa & Literasi',
-    tags: ['Bulan Bahasa', 'Pidato 3 Bahasa', 'Kaligrafi', 'Sastra'],
-    content: `Menyambut momentum Bulan Bahasa dan Hari Santri Nasional, Departemen Bahasa OSIS SMP Plus Jauharul Maknuun menyelenggarakan Pekan Gebyar Bahasa Santri. Ajang ini menghadirkan kompetisi pidato tiga bahasa (Arab Fusha, English, dan Bahasa Indonesia), debat ilmiah santri, serta pameran 45 lukisan kaligrafi karya santri sanggar seni.
-
-Acara dibuka dengan penampilan drama musikal santri dwibahasa yang memukau penonton. Koordinator Sekbid Bahasa menegaskan bahwa penguasaan bahasa asing adalah jendela santri untuk berdakwah di pentas dunia global tanpa melupakan identitas kepesantrenan.`
-  },
-  {
-    id: 'evt-penanaman-mangrove-2026',
-    slug: 'aksi-hijau-mangrove',
-    title: 'Aksi Hijau Santri: Penanaman 500 Bibit Pohon Mangrove di Pesisir Sidayu',
-    date: '25 Oktober 2026',
-    bannerUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80',
-    summary:
-      'Wujud nyata kepedulian ekologis santri menjaga kelestarian ekosistem bahari pesisir utara Gresik dari ancaman abrasi pantai.',
-    author: 'Departemen Kebersihan & Lingkungan',
-    category: 'Sosial & Lingkungan',
-    tags: ['Aksi Hijau', 'Mangrove', 'Konservasi', 'Lingkungan'],
-    content: `Sebanyak 120 santri didampingi dewan pembina OSIS terjun langsung ke kawasan pesisir pantai Sidayu untuk menanam 500 bibit pohon mangrove jenis Rhizophora. Kegiatan ini merupakan realisasi dari program kerja unggulan Departemen Kebersihan dan Lingkungan Hidup OSIS PPJM.
-
-Selain menanam bibit, santri juga membersihkan sampah plastik di sepanjang garis pantai. Kegiatan ini mendidik santri agar peka terhadap krisis iklim dan memahami kewajiban menjaga bumi sebagai amanah khalifah fil ardh.`
-  },
-  {
-    id: 'evt-ldks-angkatan-vii',
-    slug: 'ldks-angkatan-vii',
-    title: 'Latihan Dasar Kepemimpinan Santri (LDKS) Angkatan VII di Bukit Surowiti',
-    date: '02 November 2026',
-    bannerUrl: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80',
-    summary:
-      'Penggemblengan mental tangguh, kepemimpinan organisatoris, dan ketangkasan survival alam terbuka bagi calon pengurus OSIS.',
-    author: 'Departemen BPH & Pembina Kepanduan',
-    category: 'Kaderisasi & Pelatihan',
-    tags: ['LDKS', 'Kepemimpinan', 'Survival', 'Pramuka'],
-    content: `Kegiatan LDKS Angkatan VII sukses digelar selama tiga hari dua malam di kawasan perbukitan alam Surowiti. Materi yang diberikan mencakup teknik problem solving, manajemen sidang organisasi, etika komunikasi publik, serta simulasi manajemen krisis kepengurusan.
-
-Malam puncak diisi dengan perenungan spiritual muhasabah diri dan ikrar komitmen kepengurusan santri di bawah bimbingan para asatidz pembina.`
-  }
-];
+import { OSIS_EVENTS as INITIAL_EVENTS } from './osisData';
 
 export const OsisEventsSection: React.FC = () => {
-  const [events, setEvents] = useState<OsisArticleEvent[]>(OSIS_EVENTS);
+  const [events, setEvents] = useState<OsisArticleEvent[]>(INITIAL_EVENTS);
   const [selectedArticle, setSelectedArticle] = useState<OsisArticleEvent | null>(null);
-  const [copiedLink, setCopiedLink] = useState(false);
+  const [copiedLink, setCopiedLink] = useState<boolean>(false);
+  const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('all');
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -92,80 +30,127 @@ export const OsisEventsSection: React.FC = () => {
         const { data, error } = await supabase
           .from('osis_events')
           .select('*')
-          .order('created_at', { ascending: false });
+          .order('date', { ascending: false });
 
         if (!error && data && data.length > 0) {
           const dynamicEvents: OsisArticleEvent[] = data.map((row: any) => ({
             id: row.id,
-            slug: row.title.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+            slug: row.slug || `event-${row.id}`,
             title: row.title,
-            date: row.date || new Date(row.created_at).toLocaleDateString('id-ID', { dateStyle: 'long' }),
-            bannerUrl: row.image_url || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80',
-            summary: row.description || 'Dokumentasi kegiatan santri dan kepengurusan OSIS PPJM.',
-            author: 'Humas OSIS PPJM',
-            category: row.category || 'Kepemimpinan & Organisasi',
-            tags: [row.category || 'OSIS', 'PPJM', 'Santri'],
-            content: row.description || 'Dokumentasi kegiatan resmi OSIS Pondok Pesantren Jauharul Maknuun.'
+            date: row.date || 'Oktober 2026',
+            bannerUrl: row.image_url || row.banner_url || INITIAL_EVENTS[0].bannerUrl,
+            summary: row.description || row.summary || row.title,
+            author: row.author || 'Tim Humas & OSIS SMP Plus JM',
+            category: row.category || 'Warta & Agenda',
+            tags: row.tags ? (Array.isArray(row.tags) ? row.tags : [row.tags]) : ['OSIS', 'Kegiatan Santri'],
+            content: row.content || row.description || ''
           }));
-          setEvents(dynamicEvents);
+
+          // Merge without duplicate titles
+          const existingTitles = new Set(INITIAL_EVENTS.map((e) => e.title.toLowerCase()));
+          const newEntries = dynamicEvents.filter((e) => !existingTitles.has(e.title.toLowerCase()));
+          setEvents([...INITIAL_EVENTS, ...newEntries]);
         }
       } catch (err) {
         console.warn('Failed to load osis_events:', err);
       }
     };
     fetchEvents();
+
+    const channel = supabase
+      .channel('public-osis-events-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'osis_events' }, () => {
+        fetchEvents();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const handleShareArticle = async (article: OsisArticleEvent) => {
-    const shareUrl = `${window.location.origin}/osis?tab=event#${article.slug}`;
     if (navigator.share) {
       try {
         await navigator.share({
           title: article.title,
           text: article.summary,
-          url: shareUrl
+          url: window.location.href
         });
-      } catch {
-        navigator.clipboard.writeText(shareUrl);
-        setCopiedLink(true);
-        setTimeout(() => setCopiedLink(false), 2500);
+        return;
+      } catch (err) {
+        // User cancelled or unsupported, fallback to copy clipboard
       }
-    } else {
-      navigator.clipboard.writeText(shareUrl);
+    }
+
+    try {
+      await navigator.clipboard.writeText(window.location.href);
       setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 2500);
+      setTimeout(() => setCopiedLink(false), 2000);
+    } catch (err) {
+      console.warn('Clipboard write failed:', err);
     }
   };
 
+  const categories = ['all', ...Array.from(new Set(events.map((e) => e.category)))];
+
+  const filteredEvents =
+    activeCategoryFilter === 'all'
+      ? events
+      : events.filter((e) => e.category === activeCategoryFilter);
+
   return (
-    <div className="space-y-3 sm:space-y-4 animate-in fade-in duration-300">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
+    <div className="space-y-4 sm:space-y-6 animate-in fade-in duration-300">
+      {/* Intro Header */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-3">
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-1">
             <Newspaper className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-            <span>Warta &amp; Press Release Organisasi</span>
+            <span>Dokumentasi &amp; Berita Terkini Masa Bakti 2026/2027</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
-            Dokumentasi &amp; Event Kegiatan OSIS
+            Agenda Kegiatan &amp; Dokumentasi OSIS
           </h2>
         </div>
         <p className="text-xs sm:text-sm text-zinc-500 max-w-md">
-          Liputan resmi ragam kegiatan, program sosial, dan unjuk kreativitas santri SMP Plus Jauharul Maknuun.
+          Liputan resmi, siaran pers, dan dokumentasi visual peristiwa penting kepengurusan OSIS SMP Plus Jauharul Maknuun.
         </p>
       </div>
 
-      {/* Editorial News Grid (1 Col Mobile, 2 Cols Tablet/Desktop) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2.5 sm:gap-3.5">
-        {events.map((event) => (
+      {/* Category Filter Pills */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar select-none">
+        {categories.map((cat) => {
+          const isSelected = activeCategoryFilter === cat;
+          return (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setActiveCategoryFilter(cat)}
+              className={`px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap min-h-[36px] flex items-center gap-1.5 active:scale-[0.98] ${
+                isSelected
+                  ? 'bg-[#0E7A4C] text-[#C8A951] shadow-md border border-[#C8A951]/40'
+                  : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200/70 dark:border-zinc-800/70 hover:bg-zinc-50'
+              }`}
+            >
+              <span>{cat === 'all' ? 'Semua Warta & Dokumentasi' : cat}</span>
+              <span className="text-[10px] opacity-75">
+                ({cat === 'all' ? events.length : events.filter((e) => e.category === cat).length})
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Event Articles Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+        {filteredEvents.map((event) => (
           <article
             key={event.id}
             onClick={() => setSelectedArticle(event)}
-            className="group bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 overflow-hidden shadow-xs hover:shadow-xl hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between cursor-pointer select-none"
-            style={{ WebkitTapHighlightColor: 'transparent' }}
+            className="group bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 overflow-hidden shadow-xs hover:shadow-xl hover:border-[#0E7A4C]/50 transition-all duration-300 flex flex-col justify-between cursor-pointer active:scale-[0.99] select-none"
           >
             <div>
-              {/* Banner Container (aspect-[16/9], rounded-xl) */}
+              {/* Photo Banner with Aspect 16/9 */}
               <div className="relative aspect-[16/9] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
                 <img
                   src={event.bannerUrl}
@@ -173,43 +158,49 @@ export const OsisEventsSection: React.FC = () => {
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
 
+                {/* Category Pill Tag */}
                 <div className="absolute top-3 left-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-white bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full">
+                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-black/60 text-[#C8A951] border border-[#C8A951]/40 backdrop-blur-md shadow-xs">
                     {event.category}
                   </span>
                 </div>
 
-                <div className="absolute bottom-3 left-3 right-3 text-white">
-                  <div className="flex items-center gap-2 text-[11px] text-zinc-300 font-medium">
-                    <Calendar className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>{event.date}</span>
-                  </div>
+                {/* Date Tag */}
+                <div className="absolute bottom-3 left-3 flex items-center gap-1.5 text-xs text-white/90 font-medium drop-shadow-md">
+                  <Calendar className="w-3.5 h-3.5 text-[#C8A951]" />
+                  <span>{event.date}</span>
                 </div>
               </div>
 
-              {/* Text Body */}
-              <div className="p-3.5 sm:p-4 space-y-2">
-                <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors leading-tight">
+              {/* Title & Excerpt */}
+              <div className="p-4 sm:p-5 space-y-2.5">
+                <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white group-hover:text-[#0E7A4C] dark:group-hover:text-emerald-400 transition-colors leading-snug line-clamp-2">
                   {event.title}
                 </h3>
 
-                <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed">
+                <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed">
                   {event.summary}
                 </p>
 
-                <div className="flex items-center gap-2 text-xs text-zinc-400 pt-1.5 border-t border-zinc-100 dark:border-zinc-800">
-                  <User className="w-3.5 h-3.5 text-emerald-600" />
+                {event.sloganQuote && (
+                  <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/60 text-xs font-semibold text-amber-900 dark:text-amber-200 italic">
+                    &quot;{event.sloganQuote}&quot;
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2 text-xs text-zinc-400 pt-2 border-t border-zinc-100 dark:border-zinc-800">
+                  <User className="w-3.5 h-3.5 text-[#0E7A4C]" />
                   <span className="truncate">{event.author}</span>
                 </div>
               </div>
             </div>
 
             {/* Read More Action */}
-            <div className="p-3.5 sm:p-4 pt-0">
-              <div className="flex items-center justify-between text-xs font-bold text-emerald-700 dark:text-emerald-400 group-hover:underline">
-                <span>Baca Press Release Lengkap</span>
+            <div className="p-4 sm:p-5 pt-0">
+              <div className="flex items-center justify-between text-xs font-bold text-[#0E7A4C] dark:text-emerald-400 group-hover:underline">
+                <span>Baca Dokumentasi Lengkap</span>
                 <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
@@ -217,12 +208,10 @@ export const OsisEventsSection: React.FC = () => {
         ))}
       </div>
 
-      {/* ========================================================= */}
       {/* READING MODAL: EDITORIAL FULL ARTICLE VIEW */}
-      {/* ========================================================= */}
       {selectedArticle && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-md animate-in fade-in duration-200 overscroll-contain select-none"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md animate-in fade-in duration-200 overscroll-contain select-none"
           onClick={() => setSelectedArticle(null)}
         >
           <div
@@ -231,8 +220,8 @@ export const OsisEventsSection: React.FC = () => {
           >
             {/* Header Modal Bar */}
             <div className="p-4 sm:p-5 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between">
-              <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
-                {selectedArticle.category} • Warta OSIS
+              <span className="text-xs font-bold text-[#0E7A4C] dark:text-emerald-400 uppercase tracking-wider">
+                {selectedArticle.category} • Dokumentasi OSIS 2026/2027
               </span>
 
               <div className="flex items-center gap-2">
@@ -256,7 +245,7 @@ export const OsisEventsSection: React.FC = () => {
             </div>
 
             {/* Scrollable Article Content */}
-            <div className="p-6 sm:p-8 overflow-y-auto space-y-6 text-zinc-800 dark:text-zinc-200 select-text">
+            <div className="p-5 sm:p-8 overflow-y-auto space-y-5 text-zinc-800 dark:text-zinc-200 select-text">
               {/* Banner Photo */}
               <div className="relative aspect-[16/9] w-full rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800/60">
                 <img
@@ -267,28 +256,34 @@ export const OsisEventsSection: React.FC = () => {
               </div>
 
               {/* Title & Metadata */}
-              <div className="space-y-3">
-                <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white tracking-tight leading-tight">
+              <div className="space-y-2">
+                <h2 className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white tracking-tight leading-tight">
                   {selectedArticle.title}
                 </h2>
 
                 <div className="flex flex-wrap items-center gap-3 text-xs text-zinc-400">
                   <span className="flex items-center gap-1.5">
-                    <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+                    <Calendar className="w-3.5 h-3.5 text-[#0E7A4C]" />
                     <span>{selectedArticle.date}</span>
                   </span>
                   <span>•</span>
                   <span className="flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-emerald-600" />
+                    <User className="w-3.5 h-3.5 text-[#0E7A4C]" />
                     <span>Oleh: {selectedArticle.author}</span>
                   </span>
                 </div>
               </div>
 
-              {/* Lead-In Summary Block */}
-              <div className="p-4 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/60 text-xs sm:text-sm font-semibold text-emerald-950 dark:text-emerald-200 leading-relaxed italic">
-                &quot;{selectedArticle.summary}&quot;
-              </div>
+              {/* Slogan Quote or Summary Banner */}
+              {selectedArticle.sloganQuote ? (
+                <div className="p-4 rounded-xl bg-gradient-to-r from-amber-500/10 to-emerald-500/10 border-l-4 border-[#C8A951] text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100 leading-relaxed italic">
+                  &quot;{selectedArticle.sloganQuote}&quot;
+                </div>
+              ) : (
+                <div className="p-4 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/60 text-xs sm:text-sm font-semibold text-emerald-950 dark:text-emerald-200 leading-relaxed italic">
+                  &quot;{selectedArticle.summary}&quot;
+                </div>
+              )}
 
               {/* Full Content Body */}
               <div className="space-y-4 text-xs sm:text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 whitespace-pre-line">
@@ -313,4 +308,3 @@ export const OsisEventsSection: React.FC = () => {
     </div>
   );
 };
-

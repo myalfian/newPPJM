@@ -37,11 +37,11 @@ export interface OsisProgram {
   id: string;
   title: string;
   department:
-    | 'Keagamaan & Ibadah'
-    | 'Bahasa & Keilmuan'
-    | 'Kedisiplinan & Keamanan'
-    | 'Minat Bakat & Olahraga'
-    | 'Kebersihan & Lingkungan';
+    | 'Pengurus Harian'
+    | 'Divisi Pendidikan'
+    | 'Divisi Keamanan'
+    | 'Divisi Bahasa'
+    | 'Divisi Kebersihan dan Kesehatan';
   description: string;
   timeline: string;
   targetOutcome: string;
@@ -106,53 +106,74 @@ const DEFAULT_MEMBERS: OsisMember[] = [
 const DEFAULT_PROGRAMS: OsisProgram[] = [
   {
     id: 'prog-1',
-    title: 'Festival Muharram & Bulan Bahasa Santri 3 Bahasa',
-    department: 'Bahasa & Keilmuan',
-    description: 'Lomba pidato 3 bahasa (Arab, Inggris, Mandarin), kaligrafi khath usmani, dan cerdas cermat kitab turats.',
-    timeline: 'Bulan Muharram (Awal Semester Gasal)',
-    targetOutcome: 'Peningkatan literasi multibahasa santri'
+    title: 'Jadwal Piket OSIS & Kotak Saran Aspirasi',
+    department: 'Pengurus Harian',
+    description: 'Penugasan rutin harian bagi pengurus OSIS menjaga kebersihan sekretariat dan penampungan aspirasi santri.',
+    timeline: 'Rutin Harian & Insidental',
+    targetOutcome: 'Pelayanan prima dan penyerapan aspirasi'
   },
   {
     id: 'prog-2',
-    title: 'Gerakan Santri Bersih (Green Pesantren & Roan Akbar)',
-    department: 'Kebersihan & Lingkungan',
-    description: 'Program kerja bakti roan terpadu, pemilihan kamar asrama terbersih, dan edukasi pilah sampah.',
-    timeline: 'Setiap Pekan (Jumat Pagi)',
-    targetOutcome: 'Lingkungan asrama sehat dan nyaman tholabul ilmi'
+    title: 'Pelaksanaan Upacara Bendera & Senam Pagi',
+    department: 'Divisi Pendidikan',
+    description: 'Penyelenggaraan upacara bendera hari Senin, pembinaan petugas, dan senam kesegaran jasmani.',
+    timeline: 'Mingguan',
+    targetOutcome: 'Kedisiplinan nasionalisme dan kebugaran santri'
   },
   {
     id: 'prog-3',
-    title: 'Karantina Murojaah Ziyadah Tahfidz Akbar',
-    department: 'Keagamaan & Ibadah',
-    description: 'Halaqah intensif setoran satu juz sekali duduk jelang ujian diniyah pesantren.',
-    timeline: 'Tengah Semester',
-    targetOutcome: 'Kekokohan hafalan Al-Qur\'an 30 juz'
+    title: 'Pengawasan Sholat Berjamaah 5 Waktu',
+    department: 'Divisi Keamanan',
+    description: 'Penertiban santri menuju masjid tepat waktu dan menjaga kekhusyukan ibadah.',
+    timeline: 'Rutin Harian',
+    targetOutcome: '100% disiplin sholat berjamaah tanpa masbuq'
   },
   {
     id: 'prog-4',
-    title: 'Operasi Tertib Disiplin Santri (OPSDIS)',
-    department: 'Kedisiplinan & Keamanan',
-    description: 'Pengecekan keseragaman pakaian salaf, kepatuhan jam malam, dan adab berjamaah.',
-    timeline: 'Harian (24 Jam)',
-    targetOutcome: 'Karakter santri berakhlakul karimah'
+    title: 'Pemberian Kosakata Baru (Mufrodat & Vocabulary)',
+    department: 'Divisi Bahasa',
+    description: 'Pemberian 3 mufrodat bahasa Arab dan Inggris setiap hari setelah sholat subuh.',
+    timeline: 'Rutin Harian',
+    targetOutcome: 'Pengayaan perbendaharaan bilingual santri'
   },
   {
     id: 'prog-5',
-    title: 'Turnamen Liga Santri & Ekspo Inovasi STEM',
-    department: 'Minat Bakat & Olahraga',
-    description: 'Kompetisi futsal, pencak silat pagar nusa, dan ekspo karya robotika teknologi santri.',
-    timeline: 'Akhir Semester (Haflah)',
-    targetOutcome: 'Kebugaran fisik dan sportivitas santri'
+    title: 'Pemeriksaan Kerapian & Operasi Semut Jumat Bersih',
+    department: 'Divisi Kebersihan dan Kesehatan',
+    description: 'Inspeksi seragam kuku rambut santri dan gotong royong membersihkan asrama.',
+    timeline: 'Mingguan & Harian',
+    targetOutcome: 'Pesantren asri, bersih, dan higienis'
   }
 ];
 
 const DEFAULT_EVENTS: OsisEvent[] = [
   {
     id: 'ev-1',
-    title: 'Pelantikan Serentak Kabinet OSIS & Musyawarah Kerja Santri 2026/2027',
-    date: '20 Oktober 2026',
-    description: 'Pengambilan sumpah jabatan di hadapan Mudir KH. M. Jauharul Maknuun disaksikan dewan asatidz dan wali santri.',
-    photoUrl: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80'
+    title: 'Pemilihan Ketua OSIS Masa Bakti 2026/2027',
+    date: 'Oktober 2026',
+    description: 'Pesta demokrasi santri dalam rangka pemilihan Ketua OSIS baru sebagai wadah pembelajaran kepemimpinan demokratis berakhlakul karimah.',
+    photoUrl: 'https://gzijnybcmhectajfkdtd.supabase.co/storage/v1/object/public/cms-images/osis/pemilihan-ketua-osis-2026.webp'
+  },
+  {
+    id: 'ev-2',
+    title: 'Pelantikan & Serah Terima Jabatan Pengurus OSIS 2026/2027',
+    date: 'Oktober 2026',
+    description: 'Prosesi khidmat ikrar sumpah kepengurusan OSIS baru di hadapan pimpinan madrasah dan asatidz.',
+    photoUrl: 'https://gzijnybcmhectajfkdtd.supabase.co/storage/v1/object/public/cms-images/osis/pelantikan-pengurus-osis-2026.webp'
+  },
+  {
+    id: 'ev-3',
+    title: 'Program Kerja Unggulan: Pemeriksaan & Edukasi Kesehatan Santri',
+    date: 'Oktober 2026',
+    description: 'Layanan cek kesehatan berkala santri mukim bekerja sama dengan tenaga medis profesional dan poskestren.',
+    photoUrl: 'https://gzijnybcmhectajfkdtd.supabase.co/storage/v1/object/public/cms-images/osis/proker-cek-kesehatan-2026.webp'
+  },
+  {
+    id: 'ev-4',
+    title: 'Ajang Kreasi Bakat: JM Got Talent Santri Berprestasi',
+    date: 'Oktober 2026',
+    description: 'Pentas apresiasi seni, pidato 3 bahasa, dan kreativitas santri dalam menyalurkan bakat minat positif.',
+    photoUrl: 'https://gzijnybcmhectajfkdtd.supabase.co/storage/v1/object/public/cms-images/osis/jm-got-talent-2026.webp'
   }
 ];
 
@@ -281,7 +302,7 @@ export const KelolaOsis: React.FC = () => {
 
   // Form Program State
   const [pTitle, setPTitle] = useState('');
-  const [pDept, setPDept] = useState<OsisProgram['department']>('Keagamaan & Ibadah');
+  const [pDept, setPDept] = useState<OsisProgram['department']>('Pengurus Harian');
   const [pDesc, setPDesc] = useState('');
   const [pTimeline, setPTimeline] = useState('');
   const [pTarget, setPTarget] = useState('');
@@ -678,11 +699,11 @@ export const KelolaOsis: React.FC = () => {
                   onChange={(e) => setPDept(e.target.value as any)}
                   className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
                 >
-                  <option value="Keagamaan & Ibadah">1. Departemen Keagamaan &amp; Ibadah</option>
-                  <option value="Bahasa & Keilmuan">2. Departemen Bahasa &amp; Keilmuan</option>
-                  <option value="Kedisiplinan & Keamanan">3. Departemen Kedisiplinan &amp; Keamanan</option>
-                  <option value="Minat Bakat & Olahraga">4. Departemen Minat Bakat &amp; Olahraga</option>
-                  <option value="Kebersihan & Lingkungan">5. Departemen Kebersihan &amp; Lingkungan</option>
+                  <option value="Pengurus Harian">1. Pengurus Harian</option>
+                  <option value="Divisi Pendidikan">2. Divisi Pendidikan</option>
+                  <option value="Divisi Keamanan">3. Divisi Keamanan</option>
+                  <option value="Divisi Bahasa">4. Divisi Bahasa</option>
+                  <option value="Divisi Kebersihan dan Kesehatan">5. Divisi Kebersihan dan Kesehatan</option>
                 </select>
               </div>
 

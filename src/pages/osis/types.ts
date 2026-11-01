@@ -19,10 +19,13 @@ export interface OsisWorkProgram {
   id: string;
   title: string;
   target: string;
-  frequency: 'Rutin Harian' | 'Mingguan' | 'Insidental' | 'Tahunan';
+  frequency: 'Rutin Harian' | 'Mingguan' | 'Bulanan' | 'Semesteran' | 'Tahunan' | 'Insidental';
   description: string;
   expectedOutput: string;
+  personInCharge?: string;
 }
+
+export type OsisProgram = OsisWorkProgram;
 
 export interface OsisDepartment {
   id: string;
@@ -46,5 +49,6 @@ export interface OsisArticleEvent {
   category: string;
   content: string;
   tags: string[];
+  sloganQuote?: string;
 }
 
