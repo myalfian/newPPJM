@@ -103,7 +103,7 @@ const LOCATION_OPTIONS = [
 ];
 
 const ROLE_OPTIONS = [
-  'Mudir & Pengasuh Pondok Pesantren',
+  'Pengasuh Pondok Pesantren',
   'Kepala Sekolah SMP Plus Jauharul Maknuun',
   'Kepala Madrasah Diniyah Takmiliyah',
   'Ketua Yayasan Jauharul Maknuun',

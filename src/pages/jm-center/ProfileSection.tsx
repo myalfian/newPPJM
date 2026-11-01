@@ -78,33 +78,33 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
 
   return (
     <div className="space-y-2.5 sm:space-y-3.5">
-      {/* 1. Curved Emerald Notch TabBar: Harmonious & Enlarged 3-Column Grid */}
+      {/* 1. Curved Emerald Notch TabBar: Height & Typography Matched to NavBarTabs */}
       <nav
         aria-label="Navigasi Menu Bagian Profil JM Center"
         className="w-full sticky top-14 sm:top-16 z-20 py-1"
       >
-        <div className="w-full rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#0a6847] via-[#0f5132] to-[#073a23] dark:from-[#064e3b] dark:via-[#022c22] dark:to-[#042018] shadow-[0_8px_24px_-6px_rgba(15,81,50,0.4),0_3px_10px_-2px_rgba(15,23,42,0.1)] border border-emerald-600/30 dark:border-emerald-700/40 p-1 sm:p-1.5 backdrop-blur-md">
+        <div className="w-full h-[44px] sm:h-[46px] min-h-[44px] sm:min-h-[46px] rounded-[16px] bg-gradient-to-r from-[#0a6847] via-[#0f5132] to-[#0a6847] dark:from-[#064e3b] dark:via-[#022c22] dark:to-[#064e3b] shadow-[0_8px_24px_-6px_rgba(15,81,50,0.38),0_3px_10px_-2px_rgba(15,23,42,0.08)] border-0 px-1 sm:px-1.5 flex items-center overflow-hidden">
           {/* Equal 3-Column Balanced Grid */}
-          <ul className="grid grid-cols-3 gap-1 sm:gap-2 w-full m-0 p-0 list-none">
+          <ul className="grid grid-cols-3 gap-1 sm:gap-2 w-full h-full m-0 p-0 list-none items-center">
             {SUB_NAV_ITEMS.map((item) => {
               const isActive = activeSubTab === item.id;
               return (
-                <li key={item.id} className="relative flex items-center justify-center min-w-0">
+                <li key={item.id} className="relative flex items-center justify-center min-w-0 h-full">
                   <button
                     type="button"
                     onClick={() => handleSelectTab(item.id)}
                     aria-pressed={isActive}
-                    className={`group relative flex items-center justify-center w-full h-10 sm:h-11 md:h-12 px-2 sm:px-3 rounded-lg sm:rounded-xl transition-all duration-250 cursor-pointer select-none outline-none ${
+                    className={`group relative flex items-center justify-center w-full h-full min-h-[44px] sm:min-h-[46px] px-1 sm:px-2 rounded-[12px] transition-all duration-200 cursor-pointer select-none outline-none ${
                       isActive
-                        ? 'text-[#facc15] font-black'
-                        : 'text-white/80 hover:text-white hover:bg-white/10 active:scale-98 font-bold'
+                        ? 'text-[#facc15] font-extrabold [text-shadow:0_0_16px_rgba(250,204,21,0.55),0_1px_2px_rgba(0,0,0,0.25)]'
+                        : 'text-white/82 hover:text-white hover:bg-white/15 active:scale-96 font-bold'
                     }`}
                   >
                     {/* Animated Sliding Notch Pointer & Radiant Floating Gold Jewel at the BOTTOM */}
                     {isActive && (
                       <motion.div
                         layoutId="profileCurvedCutoutPointer"
-                        className="absolute -bottom-1 sm:-bottom-1.5 left-1/2 -translate-x-1/2 w-[76px] h-[22px] pointer-events-none z-10"
+                        className="absolute -bottom-0.5 sm:-bottom-1 left-1/2 -translate-x-1/2 w-[74px] h-[20px] pointer-events-none z-10"
                         transition={{
                           type: 'spring',
                           stiffness: 360,
@@ -144,8 +144,8 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
                       </motion.div>
                     )}
 
-                    {/* Harmonious & Enlarged Typography */}
-                    <span className="text-xs sm:text-[13px] md:text-sm tracking-tight truncate leading-tight pb-0.5 sm:pb-1 text-center font-bold sm:font-extrabold">
+                    {/* Harmonious Typography: Matches NavBarTabs precisely */}
+                    <span className="font-['Plus_Jakarta_Sans',sans-serif] text-[12.5px] sm:text-[14px] font-extrabold sm:font-bold tracking-[-0.2px] sm:tracking-[0.1px] leading-[1.15] sm:leading-normal text-center select-none truncate">
                       <span className="sm:hidden">{item.shortLabel}</span>
                       <span className="hidden sm:inline">{item.label}</span>
                     </span>

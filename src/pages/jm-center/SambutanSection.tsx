@@ -5,8 +5,6 @@ import {
   RefreshCw,
   UserCheck,
   Sparkles,
-  ChevronDown,
-  ChevronUp,
   Award,
   Video,
   X,
@@ -20,19 +18,17 @@ import {
   School,
   BookMarked,
   Landmark,
-  ShieldCheck
+  ShieldCheck,
+  FileText
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured, SambutanPerson } from '../../lib/supabase';
 import { SafeRichContent } from '../../components/common/SafeRichContent';
-import { stripHtmlToPlainText } from '../../utils/richContentUtils';
 
 export const SambutanSection: React.FC = () => {
   const [sambutans, setSambutans] = useState<SambutanPerson[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Expandable state for each person
-  const [expandedIds, setExpandedIds] = useState<string[]>([]);
   const [modalPerson, setModalPerson] = useState<SambutanPerson | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -89,12 +85,6 @@ export const SambutanSection: React.FC = () => {
       supabase.removeChannel(channel);
     };
   }, []);
-
-  const toggleExpand = (id: string) => {
-    setExpandedIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
 
   const handleShareWa = (person: SambutanPerson) => {
     const text = encodeURIComponent(
@@ -213,30 +203,28 @@ export const SambutanSection: React.FC = () => {
       ) : (
         /* Render SELURUH Section Sambutan Pimpinan berurutan dari atas ke bawah */
         sambutans.map((person, index) => {
-          const isExpanded = expandedIds.includes(person.id);
           const meta = getUnitBadge(person.role_type, person.title, index);
           const IconUnit = meta.icon;
-          const isLongContent = (person.message_full || '').length > 380;
 
           return (
             <article
               key={person.id}
               id={`sambutan-${person.id}`}
-              className="bg-white dark:bg-zinc-900 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 lg:p-6 border border-slate-200/90 dark:border-zinc-800 shadow-xs hover:shadow-md transition-all overflow-hidden space-y-3.5 sm:space-y-4 scroll-mt-28"
+              className="bg-white dark:bg-zinc-900 rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-7 border border-emerald-900/10 dark:border-emerald-500/20 shadow-[0_4px_24px_-6px_rgba(0,0,0,0.06)] hover:shadow-lg transition-all duration-300 overflow-hidden space-y-4 sm:space-y-5 scroll-mt-28"
             >
               {/* Header Top Meta Bar: Sequential Number, Role Pill & Official Badges */}
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-zinc-800/80 pb-3">
+              <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-100 dark:border-zinc-800/80 pb-3 sm:pb-3.5">
                 <div className="flex flex-wrap items-center gap-2">
                   {/* Sequential Number + Unit Badge */}
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border ${meta.badgeClass}`}>
+                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider border shadow-2xs ${meta.badgeClass}`}>
                     <IconUnit className="w-3.5 h-3.5" />
                     <span>{meta.num} • {meta.category}</span>
                   </span>
 
                   {/* Featured Badge */}
                   {person.is_featured && (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-gold-400 text-emerald-950 shadow-2xs">
-                      <Sparkles className="w-3 h-3" />
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-black uppercase tracking-wider bg-gradient-to-r from-amber-400 to-yellow-400 text-emerald-950 shadow-2xs">
+                      <Sparkles className="w-3 h-3 text-emerald-900" />
                       <span>Pimpinan Utama</span>
                     </span>
                   )}
@@ -244,11 +232,11 @@ export const SambutanSection: React.FC = () => {
 
                 {/* Credentials / Academic Titles Pills */}
                 {person.credentials && person.credentials.length > 0 && (
-                  <div className="flex items-center gap-1 flex-wrap">
+                  <div className="flex items-center gap-1.5 flex-wrap">
                     {person.credentials.map((cr, idx) => (
                       <span
                         key={idx}
-                        className="px-2 py-0.5 rounded-md text-[10.5px] font-mono font-bold bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-700"
+                        className="px-2.5 py-0.5 rounded-md text-[11px] font-mono font-bold bg-slate-100 dark:bg-zinc-800 text-emerald-900 dark:text-emerald-200 border border-slate-200 dark:border-zinc-700 shadow-2xs"
                       >
                         {cr}
                       </span>
@@ -257,25 +245,25 @@ export const SambutanSection: React.FC = () => {
                 )}
               </div>
 
-              {/* Main Article Content Grid: Portrait on Left, Kalam & Full Article on Right */}
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
+              {/* Main Article Content Grid: Portrait on Left, Full Article on Right */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-7 items-start">
                 {/* 1. Portrait Frame & Visual Identity */}
-                <div className="lg:col-span-4 flex flex-col items-center sm:items-start space-y-3">
-                  <div className="relative w-full max-w-[280px] sm:max-w-xs mx-auto lg:max-w-none aspect-[4/5] rounded-2xl overflow-hidden border-2 border-emerald-600/25 shadow-md bg-slate-100 dark:bg-zinc-800 group">
+                <div className="lg:col-span-4 flex flex-col items-center sm:items-start space-y-3.5">
+                  <div className="relative w-full max-w-[280px] sm:max-w-xs mx-auto lg:max-w-none aspect-[4/5] rounded-2xl overflow-hidden border-2 border-emerald-600/30 shadow-md bg-slate-100 dark:bg-zinc-800 group">
                     <img
                       src={person.photo_url || '/logo-ppjm.svg'}
                       alt={person.name}
-                      className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-104 transition-transform duration-500"
                       loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent pointer-events-none" />
 
                     {/* Bottom Card Title Overlay */}
                     <div className="absolute bottom-3 inset-x-3 text-white pointer-events-none">
-                      <span className="text-[10px] font-bold text-amber-300 uppercase tracking-widest bg-emerald-950/80 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10 inline-block mb-1">
+                      <span className="text-[10px] font-bold text-amber-300 uppercase tracking-widest bg-emerald-950/85 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10 inline-block mb-1 shadow-2xs">
                         {person.title}
                       </span>
-                      <h4 className="text-sm sm:text-base font-black tracking-tight leading-snug">
+                      <h4 className="text-sm sm:text-base font-black tracking-tight leading-snug drop-shadow-sm">
                         {person.name}
                       </h4>
                     </div>
@@ -283,7 +271,7 @@ export const SambutanSection: React.FC = () => {
 
                   {/* Verification Pill & Media Button */}
                   <div className="w-full flex flex-col items-center sm:items-start gap-2 pt-0.5">
-                    <div className="inline-flex items-center gap-1.5 text-xs text-emerald-800 dark:text-emerald-300 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1 rounded-xl border border-emerald-200/60 dark:border-emerald-800/40">
+                    <div className="inline-flex items-center gap-1.5 text-xs text-emerald-800 dark:text-emerald-300 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-3 py-1.5 rounded-xl border border-emerald-200/60 dark:border-emerald-800/40 shadow-2xs">
                       <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
                       <span>Pimpinan Resmi Terverifikasi</span>
                     </div>
@@ -291,7 +279,7 @@ export const SambutanSection: React.FC = () => {
                     {person.video_url && (
                       <button
                         onClick={() => setModalPerson(person)}
-                        className="w-full max-w-[280px] sm:max-w-xs inline-flex items-center justify-center gap-2 px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 rounded-xl text-xs font-bold transition border border-rose-200 dark:border-rose-900/50 cursor-pointer shadow-2xs"
+                        className="w-full max-w-[280px] sm:max-w-xs inline-flex items-center justify-center gap-2 px-3.5 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300 rounded-xl text-xs font-bold transition border border-rose-200 dark:border-rose-900/50 cursor-pointer shadow-2xs"
                       >
                         <Play className="w-3.5 h-3.5 fill-rose-600" />
                         <span>Tonton Video Kalam Sambutan</span>
@@ -300,71 +288,57 @@ export const SambutanSection: React.FC = () => {
                   </div>
                 </div>
 
-                {/* 2. Article Kalam Sambutan & SafeRichContent */}
-                <div className="lg:col-span-8 space-y-3 sm:space-y-3.5">
-                  <div>
-                    <span className="text-[11px] font-bold text-emerald-800 dark:text-emerald-400 uppercase tracking-wider block">
+                {/* 2. Full Article Kalam Sambutan & SafeRichContent */}
+                <div className="lg:col-span-8 space-y-4">
+                  {/* Authoritative Header Title */}
+                  <div className="space-y-1">
+                    <span className="text-xs font-black text-emerald-700 dark:text-emerald-400 uppercase tracking-wider block">
                       {person.title}
                     </span>
-                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight mt-0.5">
+                    <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
                       {person.name}
                     </h2>
                   </div>
 
-                  {/* Kalam Mutiara (Quote Box) */}
+                  {/* Editorial Pull Quote (Kutipan Mutiara / Kalam Hikmah) */}
                   {person.quote && (
-                    <blockquote className="relative pl-4 sm:pl-5 py-2.5 sm:py-3 pr-4 rounded-r-xl sm:rounded-r-2xl border-l-4 border-emerald-600 bg-emerald-50/70 dark:bg-emerald-950/25 italic font-serif text-slate-800 dark:text-zinc-200 text-xs sm:text-sm lg:text-[15px] leading-relaxed shadow-2xs">
-                      <Quote className="w-4 h-4 text-emerald-600/50 mb-1 inline-block mr-1" />
+                    <blockquote className="relative pl-4 sm:pl-5 py-3 pr-4 rounded-r-2xl border-l-4 border-emerald-600 bg-gradient-to-r from-emerald-50/90 via-emerald-50/40 to-transparent dark:from-emerald-950/40 dark:via-emerald-950/20 dark:to-transparent italic font-serif text-slate-800 dark:text-emerald-100 text-sm sm:text-base leading-relaxed shadow-2xs">
+                      <Quote className="w-4 h-4 text-emerald-600/60 mb-1 inline-block mr-1.5" />
                       &ldquo;{person.quote}&rdquo;
                     </blockquote>
                   )}
 
-                  {/* Article Naskah Sambutan Body */}
-                  <div className="space-y-2 pt-1">
-                    <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                      <span>Naskah Sambutan Resmi</span>
+                  {/* Full Article Reading Canvas */}
+                  <div className="space-y-2.5">
+                    <div className="text-[11px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-widest flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Naskah Lengkap Sambutan Resmi</span>
                     </div>
 
-                    {/* Jika teks panjang dan sedang dalam status collapsed, berikan cuplikan rapi dengan opsi buka */}
-                    {isLongContent && !isExpanded ? (
-                      <div className="relative space-y-2">
-                        <div className="text-xs sm:text-sm text-slate-700 dark:text-zinc-300 leading-relaxed font-normal">
-                          <p className="line-clamp-4 leading-relaxed">
-                            {stripHtmlToPlainText(person.message_full || person.message_short || '', 380)}
-                          </p>
-                        </div>
+                    <div className="bg-slate-50/70 dark:bg-zinc-800/40 rounded-2xl p-4 sm:p-5 lg:p-6 border border-slate-200/70 dark:border-zinc-800/80 shadow-2xs text-slate-800 dark:text-zinc-200 text-sm sm:text-[15px] leading-relaxed">
+                      <SafeRichContent
+                        content={person.message_full || person.message_short || ''}
+                        leadParagraph={true}
+                        className="prose-emerald max-w-none space-y-3.5"
+                      />
 
-                        <div className="pt-1">
-                          <button
-                            type="button"
-                            onClick={() => toggleExpand(person.id)}
-                            className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-950 transition cursor-pointer underline underline-offset-4"
-                          >
-                            <span>Baca Naskah Lengkap</span>
-                            <ChevronDown className="w-3.5 h-3.5" />
-                          </button>
+                      {/* Official Sign-off / Signature Stamp Block */}
+                      <div className="mt-6 pt-5 border-t border-slate-200 dark:border-zinc-700/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                        <div className="space-y-0.5">
+                          <span className="text-slate-400 dark:text-zinc-400 block font-medium">Tertanda Resmi:</span>
+                          <span className="font-black text-slate-900 dark:text-white text-sm block">
+                            {person.name}
+                          </span>
+                          <span className="text-emerald-700 dark:text-emerald-400 font-bold block">
+                            {person.title}
+                          </span>
+                        </div>
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-300 font-semibold text-[11px] shadow-2xs">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>Pondok Pesantren &amp; SMP Plus Jauharul Maknuun</span>
                         </div>
                       </div>
-                    ) : (
-                      <div className="space-y-2">
-                        <div className="text-xs sm:text-sm text-slate-700 dark:text-zinc-300 leading-relaxed font-normal bg-slate-50/50 dark:bg-zinc-800/30 p-3 sm:p-4 rounded-xl border border-slate-100 dark:border-zinc-800/60">
-                          <SafeRichContent content={person.message_full || person.message_short || ''} />
-                        </div>
-
-                        {isLongContent && isExpanded && (
-                          <div className="pt-1">
-                            <button
-                              type="button"
-                              onClick={() => toggleExpand(person.id)}
-                              className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 transition cursor-pointer"
-                            >
-                              <span>Ciutkan Naskah</span>
-                              <ChevronUp className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    )}
+                    </div>
                   </div>
 
                   {/* Quick Action Toolbar per Tokoh */}
@@ -374,7 +348,7 @@ export const SambutanSection: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleShareWa(person)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-2xs cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-97 text-white text-xs font-bold transition shadow-2xs cursor-pointer"
                         title="Bagikan naskah sambutan ke WhatsApp"
                       >
                         <MessageCircle className="w-3.5 h-3.5" />
@@ -385,7 +359,7 @@ export const SambutanSection: React.FC = () => {
                       <button
                         type="button"
                         onClick={() => handleCopyQuote(person)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 text-slate-700 dark:text-zinc-300 text-xs font-bold transition cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 text-slate-700 dark:text-zinc-300 active:scale-97 text-xs font-bold transition cursor-pointer shadow-2xs"
                         title="Salin kutipan mutiara"
                       >
                         {copiedId === person.id ? (

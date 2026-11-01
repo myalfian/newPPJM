@@ -3146,7 +3146,7 @@ export const WebVisualEditor: React.FC = () => {
                     </h2>
                     
                     <p className="text-sm sm:text-base font-bold text-emerald-800">
-                      Mudir & Pengasuh Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik
+                      Pengasuh Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik
                     </p>
                     
                     <blockquote
