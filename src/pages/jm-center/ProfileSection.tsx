@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Quote,
   Landmark,
-  Star,
-  Sparkles
+  Star
 } from 'lucide-react';
 import { SambutanSection } from './SambutanSection';
 import { SejarahSection } from './SejarahSection';
@@ -19,14 +17,13 @@ interface SubNavItem {
   id: 'all' | 'sambutan' | 'sejarah' | 'visi-misi';
   label: string;
   shortLabel: string;
-  icon: React.ComponentType<{ className?: string }>;
 }
 
 const SUB_NAV_ITEMS: SubNavItem[] = [
-  { id: 'all', label: 'Semua Profil', shortLabel: 'Semua', icon: Sparkles },
-  { id: 'sambutan', label: 'Sambutan Pimpinan', shortLabel: 'Sambutan', icon: Quote },
-  { id: 'sejarah', label: 'Sejarah & Linimasa', shortLabel: 'Sejarah', icon: Landmark },
-  { id: 'visi-misi', label: 'Visi & Misi Lembaga', shortLabel: 'Visi Misi', icon: Star },
+  { id: 'all', label: 'Semua Profil', shortLabel: 'Semua' },
+  { id: 'sambutan', label: 'Sambutan Pimpinan', shortLabel: 'Sambutan' },
+  { id: 'sejarah', label: 'Sejarah & Linimasa', shortLabel: 'Sejarah' },
+  { id: 'visi-misi', label: 'Visi & Misi Lembaga', shortLabel: 'Visi Misi' },
 ];
 
 export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection = 'all' }) => {
@@ -98,7 +95,6 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
           {/* Equal 4-Column Balanced Grid */}
           <ul className="grid grid-cols-4 gap-1 sm:gap-2 w-full m-0 p-0 list-none">
             {SUB_NAV_ITEMS.map((item) => {
-              const Icon = item.icon;
               const isActive = activeSubTab === item.id;
               return (
                 <li key={item.id} className="relative flex items-center justify-center min-w-0">
@@ -106,10 +102,10 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
                     type="button"
                     onClick={() => handleSelectTab(item.id)}
                     aria-pressed={isActive}
-                    className={`group relative flex items-center justify-center gap-1.5 sm:gap-2.5 w-full h-12 sm:h-14 px-1.5 sm:px-4 rounded-xl sm:rounded-2xl transition-all duration-200 cursor-pointer select-none outline-none ${
+                    className={`group relative flex items-center justify-center w-full h-10 sm:h-11 px-1 sm:px-2 rounded-xl sm:rounded-2xl transition-all duration-200 cursor-pointer select-none outline-none ${
                       isActive
                         ? 'text-[#facc15] font-extrabold'
-                        : 'text-white/80 hover:text-white hover:bg-white/10 active:scale-98 font-bold'
+                        : 'text-white/80 hover:text-white hover:bg-white/10 active:scale-98 font-semibold sm:font-bold'
                     }`}
                   >
                     {/* Animated Sliding Notch Pointer & Radiant Floating Gold Jewel at the BOTTOM */}
@@ -156,17 +152,8 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
                       </motion.div>
                     )}
 
-                    {/* Icon with Gold Accent on Active */}
-                    <Icon
-                      className={`w-3.5 h-3.5 sm:w-4.5 sm:h-4.5 shrink-0 transition-transform duration-200 ${
-                        isActive
-                          ? 'text-[#facc15] scale-110 drop-shadow-[0_0_8px_rgba(250,204,21,0.65)]'
-                          : 'text-emerald-200/90 group-hover:text-white'
-                      }`}
-                    />
-
-                    {/* Adaptive Label with Clearance above bottom notch */}
-                    <span className="text-[12px] sm:text-[14px] tracking-tight truncate leading-none pb-1 sm:pb-1.5">
+                    {/* Adaptive Label with Clearance above bottom notch - No Icon, Smaller Typography */}
+                    <span className="text-[10px] sm:text-[11.5px] md:text-[12px] tracking-tight truncate leading-none pb-1 sm:pb-1.5 text-center">
                       <span className="sm:hidden">{item.shortLabel}</span>
                       <span className="hidden sm:inline">{item.label}</span>
                     </span>
