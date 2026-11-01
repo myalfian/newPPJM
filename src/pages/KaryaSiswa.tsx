@@ -18,7 +18,6 @@ import {
   Download,
   Info
 } from 'lucide-react';
-import { NavBarTabs } from '../components/common/NavBarTabs';
 import { KARYA_SISWA_ITEMS, KaryaSiswaItem } from '../data/karyaSiswaData';
 import { SafeRichContent } from '../components/common/SafeRichContent';
 
@@ -68,10 +67,7 @@ export const KaryaSiswa: React.FC = () => {
 
   return (
     <div className="bg-slate-50 min-h-screen pb-16">
-      {/* 1. SECONDARY NAVBAR TABS (Hierarki Android Modern Style) */}
-      <NavBarTabs />
-
-      {/* 2. HERO HEADER SECTION */}
+      {/* 1. HERO HEADER SECTION */}
       <section className="bg-gradient-to-b from-[#0E7A4C] via-[#095736] to-[#042818] text-white py-12 px-4 sm:px-6 relative overflow-hidden">
         {/* Ambient Lights */}
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#C8A951]/20 rounded-full blur-3xl pointer-events-none" />
