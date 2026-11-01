@@ -107,7 +107,7 @@ export const EkskulDetailModal: React.FC<EkskulDetailModalProps> = ({ item, onCl
                     Jadwal Latihan:
                   </span>
                   <span className="font-semibold text-zinc-900 dark:text-white">
-                    {item.schedule}
+                    {item.schedule || 'Jadwal Mingguan Santri'}
                   </span>
                 </div>
               </div>
@@ -119,7 +119,7 @@ export const EkskulDetailModal: React.FC<EkskulDetailModalProps> = ({ item, onCl
                     Pelatih / Pembina:
                   </span>
                   <span className="font-semibold text-zinc-900 dark:text-white">
-                    {item.coach}
+                    {item.coach || 'Pembina Ekstrakurikuler PPJM'}
                   </span>
                 </div>
               </div>

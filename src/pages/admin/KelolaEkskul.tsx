@@ -23,6 +23,9 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
+import { EkskulDetailModal } from '../ekskul/EkskulDetailModal';
+import { DetailedEkskulItem } from '../ekskul/types';
+import { stripHtmlToPlainText } from '../../utils/richContentUtils';
 
 export interface EkskulItem {
   id: string;
@@ -99,7 +102,29 @@ export const KelolaEkskul: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [filterCat, setFilterCat] = useState<'Semua' | 'Sains' | 'Olahraga' | 'Seni' | 'Agama' | 'Pramuka'>('Semua');
-  const [selectedDetailModal, setSelectedDetailModal] = useState<EkskulItem | null>(null);
+  const [selectedDetailModal, setSelectedDetailModal] = useState<DetailedEkskulItem | null>(null);
+
+  const handleOpenDetailModal = (item: EkskulItem) => {
+    let publicCategory: 'Sains & Teknologi' | 'Seni & Bahasa' | 'Olahraga & Bela Diri' | 'Kepanduan & Keagamaan' | 'Agama' | 'Pramuka' = 'Sains & Teknologi';
+    if (item.category === 'Olahraga') publicCategory = 'Olahraga & Bela Diri';
+    else if (item.category === 'Seni') publicCategory = 'Seni & Bahasa';
+    else if (item.category === 'Agama') publicCategory = 'Agama';
+    else if (item.category === 'Pramuka') publicCategory = 'Pramuka';
+
+    setSelectedDetailModal({
+      id: item.id,
+      name: item.name,
+      category: publicCategory,
+      schedule: item.schedule || 'Jadwal Mingguan Santri',
+      coach: item.coach || 'Pembina Ekstrakurikuler PPJM',
+      description: item.description || '',
+      featuredPhoto: item.imageUrl || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
+      gallery: [],
+      highlights: ['Pembinaan rutin & terstruktur', 'Pengembangan karakter & kepemimpinan santri'],
+      targetCapaian: 'Penguasaan keahlian & partisipasi kejuaraan santri',
+      tempatLatihan: item.location || 'Komplek Kampus PPJM'
+    });
+  };
 
   // Form State
   const [name, setName] = useState('');
@@ -566,18 +591,23 @@ export const KelolaEkskul: React.FC = () => {
                 <h4 className="font-extrabold text-sm text-zinc-900 dark:text-white leading-snug">
                   {item.name}
                 </h4>
+                {item.description && (
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed">
+                    {stripHtmlToPlainText(item.description, 120)}
+                  </p>
+                )}
                 <div className="text-xs text-zinc-500 dark:text-zinc-400 space-y-1">
                   <p className="flex items-center gap-1.5">
                     <User className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                    <span>{item.coach}</span>
+                    <span className="truncate">{item.coach || 'Pembina PPJM'}</span>
                   </p>
                   <p className="flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                    <span>{item.schedule}</span>
+                    <span className="truncate">{item.schedule || 'Jadwal Mingguan'}</span>
                   </p>
                   <p className="flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
-                    <span className="truncate">{item.location}</span>
+                    <span className="truncate">{item.location || 'Komplek Kampus PPJM'}</span>
                   </p>
                 </div>
               </div>
@@ -586,11 +616,11 @@ export const KelolaEkskul: React.FC = () => {
             <div className="p-4 pt-0 flex items-center justify-between border-t border-zinc-100 dark:border-zinc-800 mt-2">
               <button
                 type="button"
-                onClick={() => setSelectedDetailModal(item)}
+                onClick={() => handleOpenDetailModal(item)}
                 className="text-xs font-bold text-[#0E7A4C] hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <Eye className="w-3.5 h-3.5" />
-                <span>Detail Ekskul</span>
+                <span>Pratinjau Publik (Preview)</span>
               </button>
 
               <div className="flex items-center gap-1">
@@ -606,43 +636,11 @@ export const KelolaEkskul: React.FC = () => {
         ))}
       </div>
 
-      {/* EKSKUL DETAIL MODAL */}
-      {selectedDetailModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-          <div className="max-w-lg w-full rounded-2xl bg-[#0A2116] border border-[#C8A951]/40 text-white p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <div>
-                <span className="text-[10px] font-black uppercase text-[#C8A951]">Kategori {selectedDetailModal.category}</span>
-                <h3 className="font-extrabold text-base text-white">{selectedDetailModal.name}</h3>
-              </div>
-              <button onClick={() => setSelectedDetailModal(null)} className="p-1 rounded-md text-zinc-400 hover:text-white">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="aspect-video rounded-xl overflow-hidden bg-black/50 border border-white/10">
-              <img src={selectedDetailModal.imageUrl} alt={selectedDetailModal.name} className="w-full h-full object-cover" />
-            </div>
-
-            <div className="space-y-2 text-xs">
-              <p><span className="text-zinc-400">Pembina / Pelatih:</span> <strong className="text-[#C8A951]">{selectedDetailModal.coach}</strong></p>
-              <p><span className="text-zinc-400">Waktu Latihan:</span> <strong>{selectedDetailModal.schedule}</strong></p>
-              <p><span className="text-zinc-400">Lokasi:</span> <strong>{selectedDetailModal.location}</strong></p>
-              <p className="text-zinc-300 pt-2 leading-relaxed">{selectedDetailModal.description}</p>
-            </div>
-
-            <div className="flex justify-end pt-2 border-t border-white/10">
-              <button
-                type="button"
-                onClick={() => setSelectedDetailModal(null)}
-                className="px-4 py-2 rounded-xl text-xs font-bold bg-[#0E7A4C] text-[#C8A951]"
-              >
-                Tutup
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* EKSKUL DETAIL MODAL (Identik 100% dengan Web Publik) */}
+      <EkskulDetailModal
+        item={selectedDetailModal}
+        onClose={() => setSelectedDetailModal(null)}
+      />
 
     </div>
   );

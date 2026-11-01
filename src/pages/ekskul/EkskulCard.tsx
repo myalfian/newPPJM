@@ -8,6 +8,7 @@ import {
   MapPin
 } from 'lucide-react';
 import { DetailedEkskulItem } from './types';
+import { stripHtmlToPlainText } from '../../utils/richContentUtils';
 
 interface EkskulCardProps {
   item: DetailedEkskulItem;
@@ -74,7 +75,7 @@ export const EkskulCard: React.FC<EkskulCardProps> = ({ item, onOpenDetail }) =>
         {/* Content Body */}
         <div className="p-3.5 space-y-2">
           <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed">
-            {item.description}
+            {stripHtmlToPlainText(item.description, 150)}
           </p>
 
           {/* Schedule & Coach Metadata */}
