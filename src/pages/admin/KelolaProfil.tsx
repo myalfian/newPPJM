@@ -35,6 +35,7 @@ import { KelolaSambutan } from './KelolaSambutan';
 import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 import { SafeRichContent } from '../../components/common/SafeRichContent';
 import { BulkPhotoUploader } from '../../components/admin/bulk/BulkPhotoUploader';
+import { useAuth } from '../../context/AuthContext';
 
 interface FacilityItem {
   id: string;
@@ -150,6 +151,7 @@ const DEFAULT_MADIN_FLYERS: MadinFlyer[] = [
 ];
 
 export const KelolaProfil: React.FC = () => {
+  const { isSuperAdmin } = useAuth();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState<
     | 'sambutan'
@@ -773,14 +775,17 @@ export const KelolaProfil: React.FC = () => {
               <span className="text-xs text-zinc-400 font-mono hidden sm:inline">
                 Total {filteredFacilities.length} Fasilitas
               </span>
-              <button
-                type="button"
-                onClick={() => setShowBulkFacModal(true)}
-                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0E7A4C] to-emerald-700 text-[#C8A951] font-bold text-xs shadow-md border border-[#C8A951]/40 flex items-center gap-1.5 hover:brightness-105 transition cursor-pointer"
-              >
-                <UploadCloud className="w-4 h-4" />
-                <span>⚡ Bulk Upload Foto</span>
-              </button>
+              {isSuperAdmin && (
+                <button
+                  type="button"
+                  onClick={() => setShowBulkFacModal(true)}
+                  className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0E7A4C] to-emerald-700 text-[#C8A951] font-bold text-xs shadow-md border border-[#C8A951]/40 flex items-center gap-1.5 hover:brightness-105 transition cursor-pointer"
+                >
+                  <UploadCloud className="w-4 h-4" />
+                  <span>⚡ Bulk Upload Foto</span>
+                  <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-black/40 text-[#C8A951] border border-[#C8A951]/30">Root</span>
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => {
@@ -1299,8 +1304,8 @@ export const KelolaProfil: React.FC = () => {
         </div>
       )}
 
-      {/* BULK UPLOAD FOTO FASILITAS MODAL */}
-      {showBulkFacModal && (
+      {/* BULK UPLOAD FOTO FASILITAS MODAL (KHUSUS SUPER ADMIN) */}
+      {isSuperAdmin && showBulkFacModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md animate-fade-in">
           <div className="relative w-full max-w-4xl bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl p-4 sm:p-6 overflow-hidden">
             <BulkPhotoUploader

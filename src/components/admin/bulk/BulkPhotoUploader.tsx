@@ -10,11 +10,13 @@ import {
   Sparkles,
   Loader2,
   ArrowRight,
-  Info
+  Info,
+  ShieldAlert
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../../lib/supabase';
 import { invalidateCache } from '../../../lib/queryCache';
 import { compressImageToWebP } from '../../../lib/imageCompressor';
+import { useAuth } from '../../../context/AuthContext';
 
 export interface PendingPhotoItem {
   id: string;
@@ -40,6 +42,7 @@ export const BulkPhotoUploader: React.FC<BulkPhotoUploaderProps> = ({
   onClose,
   targetCategory = 'foto'
 }) => {
+  const { isSuperAdmin } = useAuth();
   const [pendingPhotos, setPendingPhotos] = useState<PendingPhotoItem[]>([]);
   const [compressing, setCompressing] = useState(false);
   const [compressProgress, setCompressProgress] = useState({ current: 0, total: 0 });
@@ -53,6 +56,31 @@ export const BulkPhotoUploader: React.FC<BulkPhotoUploaderProps> = ({
   const [batchCommonDesc, setBatchCommonDesc] = useState('');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  if (!isSuperAdmin) {
+    return (
+      <div className="p-8 rounded-2xl bg-white dark:bg-zinc-900 border border-rose-300 dark:border-rose-800 text-center space-y-3 shadow-lg">
+        <div className="w-12 h-12 rounded-2xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 flex items-center justify-center mx-auto">
+          <ShieldAlert className="w-6 h-6" />
+        </div>
+        <h3 className="text-base font-extrabold text-zinc-900 dark:text-white">Akses Ditolak: Khusus Super Admin</h3>
+        <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-sm mx-auto leading-relaxed">
+          Fungsi bulk upload foto massal hanya dapat diakses oleh Super Admin untuk menjaga kuota storage dan kompresi WebP aset pesantren.
+        </p>
+        {onClose && (
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-5 py-2 rounded-xl bg-zinc-800 text-white text-xs font-bold hover:bg-zinc-700"
+            >
+              Tutup
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   const cleanFileNameToTitle = (filename: string): string => {
     const nameWithoutExt = filename.substring(0, filename.lastIndexOf('.')) || filename;
@@ -416,3 +444,4 @@ export const BulkPhotoUploader: React.FC<BulkPhotoUploaderProps> = ({
   );
 };
 export default BulkPhotoUploader;
+

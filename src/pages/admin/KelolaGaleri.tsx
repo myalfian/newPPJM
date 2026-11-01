@@ -20,6 +20,7 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 import { BulkPhotoUploader } from '../../components/admin/bulk/BulkPhotoUploader';
+import { useAuth } from '../../context/AuthContext';
 
 export interface GalleryAdminItem {
   id: string;
@@ -73,6 +74,7 @@ const INITIAL_GALLERY_ITEMS: GalleryAdminItem[] = [
 ];
 
 export const KelolaGaleri: React.FC = () => {
+  const { isSuperAdmin } = useAuth();
   const [items, setItems] = useState<GalleryAdminItem[]>(INITIAL_GALLERY_ITEMS);
   const [tab, setTab] = useState<'foto' | 'video' | 'bulk'>('foto');
   const [filterType, setFilterType] = useState<'all' | 'foto' | 'video'>('all');
@@ -347,21 +349,24 @@ export const KelolaGaleri: React.FC = () => {
           >
             2. Form Video & Reels
           </button>
-          <button
-            type="button"
-            onClick={() => {
-              setTab('bulk');
-              if (!editingId) resetForm();
-            }}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              tab === 'bulk'
-                ? 'bg-[#0E7A4C] text-[#C8A951] shadow-md border border-[#C8A951]/40'
-                : 'bg-white dark:bg-zinc-900 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-50'
-            }`}
-          >
-            <UploadCloud className="w-4 h-4 text-[#C8A951]" />
-            <span>3. Bulk Upload Multi-Foto ⚡</span>
-          </button>
+          {isSuperAdmin && (
+            <button
+              type="button"
+              onClick={() => {
+                setTab('bulk');
+                if (!editingId) resetForm();
+              }}
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                tab === 'bulk'
+                  ? 'bg-[#0E7A4C] text-[#C8A951] shadow-md border border-[#C8A951]/40'
+                  : 'bg-white dark:bg-zinc-900 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-50'
+              }`}
+            >
+              <UploadCloud className="w-4 h-4 text-[#C8A951]" />
+              <span>3. Bulk Upload Multi-Foto ⚡</span>
+              <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-black/40 text-[#C8A951] border border-[#C8A951]/30">Root</span>
+            </button>
+          )}
         </div>
 
         {editingId && (
@@ -376,7 +381,7 @@ export const KelolaGaleri: React.FC = () => {
       </div>
 
       {/* Render Bulk Uploader or Standard Form */}
-      {tab === 'bulk' ? (
+      {tab === 'bulk' && isSuperAdmin ? (
         <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-md">
           <BulkPhotoUploader
             onSuccess={() => {

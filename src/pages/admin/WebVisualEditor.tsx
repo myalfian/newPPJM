@@ -1731,22 +1731,25 @@ export const WebVisualEditor: React.FC = () => {
         {/* Action Buttons Toolbar */}
         <div className="flex items-center gap-2">
           
-          {/* Bulk Input Data & Foto Hub Button */}
-          <button
-            type="button"
-            onClick={() => {
-              if (selectedPage === 'galeri') setBulkHubTab('foto');
-              else if (selectedPage === 'prestasi') setBulkHubTab('prestasi');
-              else if (selectedPage === 'ekskul') setBulkHubTab('ekskul');
-              else setBulkHubTab('foto');
-              setBulkHubOpen(true);
-            }}
-            className="flex h-9 items-center gap-1.5 rounded-xl border border-[#C8A951]/50 bg-gradient-to-r from-[#0E7A4C] to-emerald-800 text-[#C8A951] font-black px-3 text-xs shadow-md hover:brightness-110 active:scale-95 transition cursor-pointer"
-            title="Bulk Input Massal: Foto Galeri, Prestasi Santri & Ekskul"
-          >
-            <UploadCloud className="w-3.5 h-3.5 text-[#C8A951]" />
-            <span className="hidden sm:inline">Bulk Input</span>
-          </button>
+          {/* Bulk Input Data & Foto Hub Button (Khusus Super Admin) */}
+          {isSuperAdmin && (
+            <button
+              type="button"
+              onClick={() => {
+                if (selectedPage === 'galeri') setBulkHubTab('foto');
+                else if (selectedPage === 'prestasi') setBulkHubTab('prestasi');
+                else if (selectedPage === 'ekskul') setBulkHubTab('ekskul');
+                else setBulkHubTab('foto');
+                setBulkHubOpen(true);
+              }}
+              className="flex h-9 items-center gap-1.5 rounded-xl border border-[#C8A951]/50 bg-gradient-to-r from-[#0E7A4C] to-emerald-800 text-[#C8A951] font-black px-3 text-xs shadow-md hover:brightness-110 active:scale-95 transition cursor-pointer"
+              title="Bulk Input Massal: Foto Galeri, Prestasi Santri & Ekskul (Khusus Super Admin)"
+            >
+              <UploadCloud className="w-3.5 h-3.5 text-[#C8A951]" />
+              <span className="hidden sm:inline">Bulk Input</span>
+              <span className="hidden lg:inline text-[9px] px-1 py-0.2 rounded bg-black/40 text-[#C8A951] border border-[#C8A951]/30">Super Admin</span>
+            </button>
+          )}
 
           {/* Tombol Tambah Seksi dari 21 Library */}
           <button
@@ -3157,17 +3160,19 @@ export const WebVisualEditor: React.FC = () => {
       )}
 
       {/* ========================================================================= */}
-      {/* 14. BULK INPUT HUB MODAL                                                 */}
+      {/* 14. BULK INPUT HUB MODAL (KHUSUS SUPER ADMIN)                            */}
       {/* ========================================================================= */}
-      <BulkInputHubModal
-        isOpen={bulkHubOpen}
-        onClose={() => setBulkHubOpen(false)}
-        initialTab={bulkHubTab}
-        onSuccess={() => {
-          showToast('Alhamdulillah, data bulk input berhasil diterbitkan ke Supabase!');
-          recordAudit('BULK_INPUT', selectedPage, 'Bulk input data massal berhasil disinkronkan');
-        }}
-      />
+      {isSuperAdmin && (
+        <BulkInputHubModal
+          isOpen={bulkHubOpen}
+          onClose={() => setBulkHubOpen(false)}
+          initialTab={bulkHubTab}
+          onSuccess={() => {
+            showToast('Alhamdulillah, data bulk input berhasil diterbitkan ke Supabase!');
+            recordAudit('BULK_INPUT', selectedPage, 'Bulk input data massal berhasil disinkronkan');
+          }}
+        />
+      )}
 
     </div>
   );

@@ -8,10 +8,12 @@ import {
   CheckCircle2,
   Loader2,
   ClipboardPaste,
-  Table as TableIcon
+  Table as TableIcon,
+  ShieldAlert
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../../lib/supabase';
 import { invalidateCache } from '../../../lib/queryCache';
+import { useAuth } from '../../../context/AuthContext';
 
 export interface BulkEkskulRow {
   id: string;
@@ -46,6 +48,7 @@ export const BulkEkskulInputModal: React.FC<BulkEkskulInputModalProps> = ({
   onClose,
   onSuccess
 }) => {
+  const { isSuperAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState<'table' | 'paste'>('table');
   const [rows, setRows] = useState<BulkEkskulRow[]>([DEFAULT_ROW(), DEFAULT_ROW()]);
   const [pasteText, setPasteText] = useState('');
@@ -53,6 +56,31 @@ export const BulkEkskulInputModal: React.FC<BulkEkskulInputModalProps> = ({
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   if (!isOpen) return null;
+
+  if (!isSuperAdmin) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div className="max-w-md w-full p-6 rounded-3xl bg-white dark:bg-zinc-900 border border-rose-300 dark:border-rose-800 text-center space-y-3 shadow-2xl">
+          <div className="w-12 h-12 rounded-2xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 flex items-center justify-center mx-auto">
+            <ShieldAlert className="w-6 h-6" />
+          </div>
+          <h3 className="text-base font-extrabold text-zinc-900 dark:text-white">Akses Ditolak: Khusus Super Admin</h3>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed">
+            Fungsi bulk input ekstrakurikuler hanya dapat diakses oleh Super Admin demi standardisasi jadwal dan pelatih santri.
+          </p>
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-5 py-2 rounded-xl bg-zinc-800 text-white text-xs font-bold hover:bg-zinc-700"
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const handleAddRow = () => {
     setRows((prev) => [...prev, DEFAULT_ROW()]);
@@ -431,3 +459,4 @@ export const BulkEkskulInputModal: React.FC<BulkEkskulInputModalProps> = ({
   );
 };
 export default BulkEkskulInputModal;
+

@@ -28,6 +28,7 @@ import { EkskulDetailModal } from '../ekskul/EkskulDetailModal';
 import { DetailedEkskulItem } from '../ekskul/types';
 import { stripHtmlToPlainText } from '../../utils/richContentUtils';
 import { BulkEkskulInputModal } from '../../components/admin/bulk/BulkEkskulInputModal';
+import { useAuth } from '../../context/AuthContext';
 
 export interface EkskulItem {
   id: string;
@@ -100,6 +101,7 @@ const INITIAL_EKSKUL: EkskulItem[] = [
 ];
 
 export const KelolaEkskul: React.FC = () => {
+  const { isSuperAdmin } = useAuth();
   const [items, setItems] = useState<EkskulItem[]>(INITIAL_EKSKUL);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
@@ -398,14 +400,17 @@ export const KelolaEkskul: React.FC = () => {
             <span>{editingId ? 'Edit Ekstrakurikuler (Ekskul)' : 'Tambah Ekstrakurikuler (Ekskul) Baru'}</span>
           </h3>
           <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setBulkModalOpen(true)}
-              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#0E7A4C] to-emerald-700 text-[#C8A951] font-bold text-xs shadow-md border border-[#C8A951]/40 flex items-center gap-1.5 hover:brightness-105 transition cursor-pointer"
-            >
-              <FileSpreadsheet className="w-4 h-4" />
-              <span>⚡ Bulk Input Ekskul (Spreadsheet / Excel)</span>
-            </button>
+            {isSuperAdmin && (
+              <button
+                type="button"
+                onClick={() => setBulkModalOpen(true)}
+                className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#0E7A4C] to-emerald-700 text-[#C8A951] font-bold text-xs shadow-md border border-[#C8A951]/40 flex items-center gap-1.5 hover:brightness-105 transition cursor-pointer"
+              >
+                <FileSpreadsheet className="w-4 h-4" />
+                <span>⚡ Bulk Input Ekskul (Spreadsheet / Excel)</span>
+                <span className="text-[9px] px-1.5 py-0.2 rounded-md bg-black/40 text-[#C8A951] border border-[#C8A951]/30">Root</span>
+              </button>
+            )}
             {editingId && (
               <button
                 type="button"
@@ -679,15 +684,17 @@ export const KelolaEkskul: React.FC = () => {
         onClose={() => setSelectedDetailModal(null)}
       />
 
-      {/* BULK EKSKUL INPUT MODAL */}
-      <BulkEkskulInputModal
-        isOpen={bulkModalOpen}
-        onClose={() => setBulkModalOpen(false)}
-        onSuccess={() => {
-          setSavedAlert(true);
-          setTimeout(() => setSavedAlert(false), 2500);
-        }}
-      />
+      {/* BULK EKSKUL INPUT MODAL (KHUSUS SUPER ADMIN) */}
+      {isSuperAdmin && (
+        <BulkEkskulInputModal
+          isOpen={bulkModalOpen}
+          onClose={() => setBulkModalOpen(false)}
+          onSuccess={() => {
+            setSavedAlert(true);
+            setTimeout(() => setSavedAlert(false), 2500);
+          }}
+        />
+      )}
 
     </div>
   );
