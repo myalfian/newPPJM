@@ -4,37 +4,50 @@ import { MultiSectionBuilder, FieldConfig } from '../../components/admin/MultiSe
 export const KelolaSpmb: React.FC = () => {
   const fields: FieldConfig[] = [
     {
-      name: 'title',
+      name: 'tahun_ajaran',
+      label: 'Tahun Ajaran',
+      type: 'text',
+      required: true,
+      placeholder: 'Contoh: 2026/2027'
+    },
+    {
+      name: 'gelombang',
       label: 'Nama Gelombang SPMB',
       type: 'text',
       required: true,
-      placeholder: 'Contoh: Gelombang 1 (Jalur Prestasi & Beasiswa)'
+      placeholder: 'Contoh: Gelombang 1 (Jalur Unggulan & Beasiswa)'
     },
     {
-      name: 'date_range',
-      label: 'Periode Pendaftaran',
+      name: 'kontak_wa',
+      label: 'Nomor WhatsApp Panitia SPMB',
       type: 'text',
       required: true,
-      placeholder: 'Contoh: 1 November 2026 - 31 Januari 2027'
+      placeholder: 'Contoh: 6285646199273'
     },
     {
-      name: 'description',
-      label: 'Keterangan Gelombang & Syarat',
-      type: 'textarea',
-      placeholder: 'Rincian kuota, tes wawancara, dan biaya formulir...'
+      name: 'alur',
+      label: 'Alur Tahapan Pendaftaran (Langkah demi Langkah)',
+      type: 'tags',
+      placeholder: 'Contoh: 1. Pendaftaran Online / Langsung'
     },
     {
-      name: 'cta_link',
-      label: 'Tautan Pendaftaran (Form / WA)',
-      type: 'text',
-      placeholder: 'https://bit.ly/spmb-ppjm-2027 atau /spmb'
+      name: 'persyaratan',
+      label: 'Berkas Persyaratan Administrasi',
+      type: 'tags',
+      placeholder: 'Contoh: Fotokopi Akta Kelahiran & KK (2 Lembar)'
+    },
+    {
+      name: 'biaya',
+      label: 'Rincian Biaya & Infaq Santri (Tekan Enter tiap item)',
+      type: 'tags',
+      placeholder: 'Contoh: Infaq Gedung: Rp 3.500.000'
     }
   ];
 
   return (
     <MultiSectionBuilder
       tableName="spmb_info"
-      displayName="Informasi Gelombang SPMB"
+      displayName="Informasi SPMB Santri Baru"
       fields={fields}
       allowFeatured={true}
       allowReorder={true}

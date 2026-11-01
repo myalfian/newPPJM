@@ -188,7 +188,11 @@ import {
   AlertCircle,
   KeyRound,
   Search,
-  Quote
+  Quote,
+  GraduationCap,
+  Landmark,
+  Users,
+  CalendarDays
 } from 'lucide-react';
 
 import { PageEditorState, INITIAL_EDITOR_STATE, NewsItem, QuickMenuItem, SectionMeta } from '../../types/EditorState';
@@ -737,6 +741,39 @@ export const WebVisualEditor: React.FC = () => {
   // Version Snapshots State
   const [versionSnapshots, setVersionSnapshots] = useState<VersionSnapshot[]>(() => getStoredVersionSnapshots());
   const [versionModalOpen, setVersionModalOpen] = useState(false);
+
+  // Quick-Jump Page / Module Switcher Dropdown State
+  const [pageSwitcherOpen, setPageSwitcherOpen] = useState(false);
+  const pageSwitcherRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (pageSwitcherRef.current && !pageSwitcherRef.current.contains(e.target as Node)) {
+        setPageSwitcherOpen(false);
+      }
+    };
+    if (pageSwitcherOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [pageSwitcherOpen]);
+
+  const PUBLIC_PAGE_MODULES = [
+    { id: 'home', title: 'Beranda (Live WYSIWYG)', path: '/admin/editor', icon: Monitor, current: true, badge: 'Live Canvas' },
+    { id: 'profil', title: 'JM Center (Profil, Fasilitas, Lembaga)', path: '/admin/profil', icon: Landmark, badge: 'CMS' },
+    { id: 'program', title: 'Program Unggulan (Pondok, SMP, Madin)', path: '/admin/program', icon: Layers, badge: 'CMS' },
+    { id: 'spmb', title: 'SPMB Santri Baru (Syarat, Biaya, Alur)', path: '/admin/spmb', icon: GraduationCap, badge: 'CMS' },
+    { id: 'prestasi', title: 'Prestasi Santri & Kompetisi', path: '/admin/prestasi', icon: Trophy, badge: 'CMS' },
+    { id: 'ekskul', title: 'Ekstrakurikuler (Ekskul) Santri', path: '/admin/ekstrakurikuler', icon: Sparkles, badge: 'CMS' },
+    { id: 'berita', title: 'JM News & Press Release', path: '/admin/berita', icon: Newspaper, badge: 'CMS' },
+    { id: 'agenda', title: 'Agenda Santri & Kalender', path: '/admin/agenda', icon: CalendarDays, badge: 'CMS' },
+    { id: 'galeri', title: 'Galeri Foto & Video Pondok', path: '/admin/galeri', icon: ImageIcon, badge: 'CMS' },
+    { id: 'osis', title: 'Organisasi Santri (OSIS)', path: '/admin/osis', icon: Users, badge: 'CMS' },
+    { id: 'stem', title: 'Smart JM (STEM, Mandarin, Hafidz)', path: '/admin/stem', icon: Cpu, badge: 'CMS' },
+    { id: 'kontak', title: 'Kontak WhatsApp & Medsos', path: '/admin/kontak', icon: Phone, badge: 'CMS' },
+  ];
 
   // Re-authentication / Master Key Confirmation Modal State
   const [reAuthModal, setReAuthModal] = useState<{
@@ -1507,6 +1544,62 @@ export const WebVisualEditor: React.FC = () => {
                 {historyIndex} dari {Math.max(0, history.length - 1)} riwayat
               </span>
             </div>
+          </div>
+
+          {/* Quick-Jump Page / Module Switcher Dropdown */}
+          <div className="relative" ref={pageSwitcherRef}>
+            <button
+              type="button"
+              onClick={() => setPageSwitcherOpen((prev) => !prev)}
+              className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-zinc-900/90 border border-[#C8A951]/40 text-[#C8A951] hover:bg-[#0E7A4C]/30 text-xs font-bold transition shadow-xs cursor-pointer"
+              title="Pindah ke Modul CMS Halaman Web Lain"
+            >
+              <Layers className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden sm:inline text-zinc-400 font-normal">Halaman:</span>
+              <span className="font-extrabold text-white">Beranda</span>
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${pageSwitcherOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {pageSwitcherOpen && (
+              <div className="absolute left-0 mt-2 w-72 sm:w-80 rounded-2xl bg-slate-900 border border-slate-700/80 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="px-3 py-2 border-b border-slate-800 text-[11px] font-black uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                  <span>Pindah Modul / Halaman Web</span>
+                  <span className="text-[10px] text-emerald-400 font-bold">12 Modul Terintegrasi</span>
+                </div>
+                <div className="max-h-80 overflow-y-auto space-y-1 py-1.5 pr-1">
+                  {PUBLIC_PAGE_MODULES.map((mod) => {
+                    const ModIcon = mod.icon;
+                    return (
+                      <button
+                        key={mod.id}
+                        type="button"
+                        onClick={() => {
+                          setPageSwitcherOpen(false);
+                          if (!mod.current) {
+                            navigate(mod.path);
+                          }
+                        }}
+                        className={`w-full flex items-center justify-between p-2 rounded-xl text-left text-xs transition cursor-pointer ${
+                          mod.current
+                            ? 'bg-emerald-950/80 text-emerald-300 font-bold border border-emerald-800/60'
+                            : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 truncate">
+                          <ModIcon className={`w-4 h-4 shrink-0 ${mod.current ? 'text-emerald-400' : 'text-slate-400'}`} />
+                          <span className="truncate">{mod.title}</span>
+                        </div>
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold shrink-0 ${
+                          mod.current ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400'
+                        }`}>
+                          {mod.badge}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 

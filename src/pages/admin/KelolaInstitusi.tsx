@@ -11,21 +11,22 @@ export const KelolaInstitusi: React.FC = () => {
       placeholder: 'Contoh: SMP Plus Jauharul Maknuun'
     },
     {
-      name: 'category',
-      label: 'Kategori Unit',
+      name: 'type',
+      label: 'Kategori / Tipe Unit',
       type: 'select',
+      required: true,
       options: [
-        { label: 'Pondok Pesantren', value: 'Pondok Pesantren' },
-        { label: 'Sekolah Formal', value: 'Sekolah Formal' },
-        { label: 'Madrasah Diniyah', value: 'Madrasah Diniyah' },
-        { label: 'Yayasan / Pusat', value: 'Yayasan' }
+        { label: 'Pondok Pesantren (Salaf & Tahfidz)', value: 'pesantren' },
+        { label: 'SMP Plus Jauharul Maknuun (Formal)', value: 'formal' },
+        { label: 'Madrasah Diniyah (MDT Wustho)', value: 'diniyah' },
+        { label: 'Yayasan / Manajemen Pusat', value: 'yayasan' }
       ]
     },
     {
       name: 'description',
-      label: 'Deskripsi Singkat',
-      type: 'textarea',
-      placeholder: 'Jelaskan visi, kurikulum, dan karakteristik lembaga...'
+      label: 'Deskripsi Naskah Profil Lengkap',
+      type: 'richtext',
+      placeholder: 'Tuliskan sejarah, kurikulum, sintesa kiblat, dan profil kelembagaan...'
     },
     {
       name: 'image_url',

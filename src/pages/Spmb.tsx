@@ -335,28 +335,39 @@ _Mohon konfirmasi dan arahan jadwal tes observasi SPMB selanjutnya. Terima kasih
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {[
-                  {
-                    step: '01',
-                    title: 'Pendaftaran Online / Offline',
-                    desc: 'Mengisi Formulir SPMB di website ini atau hadir langsung di Sekretariat PPJM Lasem.',
-                  },
-                  {
-                    step: '02',
-                    title: 'Verifikasi Berkas',
-                    desc: 'Konfirmasi bukti data dan kelengkapan administrasi oleh Tim Panitia Penerimaan.',
-                  },
-                  {
-                    step: '03',
-                    title: 'Uji Observasi & Wawancara',
-                    desc: 'Tes baca Al-Qur’an, pemetaan minat bakat santri, dan wawancara kesiapan orang tua/wali.',
-                  },
-                  {
-                    step: '04',
-                    title: 'Pengumuman & Daftar Ulang',
-                    desc: 'Penerbitan surat kelulusan resmi dan penyelesaian administrasi seragam serta asrama santri.',
-                  },
-                ].map((item, idx) => (
+                {(Array.isArray(spmbInfo?.alur) && spmbInfo.alur.length > 0
+                  ? spmbInfo.alur.map((item: any, idx: number) => {
+                      const text = typeof item === 'string' ? item : (item.title || item.step || '');
+                      const desc = typeof item === 'object' && item.desc ? item.desc : '';
+                      return {
+                        step: String(idx + 1).padStart(2, '0'),
+                        title: text,
+                        desc: desc || `Tahapan ke-${idx + 1} seleksi penerimaan santri baru PPJM.`
+                      };
+                    })
+                  : [
+                      {
+                        step: '01',
+                        title: 'Pendaftaran Online / Offline',
+                        desc: 'Mengisi Formulir SPMB di website ini atau hadir langsung di Sekretariat PPJM Lasem.',
+                      },
+                      {
+                        step: '02',
+                        title: 'Verifikasi Berkas',
+                        desc: 'Konfirmasi bukti data dan kelengkapan administrasi oleh Tim Panitia Penerimaan.',
+                      },
+                      {
+                        step: '03',
+                        title: 'Uji Observasi & Wawancara',
+                        desc: 'Tes baca Al-Qur’an, pemetaan minat bakat santri, dan wawancara kesiapan orang tua/wali.',
+                      },
+                      {
+                        step: '04',
+                        title: 'Pengumuman & Daftar Ulang',
+                        desc: 'Penerbitan surat kelulusan resmi dan penyelesaian administrasi seragam serta asrama santri.',
+                      },
+                    ]
+                ).map((item: any, idx: number) => (
                   <div
                     key={idx}
                     className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/50 relative overflow-hidden group hover:border-emerald-500/50 transition-all"
@@ -578,31 +589,58 @@ _Mohon konfirmasi dan arahan jadwal tes observasi SPMB selanjutnya. Terima kasih
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-zinc-700 dark:text-zinc-300">
-                  <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span>Fotokopi Akta Kelahiran (2 Lembar)</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span>Fotokopi Kartu Keluarga / KK (2 Lembar)</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span>Fotokopi Rapor SD/MI Terakhir</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span>Pas Foto 3x4 Santri Berbusana Muslim (4 Lembar)</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span>Surat Keterangan Sehat dari Faskes/Dokter</span>
-                  </div>
-                  <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <span>Fotokopi Piagam/Sertifikat Prestasi (Jika Ada)</span>
-                  </div>
+                  {(Array.isArray(spmbInfo?.persyaratan) && spmbInfo.persyaratan.length > 0
+                    ? spmbInfo.persyaratan.map((syarat: any, sIdx: number) => (
+                        <div
+                          key={sIdx}
+                          className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 flex items-start gap-2"
+                        >
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                          <span>{typeof syarat === 'string' ? syarat : (syarat.text || syarat.title || String(syarat))}</span>
+                        </div>
+                      ))
+                    : [
+                        'Fotokopi Akta Kelahiran (2 Lembar)',
+                        'Fotokopi Kartu Keluarga / KK (2 Lembar)',
+                        'Fotokopi Rapor SD/MI Terakhir',
+                        'Pas Foto 3x4 Santri Berbusana Muslim (4 Lembar)',
+                        'Surat Keterangan Sehat dari Faskes/Dokter',
+                        'Fotokopi Piagam/Sertifikat Prestasi (Jika Ada)'
+                      ].map((item, sIdx) => (
+                        <div
+                          key={sIdx}
+                          className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200/60 flex items-start gap-2"
+                        >
+                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                          <span>{item}</span>
+                        </div>
+                      ))
+                  )}
                 </div>
+
+                {/* Rincian Biaya & Infaq (Jika Ada dari Supabase) */}
+                {spmbInfo?.biaya && (
+                  <div className="p-3.5 rounded-2xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-200/60 dark:border-amber-900/40 space-y-2 mt-2">
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-amber-800 dark:text-amber-300">
+                      Rincian Biaya &amp; Infaq Santri
+                    </span>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      {Array.isArray(spmbInfo.biaya) ? (
+                        spmbInfo.biaya.map((b: any, bIdx: number) => (
+                          <div key={bIdx} className="p-2 rounded-lg bg-white/80 dark:bg-zinc-900/80 border border-amber-200/60 text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                            {typeof b === 'string' ? b : `${b.label || b.name}: ${b.amount || b.value}`}
+                          </div>
+                        ))
+                      ) : typeof spmbInfo.biaya === 'object' ? (
+                        Object.entries(spmbInfo.biaya).map(([key, val], bIdx) => (
+                          <div key={bIdx} className="p-2 rounded-lg bg-white/80 dark:bg-zinc-900/80 border border-amber-200/60 text-xs font-semibold text-zinc-800 dark:text-zinc-200">
+                            <span className="capitalize">{key.replace('_', ' ')}:</span> {String(val)}
+                          </div>
+                        ))
+                      ) : null}
+                    </div>
+                  </div>
+                )}
 
                 <div className="pt-2 text-center">
                   <button

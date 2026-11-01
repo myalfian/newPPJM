@@ -183,6 +183,7 @@ const KelolaQuickMenu = lazy(() => import('./pages/admin/KelolaQuickMenu').then(
 const KelolaNavbar = lazy(() => import('./pages/admin/KelolaNavbar').then(m => ({ default: m.KelolaNavbar })));
 const KelolaBottomNav = lazy(() => import('./pages/admin/KelolaBottomNav').then(m => ({ default: m.KelolaBottomNav })));
 const KelolaInstitusi = lazy(() => import('./pages/admin/KelolaInstitusi').then(m => ({ default: m.KelolaInstitusi })));
+const KelolaProgram = lazy(() => import('./pages/admin/KelolaProgram').then(m => ({ default: m.KelolaProgram })));
 const KelolaSpmb = lazy(() => import('./pages/admin/KelolaSpmb').then(m => ({ default: m.KelolaSpmb })));
 const WebVisualEditor = lazy(() => import('./pages/admin/WebVisualEditor').then(m => ({ default: m.WebVisualEditor })));
 const UserProfilePage = lazy(() => import('./pages/profile/UserProfilePage').then(m => ({ default: m.UserProfilePage })));
@@ -345,7 +346,7 @@ export const App: React.FC = () => {
             <Route path="spmb" element={<KelolaSpmb />} />
             <Route path="sambutan" element={<KelolaSambutan />} />
             <Route path="profil" element={<KelolaProfil />} />
-            <Route path="program" element={<KelolaProfil />} />
+            <Route path="program" element={<KelolaProgram />} />
             <Route path="osis" element={<KelolaOsis />} />
             <Route path="kontak" element={<KelolaKontak />} />
             <Route path="integration-test" element={<IntegrationTestPage />} />
