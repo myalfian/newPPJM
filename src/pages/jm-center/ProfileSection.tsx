@@ -96,8 +96,8 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
                     aria-pressed={isActive}
                     className={`group relative flex items-center justify-center w-full h-full min-h-[44px] sm:min-h-[46px] px-1 sm:px-2 rounded-[12px] transition-all duration-200 cursor-pointer select-none outline-none ${
                       isActive
-                        ? 'text-[#facc15] font-extrabold [text-shadow:0_0_16px_rgba(250,204,21,0.55),0_1px_2px_rgba(0,0,0,0.25)]'
-                        : 'text-white/82 hover:text-white hover:bg-white/15 active:scale-96 font-bold'
+                        ? 'text-white font-black [text-shadow:0_0_12px_rgba(255,255,255,0.6),0_1px_3px_rgba(0,0,0,0.35)]'
+                        : 'text-white/85 hover:text-white hover:bg-white/15 active:scale-96 font-bold'
                     }`}
                   >
                     {/* Animated Sliding Notch Pointer & Radiant Floating Gold Jewel at the BOTTOM */}
@@ -144,8 +144,8 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
                       </motion.div>
                     )}
 
-                    {/* Harmonious Typography: Matches NavBarTabs precisely */}
-                    <span className="font-['Plus_Jakarta_Sans',sans-serif] text-[12.5px] sm:text-[14px] font-extrabold sm:font-bold tracking-[-0.2px] sm:tracking-[0.1px] leading-[1.15] sm:leading-normal text-center select-none truncate">
+                    {/* Harmonious Typography: White and Bold */}
+                    <span className="font-['Plus_Jakarta_Sans',sans-serif] text-[12.5px] sm:text-[14px] font-extrabold sm:font-bold tracking-[-0.2px] sm:tracking-[0.1px] leading-[1.15] sm:leading-normal text-center select-none truncate text-white">
                       <span className="sm:hidden">{item.shortLabel}</span>
                       <span className="hidden sm:inline">{item.label}</span>
                     </span>

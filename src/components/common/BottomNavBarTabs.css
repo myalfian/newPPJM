@@ -137,7 +137,7 @@
   width: 100%;
   padding: 0 4px;
   border-radius: 12px;
-  color: rgba(255, 255, 255, 0.82);
+  color: #ffffff;
   text-decoration: none;
   background: transparent;
   border: 0 !important;
@@ -182,14 +182,15 @@
 }
 
 .bottom-curved-tab-btn.active {
-  color: #fde047; /* Bright gold for active tab text */
+  color: #ffffff; /* Pure white for active tab */
 }
 
-/* Adaptive Text: Crisp, enlarged, and bold for supreme mobile legibility */
+/* Adaptive Text: Crisp, white, and bold */
 .bottom-curved-tab-text {
   font-family: 'Plus Jakarta Sans', 'Ubuntu', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 12.5px;
   font-weight: 800;
+  color: #ffffff;
   letter-spacing: -0.2px;
   line-height: 1.15;
   white-space: normal;
@@ -209,6 +210,7 @@
   .bottom-curved-tab-text {
     font-size: 14px;
     font-weight: 700;
+    color: #ffffff;
     letter-spacing: 0.1px;
     line-height: normal;
     white-space: nowrap;
@@ -219,8 +221,8 @@
 
 .bottom-curved-tab-btn.active .bottom-curved-tab-text {
   font-weight: 800;
-  color: #facc15;
-  text-shadow: 0 0 16px rgba(250, 204, 21, 0.55), 0 1px 2px rgba(0, 0, 0, 0.25);
+  color: #ffffff;
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.6), 0 1px 3px rgba(0, 0, 0, 0.35);
   transform: translateY(-1.5px) scale(1.02);
 }
 
