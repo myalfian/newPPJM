@@ -415,6 +415,68 @@ export const INITIAL_EDITOR_STATE: PageEditorState = {
         ]
       }
     },
+    // =========================================================================
+    // MULTI-PAGE EXTENSIONS (JM CENTER, SPMB, SMART JM, KONTAK)
+    // =========================================================================
+    jmCenter: {
+      id: 'jmCenter',
+      title: 'JM Center (Profil, Sejarah, Lembaga & Fasilitas)',
+      description: 'Pengaturan narasi profil pesantren, sejarah berdirinya, visi misi dan fasilitas kampus',
+      isVisible: true,
+      order: 12,
+      data: {
+        headline: 'Pusat Keunggulan & Sejarah Lembaga Jauharul Maknuun',
+        subheadline: 'Kawasan Terpadu Pendidikan Islam Berwawasan Global di Lasem Sidayu',
+        sejarahBrief: 'Pondok Pesantren Jauharul Maknuun berakar dari keteguhan dakwah salafiyah yang didirikan demi memadukan kedalaman ilmu turats dan keunggulan sains modern.',
+        visi: 'Menjadi pusat peradaban Islam terkemuka yang melahirkan generasi hafizh Al-Qur\'an, cendekia sains teknologi, dan berakhlakul karimah bersanad.',
+        misi: [
+          'Menyelenggarakan takhassus tahfidzul qur\'an 30 juz bersanad muttashil.',
+          'Mengembangkan kurikulum integratif salafiyah dan kurikulum nasional berakreditasi A.',
+          'Membekali santri keterampilan sains terapan (STEM) dan bahasa internasional (Mandarin & Arab).'
+        ]
+      }
+    },
+    spmb: {
+      id: 'spmb',
+      title: 'SPMB & Pendaftaran Santri Baru',
+      description: 'Pengumuman gelombang penerimaan santri baru, alur 4 tahap, syarat berkas & kontak panitia',
+      isVisible: true,
+      order: 13,
+      data: {
+        headline: 'Penerimaan Santri Baru (SPMB) TP 2026/2027',
+        subheadline: 'Bergabunglah bersama keluarga besar santri berprestasi PP. Jauharul Maknuun',
+        gelombang: 'Gelombang I (Reguler & Beasiswa Prestasi)',
+        biayaPendaftaran: 'Rp 250.000',
+        kontakWa: '081234567890',
+        syaratUtama: 'Lulus SD/MI atau sederajat, bersedia mukim di asrama, dan lulus tes baca Al-Qur\'an.'
+      }
+    },
+    smartJm: {
+      id: 'smartJm',
+      title: 'Smart JM (STEM, Mandarin & Markaz Qur\'an)',
+      description: 'Laboratorium otomatisasi, sertifikasi HSK Mandarin, dan akselerasi tahfidz santri',
+      isVisible: true,
+      order: 14,
+      data: {
+        headline: 'Smart JM: Sains, Teknologi & Bahasa Dunia',
+        subheadline: 'Harmoni Khazanah Turats dan Kemajuan Teknologi Abad 21',
+        stemFocus: 'Mikrokontroler ESP32, Robotika Agrikultur, dan Sensor Cerdas Santri',
+        mandarinFocus: 'Standarisasi HSK Level 1-4 dengan penutur berpengalaman dan kurikulum aplikatif'
+      }
+    },
+    kontak: {
+      id: 'kontak',
+      title: 'Kontak Sekretariat & Peta Lokasi',
+      description: 'Peta navigasi kampus, jam kerja sekretariat, nomor resmi WhatsApp dan sosial media',
+      isVisible: true,
+      order: 15,
+      data: {
+        headline: 'Hubungi Kami & Kunjungan Kampus',
+        subheadline: 'Sekretariat Pondok Pesantren Jauharul Maknuun siap melayani Bapak/Ibu wali santri',
+        jamLayanan: 'Setiap Hari: 08:00 - 16:30 WIB',
+        mapsEmbedUrl: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.2!2d112.56!3d-6.99!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwNTknMjQuMCJTIDExMsKwMzMnMzYuMCJF!5e0!3m2!1sid!2sid!4v1600000000000!5m2!1sid!2sid'
+      }
+    },
     footer: {
       id: 'footer',
       title: 'Footer & Informasi Kontak',

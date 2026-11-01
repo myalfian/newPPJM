@@ -119,7 +119,7 @@
  */
 
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Smartphone,
   Tablet,
@@ -209,6 +209,22 @@ import { generateWhatsAppBroadcastUrl } from '../../lib/waFormatter';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { useAuth } from '../../context/AuthContext';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { InstitutionsSection } from '../jm-center/InstitutionsSection';
+import { FacilitiesSection } from '../jm-center/FacilitiesSection';
+import { SambutanSection } from '../jm-center/SambutanSection';
+import { SejarahSection } from '../jm-center/SejarahSection';
+import { VisiMisiSection } from '../jm-center/VisiMisiSection';
+import { PondokProgramSection } from '../program/PondokProgramSection';
+import { SekolahProgramSection } from '../program/SekolahProgramSection';
+import { MadinFlyerSection } from '../program/MadinFlyerSection';
+import { EkskulPage } from '../ekskul/EkskulPage';
+import { PrestasiPage } from '../prestasi/PrestasiPage';
+import { AgendaHub } from '../agenda/AgendaHub';
+import { OsisHub } from '../osis/OsisHub';
+import { Galeri } from '../galeri/Galeri';
+import { Berita } from '../Berita';
+import { Spmb } from '../Spmb';
+import { SmartJmHub } from '../smart-jm/SmartJmHub';
 
 // ============================================================================
 // FASE 2: HARDENING & SECURITY SANITIZERS (ENTERPRISE DEFENSE)
@@ -745,6 +761,22 @@ export const WebVisualEditor: React.FC = () => {
   // Quick-Jump Page / Module Switcher Dropdown State
   const [pageSwitcherOpen, setPageSwitcherOpen] = useState(false);
   const pageSwitcherRef = useRef<HTMLDivElement>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlPage = searchParams.get('page') || 'home';
+  const [selectedPage, setSelectedPage] = useState<string>(urlPage);
+
+  useEffect(() => {
+    const p = searchParams.get('page') || 'home';
+    if (p !== selectedPage) {
+      setSelectedPage(p);
+    }
+  }, [searchParams]);
+
+  const handleSelectPage = (pageId: string) => {
+    setSelectedPage(pageId);
+    setSearchParams({ page: pageId });
+    setPageSwitcherOpen(false);
+  };
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -761,19 +793,23 @@ export const WebVisualEditor: React.FC = () => {
   }, [pageSwitcherOpen]);
 
   const PUBLIC_PAGE_MODULES = [
-    { id: 'home', title: 'Beranda (Live WYSIWYG)', path: '/admin/editor', icon: Monitor, current: true, badge: 'Live Canvas' },
-    { id: 'profil', title: 'JM Center (Profil, Fasilitas, Lembaga)', path: '/admin/profil', icon: Landmark, badge: 'CMS' },
-    { id: 'program', title: 'Program Unggulan (Pondok, SMP, Madin)', path: '/admin/program', icon: Layers, badge: 'CMS' },
-    { id: 'spmb', title: 'SPMB Santri Baru (Syarat, Biaya, Alur)', path: '/admin/spmb', icon: GraduationCap, badge: 'CMS' },
-    { id: 'prestasi', title: 'Prestasi Santri & Kompetisi', path: '/admin/prestasi', icon: Trophy, badge: 'CMS' },
-    { id: 'ekskul', title: 'Ekstrakurikuler (Ekskul) Santri', path: '/admin/ekstrakurikuler', icon: Sparkles, badge: 'CMS' },
-    { id: 'berita', title: 'JM News & Press Release', path: '/admin/berita', icon: Newspaper, badge: 'CMS' },
-    { id: 'agenda', title: 'Agenda Santri & Kalender', path: '/admin/agenda', icon: CalendarDays, badge: 'CMS' },
-    { id: 'galeri', title: 'Galeri Foto & Video Pondok', path: '/admin/galeri', icon: ImageIcon, badge: 'CMS' },
-    { id: 'osis', title: 'Organisasi Santri (OSIS)', path: '/admin/osis', icon: Users, badge: 'CMS' },
-    { id: 'stem', title: 'Smart JM (STEM, Mandarin, Hafidz)', path: '/admin/stem', icon: Cpu, badge: 'CMS' },
-    { id: 'kontak', title: 'Kontak WhatsApp & Medsos', path: '/admin/kontak', icon: Phone, badge: 'CMS' },
+    { id: 'home', title: 'Beranda (Hero, QuickMenu, Kalam, Pilar)', icon: Monitor, badge: 'Live Canvas' },
+    { id: 'jm-center', title: 'JM Center (Profil, Fasilitas, Lembaga)', icon: Landmark, badge: 'Live Canvas' },
+    { id: 'program', title: 'Program Unggulan (Pondok, SMP, Madin)', icon: Layers, badge: 'Live Canvas' },
+    { id: 'spmb', title: 'SPMB Santri Baru (Syarat, Biaya, Alur)', icon: GraduationCap, badge: 'Live Canvas' },
+    { id: 'prestasi', title: 'Prestasi Santri & Kompetisi', icon: Trophy, badge: 'Live Canvas' },
+    { id: 'ekskul', title: 'Ekstrakurikuler (Ekskul) Santri', icon: Sparkles, badge: 'Live Canvas' },
+    { id: 'smart-jm', title: 'Smart JM (STEM, Mandarin, Hafidz)', icon: Cpu, badge: 'Live Canvas' },
+    { id: 'agenda', title: 'Agenda Santri & Kalender', icon: CalendarDays, badge: 'Live Canvas' },
+    { id: 'berita', title: 'JM News & Warta Pesantren', icon: Newspaper, badge: 'Live Canvas' },
+    { id: 'galeri', title: 'Galeri Foto & Video Pondok', icon: ImageIcon, badge: 'Live Canvas' },
+    { id: 'osis', title: 'Organisasi Santri (OSIS)', icon: Users, badge: 'Live Canvas' },
+    { id: 'kontak', title: 'Kontak WhatsApp, Alamat & Peta', icon: Phone, badge: 'Live Canvas' },
   ];
+
+  const currentPageMeta = PUBLIC_PAGE_MODULES.find(
+    (m) => m.id === selectedPage || (selectedPage === 'profil' && m.id === 'jm-center') || (selectedPage === 'stem' && m.id === 'smart-jm')
+  ) || PUBLIC_PAGE_MODULES[0];
 
   // Re-authentication / Master Key Confirmation Modal State
   const [reAuthModal, setReAuthModal] = useState<{
@@ -1457,6 +1493,40 @@ export const WebVisualEditor: React.FC = () => {
     return Object.entries(editorState.sections).sort((a, b) => (a[1]?.order || 0) - (b[1]?.order || 0));
   }, [editorState.sections]);
 
+  // Sections filtered by selected page for contextual sidebar
+  const pageSectionEntries = useMemo(() => {
+    if (selectedPage === 'home') return sortedSectionEntries;
+
+    const relevantKeys = new Set(['navbar', 'footer']);
+    if (selectedPage === 'jm-center' || selectedPage === 'profil') {
+      relevantKeys.add('jmCenter');
+      relevantKeys.add('sambutan');
+    } else if (selectedPage === 'program') {
+      relevantKeys.add('programUnggulan');
+    } else if (selectedPage === 'spmb') {
+      relevantKeys.add('spmb');
+    } else if (selectedPage === 'ekskul') {
+      relevantKeys.add('ekskul');
+    } else if (selectedPage === 'prestasi') {
+      relevantKeys.add('prestasi');
+    } else if (selectedPage === 'smart-jm' || selectedPage === 'stem') {
+      relevantKeys.add('smartJm');
+    } else if (selectedPage === 'agenda') {
+      relevantKeys.add('agenda');
+    } else if (selectedPage === 'berita') {
+      relevantKeys.add('beritaTerkini');
+    } else if (selectedPage === 'galeri') {
+      relevantKeys.add('galeri');
+    } else if (selectedPage === 'osis') {
+      relevantKeys.add('osis');
+    } else if (selectedPage === 'kontak') {
+      relevantKeys.add('kontak');
+    }
+
+    const filtered = sortedSectionEntries.filter(([key]) => relevantKeys.has(key));
+    return filtered.length > 0 ? filtered : sortedSectionEntries;
+  }, [selectedPage, sortedSectionEntries]);
+
   const currentSection = editorState.sections[activeSectionId];
 
   // =========================================================================
@@ -1544,45 +1614,44 @@ export const WebVisualEditor: React.FC = () => {
               type="button"
               onClick={() => setPageSwitcherOpen((prev) => !prev)}
               className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-zinc-900/90 border border-[#C8A951]/40 text-[#C8A951] hover:bg-[#0E7A4C]/30 text-xs font-bold transition shadow-xs cursor-pointer"
-              title="Pindah ke Modul CMS Halaman Web Lain"
+              title="Pindah Halaman Web yang Diedit di Visual Editor"
             >
-              <Layers className="w-3.5 h-3.5 text-emerald-400" />
+              <currentPageMeta.icon className="w-3.5 h-3.5 text-emerald-400" />
               <span className="hidden sm:inline text-zinc-400 font-normal">Halaman:</span>
-              <span className="font-extrabold text-white">Beranda</span>
+              <span className="font-extrabold text-white">{currentPageMeta.title.split(' ')[0]}</span>
+              <span className="text-[10px] px-1.5 py-0.2 bg-emerald-950 text-emerald-300 rounded border border-emerald-800/60 font-bold hidden md:inline">
+                {currentPageMeta.badge}
+              </span>
               <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${pageSwitcherOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {pageSwitcherOpen && (
               <div className="absolute left-0 mt-2 w-72 sm:w-80 rounded-2xl bg-slate-900 border border-slate-700/80 shadow-2xl p-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                 <div className="px-3 py-2 border-b border-slate-800 text-[11px] font-black uppercase tracking-wider text-slate-400 flex items-center justify-between">
-                  <span>Pindah Modul / Halaman Web</span>
-                  <span className="text-[10px] text-emerald-400 font-bold">12 Modul Terintegrasi</span>
+                  <span>Pindah Canvas Halaman Web</span>
+                  <span className="text-[10px] text-emerald-400 font-bold">12 Halaman Live</span>
                 </div>
                 <div className="max-h-80 overflow-y-auto space-y-1 py-1.5 pr-1">
                   {PUBLIC_PAGE_MODULES.map((mod) => {
                     const ModIcon = mod.icon;
+                    const isCurrent = mod.id === selectedPage || (selectedPage === 'profil' && mod.id === 'jm-center') || (selectedPage === 'stem' && mod.id === 'smart-jm');
                     return (
                       <button
                         key={mod.id}
                         type="button"
-                        onClick={() => {
-                          setPageSwitcherOpen(false);
-                          if (!mod.current) {
-                            navigate(mod.path);
-                          }
-                        }}
+                        onClick={() => handleSelectPage(mod.id)}
                         className={`w-full flex items-center justify-between p-2 rounded-xl text-left text-xs transition cursor-pointer ${
-                          mod.current
+                          isCurrent
                             ? 'bg-emerald-950/80 text-emerald-300 font-bold border border-emerald-800/60'
                             : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
                         }`}
                       >
                         <div className="flex items-center gap-2.5 truncate">
-                          <ModIcon className={`w-4 h-4 shrink-0 ${mod.current ? 'text-emerald-400' : 'text-slate-400'}`} />
+                          <ModIcon className={`w-4 h-4 shrink-0 ${isCurrent ? 'text-emerald-400' : 'text-slate-400'}`} />
                           <span className="truncate">{mod.title}</span>
                         </div>
                         <span className={`text-[10px] px-2 py-0.5 rounded-full font-extrabold shrink-0 ${
-                          mod.current ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400'
+                          isCurrent ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400'
                         }`}>
                           {mod.badge}
                         </span>
@@ -1989,7 +2058,7 @@ export const WebVisualEditor: React.FC = () => {
           </p>
 
           <div className="flex-1 overflow-y-auto space-y-2 pr-1 text-xs">
-            {sortedSectionEntries.map(([key, sec]) => (
+            {pageSectionEntries.map(([key, sec]) => (
               <div
                 key={key}
                 draggable
@@ -3070,7 +3139,7 @@ export const WebVisualEditor: React.FC = () => {
    * Helper function to render the complete public website layout 1:1
    * wrapped with modular interactive editor boundaries and strict input sanitization
    */
-  function renderWebsiteContent() {
+  function renderHomePage() {
     return (
       <div className="space-y-2 sm:space-y-3 pb-8">
         
@@ -3572,6 +3641,671 @@ export const WebVisualEditor: React.FC = () => {
         )}
       </div>
     );
+  }
+
+  function renderFooterSection() {
+    if (!editorState.sections.footer?.isVisible) return null;
+    return (
+      <EditorSectionWrapper
+        id="footer"
+        title="Footer Pesantren"
+        description="Kontak, WhatsApp, alamat resmi & hak cipta"
+        isVisible={editorState.sections.footer.isVisible}
+        isPublicPreview={isPublicPreview}
+        onToggleVisibility={() => toggleSectionVisibility('footer')}
+        onEditContent={() => {
+          setActiveSectionId('footer');
+          setPropertiesOpen(true);
+        }}
+      >
+        <footer className="bg-[#0A2116] border-t-2 border-[#C8A951] text-white pt-10 pb-6 px-4 sm:px-6 mt-8">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-6 pb-6 border-b border-emerald-900/80">
+            <div className="md:col-span-6 space-y-2">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-white text-[#0A2116] font-black flex items-center justify-center text-xs">
+                  JM
+                </div>
+                <span className="font-black text-base text-[#C8A951]">Pondok Pesantren Jauharul Maknuun</span>
+              </div>
+              <p className="text-xs text-emerald-200/90 leading-relaxed max-w-md">
+                {editorState.sections.footer.data.alamat}
+              </p>
+            </div>
+            <div className="md:col-span-6 flex flex-col md:items-end justify-center space-y-1 text-xs text-emerald-200">
+              <p>WhatsApp: <span className="font-bold text-[#C8A951]">{editorState.sections.footer.data.whatsapp}</span></p>
+              <p>Email: <span>{editorState.sections.footer.data.email}</span></p>
+            </div>
+          </div>
+          <div className="max-w-7xl mx-auto pt-4 text-center text-[11px] text-emerald-300/70">
+            {editorState.sections.footer.data.copyright}
+          </div>
+        </footer>
+      </EditorSectionWrapper>
+    );
+  }
+
+  function renderJmCenterPage() {
+    return (
+      <div className="space-y-4 pb-12">
+        {editorState.sections.navbar?.isVisible && (
+          <EditorSectionWrapper
+            id="navbar"
+            title="Header Navigasi Web (9 Pilar)"
+            description="Logo pesantren, 9 pilar navigasi publik & profil pill"
+            isVisible={editorState.sections.navbar.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('navbar')}
+            onEditContent={() => {
+              setActiveSectionId('navbar');
+              setPropertiesOpen(true);
+            }}
+          >
+            <Navbar />
+          </EditorSectionWrapper>
+        )}
+
+        <EditorSectionWrapper
+          id="jmCenter"
+          title="JM Center: Header &amp; Tagline Hub"
+          description="Banner utama pengantar profil kelembagaan pesantren"
+          isVisible={editorState.sections.jmCenter?.isVisible !== false}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => toggleSectionVisibility('jmCenter')}
+          onEditContent={() => {
+            setActiveSectionId('jmCenter');
+            setPropertiesOpen(true);
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
+            <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#0A2116] via-[#0E7A4C] to-[#0A2116] text-white border border-[#C8A951]/40 shadow-xl space-y-3 text-center sm:text-left">
+              <span className="px-3 py-1 rounded-full bg-black/40 text-[#C8A951] text-xs font-black uppercase tracking-wider border border-[#C8A951]/40 inline-flex items-center gap-1.5">
+                <Landmark className="w-3.5 h-3.5" />
+                <span>Pusat Informasi &amp; Kelembagaan Terpadu</span>
+              </span>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-white">
+                {editorState.sections.jmCenter?.data?.headline || 'JM Center: Profil, Sejarah & Fasilitas'}
+              </h1>
+              <p className="text-xs sm:text-sm text-emerald-100 max-w-3xl">
+                {editorState.sections.jmCenter?.data?.subheadline || 'Kawasan Terpadu Pendidikan Islam Berwawasan Global di Desa Lasem, Sidayu, Gresik'}
+              </p>
+            </div>
+          </div>
+        </EditorSectionWrapper>
+
+        <EditorSectionWrapper
+          id="sambutan"
+          title="JM Center: Sambutan Pengasuh &amp; Pimpinan"
+          description="Pesan keteladanan pimpinan pesantren &amp; biografi pimpinan"
+          isVisible={editorState.sections.sambutan?.isVisible !== false}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => toggleSectionVisibility('sambutan')}
+          onEditContent={() => {
+            setActiveSectionId('sambutan');
+            setPropertiesOpen(true);
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <SambutanSection />
+          </div>
+        </EditorSectionWrapper>
+
+        <EditorSectionWrapper
+          id="jmCenter"
+          title="JM Center: Sejarah Perjuangan PPJM"
+          description="Kilas balik berdirinya pesantren, tonggak sejarah, dan napak tilas dakwah"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('jmCenter');
+            setPropertiesOpen(true);
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <SejarahSection />
+          </div>
+        </EditorSectionWrapper>
+
+        <EditorSectionWrapper
+          id="jmCenter"
+          title="JM Center: Visi, Misi &amp; 4 Sintesa Kiblat Nilai"
+          description="Arah kiblat pendidikan, pilar mutu, dan nilai perjuangan santri"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('jmCenter');
+            setPropertiesOpen(true);
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <VisiMisiSection />
+          </div>
+        </EditorSectionWrapper>
+
+        <EditorSectionWrapper
+          id="jmCenter"
+          title="JM Center: Tritunggal Lembaga Terpadu"
+          description="Profil Pondok Pesantren, SMP Plus (Sekolah), dan Madrasah Diniyah"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('jmCenter');
+            setPropertiesOpen(true);
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <InstitutionsSection />
+          </div>
+        </EditorSectionWrapper>
+
+        <EditorSectionWrapper
+          id="jmCenter"
+          title="JM Center: Sarana &amp; Fasilitas Kampus"
+          description="Laboratorium STEM, Asrama, Masjid, Kelas Multimedia, dan Sanitasi Sehat"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('jmCenter');
+            setPropertiesOpen(true);
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <FacilitiesSection />
+          </div>
+        </EditorSectionWrapper>
+
+        {renderFooterSection()}
+      </div>
+    );
+  }
+
+  function renderProgramPage() {
+    return (
+      <div className="space-y-4 pb-12">
+        {editorState.sections.navbar?.isVisible && (
+          <EditorSectionWrapper
+            id="navbar"
+            title="Header Navigasi Web (9 Pilar)"
+            description="Logo pesantren, 9 pilar navigasi publik & profil pill"
+            isVisible={editorState.sections.navbar.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('navbar')}
+            onEditContent={() => {
+              setActiveSectionId('navbar');
+              setPropertiesOpen(true);
+            }}
+          >
+            <Navbar />
+          </EditorSectionWrapper>
+        )}
+
+        <EditorSectionWrapper
+          id="programUnggulan"
+          title="Program: Kurikulum Pesantren Salafiyah Tahfidz"
+          description="Pengasuhan asrama 24 jam, hafalan Al-Qur'an 30 juz bersanad &amp; kitab kuning"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('programUnggulan');
+            setPropertiesOpen(true);
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
+            <PondokProgramSection />
+          </div>
+        </EditorSectionWrapper>
+
+        <EditorSectionWrapper
+          id="programUnggulan"
+          title="Program: SMP Plus Jauharul Maknuun (Formal &amp; STEM)"
+          description="Akreditasi A, bilingual Mandarin-Inggris, dan olimpiade sains"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('programUnggulan');
+            setPropertiesOpen(true);
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <SekolahProgramSection />
+          </div>
+        </EditorSectionWrapper>
+
+        <EditorSectionWrapper
+          id="programUnggulan"
+          title="Program: Madrasah Diniyah Takmiliyah (MDT Wustho)"
+          description="Kajian kitab turats salaf gandul, nahwu shorof, dan fiqih amaliyah"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('programUnggulan');
+            setPropertiesOpen(true);
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <MadinFlyerSection />
+          </div>
+        </EditorSectionWrapper>
+
+        {renderFooterSection()}
+      </div>
+    );
+  }
+
+  function renderSpmbPage() {
+    return (
+      <div className="space-y-4 pb-12">
+        {editorState.sections.navbar?.isVisible && (
+          <EditorSectionWrapper
+            id="navbar"
+            title="Header Navigasi Web (9 Pilar)"
+            description="Logo pesantren, 9 pilar navigasi publik & profil pill"
+            isVisible={editorState.sections.navbar.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('navbar')}
+            onEditContent={() => {
+              setActiveSectionId('navbar');
+              setPropertiesOpen(true);
+            }}
+          >
+            <Navbar />
+          </EditorSectionWrapper>
+        )}
+
+        <EditorSectionWrapper
+          id="spmb"
+          title="Portal Penerimaan Santri Baru (SPMB)"
+          description="Alur 4 tahap, jadwal gelombang, syarat berkas, dan tabel rincian biaya"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('spmb');
+            setPropertiesOpen(true);
+          }}
+        >
+          <Spmb />
+        </EditorSectionWrapper>
+
+        {renderFooterSection()}
+      </div>
+    );
+  }
+
+  function renderEkskulPage() {
+    return (
+      <div className="space-y-4 pb-12">
+        {editorState.sections.navbar?.isVisible && (
+          <EditorSectionWrapper
+            id="navbar"
+            title="Header Navigasi Web (9 Pilar)"
+            description="Logo pesantren, 9 pilar navigasi publik & profil pill"
+            isVisible={editorState.sections.navbar.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('navbar')}
+            onEditContent={() => {
+              setActiveSectionId('navbar');
+              setPropertiesOpen(true);
+            }}
+          >
+            <Navbar />
+          </EditorSectionWrapper>
+        )}
+
+        <EditorSectionWrapper
+          id="ekskul"
+          title="Katalog Ekstrakurikuler (Ekskul) Santri"
+          description="Pusat pembinaan bakat: jadwal, pembina, lokasi &amp; galeri foto santri"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('ekskul');
+            setPropertiesOpen(true);
+          }}
+        >
+          <EkskulPage />
+        </EditorSectionWrapper>
+
+        {renderFooterSection()}
+      </div>
+    );
+  }
+
+  function renderPrestasiPage() {
+    return (
+      <div className="space-y-4 pb-12">
+        {editorState.sections.navbar?.isVisible && (
+          <EditorSectionWrapper
+            id="navbar"
+            title="Header Navigasi Web (9 Pilar)"
+            description="Logo pesantren, 9 pilar navigasi publik & profil pill"
+            isVisible={editorState.sections.navbar.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('navbar')}
+            onEditContent={() => {
+              setActiveSectionId('navbar');
+              setPropertiesOpen(true);
+            }}
+          >
+            <Navbar />
+          </EditorSectionWrapper>
+        )}
+
+        <EditorSectionWrapper
+          id="prestasi"
+          title="Galeri Prestasi &amp; Juara Santri"
+          description="Piala kejuaraan, sertifikat juara, dan capaian santri berprestasi"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('prestasi');
+            setPropertiesOpen(true);
+          }}
+        >
+          <PrestasiPage />
+        </EditorSectionWrapper>
+
+        {renderFooterSection()}
+      </div>
+    );
+  }
+
+  function renderSmartJmPage() {
+    return (
+      <div className="space-y-4 pb-12">
+        {editorState.sections.navbar?.isVisible && (
+          <EditorSectionWrapper
+            id="navbar"
+            title="Header Navigasi Web (9 Pilar)"
+            description="Logo pesantren, 9 pilar navigasi publik & profil pill"
+            isVisible={editorState.sections.navbar.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('navbar')}
+            onEditContent={() => {
+              setActiveSectionId('navbar');
+              setPropertiesOpen(true);
+            }}
+          >
+            <Navbar />
+          </EditorSectionWrapper>
+        )}
+
+        <EditorSectionWrapper
+          id="smartJm"
+          title="Pusat Inovasi Smart JM (STEM, Mandarin &amp; Hafidz)"
+          description="Laboratorium sains IoT, kurikulum Mandarin HSK, dan platform tahfidz digital"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('smartJm');
+            setPropertiesOpen(true);
+          }}
+        >
+          <SmartJmHub defaultTab="stem" />
+        </EditorSectionWrapper>
+
+        {renderFooterSection()}
+      </div>
+    );
+  }
+
+  function renderAgendaPage() {
+    return (
+      <div className="space-y-4 pb-12">
+        {editorState.sections.navbar?.isVisible && (
+          <EditorSectionWrapper
+            id="navbar"
+            title="Header Navigasi Web (9 Pilar)"
+            description="Logo pesantren, 9 pilar navigasi publik & profil pill"
+            isVisible={editorState.sections.navbar.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('navbar')}
+            onEditContent={() => {
+              setActiveSectionId('navbar');
+              setPropertiesOpen(true);
+            }}
+          >
+            <Navbar />
+          </EditorSectionWrapper>
+        )}
+
+        <EditorSectionWrapper
+          id="agenda"
+          title="Agenda &amp; Kalender Kegiatan Santri"
+          description="Hitung mundur agenda akbar, kalender akademik, dan kegiatan rutin"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('agenda');
+            setPropertiesOpen(true);
+          }}
+        >
+          <AgendaHub />
+        </EditorSectionWrapper>
+
+        {renderFooterSection()}
+      </div>
+    );
+  }
+
+  function renderBeritaPage() {
+    return (
+      <div className="space-y-4 pb-12">
+        {editorState.sections.navbar?.isVisible && (
+          <EditorSectionWrapper
+            id="navbar"
+            title="Header Navigasi Web (9 Pilar)"
+            description="Logo pesantren, 9 pilar navigasi publik & profil pill"
+            isVisible={editorState.sections.navbar.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('navbar')}
+            onEditContent={() => {
+              setActiveSectionId('navbar');
+              setPropertiesOpen(true);
+            }}
+          >
+            <Navbar />
+          </EditorSectionWrapper>
+        )}
+
+        <EditorSectionWrapper
+          id="beritaTerkini"
+          title="Warta Berita &amp; Kabar Pesantren"
+          description="Publikasi berita aktual, liputan kajian, dan press release resmi"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('beritaTerkini');
+            setPropertiesOpen(true);
+          }}
+        >
+          <Berita />
+        </EditorSectionWrapper>
+
+        {renderFooterSection()}
+      </div>
+    );
+  }
+
+  function renderGaleriPage() {
+    return (
+      <div className="space-y-4 pb-12">
+        {editorState.sections.navbar?.isVisible && (
+          <EditorSectionWrapper
+            id="navbar"
+            title="Header Navigasi Web (9 Pilar)"
+            description="Logo pesantren, 9 pilar navigasi publik & profil pill"
+            isVisible={editorState.sections.navbar.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('navbar')}
+            onEditContent={() => {
+              setActiveSectionId('navbar');
+              setPropertiesOpen(true);
+            }}
+          >
+            <Navbar />
+          </EditorSectionWrapper>
+        )}
+
+        <EditorSectionWrapper
+          id="galeri"
+          title="Galeri Dokumentasi Foto &amp; Video"
+          description="Dokumentasi aktivitas santri, kegiatan kepesantrenan, dan rekaman video"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('galeri');
+            setPropertiesOpen(true);
+          }}
+        >
+          <Galeri />
+        </EditorSectionWrapper>
+
+        {renderFooterSection()}
+      </div>
+    );
+  }
+
+  function renderOsisPage() {
+    return (
+      <div className="space-y-4 pb-12">
+        {editorState.sections.navbar?.isVisible && (
+          <EditorSectionWrapper
+            id="navbar"
+            title="Header Navigasi Web (9 Pilar)"
+            description="Logo pesantren, 9 pilar navigasi publik & profil pill"
+            isVisible={editorState.sections.navbar.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('navbar')}
+            onEditContent={() => {
+              setActiveSectionId('navbar');
+              setPropertiesOpen(true);
+            }}
+          >
+            <Navbar />
+          </EditorSectionWrapper>
+        )}
+
+        <EditorSectionWrapper
+          id="osis"
+          title="Organisasi Santri (OSIS / OPJM)"
+          description="Struktur presidium BPH, divisi kepengurusan, dan proker santri"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('osis');
+            setPropertiesOpen(true);
+          }}
+        >
+          <OsisHub />
+        </EditorSectionWrapper>
+
+        {renderFooterSection()}
+      </div>
+    );
+  }
+
+  function renderKontakPage() {
+    return (
+      <div className="space-y-4 pb-12">
+        {editorState.sections.navbar?.isVisible && (
+          <EditorSectionWrapper
+            id="navbar"
+            title="Header Navigasi Web (9 Pilar)"
+            description="Logo pesantren, 9 pilar navigasi publik & profil pill"
+            isVisible={editorState.sections.navbar.isVisible}
+            isPublicPreview={isPublicPreview}
+            onToggleVisibility={() => toggleSectionVisibility('navbar')}
+            onEditContent={() => {
+              setActiveSectionId('navbar');
+              setPropertiesOpen(true);
+            }}
+          >
+            <Navbar />
+          </EditorSectionWrapper>
+        )}
+
+        <EditorSectionWrapper
+          id="kontak"
+          title="Sekretariat, Call Center &amp; Peta Lokasi Kampus"
+          description="Alamat lengkap, peta Google Maps interaktif, jam pelayanan, dan kontak resmi"
+          isVisible={true}
+          isPublicPreview={isPublicPreview}
+          onToggleVisibility={() => {}}
+          onEditContent={() => {
+            setActiveSectionId('kontak');
+            setPropertiesOpen(true);
+          }}
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 space-y-6">
+            <div className="p-6 rounded-3xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 shadow-md">
+              <h2 className="text-xl font-black text-emerald-950 dark:text-white mb-2">
+                {editorState.sections.kontak?.data?.headline || 'Sekretariat & Peta Lokasi Kampus'}
+              </h2>
+              <p className="text-xs text-slate-600 dark:text-zinc-400 mb-4">
+                {editorState.sections.kontak?.data?.subheadline || 'Kunjungi langsung kampus kami di Desa Lasem, Sidayu, Gresik'}
+              </p>
+              <div className="aspect-video w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-zinc-800">
+                <iframe
+                  title="Peta Lokasi PPJM"
+                  src={editorState.sections.kontak?.data?.mapsEmbedUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.2!2d112.56!3d-6.99!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zNsKwNTknMjQuMCJTIDExMsKwMzMnMzYuMCJF!5e0!3m2!1sid!2sid!4v1600000000000!5m2!1sid!2sid"}
+                  className="w-full h-full border-0"
+                  allowFullScreen
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          </div>
+        </EditorSectionWrapper>
+
+        {renderFooterSection()}
+      </div>
+    );
+  }
+
+  function renderWebsiteContent() {
+    switch (selectedPage) {
+      case 'jm-center':
+      case 'profil':
+        return renderJmCenterPage();
+      case 'program':
+        return renderProgramPage();
+      case 'spmb':
+        return renderSpmbPage();
+      case 'ekskul':
+        return renderEkskulPage();
+      case 'prestasi':
+        return renderPrestasiPage();
+      case 'smart-jm':
+      case 'stem':
+        return renderSmartJmPage();
+      case 'agenda':
+        return renderAgendaPage();
+      case 'berita':
+        return renderBeritaPage();
+      case 'galeri':
+        return renderGaleriPage();
+      case 'osis':
+        return renderOsisPage();
+      case 'kontak':
+        return renderKontakPage();
+      case 'home':
+      default:
+        return renderHomePage();
+    }
   }
 };
 
