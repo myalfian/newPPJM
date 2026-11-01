@@ -6,23 +6,18 @@ import {
   BookOpen,
   Award,
   CheckCircle2,
-  MapPin,
-  Phone,
-  Mail,
   Calendar,
   Users,
   Sparkles,
   ShieldCheck,
   Building2,
   Clock,
-  Flame,
   FileCheck2,
   ScrollText,
   Compass,
-  ArrowRight,
-  ChevronRight,
   School,
-  Check
+  UserCheck,
+  PenTool,
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { SafeRichContent } from '../../components/common/SafeRichContent';
@@ -39,9 +34,23 @@ interface PondokPesantrenSectionProps {
 }
 
 export const PondokPesantrenSection: React.FC<PondokPesantrenSectionProps> = ({ data }) => {
-  const defaultDesc = `Pondok Pesantren Jauharul Maknuun menaungi seluruh aktivitas santri mukim dalam bingkai tarbiyah asrama 24 jam. Santri dibina secara intensif dalam hafalan Al-Qur’an 30 juz mutqin dengan sanad keilmuan yang bersambung (*muttashil*), pembiasaan qiyamul lail, sholat fardhu lima waktu berjamaah, wirid *Rotibul Haddad*, serta adab dan akhlakul karimah.
+  const defaultDesc = `# Meneguhkan Tradisi Salaf dan Mencetak Generasi Hafizh Al-Qur'an Bersanad 30 Juz
 
-Pondok Pesantren menjadi kawah candradimuka bagi pembentukan karakter pribadi muslim sejati yang teguh memegang tradisi salaf namun siap menjawab tantangan peradaban modern.`;
+Pondok Pesantren Jauharul Maknuun (PPJM) yang berpusat di Desa Lasem, Kecamatan Sidayu, Kabupaten Gresik, hadir sebagai kawah candradimuka pendidikan Islam terpadu yang memadukan kedalaman ilmu agama salafiyah dan pembinaan akhlak mulia. Melalui sistem tarbiyah asrama mukim 24 jam penuh di bawah bimbingan para *masyayikh* dan asatidz, santri dibina secara istiqamah dalam hafalan Al-Qur’an 30 juz mutqin dengan sanad keilmuan yang bersambung (*muttashil*) hingga Rasulullah saw.
+
+## Pilar Tarbiyah Ruhiyah dan Kedisiplinan Asrama 24 Jam
+Pendidikan kepesantrenan di PP. Jauharul Maknuun dirancang untuk membentuk pribadi santri yang mandiri, berintelektual luhur, dan matang secara spiritual. Setiap santri menjalani pembiasaan ibadah fardhu lima waktu berjamaah di masjid, *qiyamul lail*, puasa sunnah, serta pembacaan wirid *Rotibul Haddad* dan *Ratib Al-Attas* secara istiqamah demi menyucikan jiwa (*tazkiyatun nafs*).
+
+## Takhassus Tahfidzul Qur'an dan Sanad Keilmuan Muttashil
+Program takhassus tahfidz Al-Qur'an diampu oleh para *huffadz* yang memiliki sanad keilmuan muttashil. Sistem setoran hafalan menggunakan metode talaqqi individual, bimbingan fashahah makharijul huruf, evaluasi *tasmi’* hafalan terbuka di hadapan wali santri, hingga wisuda haflah mutqin 30 juz.
+
+## Penguatan Bahasa dan Karakter Kepemimpinan Santri
+Guna merespons dinamika peradaban global, lingkungan asrama menerapkan pembiasaan percakapan dwibahasa (*bilingual*) bahasa Arab dan bahasa Inggris sehari-hari. Santri juga dilatih kepemimpinan melalui kegiatan *muhadhoroh* khitobah tiga bahasa, kedisiplinan organisasi santri, serta pengabdian masyarakat.
+
+## Ikhtiar Mencetak Ulama Intelektual untuk Peradaban Gemilang
+Pondok Pesantren Jauharul Maknuun terus berikhtiar melahirkan kader ulama yang berakhlakul karimah, berintelektual tinggi, serta mampu menjadi pelopor kebaikan dan keberkahan bagi umat, bangsa, dan agama.
+
+Penulis: Tim Humas & Pengasuhan PPJM | Editor: Tim Redaksi Web Jauharul Maknuun`;
 
   const description = data?.description || defaultDesc;
   const imageUrl =
@@ -94,7 +103,7 @@ Pondok Pesantren menjadi kawah candradimuka bagi pembentukan karakter pribadi mu
   return (
     <article
       id="section-pondok-pesantren"
-      className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-emerald-900/20 dark:border-emerald-700/30 p-3.5 sm:p-6 lg:p-7 shadow-md relative overflow-hidden space-y-5"
+      className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-emerald-900/20 dark:border-emerald-700/30 p-3.5 sm:p-6 lg:p-7 shadow-md relative overflow-hidden space-y-6"
     >
       {/* Ambient Islamic Ornament Backing */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-emerald-500/10 via-emerald-600/5 to-transparent rounded-full blur-3xl pointer-events-none" />
@@ -123,9 +132,9 @@ Pondok Pesantren menjadi kawah candradimuka bagi pembentukan karakter pribadi mu
         </div>
       </div>
 
-      {/* 2. Main Two-Column Media & Narrative */}
+      {/* 2. Top Media & Quick Stats */}
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-        {/* Left: Featured Image with Badge */}
+        {/* Featured Image */}
         <div className="lg:col-span-5">
           <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-emerald-900/15 dark:border-emerald-600/30 shadow-lg group">
             <img
@@ -146,18 +155,13 @@ Pondok Pesantren menjadi kawah candradimuka bagi pembentukan karakter pribadi mu
           </div>
         </div>
 
-        {/* Right: Rich Narrative & Quick Facts */}
-        <div className="lg:col-span-7 space-y-3.5">
-          <div className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-2">
-            <SafeRichContent content={description} />
-          </div>
-
-          {/* Key Stat Badges */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+        {/* Quick Highlights & Stats */}
+        <div className="lg:col-span-7 space-y-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {stats.map((st, i) => (
               <div
                 key={i}
-                className="p-2 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40 text-center"
+                className="p-2.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40 text-center"
               >
                 <span className="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 block">
                   {st.label}
@@ -168,10 +172,27 @@ Pondok Pesantren menjadi kawah candradimuka bagi pembentukan karakter pribadi mu
               </div>
             ))}
           </div>
+
+          <div className="p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/60 space-y-1.5">
+            <h5 className="text-xs font-black uppercase tracking-wider text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span>Komitmen Pengasuhan Ruhani &amp; Intelektual</span>
+            </h5>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Memadukan 4 sintesa rujukan pesantren besar nusantara: kedisiplinan Gontor, tahfidz Yanbu’ul Qur’an, kutubut turats Mambaus Sholihin, serta sains riset SD IRADA.
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* 3. 4 Pilar Kepesantrenan Cards */}
+      {/* 3. Structured Article Content: Prose / Rich Article View */}
+      <div className="relative z-10 pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
+        <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-3">
+          <SafeRichContent content={description} />
+        </div>
+      </div>
+
+      {/* 4. 4 Pilar Kepesantrenan Cards */}
       <div className="relative z-10 pt-2 space-y-2.5">
         <h4 className="text-sm sm:text-base font-extrabold text-zinc-900 dark:text-white flex items-center gap-2">
           <Compass className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
@@ -208,7 +229,7 @@ Pondok Pesantren menjadi kawah candradimuka bagi pembentukan karakter pribadi mu
         </div>
       </div>
 
-      {/* 4. Checklist Program & Fasilitas Asrama */}
+      {/* 5. Checklist Program & Fasilitas Asrama */}
       <div className="relative z-10 p-3.5 rounded-xl bg-gradient-to-r from-emerald-50/60 via-zinc-50 to-emerald-50/60 dark:from-emerald-950/30 dark:via-zinc-900/50 dark:to-emerald-950/30 border border-emerald-200/50 dark:border-emerald-800/40 space-y-2">
         <strong className="text-xs font-bold text-emerald-950 dark:text-emerald-200 uppercase tracking-wider block">
           Karakteristik &amp; Keistimewaan Pengasuhan PP. Jauharul Maknuun:
@@ -234,11 +255,30 @@ interface SmpPlusSectionProps {
 }
 
 export const SmpPlusSection: React.FC<SmpPlusSectionProps> = ({ data }) => {
-  const defaultDesc = `SMP Plus Jauharul Maknuun Islamic Boarding School merupakan unit lembaga pendidikan jenjang SMP di bawah naungan Pondok pesantren Jauharul Maknuun dan Yayasan Al Jauharul Al Maknuun Lasem. Sekolah ini berada di Desa Lasem, Kecamatan Sidayu, Kabupaten Gresik. Gedung sekolah dan pesantren berdiri di atas tanah seluas 1.188 m² dan diresmikan langsung oleh Wakil Bupati Kab. Gresik, Ibu Hj. Aminatun Habibah, M.Pd. pada tanggal 21 Agustus 2022. Dan pada hari itu pula kegiatan keislaman di Pondok Pesantren Jauharul Maknuun berjalan, dengan diawali kajian dan belajar baca tulis Al-Qur'an untuk anak-anak usia dini di sekitar wilayah Desa Lasem.
+  const defaultDesc = `# Menelusuri Sejarah Pendirian dan Keunggulan 4 Sintesa Kurikulum SMP Plus Jauharul Maknuun
 
-SMP Plus Jauharul Maknuun Islamic Boarding School mengawali kegiatan belajar mengajar pada tahun ajaran 2023/2024 yang diikuti oleh 16 peserta didik (10 laki-laki dan 6 perempuan) dari berbagai daerah di sekitar wilayah Kabupaten Gresik.
+SMP Plus Jauharul Maknuun *Islamic Boarding School* merupakan satuan pendidikan formal jenjang menengah pertama di bawah naungan Yayasan Al Jauharu Al Maknuun yang berlokasi di Desa Lasem, Kecamatan Sidayu, Kabupaten Gresik. Berdiri di atas lahan seluas 1.188 m² dan diresmikan langsung oleh Wakil Bupati Kabupaten Gresik, Ibu **Hj. Aminatun Habibah, M.Pd.** pada tanggal **21 Agustus 2022**, sekolah modern berbasis pesantren ini mengawali kegiatan belajar mengajar pada tahun ajaran **2023/2024** dengan 16 santri perdana yang kini telah berkembang pesat dan terakreditasi **"A" (Unggul)** oleh BAN-PDM (NPSN: **70045189**).
 
-Yayasan Al Jauharu Al Maknuun Lasem Gresik juga merupakan salah satu yayasan yang mempunyai sekolah swasta SMP berbasis boarding school yang dikelola oleh satu manajemen terpadu dengan SD IRADA “Full Day Education” Gresik, yang menjadi salah satu ikon level pendidikan dasar modern di Kabupaten Gresik.`;
+## Landasan Historis dan Integrasi Manajemen SD IRADA
+Kelahiran SMP Plus Jauharul Maknuun merupakan wujud nyata komitmen yayasan dalam mengamalkan amanat konstitusi bahwa setiap warga negara berhak mendapatkan pendidikan yang layak, bermutu, dan mencerdaskan kehidupan bangsa. Mengadopsi standar tata kelola terpadu bersama **SD IRADA “Full Day Education”**—ikon pendidikan dasar modern unggulan di Kabupaten Gresik—SMP Plus Jauharul Maknuun menyajikan layanan pendidikan komprehensif bagi lulusan SD/MI dengan sinergi kurikulum nasional dan nilai luhur kepesantrenan.
+
+## 4 Sintesa Kurikulum: Kiblat Pembinaan Mutu Pendidikan
+Guna mencapai profil lulusan yang paripurna, satuan pendidikan SMP Plus Jauharul Maknuun mengintegrasikan empat sintesa kurikulum unggulan dari lembaga terkemuka:
+1. **Pondok Modern Darussalam Gontor Ponorogo**: Kiblat dalam penegakan kedisiplinan tinggi, penguasaan aktif bahasa Arab dan Inggris (*bilingual environment*), serta pembentukan jiwa kepemimpinan (*leadership*).
+2. **Pondok Pesantren Yanbu’ul Qur’an Kudus**: Kiblat dalam pembelajaran *tahfidzul Qur’an* bersanad, ketepatan *fashahah*, serta penguasaan *makharijul huruf* yang fasih.
+3. **Pondok Pesantren Mambaus Sholihin Gresik**: Kiblat dalam pendalaman *dirosah Islamiyah*, pengkajian *kutubut turats* (kitab kuning), serta pemantapan akidah *Ahlussunnah wal Jama'ah*.
+4. **SD IRADA “Full Day Education” Gresik**: Kiblat dalam keunggulan riset sains modern, nalar matematika tinggi, teknologi komputasi, dan budaya literasi santri.
+
+## Program Unggulan dan Ekosistem Riset Terpadu
+Untuk menunjang kenyamanan belajar, kampus dilengkapi dengan ruang kelas ber-AC, laboratorium IPA/STEM modern, perpustakaan digital, serta kelas multimedia interaktif. Ragam program unggulan disajikan secara berkala, meliputi *Tahfidzul Qur’an*, **JM Camp**, pembinaan *Super Quantum* (SQ), *Student Exchange*, *Bilingual Class*, *English Week*, *Usbu’ul Arabiy*, *Entrepreneurship Class*, kelas olimpiade, pembinaan *lifeskill*, kelas keputrian, kajian kitab jauhar, hingga *rihlah iqtishodiyah wat tarbawiyah*.
+
+## Pengembangan Bakat dan Minat Santri
+Potensi santri diasah melalui 11 cabang ekstrakurikuler terarah, antara lain: Robotika STEM & *Coding*, bela diri Perisai Diri, panahan sunnah, futsal, badminton, seni kaligrafi Islam, seni tilawah Al-Qur'an, Pramuka, hadrah Al-Banjari, bahasa Mandarin, dan jurnalisme literasi.
+
+## Harapan Melahirkan Generasi Ulul Albab
+Di bawah kepemimpinan Kepala Sekolah **Ferany Ardiana, S.S., M.Pd.** beserta dewan guru yang berdedikasi, SMP Plus Jauharul Maknuun bertekad terus melahirkan generasi *ulul albab* yang shalih, cerdas, terampil, dan unggul di kancah nasional maupun internasional.
+
+Penulis: Ferany Ardiana, S.S., M.Pd. | Editor: Tim Publikasi & Humas SMP Plus JM`;
 
   const description = data?.description || defaultDesc;
   const imageUrl =
@@ -317,7 +357,7 @@ Yayasan Al Jauharu Al Maknuun Lasem Gresik juga merupakan salah satu yayasan yan
   return (
     <article
       id="section-smp-plus"
-      className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/90 dark:border-zinc-800 p-3.5 sm:p-6 lg:p-7 shadow-md relative overflow-hidden space-y-5"
+      className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/90 dark:border-zinc-800 p-3.5 sm:p-6 lg:p-7 shadow-md relative overflow-hidden space-y-6"
     >
       {/* 1. Header Banner */}
       <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-zinc-100 dark:border-zinc-800 pb-4">
@@ -348,7 +388,7 @@ Yayasan Al Jauharu Al Maknuun Lasem Gresik juga merupakan salah satu yayasan yan
         </div>
       </div>
 
-      {/* 2. Main Media & Sejarah Berdiri */}
+      {/* 2. Media Image & Quick Card */}
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
         {/* Featured Image */}
         <div className="lg:col-span-5">
@@ -371,19 +411,44 @@ Yayasan Al Jauharu Al Maknuun Lasem Gresik juga merupakan salah satu yayasan yan
           </div>
         </div>
 
-        {/* Narrative & History */}
+        {/* Quick Highlights */}
         <div className="lg:col-span-7 space-y-3">
-          <h4 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-emerald-600" />
-            <span>Sejarah &amp; Rekam Jejak Pendirian</span>
-          </h4>
-          <div className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-2">
-            <SafeRichContent content={description} />
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+            {stats.slice(0, 4).map((st, i) => (
+              <div
+                key={i}
+                className="p-2.5 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40"
+              >
+                <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block font-medium">
+                  {st.label}
+                </span>
+                <span className="text-xs font-black text-emerald-900 dark:text-emerald-300 break-words">
+                  {st.value}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className="p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/60 space-y-1.5">
+            <h5 className="text-xs font-black uppercase tracking-wider text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
+              <School className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Satu Manajemen Terpadu dengan SD IRADA</span>
+            </h5>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Dikelola oleh tim manajemen pendidikan profesional berpengalaman dalam mencetak generasi juara olimpiade sains, tahfidz, dan penguasaan bahasa internasional.
+            </p>
           </div>
         </div>
       </div>
 
-      {/* 3. 4 SINTESA KURIKULUM - The Core Educational Compass */}
+      {/* 3. Structured Article Content: Prose / Rich Article View */}
+      <div className="relative z-10 pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
+        <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-3">
+          <SafeRichContent content={description} />
+        </div>
+      </div>
+
+      {/* 4. 4 SINTESA KURIKULUM - The Core Educational Compass */}
       <div className="relative z-10 pt-2 space-y-2.5">
         <div className="flex items-center justify-between">
           <h4 className="text-sm sm:text-base font-extrabold text-zinc-900 dark:text-white flex items-center gap-2">
@@ -422,7 +487,7 @@ Yayasan Al Jauharu Al Maknuun Lasem Gresik juga merupakan salah satu yayasan yan
         </div>
       </div>
 
-      {/* 4. 14 PROGRAM UNGGULAN & EKSTRAKURIKULER */}
+      {/* 5. 14 PROGRAM UNGGULAN & EKSTRAKURIKULER */}
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-4 pt-1">
         {/* Left: Program Unggulan */}
         <div className="lg:col-span-7 bg-zinc-50/80 dark:bg-zinc-800/50 rounded-xl border border-zinc-200/70 dark:border-zinc-700/60 p-3.5 space-y-2.5">
@@ -459,7 +524,7 @@ Yayasan Al Jauharu Al Maknuun Lasem Gresik juga merupakan salah satu yayasan yan
         </div>
       </div>
 
-      {/* 5. TABEL IDENTITAS RESMI SEKOLAH */}
+      {/* 6. TABEL IDENTITAS RESMI SEKOLAH */}
       <div className="relative z-10 pt-2 space-y-2">
         <h5 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
           <FileCheck2 className="w-3.5 h-3.5 text-emerald-600" />
@@ -494,11 +559,32 @@ interface MadinSectionProps {
 }
 
 export const MadinSection: React.FC<MadinSectionProps> = ({ data }) => {
-  const defaultDesc = `Di samping memiliki unit Pendidikan SMP Plus Jauharul Maknuun “Islamic Boarding School”, Yayasan Al Jauharu Al Maknuun Lasem juga memiliki lembaga pendidikan formal keagamaan yaitu unit Pendidikan Madrasah Diniyah Takmiliyah Wustho Jauharul Maknuun yang terfokuskan dalam memberikan pembelajaran agama serta tata bahasa arab sebagai pengantar memahami ilmu-ilmu agama, terutama Al-Qur’an dan hadis.
+  const defaultDesc = `# Mengkaji Turats Klasik dan Memperkokoh Bahasa Arab Melalui Tradisi Maknani Jawa
 
-Dalam kurikulumnya, madrasah diniyah ini mengikuti kurikulum pesantren salaf dengan pembelajaran yang terpusatkan dalam materi materi keagamaan dan dengan sistem pesantren klasik yaitu maknani jawa. Mata pelajaran satu dengan yang lain sangat berkaitan, meliputi: fikih, nahwu, shorof, hadits, akhlak, tauhid, faraidh, tarikh, bahasa arab.
+Madrasah Diniyah Takmiliyah Wustho (MDT Wustho) Jauharul Maknuun merupakan lembaga pendidikan formal keagamaan berizin resmi Kementerian Agama Republik Indonesia (Nomor Statistik Diniyah Takmiliyah/NSDT: **322235251146**) di bawah naungan Yayasan Al Jauharu Al Maknuun yang berdiri pada **21 Agustus 2022** di Desa Lasem, Kecamatan Sidayu, Kabupaten Gresik. Lembaga ini berfokus menyelenggarakan pembelajaran ilmu syariat dan tata bahasa Arab sebagai kunci utama dalam mendalami Al-Qur'an, hadis, dan kitab-kitab karya ulama salaf.
 
-Lembaga pendidikan Madrasah Diniyah ini juga sudah terdaftar resmi di Kantor Kementerian Agama Republik Indonesia.`;
+## Tradisi Salafiyah dan Metode Pembelajaran Maknani Jawa
+Kurikulum MDT Wustho Jauharul Maknuun berpijak murni pada khazanah pesantren salaf. Proses transfer keilmuan menggunakan metode klasik *maknani Jawa* (*kitab gandul*), di mana setiap santri dibimbing membubuhkan makna pegon dan kedudukan tata bahasa di bawah lafaz ayat Al-Qur'an maupun teks kitab kuning. Metode luhur ini terbukti efektif menumbuhkan ketelitian nalar gramatikal dan pemahaman tekstual maupun kontekstual terhadap literatur Islam klasik.
+
+## 9 Cabang Mata Pelajaran Turats yang Saling Berkelindan
+Materi pembelajaran di MDT Wustho dirancang berjenjang dan saling melengkapi, mencakup sembilan cabang ilmu keislaman pokok:
+1. **Fikih (*Al-Fiqh*)**: Menelaah hukum-hukum syariat, tata cara thaharah, kaidah ibadah *yaumiyyah*, muamalah, dan munakahat.
+2. **Nahwu (*An-Nahwu*)**: Mempelajari tata bahasa Arab sintaksis, hukum harakat akhir kalimat (*i’rab*), dan kaidah susunan kalimat *mufidah*.
+3. **Shorof (*Ash-Shorf*)**: Mendalami morfologi bahasa Arab, timbangan wazan, serta derivasi perubahan bentuk kata (*tashrif*).
+4. **Hadits (*Al-Hadits*)**: Mengkaji sunnah Nabawiyah, matan hadis pilihan, riwayat para sahabat, dan nilai-nilai akhlak Rasulullah saw.
+5. **Akhlak (*Al-Akhlaq*)**: Pembinaan budi pekerti luhur, adab santri terhadap guru dan orang tua, serta *tazkiyatun nafs* (penyucian hati).
+6. **Tauhid (*At-Tauhid*)**: Memperkokoh fondasi keimanan, akidah *Ahlussunnah wal Jama'ah*, serta mengenal sifat wajib, mustahil, dan jaiz bagi Allah dan Rasul-Nya.
+7. **Faraidh (*Al-Fara’idh*)**: Mempelajari kaidah pembagian harta warisan secara adil dan terukur sesuai panduan syariat Al-Qur’an dan Sunnah.
+8. **Tarikh (*At-Tarikh*)**: Memetik hikmah dari sejarah peradaban Islam, *sirah Nabawiyah*, serta rekam jejak perjuangan para Khulafaur Rasyidin.
+9. **Bahasa Arab (*Al-Lughah Al-‘Arabiyyah*)**: Mengembangkan keterampilan membaca kitab (*qira’ah*), memperkaya kosakata (*mufradat*), serta latihan mengarang kalimat (*insya’*).
+
+## Legalitas Resmi dan Sinergi Pendidikan Terpadu
+Keberadaan MDT Wustho Jauharul Maknuun yang telah terdaftar resmi di Kantor Kementerian Agama Republik Indonesia memberikan legitimasi kelembagaan yang kuat. Ijazah dan kurikulum keagamaannya diakui secara formal serta terintegrasi utuh dengan ritme belajar santri di SMP Plus dan Pondok Pesantren Jauharul Maknuun.
+
+## Ikhtiar Melestarikan Khazanah Keilmuan Ulama Salafus Shalih
+Melalui penguasaan *turats* dan tata bahasa Arab yang kokoh, MDT Wustho Jauharul Maknuun berkomitmen menjaga mata rantai transmisi keilmuan Islam klasik demi melahirkan generasi *tafaqquh fiddin* yang berwawasan luas dan berakhlak mulia.
+
+Penulis: Tim Asatidz MDT Wustho | Editor: Divisi Pendidikan Diniyah Yayasan Al Jauharu Al Maknuun`;
 
   const description = data?.description || defaultDesc;
   const imageUrl =
@@ -569,7 +655,7 @@ Lembaga pendidikan Madrasah Diniyah ini juga sudah terdaftar resmi di Kantor Kem
   return (
     <article
       id="section-madrasah-diniyah"
-      className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-amber-900/20 dark:border-amber-700/30 p-3.5 sm:p-6 lg:p-7 shadow-md relative overflow-hidden space-y-5"
+      className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-amber-900/20 dark:border-amber-700/30 p-3.5 sm:p-6 lg:p-7 shadow-md relative overflow-hidden space-y-6"
     >
       {/* Ambient Turats Background Glow */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-amber-500/10 via-amber-600/5 to-transparent rounded-full blur-3xl pointer-events-none" />
@@ -603,9 +689,9 @@ Lembaga pendidikan Madrasah Diniyah ini juga sudah terdaftar resmi di Kantor Kem
         </div>
       </div>
 
-      {/* 2. Media Image & Narrative */}
+      {/* 2. Media Image & Quick Card */}
       <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-        {/* Left: Featured Image */}
+        {/* Featured Image */}
         <div className="lg:col-span-5">
           <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-amber-900/15 dark:border-amber-600/30 shadow-lg group">
             <img
@@ -626,19 +712,28 @@ Lembaga pendidikan Madrasah Diniyah ini juga sudah terdaftar resmi di Kantor Kem
           </div>
         </div>
 
-        {/* Right: Narrative Description */}
+        {/* Quick Highlights */}
         <div className="lg:col-span-7 space-y-3">
-          <h4 className="text-sm font-black text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-amber-600" />
-            <span>Profil &amp; Sistem Pembelajaran Salaf</span>
-          </h4>
-          <div className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-2">
-            <SafeRichContent content={description} />
+          <div className="p-3.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-800/40 space-y-2">
+            <h5 className="text-xs font-black uppercase tracking-wider text-amber-950 dark:text-amber-300 flex items-center gap-1.5">
+              <BookOpen className="w-3.5 h-3.5 text-amber-600" />
+              <span>Sistem Pembelajaran Terintegrasi</span>
+            </h5>
+            <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+              Santri tidak hanya menghafal ayat, melainkan dibimbing mendalami kaidah gramatika bahasa Arab (*nahwu* dan *shorof*) agar mampu membaca literatur Islam klasik secara mandiri dan beradab.
+            </p>
           </div>
         </div>
       </div>
 
-      {/* 3. 9 MATA PELAJARAN TURATS SALAF (3x3 Grid) */}
+      {/* 3. Structured Article Content: Prose / Rich Article View */}
+      <div className="relative z-10 pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
+        <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-3">
+          <SafeRichContent content={description} />
+        </div>
+      </div>
+
+      {/* 4. 9 MATA PELAJARAN TURATS SALAF (3x3 Grid) */}
       <div className="relative z-10 pt-2 space-y-2.5">
         <div className="flex items-center justify-between">
           <h4 className="text-sm sm:text-base font-extrabold text-zinc-900 dark:text-white flex items-center gap-2">
@@ -672,7 +767,7 @@ Lembaga pendidikan Madrasah Diniyah ini juga sudah terdaftar resmi di Kantor Kem
         </div>
       </div>
 
-      {/* 4. TABEL IDENTITAS RESMI MADRASAH DINIYAH */}
+      {/* 5. TABEL IDENTITAS RESMI MADRASAH DINIYAH */}
       <div className="relative z-10 pt-2 space-y-2">
         <h5 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
           <FileCheck2 className="w-3.5 h-3.5 text-amber-600" />
