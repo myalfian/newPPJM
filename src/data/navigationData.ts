@@ -68,6 +68,7 @@ export interface TabColorConfig {
 export interface NavTabItem {
   id: string;
   label: string;
+  shortLabel?: string;
   icon: React.ComponentType<{ className?: string }>;
   href: string;
   isDropdown: boolean;
@@ -220,7 +221,8 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
   },
   {
     id: 'ekskul',
-    label: 'Ekskul',
+    label: 'Ekstrakurikuler',
+    shortLabel: 'Ekskul',
     icon: Sparkles,
     href: '/ekstrakurikuler',
     isDropdown: false,
@@ -447,18 +449,19 @@ export const ADMIN_MODULES: AdminModuleItem[] = [
     publicHref: '/prestasi',
     badge: 'Juara',
   },
-  // 7. Ekstrakurikuler
+  // 7. Ekstrakurikuler (Ekskul)
   {
     id: 'ekskul',
-    title: '7. Ekstrakurikuler Santri',
+    title: '7. Ekstrakurikuler (Ekskul) Santri',
     shortLabel: 'Ekstrakurikuler',
-    desc: 'Katalog minat bakat: jadwal latihan, pelatih, lokasi & multi-foto ekskul',
-    href: '/admin/ekskul',
+    desc: 'Katalog minat bakat: jadwal latihan, pelatih, lokasi & multi-foto kegiatan santri',
+    href: '/admin/ekstrakurikuler',
     icon: Sparkles,
     roles: ['super_admin', 'pengurus_konten'],
     category: 'academic',
     publicCategory: 'Ekstrakurikuler',
     publicHref: '/ekstrakurikuler',
+    badge: 'Minat Bakat',
   },
   // 8. OSIS (Struktur, Program, Warta Event)
   {

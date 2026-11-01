@@ -333,8 +333,8 @@ export const App: React.FC = () => {
             <Route path="slider" element={<KelolaSlider />} />
             <Route path="hafidz" element={<KelolaHafidz />} />
             <Route path="prestasi" element={<KelolaPrestasi />} />
-            <Route path="ekskul" element={<KelolaEkskul />} />
-            <Route path="ekstrakurikuler" element={<Navigate to="/admin/ekskul" replace />} />
+            <Route path="ekstrakurikuler" element={<KelolaEkskul />} />
+            <Route path="ekskul" element={<Navigate to="/admin/ekstrakurikuler" replace />} />
             <Route path="fasilitas" element={<KelolaFasilitas />} />
             <Route path="keunggulan" element={<KelolaKeunggulan />} />
             <Route path="quick-menu" element={<KelolaQuickMenu />} />

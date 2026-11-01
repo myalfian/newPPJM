@@ -334,6 +334,9 @@ export const AdminLayout: React.FC = () => {
     if (item.href === '/admin/dashboard') {
       return location.pathname === '/admin' || location.pathname === '/admin/dashboard';
     }
+    if (item.href === '/admin/ekstrakurikuler') {
+      return location.pathname.startsWith('/admin/ekstrakurikuler') || location.pathname.startsWith('/admin/ekskul');
+    }
     return location.pathname.startsWith(item.href);
   }) || ADMIN_SIDEBAR_GROUPS[0].items[0];
 
@@ -498,6 +501,8 @@ export const AdminLayout: React.FC = () => {
                       const isActive =
                         item.href === '/admin/dashboard'
                           ? location.pathname === '/admin' || location.pathname === '/admin/dashboard'
+                          : item.href === '/admin/ekstrakurikuler'
+                          ? location.pathname.startsWith('/admin/ekstrakurikuler') || location.pathname.startsWith('/admin/ekskul')
                           : location.pathname.startsWith(item.href);
 
                       if (!isAllowed) {

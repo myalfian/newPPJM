@@ -444,7 +444,7 @@ const SECTION_LIBRARY: SectionLibraryTemplate[] = [
         { id: 'program-unggulan', label: 'Program', route: '/program-unggulan', theme: 'violet', isVisible: true },
         { id: 'smart-jm', label: 'SMART JM', route: '/smart-jm/hafidz/read', theme: 'emerald', isVisible: true },
         { id: 'prestasi', label: 'Prestasi', route: '/prestasi', theme: 'amber', isVisible: true },
-        { id: 'ekskul', label: 'Ekstrakurikuler', route: '/ekskul', theme: 'orange', isVisible: true },
+        { id: 'ekskul', label: 'Ekstrakurikuler', route: '/ekstrakurikuler', theme: 'orange', isVisible: true },
         { id: 'osis', label: 'OSIS', route: '/osis', theme: 'indigo', isVisible: true },
         { id: 'agenda-pesantren', label: 'Agenda', route: '/agenda', theme: 'emerald', isVisible: true },
         { id: 'galeri-sekolah', label: 'Galeri', route: '/galeri/foto', theme: 'rose', isVisible: true }

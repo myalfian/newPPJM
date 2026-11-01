@@ -320,13 +320,13 @@ export const KelolaEkskul: React.FC = () => {
         <div className="relative z-10 space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 text-[#C8A951] text-xs font-bold border border-[#C8A951]/40">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Pusat Pembinaan Bakat &amp; Ekstrakurikuler Santri</span>
+            <span>Pusat Pembinaan Bakat &amp; Ekstrakurikuler (Ekskul) Santri</span>
           </div>
           <h1 className="text-xl sm:text-3xl font-black tracking-tight text-white">
-            Kelola Ekstrakurikuler (5 Kategori Lengkap)
+            Kelola Ekstrakurikuler (Ekskul) Santri
           </h1>
           <p className="text-xs sm:text-sm text-emerald-100/90 max-w-3xl leading-relaxed">
-            Pengelolaan jadwal latihan, pelatih, lokasi, dan deskripsi kegiatan santri: Sains, Olahraga, Seni, Agama, dan Pramuka.
+            Program Pengembangan Bakat, Minat, dan Kepemimpinan Santri: Pengelolaan jadwal latihan, pelatih, lokasi, dan dokumentasi foto kegiatan (Sains, Olahraga, Seni, Agama, dan Pramuka).
           </p>
         </div>
       </div>
@@ -334,7 +334,7 @@ export const KelolaEkskul: React.FC = () => {
       {savedAlert && (
         <div className="p-4 rounded-xl bg-[#0E7A4C]/15 border border-[#0E7A4C] text-[#0E7A4C] dark:text-emerald-300 font-bold text-xs flex items-center gap-2 shadow-sm animate-fade-in">
           <CheckCircle2 className="w-5 h-5 text-[#0E7A4C] dark:text-emerald-400" />
-          <span>Alhamdulillah, data kegiatan ekstrakurikuler berhasil disimpan!</span>
+          <span>Alhamdulillah, data kegiatan ekstrakurikuler (ekskul) berhasil disimpan!</span>
         </div>
       )}
 
@@ -343,7 +343,7 @@ export const KelolaEkskul: React.FC = () => {
         <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-zinc-800">
           <h3 className="font-extrabold text-sm sm:text-base text-zinc-900 dark:text-white flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-[#C8A951]" />
-            <span>{editingId ? 'Edit Ekstrakurikuler' : 'Tambah Ekstrakurikuler Baru'}</span>
+            <span>{editingId ? 'Edit Ekstrakurikuler (Ekskul)' : 'Tambah Ekstrakurikuler (Ekskul) Baru'}</span>
           </h3>
           {editingId && (
             <button
@@ -359,7 +359,7 @@ export const KelolaEkskul: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Nama Kegiatan Ekskul: *</label>
+            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Nama Kegiatan Ekstrakurikuler (Ekskul): *</label>
             <input
               type="text"
               required

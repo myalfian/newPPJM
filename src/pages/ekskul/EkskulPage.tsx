@@ -189,13 +189,13 @@ export const EkskulPage: React.FC = () => {
           <div className="space-y-1 sm:space-y-1.5 max-w-2xl">
             <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-purple-500/20 border border-purple-400/40 text-purple-200 text-[10.5px] font-black uppercase tracking-wider">
               <Sparkles className="w-3.5 h-3.5 text-[#d4af37]" />
-              <span>Katalog Pengembangan Minat &amp; Bakat Santri</span>
+              <span>Program Pengembangan Bakat, Minat, dan Kepemimpinan Santri</span>
             </div>
             <h1 className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tight leading-tight">
-              Ekstrakurikuler Unggulan Santri
+              Ekstrakurikuler (Ekskul) Santri
             </h1>
             <p className="text-xs sm:text-sm text-purple-100/90 leading-relaxed font-normal">
-              Wadah eksplorasi potensi santri PP &amp; SMP Plus Jauharul Maknuun dalam mengasah keahlian kepemimpinan, riset teknologi robotika, seni budaya Islam, kepanduan, hingga seni bela diri pencak silat.
+              Wadah eksplorasi bakat, minat, dan kepemimpinan santri PP &amp; SMP Plus Jauharul Maknuun dalam mengasah keahlian riset teknologi robotika, seni budaya Islam, bahasa internasional, kepanduan, hingga seni bela diri pencak silat.
             </p>
           </div>
 
@@ -206,7 +206,7 @@ export const EkskulPage: React.FC = () => {
                 {ekskuls.length}
               </div>
               <div className="text-[9.5px] sm:text-[10px] text-purple-200 font-bold mt-0.5">
-                Klub Ekskul
+                Klub Kegiatan
               </div>
             </div>
 

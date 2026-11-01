@@ -35,6 +35,11 @@ export interface EkskulItem {
   isVisible: boolean;
 }
 
+// Unified Aliases: Ekstrakurikuler, Ekskul, and Extracurricular are one and the same entity
+export type EkstrakurikulerItem = EkskulItem;
+export type Extracurricular = EkskulItem;
+export type ExtracurricularItem = EkskulItem;
+
 export interface PrestasiItem {
   id: string;
   juara: string;
