@@ -351,9 +351,35 @@ export const KelolaProfil: React.FC = () => {
           .eq('slug', 'visi-misi')
           .maybeSingle();
 
-        if (visiData && isMounted && visiData.content) {
-          const lines = visiData.content.split('\n\n');
-          setVisiTeks(lines[0] || visiData.content);
+        if (visiData && isMounted) {
+          const extra = (visiData.extra_data as any) || {};
+
+          // 1. Load Visi Text
+          if (extra.vision) {
+            setVisiTeks(extra.vision);
+          } else if (visiData.content) {
+            const parts = visiData.content.split('\n\n');
+            setVisiTeks(parts[0] || visiData.content);
+          }
+
+          // 2. Load 5 Pilar Misi
+          if (Array.isArray(extra.missions) && extra.missions.length > 0) {
+            if (extra.missions[0] !== undefined) setPilar1(extra.missions[0]);
+            if (extra.missions[1] !== undefined) setPilar2(extra.missions[1]);
+            if (extra.missions[2] !== undefined) setPilar3(extra.missions[2]);
+            if (extra.missions[3] !== undefined) setPilar4(extra.missions[3]);
+            if (extra.missions[4] !== undefined) setPilar5(extra.missions[4]);
+          } else if (visiData.content) {
+            const parts = visiData.content.split('\n\n');
+            if (parts.length > 1) {
+              const lines = parts.slice(1).join('\n').split('\n').map((s: string) => s.trim()).filter(Boolean);
+              if (lines[0]) setPilar1(lines[0]);
+              if (lines[1]) setPilar2(lines[1]);
+              if (lines[2]) setPilar3(lines[2]);
+              if (lines[3]) setPilar4(lines[3]);
+              if (lines[4]) setPilar5(lines[4]);
+            }
+          }
         }
 
         const { data: facData } = await supabase.from('facilities').select('*').order('created_at');
@@ -410,11 +436,31 @@ export const KelolaProfil: React.FC = () => {
             return;
           }
         } else if (activeTab === 'visi-misi') {
+          // Fetch existing record to preserve extra_data (values / other properties)
+          const { data: currentRecord } = await supabase
+            .from('jm_center_pages')
+            .select('extra_data')
+            .eq('slug', 'visi-misi')
+            .maybeSingle();
+
+          const existingExtra = (currentRecord?.extra_data as any) || {};
+
+          const missionsList = [pilar1, pilar2, pilar3, pilar4, pilar5].map(p => (p || '').trim()).filter(Boolean);
+
+          const updatedExtra = {
+            ...existingExtra,
+            vision: visiTeks,
+            missions: missionsList
+          };
+
+          const fullCombinedContent = `${visiTeks}\n\n${missionsList.join('\n')}`;
+
           const { error } = await supabase.from('jm_center_pages').upsert(
             {
               slug: 'visi-misi',
               title: 'Visi & 5 Pilar Misi',
-              content: `${visiTeks}\n\n${pilar1}\n${pilar2}\n${pilar3}\n${pilar4}\n${pilar5}`,
+              content: fullCombinedContent,
+              extra_data: updatedExtra,
               updated_at: new Date().toISOString()
             },
             { onConflict: 'slug' }
