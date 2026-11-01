@@ -3,16 +3,35 @@ import { motion } from 'framer-motion';
 import { Calendar } from 'lucide-react';
 import './BottomNavBarTabs.css';
 
+export interface BottomNavTabItem {
+  id: string;
+  label: string;
+  shortLabel?: string;
+  icon?: React.ComponentType<{ className?: string }>;
+  badge?: string | number;
+}
+
 export interface BottomNavBarTabsProps {
-  categories: string[];
-  selectedCategory: string;
-  onSelectCategory: (category: string) => void;
+  // Support structured tabs (e.g. Sambutan, Sejarah, Visi Misi)
+  tabs?: BottomNavTabItem[];
+  activeTabId?: string;
+  onSelectTab?: (tabId: string) => void;
+
+  // Support category strings for backwards compatibility (e.g. Karya Siswa, Berita)
+  categories?: string[];
+  selectedCategory?: string;
+  onSelectCategory?: (category: string) => void;
+
+  // Year filter (Optional)
   years?: string[];
   selectedYear?: string;
   onSelectYear?: (year: string) => void;
   yearLabel?: string;
+
+  // Customization
+  layoutId?: string;
   className?: string;
-  categoryLabel?: string; // Optional legacy prop (label Kategori intentionally removed)
+  categoryLabel?: string;
 }
 
 /**
@@ -44,14 +63,17 @@ function renderCategoryMobileLabel(cat: string) {
 }
 
 /**
- * BottomNavBarTabs - Single Unified Category Navigation with Bottom Floating Animation.
- * Clean, DRY architecture: Single category loop prevents any duplicate tab rendering.
+ * BottomNavBarTabs - Single Unified Category & Tab Navigation with Bottom Curved Notch & Floating Jewel.
+ * Size, physics, and typography matched 1-to-1 with NavBarTabs (44px mobile, 46px desktop).
  * - Label "KATEGORI" removed.
- * - Year filter: top-right on mobile, in-bar on desktop.
- * - Mobile: 2-line wrapped text, 100% full-width, zero horizontal sliding, zero truncation.
- * - Desktop: Unified single emerald bar with full 1-line text and integrated Year filter.
+ * - Mobile: 100% full-width adaptive layout, zero horizontal sliding, zero truncation.
+ * - Desktop: Unified luxury emerald bar with full text and integrated filters.
+ * - Notch animation: Spring physics at bottom edge with 3D gold jewel and specular reflection.
  */
 export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
+  tabs,
+  activeTabId,
+  onSelectTab,
   categories,
   selectedCategory,
   onSelectCategory,
@@ -59,13 +81,40 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
   selectedYear,
   onSelectYear,
   yearLabel = 'Tahun',
+  layoutId = 'bottomCurvedCutoutPointer',
   className = '',
 }) => {
   const hasYears = Boolean(years && years.length > 0 && onSelectYear);
+  const isTabMode = Boolean(tabs && tabs.length > 0);
+
+  // Normalize items to unified loop
+  const items = isTabMode
+    ? tabs!.map((t) => ({
+        key: t.id,
+        id: t.id,
+        label: t.label,
+        shortLabel: t.shortLabel,
+        icon: t.icon,
+        badge: t.badge,
+        isActive: activeTabId === t.id,
+        onClick: () => onSelectTab?.(t.id),
+      }))
+    : (categories || []).map((cat) => ({
+        key: cat,
+        id: cat,
+        label: cat,
+        shortLabel: undefined,
+        icon: undefined,
+        badge: undefined,
+        isActive: selectedCategory === cat,
+        onClick: () => onSelectCategory?.(cat),
+      }));
+
+  const uniqueId = React.useId().replace(/:/g, '');
 
   return (
     <nav
-      aria-label="Filter Kategori dan Tahun"
+      aria-label="Navigasi Tab Menu"
       className={`bottom-curved-navbar-wrapper w-full ${className}`}
     >
       {/* 1. Mobile-Only Year Filter Pill: Positioned at Top Right (Separate from Category Bar) */}
@@ -92,27 +141,41 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
 
       {/* 2. Single Unified Emerald Bar: Rendered Exactly ONCE for both Mobile & Desktop */}
       <div className="bottom-curved-navbar-bar w-full">
-        {/* Category Tabs Track */}
+        {/* Tabs Track */}
         <div className="bottom-curved-scroll-track flex-1 min-w-0 flex items-center justify-start h-full">
-          <ul className="bottom-curved-tab-list flex items-center">
-            {categories.map((cat) => {
-              const isActive = selectedCategory === cat;
+          <ul className="bottom-curved-tab-list flex items-center w-full">
+            {items.map((item) => {
+              const Icon = item.icon;
 
               return (
                 <li
-                  key={cat}
+                  key={item.key}
                   className="bottom-curved-tab-col flex-1 md:flex-none h-full flex items-center justify-center min-w-0"
                 >
                   <button
                     type="button"
-                    onClick={() => onSelectCategory(cat)}
-                    aria-pressed={isActive}
-                    className={`bottom-curved-tab-btn w-full md:w-auto ${isActive ? 'active' : ''}`}
+                    onClick={item.onClick}
+                    aria-pressed={item.isActive}
+                    className={`bottom-curved-tab-btn w-full md:w-auto ${item.isActive ? 'active' : ''}`}
                   >
-                    {/* Animated Sliding Notch Pointer & Radiant Floating Gold Jewel at the BOTTOM */}
-                    {isActive && (
+                    {/* Active Tab Glass Pill Highlight */}
+                    {item.isActive && (
                       <motion.div
-                        layoutId="bottomCurvedCutoutPointer"
+                        layoutId={`${layoutId}-pill`}
+                        className="absolute inset-0.5 rounded-[12px] bg-white/15 dark:bg-white/10 pointer-events-none -z-1"
+                        transition={{
+                          type: 'spring',
+                          stiffness: 420,
+                          damping: 28,
+                          mass: 0.58,
+                        }}
+                      />
+                    )}
+
+                    {/* Animated Sliding Notch Pointer & Radiant Floating Gold Jewel at the BOTTOM */}
+                    {item.isActive && (
+                      <motion.div
+                        layoutId={layoutId}
                         className="bottom-curved-pointer"
                         transition={{
                           type: 'spring',
@@ -131,7 +194,7 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                           aria-hidden="true"
                         >
                           <defs>
-                            <radialGradient id="bottomNotchDotGrad" cx="35%" cy="35%" r="65%">
+                            <radialGradient id={`bottomNotchDotGrad-${uniqueId}`} cx="35%" cy="35%" r="65%">
                               <stop offset="0%" stopColor="#fffbeb" />
                               <stop offset="35%" stopColor="#fde047" />
                               <stop offset="75%" stopColor="#d97706" />
@@ -148,7 +211,7 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                             cx="37"
                             cy="16"
                             r="4.8"
-                            fill="url(#bottomNotchDotGrad)"
+                            fill={`url(#bottomNotchDotGrad-${uniqueId})`}
                             className="bottom-curved-notch-dot"
                             stroke="none"
                           />
@@ -165,15 +228,37 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                       </motion.div>
                     )}
 
-                    {/* Responsive Text: 2-line wrapped on mobile, 1-line on desktop */}
+                    {/* Tab Content: Optional Icon + Responsive Text */}
                     <span className="bottom-curved-tab-text w-full">
-                      <span className="md:hidden">
-                        {renderCategoryMobileLabel(cat)}
-                      </span>
-                      <span className="hidden md:inline">
-                        {cat}
-                      </span>
+                      {Icon && <Icon className="w-3.5 h-3.5 mb-0.5 shrink-0" />}
+
+                      {isTabMode ? (
+                        item.shortLabel ? (
+                          <>
+                            <span className="sm:hidden font-extrabold">{item.shortLabel}</span>
+                            <span className="hidden sm:inline font-bold">{item.label}</span>
+                          </>
+                        ) : (
+                          <span className="font-extrabold">{item.label}</span>
+                        )
+                      ) : (
+                        <>
+                          <span className="md:hidden">
+                            {renderCategoryMobileLabel(item.label)}
+                          </span>
+                          <span className="hidden md:inline">
+                            {item.label}
+                          </span>
+                        </>
+                      )}
                     </span>
+
+                    {/* Optional Badge */}
+                    {item.badge && (
+                      <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-black bg-amber-400 text-emerald-950">
+                        {item.badge}
+                      </span>
+                    )}
                   </button>
                 </li>
               );

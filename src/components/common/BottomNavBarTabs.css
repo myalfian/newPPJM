@@ -1,14 +1,15 @@
 /* Modern Android / Web TabNavBar with Curved Cutout Notch & Floating Dot at the BOTTOM
  * Theme: Signature Emerald Green & Gold matching website identity & NavBarTabs
  * Features:
- * - Borderless Green Container (#0a6847 to #0f5132) with soft ambient depth
- * - Mobile: Adaptive full-width layout with auto-wrapping 2-line text (no ellipsis, no clipping)
- * - Desktop: Left-aligned category tabs positioned sequentially with close spacing
- * - Animated sliding notch pointer & floating dot positioned at the BOTTOM edge
- * - Mathematically continuous C1 SVG cutout notch scooping upward into the bar over the active item (#FBFBFA)
- * - Perfectly centered floating dot inside the bottom notch
- * - Distortion-free spring physics with Framer Motion layout="position"
- * - Glassmorphic hover effect & integrated Year filter selector
+ * - Exact size parity with NavBarTabs (44px mobile, 46px desktop)
+ * - Borderless Green Container (#0a6847 to #0f5132) with luxury depth
+ * - Mobile: Adaptive full-width layout with equal distribution (zero sliding, zero clipping)
+ * - Desktop: Left-aligned category & nav tabs positioned sequentially with smooth spacing
+ * - Animated sliding notch pointer & floating radiant gold jewel at the BOTTOM edge
+ * - Mathematically continuous C1 SVG cutout notch scooping upward into the bar over the active item
+ * - Perfectly centered floating gold dot with specular reflection inside the bottom notch
+ * - Distortion-free spring physics with Framer Motion layoutId (stiffness: 420, damping: 28, mass: 0.58)
+ * - Glassmorphic hover pill & glowing text shadow
  */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Ubuntu:wght@500;600;700;800&display=swap');
 
@@ -25,7 +26,7 @@
   outline: none !important;
 }
 
-/* Borderless Green Container matching NavBarTabs brand colors */
+/* Borderless Green Container matching NavBarTabs brand colors and size */
 .bottom-curved-navbar-bar {
   position: relative;
   display: flex;
@@ -42,6 +43,7 @@
   min-height: 44px;
   max-width: 100%;
   overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (min-width: 640px) {
@@ -57,11 +59,6 @@
   border: 0 !important;
   outline: none !important;
   box-shadow: 0 10px 28px -8px rgba(0, 0, 0, 0.6);
-}
-
-/* Remove 1px border highlight */
-.bottom-curved-navbar-bar::before {
-  display: none !important;
 }
 
 /* Track & List: Zero sliding on mobile, fits 100% of the screen */
@@ -94,7 +91,7 @@
   gap: 2px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .bottom-curved-tab-list {
     justify-content: flex-start;
     width: auto;
@@ -134,10 +131,11 @@
   justify-content: center;
   height: 100%;
   min-height: 44px;
+  min-width: 58px;
   width: 100%;
-  padding: 0 4px;
+  padding: 0 6px;
   border-radius: 12px;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: none;
   background: transparent;
   border: 0 !important;
@@ -145,14 +143,15 @@
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: color 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, transform 0.2s ease;
+  transition: color 0.28s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s ease, transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 10;
 }
 
 @media (min-width: 640px) {
   .bottom-curved-tab-btn {
     width: auto;
-    padding: 0 12px;
+    min-width: 68px;
+    padding: 0 14px;
     min-height: 46px;
   }
 }
@@ -164,7 +163,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border: 0 !important;
   outline: none !important;
-  transform: translateY(-1.5px);
+  transform: translateY(-1px);
 }
 
 :is(.dark .bottom-curved-tab-btn:hover:not(.active)) {
@@ -182,15 +181,14 @@
 }
 
 .bottom-curved-tab-btn.active {
-  color: #ffffff; /* Pure white for active tab */
+  color: #ffffff; /* Crisp glowing white/gold matching NavBarTabs */
 }
 
-/* Adaptive Text: Crisp, white, and bold */
+/* Adaptive Text: Crisp, enlarged, and bold for supreme mobile legibility */
 .bottom-curved-tab-text {
   font-family: 'Plus Jakarta Sans', 'Ubuntu', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 12.5px;
   font-weight: 800;
-  color: #ffffff;
   letter-spacing: -0.2px;
   line-height: 1.15;
   white-space: normal;
@@ -202,31 +200,30 @@
   justify-content: center;
   width: 100%;
   padding-top: 2px;
-  padding-bottom: 12px; /* Clearance above bottom notch */
-  transition: color 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), font-weight 0.22s ease, text-shadow 0.22s ease;
+  padding-bottom: 7px; /* Clearance above bottom notch matching top clearance of NavBarTabs */
+  transition: color 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), font-weight 0.28s cubic-bezier(0.16, 1, 0.3, 1), text-shadow 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @media (min-width: 640px) {
   .bottom-curved-tab-text {
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 700;
-    color: #ffffff;
     letter-spacing: 0.1px;
     line-height: normal;
     white-space: nowrap;
-    padding-top: 0px;
-    padding-bottom: 8px;
+    padding-top: 1px;
+    padding-bottom: 7px;
   }
 }
 
 .bottom-curved-tab-btn.active .bottom-curved-tab-text {
   font-weight: 800;
   color: #ffffff;
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.6), 0 1px 3px rgba(0, 0, 0, 0.35);
-  transform: translateY(-1.5px) scale(1.02);
+  text-shadow: 0 0 14px rgba(255, 255, 255, 0.7), 0 1px 3px rgba(0, 0, 0, 0.4);
+  transform: translateY(-1px) scale(1.02);
 }
 
-/* The Curved Cutout Pointer / Notch dipping from BOTTOM border of the card */
+/* The Curved Cutout Pointer / Notch dipping from BOTTOM border of the bar */
 /* Always centered over the active tab column without transform conflict with Framer Motion */
 .bottom-curved-pointer {
   position: absolute;
