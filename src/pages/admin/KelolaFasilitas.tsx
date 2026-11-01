@@ -19,8 +19,8 @@ export const KelolaFasilitas: React.FC = () => {
     },
     {
       name: 'description',
-      label: 'Deskripsi Fasilitas',
-      type: 'textarea',
+      label: 'Deskripsi Fasilitas (Word Editor)',
+      type: 'richtext',
       placeholder: 'Jelaskan fasilitas, spesifikasi, dan manfaat untuk santri...'
     },
     {

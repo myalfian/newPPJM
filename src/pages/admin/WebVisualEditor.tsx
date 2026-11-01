@@ -196,7 +196,7 @@ import { loadEditorState, fetchPublishedEditorState, saveEditorDraft, publishEdi
 import { EditorSectionWrapper } from '../../components/editor/EditorSectionWrapper';
 import { EditorItemWrapper } from '../../components/editor/EditorItemWrapper';
 import { EditContentModal } from '../../components/editor/EditContentModal';
-import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
+import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 import { Navbar } from '../../components/common/Navbar';
 import { HeroSlider } from '../../components/HeroSlider';
 import { QuickMenu } from '../../components/QuickMenu';
@@ -2344,11 +2344,9 @@ export const WebVisualEditor: React.FC = () => {
 
                   <div>
                     <label className="text-[11px] font-bold text-zinc-300 block mb-1">
-                      Teks Kalam Sambutan (Word Toolbar):
+                      Teks Kalam Sambutan (Word-Like Editor):
                     </label>
-                    <SectionWordEditor
-                      sectionType="sambutan"
-                      fieldName="quote"
+                    <WordLikeEditor
                       value={(currentSection.data as any).kalam || ''}
                       onChange={(val) => {
                         updateEditorState((prev) => ({
@@ -2364,6 +2362,7 @@ export const WebVisualEditor: React.FC = () => {
                       }}
                       bucket="cms-images"
                       minHeight="140px"
+                      toolbarMode="full"
                     />
                   </div>
                 </div>

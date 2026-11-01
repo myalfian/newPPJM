@@ -26,7 +26,7 @@ import { generateWhatsAppBroadcastUrl } from '../../lib/waFormatter';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { NewsItem, INITIAL_NEWS } from '../../data/newsData';
-import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
+import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 
 export const KelolaBerita: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'list' | 'editor'>('list');
@@ -762,21 +762,21 @@ export const KelolaBerita: React.FC = () => {
             )}
           </div>
 
-          {/* Full Word Ribbon Editor for News Content */}
+          {/* Full Word-Like Editor for News Content */}
           <div className="space-y-2">
             <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
               <span>Isi Lengkap Berita / Narasi: <span className="text-rose-500">*</span></span>
               <span className="text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                Word Ribbon Suite Aktif
+                Word Suite TipTap Aktif
               </span>
             </label>
-            <SectionWordEditor
-              sectionType="berita"
-              fieldName="content"
+            <WordLikeEditor
               value={isiBerita}
               onChange={(html) => setIsiBerita(html)}
               bucket="berita-images"
               minHeight="380px"
+              toolbarMode="full"
+              placeholder="Tulis narasi berita lengkap dengan foto, tabel, dan format teks..."
             />
           </div>
 

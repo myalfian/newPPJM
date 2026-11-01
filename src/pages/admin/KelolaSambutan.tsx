@@ -38,7 +38,7 @@ import { supabase, isSupabaseConfigured, SambutanPerson } from '../../lib/supaba
 import { sanitizeText, sanitizeUrl, isValidImageUrl } from '../../utils/sanitize';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { Link } from 'react-router-dom';
-import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
+import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 import { clearOldSeedCache } from '../../utils/clearOldCache';
 
 interface SambutanFormState {
@@ -1421,18 +1421,18 @@ export const KelolaSambutan: React.FC = () => {
                     />
                   </div>
 
-                  {/* Naskah Lengkap with SectionWordEditor */}
+                  {/* Naskah Lengkap with WordLikeEditor (Full Toolbar & Word Count) */}
                   <div className="space-y-1">
                     <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                      Naskah Lengkap Sambutan (Word Toolbar TipTap):
+                      Naskah Lengkap Sambutan (Word-Like TipTap Editor):
                     </label>
-                    <SectionWordEditor
-                      sectionType="sambutan"
-                      fieldName="message_full"
+                    <WordLikeEditor
                       value={form.message_full}
                       onChange={(val) => setForm((prev) => ({ ...prev, message_full: val }))}
                       bucket="avatars"
-                      minHeight="180px"
+                      minHeight="220px"
+                      toolbarMode="full"
+                      placeholder="Tulis amanat & sambutan lengkap pimpinan..."
                     />
                   </div>
 

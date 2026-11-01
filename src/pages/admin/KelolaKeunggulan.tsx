@@ -12,8 +12,8 @@ export const KelolaKeunggulan: React.FC = () => {
     },
     {
       name: 'description',
-      label: 'Keterangan Pilar',
-      type: 'textarea',
+      label: 'Keterangan Pilar (Word Editor)',
+      type: 'richtext',
       required: true,
       placeholder: 'Penjelasan program keunggulan secara mendalam...'
     },

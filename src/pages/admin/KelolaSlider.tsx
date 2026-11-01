@@ -33,7 +33,7 @@ import {
 } from '../../lib/sliderSettings';
 import { HeroSlide } from '../../data/heroSlides';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
-import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
+import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 
 interface SlideFormState {
   id: string;
@@ -485,13 +485,12 @@ export const KelolaSlider: React.FC = () => {
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     4. Deskripsi Informasi Popup (Word Toolbar Contextual)
                   </label>
-                  <SectionWordEditor
-                    sectionType="slider"
-                    fieldName="description"
+                  <WordLikeEditor
                     value={formData.desc}
                     onChange={(html) => setFormData({ ...formData, desc: html })}
                     bucket="cms-images"
                     minHeight="140px"
+                    toolbarMode="full"
                   />
                 </div>
 

@@ -24,7 +24,7 @@ import {
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
-import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
+import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 
 export interface PrestasiItem {
   id: string;
@@ -542,14 +542,7 @@ export const KelolaPrestasi: React.FC = () => {
           <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
             Deskripsi Prestasi &amp; Catatan Juara (Word Toolbar Contextual):
           </label>
-          <SectionWordEditor
-            sectionType="prestasi"
-            fieldName="description"
-            value={description}
-            onChange={(html) => setDescription(html)}
-            bucket="cms-images"
-            minHeight="140px"
-          />
+          <WordLikeEditor value={description} onChange={(html) => setDescription(html)} bucket="cms-images" minHeight="140px" toolbarMode="full" />
         </div>
 
         <div className="pt-2 flex justify-end">

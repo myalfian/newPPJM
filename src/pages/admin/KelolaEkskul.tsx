@@ -22,7 +22,7 @@ import {
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
-import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
+import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 
 export interface EkskulItem {
   id: string;
@@ -502,14 +502,7 @@ export const KelolaEkskul: React.FC = () => {
           <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
             Deskripsi &amp; Silabus Latihan Ekskul (Word Toolbar Contextual):
           </label>
-          <SectionWordEditor
-            sectionType="ekskul"
-            fieldName="description"
-            value={description}
-            onChange={(html) => setDescription(html)}
-            bucket="cms-images"
-            minHeight="160px"
-          />
+          <WordLikeEditor value={description} onChange={(html) => setDescription(html)} bucket="cms-images" minHeight="160px" toolbarMode="full" />
         </div>
 
         <div className="pt-2 flex justify-end">

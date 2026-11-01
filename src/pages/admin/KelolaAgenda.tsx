@@ -29,7 +29,7 @@ import {
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { invalidateCache } from '../../lib/queryCache';
-import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
+import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 
 // Kategori warna agenda PPJM
 export type AgendaCategoryType = 'Pondok' | 'Sekolah' | 'Diniyah' | 'Event Akbar' | 'Libur' | 'Tahfidz' | 'Sains & STEM';
@@ -1383,14 +1383,7 @@ export const KelolaAgenda: React.FC = () => {
                 <label className="text-xs font-bold text-slate-700">
                   Deskripsi Agenda (Word Toolbar Contextual): *
                 </label>
-                <SectionWordEditor
-                  sectionType="agenda"
-                  fieldName="description"
-                  value={description}
-                  onChange={(html) => setDescription(html)}
-                  bucket="cms-images"
-                  minHeight="150px"
-                />
+                <WordLikeEditor value={description} onChange={(html) => setDescription(html)} bucket="cms-images" minHeight="150px" toolbarMode="full" />
               </div>
 
               {/* Upload Foto / Banner WebP */}

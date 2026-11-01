@@ -16,7 +16,7 @@ import { compressImageToWebP } from '../../lib/imageCompressor';
 import type { CompressionResult } from '../../lib/imageCompressor';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
-import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
+import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 
 export interface GalleryAdminItem {
   id: string;
@@ -459,14 +459,7 @@ export const KelolaGaleri: React.FC = () => {
           <label className="text-xs font-bold text-slate-700 dark:text-zinc-300">
             Deskripsi &amp; Narasi Media (Word Toolbar Contextual): *
           </label>
-          <SectionWordEditor
-            sectionType="galeri"
-            fieldName="description"
-            value={deskripsi}
-            onChange={(html) => setDeskripsi(html)}
-            bucket="galeri-foto"
-            minHeight="140px"
-          />
+          <WordLikeEditor value={deskripsi} onChange={(html) => setDeskripsi(html)} bucket="galeri-foto" minHeight="140px" toolbarMode="full" />
         </div>
 
         <div className="pt-2 flex justify-end gap-2">

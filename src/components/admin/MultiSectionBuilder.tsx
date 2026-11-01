@@ -44,7 +44,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
-import { SectionWordEditor } from '../editor/SectionWordEditor';
+import { WordLikeEditor } from '../editor/WordLikeEditor';
 import { compressImageToWebP } from '../../lib/imageCompressor';
 
 export type FieldType =
@@ -1016,13 +1016,13 @@ export const MultiSectionBuilder: React.FC<MultiSectionBuilderProps> = ({
                         <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                           {f.label} {f.required && <span className="text-rose-500">*</span>}
                         </label>
-                        <SectionWordEditor
-                          sectionType={tableName}
-                          fieldName={f.name}
+                        <WordLikeEditor
                           value={val}
                           onChange={(html) => setFormData((prev) => ({ ...prev, [f.name]: html }))}
                           placeholder={f.placeholder || 'Tulis konten lengkap...'}
+                          bucket={f.bucket || storageBucket}
                           minHeight="220px"
+                          toolbarMode="full"
                         />
                       </div>
                     );
