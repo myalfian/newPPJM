@@ -248,24 +248,52 @@ export const KelolaUsers: React.FC = () => {
 
   const pwStrength = useMemo(() => calculatePasswordStrength(formPassword), [formPassword]);
 
-  // Handle Avatar Upload with WebP Auto-Compressor
+  // Handle Avatar Upload with WebP Auto-Compressor & Storage Bucket Upload
   const handleAvatarFile = async (file: File) => {
     if (!file.type.startsWith('image/')) {
-      alert('Mohon pilih file gambar (JPG, PNG, atau WebP).');
+      showToast('Mohon pilih file gambar (JPG, PNG, atau WebP).', 'error');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      showToast('Ukuran file foto maksimal 2MB sebelum kompresi.', 'error');
       return;
     }
     setFormCompressing(true);
     try {
       const res = await compressImageToWebP(file, 400, 400, 0.85);
-      setFormAvatar(res.dataUrl);
+      let finalAvatarUrl = res.dataUrl;
+
+      // Coba upload file WebP ke Supabase Storage bucket 'avatars'
+      try {
+        const fileExt = 'webp';
+        const fileName = `avatar_${Date.now()}_${Math.random().toString(36).slice(2, 7)}.${fileExt}`;
+        const fetchRes = await fetch(res.dataUrl);
+        const blob = await fetchRes.blob();
+
+        const { error: storageErr } = await supabase.storage
+          .from('avatars')
+          .upload(fileName, blob, { contentType: 'image/webp', upsert: true });
+
+        if (!storageErr) {
+          const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(fileName);
+          if (urlData?.publicUrl) {
+            finalAvatarUrl = urlData.publicUrl;
+          }
+        }
+      } catch (storageEx) {
+        console.warn('Supabase storage fallback to WebP dataURL:', storageEx);
+      }
+
+      setFormAvatar(finalAvatarUrl);
+      showToast(`Avatar berhasil dikompresi ke WebP (${res.compressedSizeKB} KB).`);
     } catch (err: any) {
-      alert('Gagal mengompresi gambar: ' + (err?.message || 'Format tidak didukung'));
+      showToast('Gagal memproses gambar: ' + (err?.message || 'Format tidak didukung'), 'error');
     } finally {
       setFormCompressing(false);
     }
   };
 
-  // 3. Handle Create User
+  // 3. Handle Create User (Dual-Path: Edge Function + Secure PostgreSQL RPC)
   const handleCreateUser = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -277,14 +305,35 @@ export const KelolaUsers: React.FC = () => {
     const cleanName = sanitizeText(formName).trim();
     const cleanEmail = formEmail.trim().toLowerCase();
 
-    if (!cleanName) {
-      showToast('Nama lengkap wajib diisi.', 'error');
+    if (!cleanName || cleanName.length < 3) {
+      showToast('Nama lengkap wajib diisi minimal 3 karakter.', 'error');
       return;
     }
 
-    if (!cleanEmail || !cleanEmail.includes('@')) {
-      showToast('Format email tidak valid.', 'error');
+    if (cleanName.length > 100) {
+      showToast('Nama lengkap maksimal 100 karakter.', 'error');
       return;
+    }
+
+    const NAME_REGEX = /^[a-zA-Z\s.,'`-]+$/;
+    if (!NAME_REGEX.test(cleanName)) {
+      showToast('Nama lengkap hanya boleh memuat huruf, spasi, tanda gelar (titik/koma), dan tanda hubung.', 'error');
+      return;
+    }
+
+    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!cleanEmail || !EMAIL_REGEX.test(cleanEmail)) {
+      showToast('Format email tidak valid. Gunakan format resmi seperti nama@ppjauharulmaknuun.sch.id', 'error');
+      return;
+    }
+
+    if (formPhone && formPhone.trim()) {
+      const cleanPhone = formPhone.trim();
+      const PHONE_REGEX = /^(08|\+628|628)[0-9]{7,13}$/;
+      if (!PHONE_REGEX.test(cleanPhone) || cleanPhone.length > 15) {
+        showToast('Nomor HP/WA harus berformat Indonesia (contoh: 081234567890) maksimal 15 digit.', 'error');
+        return;
+      }
     }
 
     if (formPassword.length < 8) {
@@ -297,8 +346,8 @@ export const KelolaUsers: React.FC = () => {
       return;
     }
 
-    if (WEAK_PASSWORDS.includes(formPassword.toLowerCase())) {
-      showToast('Kata sandi terlalu umum/mudah ditebak. Gunakan kombinasi yang lebih kuat.', 'error');
+    if (WEAK_PASSWORDS.includes(formPassword.toLowerCase()) || pwStrength < 2) {
+      showToast('Kata sandi terlalu mudah ditebak. Gunakan kombinasi huruf besar/kecil, angka, dan simbol.', 'error');
       return;
     }
 
@@ -324,28 +373,74 @@ export const KelolaUsers: React.FC = () => {
         return;
       }
 
-      // Call secure PostgreSQL RPC admin_create_user
-      const { data, error } = await (supabase.rpc as any)('admin_create_user', {
-        p_email: cleanEmail,
-        p_password: formPassword,
-        p_full_name: cleanName,
-        p_role: formRole,
-        p_nip: formNip ? sanitizeText(formNip).trim() : null,
-        p_phone: formPhone ? sanitizeText(formPhone).trim() : null,
-        p_bio: formBio ? sanitizeText(formBio).trim() : null,
-        p_motto: formMotto ? sanitizeText(formMotto).trim() : null,
-        p_avatar_url: formAvatar || null,
-        p_class: formRole === 'santri' || formRole === 'user' ? formClass : null
-      });
+      let createdSuccessfully = false;
 
-      if (error) {
-        // Fallback: If RPC has issue, try Edge Function if configured
-        console.warn('RPC create user error:', error.message);
-        showToast('Gagal membuat user: ' + error.message, 'error');
-        return;
+      // PATH 1: Coba via Supabase Edge Function 'create-user'
+      try {
+        const { data: edgeData, error: edgeErr } = await supabase.functions.invoke('create-user', {
+          body: {
+            email: cleanEmail,
+            password: formPassword,
+            full_name: cleanName,
+            role: formRole,
+            nip: formNip ? sanitizeText(formNip).trim().slice(0, 20) : null,
+            phone: formPhone ? formPhone.trim() : null,
+            bio: formBio ? sanitizeText(formBio).trim().slice(0, 200) : null,
+            motto: formMotto ? sanitizeText(formMotto).trim().slice(0, 100) : null,
+            avatar_url: formAvatar || null,
+            class_grade: formRole === 'santri' || formRole === 'user' ? formClass : null
+          }
+        });
+
+        if (!edgeErr && edgeData?.success) {
+          createdSuccessfully = true;
+        } else if (edgeErr) {
+          console.warn('[KelolaUsers] Edge function error, mencoba RPC Postgres:', edgeErr);
+        }
+      } catch (edgeEx) {
+        console.warn('[KelolaUsers] Edge function exception, fallback ke RPC Postgres:', edgeEx);
       }
 
-      showToast(`Alhamdulillah! Akun administrator ${cleanName} berhasil dibuat.`);
+      // PATH 2: Jika Edge Function belum aktif, gunakan secure PostgreSQL RPC admin_create_user
+      if (!createdSuccessfully) {
+        const { error: rpcError } = await (supabase.rpc as any)('admin_create_user', {
+          p_email: cleanEmail,
+          p_password: formPassword,
+          p_full_name: cleanName,
+          p_role: formRole,
+          p_nip: formNip ? sanitizeText(formNip).trim().slice(0, 20) : null,
+          p_phone: formPhone ? formPhone.trim() : null,
+          p_bio: formBio ? sanitizeText(formBio).trim().slice(0, 200) : null,
+          p_motto: formMotto ? sanitizeText(formMotto).trim().slice(0, 100) : null,
+          p_avatar_url: formAvatar || null,
+          p_class: formRole === 'santri' || formRole === 'user' ? formClass : null
+        });
+
+        if (rpcError) {
+          console.error('[KelolaUsers] RPC create user error:', rpcError.message);
+          showToast('Gagal membuat user: ' + rpcError.message, 'error');
+          setActionLoading(false);
+          return;
+        }
+
+        createdSuccessfully = true;
+      }
+
+      // Opsi: Kirim email aktivasi / reset password jika dicentang
+      if (formSendInviteEmail) {
+        try {
+          await supabase.auth.resetPasswordForEmail(cleanEmail, {
+            redirectTo: `${window.location.origin}/login`
+          });
+          showToast(`Akun ${cleanName} berhasil dibuat & link kredensial telah dikirim ke ${cleanEmail}.`);
+        } catch (emailErr: any) {
+          console.warn('Gagal kirim email invite:', emailErr);
+          showToast(`Akun berhasil dibuat. Notifikasi email: ${emailErr?.message || 'Menunggu verifikasi'}`, 'error');
+        }
+      } else {
+        showToast(`Alhamdulillah! Akun administrator ${cleanName} (${formRole}) berhasil dibuat.`);
+      }
+
       setIsAddModalOpen(false);
       resetAddForm();
       fetchUsers();
@@ -466,6 +561,26 @@ export const KelolaUsers: React.FC = () => {
     setResetNewPassword('');
     setResetConfirmPassword('');
     setIsResetPwModalOpen(true);
+  };
+
+  // Kirim link reset password via email (Supabase Auth)
+  const handleSendResetEmail = async (email: string) => {
+    setActionLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/login`
+      });
+      if (error) {
+        showToast('Gagal mengirim email reset: ' + error.message, 'error');
+      } else {
+        showToast(`Tautan reset password berhasil dikirim ke email ${email}.`);
+        setIsResetPwModalOpen(false);
+      }
+    } catch (err: any) {
+      showToast('Kendala pengiriman email: ' + (err?.message || 'Error'), 'error');
+    } finally {
+      setActionLoading(false);
+    }
   };
 
   const handleSaveResetPassword = async (e: React.FormEvent) => {
@@ -840,7 +955,7 @@ export const KelolaUsers: React.FC = () => {
                 <th className="py-3.5 px-4">Role &amp; Otoritas</th>
                 <th className="py-3.5 px-4">NIP / Identitas</th>
                 <th className="py-3.5 px-4">Status Akun</th>
-                <th className="py-3.5 px-4">Terdaftar</th>
+                <th className="py-3.5 px-4">Terdaftar &amp; Last Login</th>
                 <th className="py-3.5 px-4 text-right">Aksi Manajemen</th>
               </tr>
             </thead>
@@ -930,13 +1045,20 @@ export const KelolaUsers: React.FC = () => {
                         </button>
                       </td>
 
-                      {/* Created At */}
-                      <td className="py-3.5 px-4 text-zinc-500 text-[11px]">
-                        {new Date(item.created_at).toLocaleDateString('id-ID', {
-                          day: 'numeric',
-                          month: 'short',
-                          year: 'numeric'
-                        })}
+                      {/* Created At & Last Login */}
+                      <td className="py-3.5 px-4 text-[11px] space-y-0.5">
+                        <div className="text-zinc-600 dark:text-zinc-300 font-medium">
+                          {new Date(item.created_at).toLocaleDateString('id-ID', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric'
+                          })}
+                        </div>
+                        <div className="text-[10px] font-mono text-zinc-400">
+                          {item.last_login_at
+                            ? `Login: ${new Date(item.last_login_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}`
+                            : 'Belum pernah login'}
+                        </div>
                       </td>
 
                       {/* Actions */}
@@ -1040,24 +1162,24 @@ export const KelolaUsers: React.FC = () => {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* KOLOM KIRI: Identitas & Avatar */}
                 <div className="space-y-4">
-                  {/* Foto Avatar with WebP Compressor */}
+                  {/* Foto Avatar with WebP Compressor (Preview Bulat 120px) */}
                   <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/60 space-y-3">
                     <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 block">
-                      Foto Avatar (Otomatis WebP 400x400):
+                      Foto Avatar (Crop 1:1, WebP 400x400 Max 2MB):
                     </label>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-5">
                       {formAvatar ? (
-                        <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-emerald-500 shadow-sm shrink-0 bg-zinc-100">
-                          <img src={formAvatar} alt="Pratinjau" className="w-full h-full object-cover" />
+                        <div className="w-[120px] h-[120px] rounded-full overflow-hidden border-2 border-emerald-500 shadow-md shrink-0 bg-zinc-100">
+                          <img src={formAvatar} alt="Pratinjau Avatar" className="w-full h-full object-cover" />
                         </div>
                       ) : (
-                        <div className="w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-black text-2xl flex items-center justify-center border-2 border-dashed border-emerald-300 dark:border-emerald-800 shrink-0">
+                        <div className="w-[120px] h-[120px] rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 font-black text-3xl flex items-center justify-center border-2 border-dashed border-emerald-400 dark:border-emerald-700 shrink-0 shadow-inner">
                           {formName ? formName.charAt(0).toUpperCase() : 'JM'}
                         </div>
                       )}
 
-                      <div className="space-y-1.5 flex-1">
+                      <div className="space-y-2 flex-1">
                         <input
                           ref={avatarInputRef}
                           type="file"
@@ -1071,14 +1193,23 @@ export const KelolaUsers: React.FC = () => {
                           type="button"
                           onClick={() => avatarInputRef.current?.click()}
                           disabled={formCompressing}
-                          className="px-3.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-[#0E7A4C] dark:text-emerald-300 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border border-emerald-300 dark:border-emerald-800"
+                          className="w-full py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-[#0E7A4C] dark:text-emerald-300 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer border border-emerald-300 dark:border-emerald-800"
                         >
-                          <UploadCloud className="w-3.5 h-3.5" />
-                          <span>{formCompressing ? 'Mengompres...' : 'Pilih Foto dari Komputer'}</span>
+                          <UploadCloud className="w-4 h-4" />
+                          <span>{formCompressing ? 'Mengompres ke WebP...' : 'Pilih Foto dari Komputer'}</span>
                         </button>
-                        <p className="text-[10px] text-zinc-400">
-                          JPG atau PNG, dikompresi otomatis ke format WebP hemat kuota.
+                        <p className="text-[10px] text-zinc-400 leading-relaxed">
+                          Format JPG/PNG otomatis dikompresi ke WebP 400x400px dan diunggah ke storage aman pesantren.
                         </p>
+                        {formAvatar && (
+                          <button
+                            type="button"
+                            onClick={() => setFormAvatar('')}
+                            className="text-[10px] text-rose-500 hover:underline font-bold"
+                          >
+                            Hapus Avatar
+                          </button>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1091,7 +1222,7 @@ export const KelolaUsers: React.FC = () => {
                     <input
                       type="text"
                       required
-                      placeholder="Contoh: Ust. Ahmad Fauzi, M.Pd."
+                      placeholder="Contoh: KH. Muhammad Jauharul Maknuun, Lc., M.Pd.I."
                       value={formName}
                       onChange={(e) => setFormName(e.target.value)}
                       className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:border-[#0E7A4C]"
@@ -1121,6 +1252,7 @@ export const KelolaUsers: React.FC = () => {
                       </label>
                       <input
                         type="text"
+                        maxLength={20}
                         placeholder="Contoh: NIP-2026-088"
                         value={formNip}
                         onChange={(e) => setFormNip(e.target.value)}
@@ -1129,10 +1261,11 @@ export const KelolaUsers: React.FC = () => {
                     </div>
                     <div className="space-y-1">
                       <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                        No WhatsApp / HP
+                        No WhatsApp / HP (Indonesia)
                       </label>
                       <input
                         type="tel"
+                        maxLength={15}
                         placeholder="081234567890"
                         value={formPhone}
                         onChange={(e) => setFormPhone(e.target.value)}
@@ -1144,13 +1277,29 @@ export const KelolaUsers: React.FC = () => {
                   {/* Motto Khidmah */}
                   <div className="space-y-1">
                     <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
-                      Motto Khidmah (Opsional)
+                      Motto Khidmah (Maks. 100 karakter)
                     </label>
                     <input
                       type="text"
+                      maxLength={100}
                       placeholder="Motto pengabdian di pesantren..."
                       value={formMotto}
                       onChange={(e) => setFormMotto(e.target.value)}
+                      className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:border-[#0E7A4C]"
+                    />
+                  </div>
+
+                  {/* Biodata Singkat */}
+                  <div className="space-y-1">
+                    <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                      Biodata Singkat (Maks. 200 karakter)
+                    </label>
+                    <textarea
+                      rows={2}
+                      maxLength={200}
+                      placeholder="Ringkasan riwayat pengabdian atau amanah..."
+                      value={formBio}
+                      onChange={(e) => setFormBio(e.target.value)}
                       className="w-full px-3 py-2 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white focus:outline-none focus:border-[#0E7A4C]"
                     />
                   </div>
@@ -1176,20 +1325,21 @@ export const KelolaUsers: React.FC = () => {
                       <option
                         value="super_admin"
                         disabled={!isSuperAdmin && currentRole !== 'super_admin'}
+                        title={!isSuperAdmin && currentRole !== 'super_admin' ? 'Hanya Super Admin bisa buat Super Admin baru' : undefined}
                       >
-                        Super Admin (Semua Akses Root - Proteksi Penuh)
+                        Super Admin - Semua akses root sistem {!isSuperAdmin && currentRole !== 'super_admin' ? '(Terkunci: Khusus Super Admin)' : ''}
                       </option>
                       <option value="pengurus_konten">
-                        Pengurus Konten &amp; Media (Warta, Galeri, Prestasi, Ekskul)
+                        Pengurus Konten &amp; Media - Kelola berita, galeri, prestasi
                       </option>
                       <option value="guru_akademik">
-                        Guru Akademik (STEM, Hafidz Qur'an, Mandarin Class)
+                        Guru Akademik - Kelola STEM, Mandarin, Hafidz Qur'an
                       </option>
                       <option value="santri">
-                        Santri Mukim (Portal Mandiri, Hafalan &amp; Riset)
+                        Santri - Akses portfolio &amp; tahfidz mandiri
                       </option>
-                      <option value="wali_santri">Wali Santri (Akses Raport &amp; Tagihan)</option>
-                      <option value="alumni">Alumni Santri</option>
+                      <option value="wali_santri">Wali Santri - Pantau perkembangan santri</option>
+                      <option value="alumni">Alumni - Jaringan ikatan alumni PPJM</option>
                     </select>
                   </div>
 
@@ -1215,20 +1365,48 @@ export const KelolaUsers: React.FC = () => {
                   )}
 
                   {/* Password Input with Generator & Strength Meter */}
-                  <div className="space-y-2 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/60">
+                  <div className="space-y-2.5 p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/60">
                     <div className="flex items-center justify-between">
                       <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
                         <Lock className="w-3.5 h-3.5 text-[#0E7A4C]" />
                         <span>Kata Sandi Baru <span className="text-rose-500">*</span></span>
                       </label>
-                      <button
-                        type="button"
-                        onClick={generateStrongPassword}
-                        className="text-[11px] font-bold text-[#0E7A4C] hover:underline flex items-center gap-1 cursor-pointer"
-                      >
+                      {formPassword && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(formPassword);
+                            setCopiedPw(true);
+                            setTimeout(() => setCopiedPw(false), 2000);
+                          }}
+                          className="text-[11px] font-bold text-[#0E7A4C] hover:underline flex items-center gap-1 cursor-pointer"
+                        >
+                          {copiedPw ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                          <span>{copiedPw ? 'Tersalin!' : 'Salin Sandi'}</span>
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Checkbox Generate Password Otomatis */}
+                    <div className="flex items-center gap-2 pb-1">
+                      <input
+                        type="checkbox"
+                        id="autoGenPw"
+                        checked={formAutoGeneratePw}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setFormAutoGeneratePw(checked);
+                          if (checked) {
+                            generateStrongPassword();
+                            setShowPassword(true);
+                          }
+                        }}
+                        className="w-4 h-4 text-[#0E7A4C] rounded border-zinc-300 focus:ring-[#0E7A4C]"
+                      />
+                      <label htmlFor="autoGenPw" className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 cursor-pointer flex items-center gap-1">
                         <Sparkles className="w-3 h-3 text-[#C8A951]" />
-                        <span>Generate Otomatis</span>
-                      </button>
+                        <span>Generate password otomatis (12 karakter kuat)</span>
+                      </label>
                     </div>
 
                     <div className="relative">
@@ -1304,6 +1482,24 @@ export const KelolaUsers: React.FC = () => {
                         </p>
                       )}
                     </div>
+                  </div>
+
+                  {/* Checkbox Kirim Email Password / Undangan */}
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/60">
+                    <div>
+                      <p className="text-xs font-bold text-zinc-800 dark:text-zinc-200">
+                        Kirim Tautan / Undangan ke Email
+                      </p>
+                      <p className="text-[10px] text-zinc-500">
+                        Kirimkan email aktivasi &amp; kredensial via Supabase Auth
+                      </p>
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={formSendInviteEmail}
+                      onChange={(e) => setFormSendInviteEmail(e.target.checked)}
+                      className="w-4 h-4 text-[#0E7A4C] rounded border-zinc-300 focus:ring-[#0E7A4C]"
+                    />
                   </div>
 
                   {/* Status Aktif Switch */}
@@ -1490,6 +1686,28 @@ export const KelolaUsers: React.FC = () => {
                 </h3>
                 <p className="text-xs text-zinc-500">{selectedUser.full_name} ({selectedUser.email})</p>
               </div>
+            </div>
+
+            {/* Opsi 1: Kirim Link Reset via Email */}
+            <div className="p-3.5 rounded-2xl bg-blue-50/60 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-900/60 space-y-2">
+              <p className="text-xs font-bold text-blue-900 dark:text-blue-200">
+                Kirim Tautan Reset ke Email:
+              </p>
+              <button
+                type="button"
+                disabled={actionLoading}
+                onClick={() => handleSendResetEmail(selectedUser.email)}
+                className="w-full py-2 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-colors"
+              >
+                <KeyRound className="w-3.5 h-3.5" />
+                <span>Kirim Link Reset ke {selectedUser.email}</span>
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2 my-2">
+              <div className="h-px bg-zinc-200 dark:bg-zinc-800 flex-1" />
+              <span className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider">Atau Reset Manual</span>
+              <div className="h-px bg-zinc-200 dark:bg-zinc-800 flex-1" />
             </div>
 
             <form onSubmit={handleSaveResetPassword} className="space-y-3">

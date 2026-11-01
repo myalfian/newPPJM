@@ -334,7 +334,14 @@ export const App: React.FC = () => {
             <Route path="data-audit" element={<DataFlowAuditPage />} />
             <Route path="audit" element={<Navigate to="/admin/integration-test" replace />} />
             <Route path="akun" element={<UserProfilePage />} />
-            <Route path="users" element={<KelolaUsers />} />
+            <Route
+              path="users"
+              element={
+                <RoleGuard allowedRoles={['super_admin']}>
+                  <KelolaUsers />
+                </RoleGuard>
+              }
+            />
             <Route path="administrators" element={<Navigate to="/admin/users" replace />} />
             <Route path="profile" element={<Navigate to="/admin/akun" replace />} />
             <Route path="*" element={<Dashboard />} />
