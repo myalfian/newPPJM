@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { BottomNavBarTabs, BottomNavTabItem } from '../../components/common/BottomNavBarTabs';
 import { SambutanSection } from './SambutanSection';
 import { SejarahSection } from './SejarahSection';
@@ -18,6 +18,45 @@ const SUB_NAV_ITEMS: BottomNavTabItem[] = [
   { id: 'visi-misi', label: 'Visi Misi', shortLabel: 'Visi Misi' },
 ];
 
+const TAB_INDEX_MAP: Record<SubNavId, number> = {
+  'sambutan': 0,
+  'sejarah': 1,
+  'visi-misi': 2,
+};
+
+// Buttery smooth, directional slide & blur transition variants
+const tabContentVariants: Variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 32 : direction < 0 ? -32 : 0,
+    opacity: 0,
+    filter: 'blur(6px)',
+    scale: 0.995,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    filter: 'blur(0px)',
+    scale: 1,
+    transition: {
+      x: { type: 'spring' as const, stiffness: 340, damping: 32, mass: 0.55 },
+      opacity: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+      filter: { duration: 0.28 },
+      scale: { duration: 0.32, ease: [0.16, 1, 0.3, 1] },
+    },
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? 28 : -28,
+    opacity: 0,
+    filter: 'blur(6px)',
+    scale: 0.995,
+    transition: {
+      x: { type: 'spring' as const, stiffness: 340, damping: 32, mass: 0.55 },
+      opacity: { duration: 0.22, ease: 'easeIn' },
+      filter: { duration: 0.2 },
+    },
+  }),
+};
+
 export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection = 'sambutan' }) => {
   const location = useLocation();
 
@@ -32,6 +71,8 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
     return 'sambutan';
   });
 
+  const [direction, setDirection] = useState<number>(0);
+
   // Sync state with URL hash or query params
   useEffect(() => {
     const hash = (typeof window !== 'undefined' ? window.location.hash : '').toLowerCase();
@@ -39,28 +80,45 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
     const search = new URLSearchParams(location.search);
     const secParam = search.get('section');
 
+    let targetTab: SubNavId | null = null;
     if (hash.includes('sejarah') || path.includes('sejarah') || secParam === 'sejarah') {
-      setActiveSubTab('sejarah');
+      targetTab = 'sejarah';
     } else if (hash.includes('visi') || path.includes('visi') || secParam === 'visi-misi') {
-      setActiveSubTab('visi-misi');
+      targetTab = 'visi-misi';
     } else if (hash.includes('sambutan') || path.includes('sambutan') || secParam === 'sambutan') {
-      setActiveSubTab('sambutan');
+      targetTab = 'sambutan';
     }
-  }, [location.pathname, location.hash, location.search, defaultSection]);
 
-  const scrollToContent = () => {
+    if (targetTab && targetTab !== activeSubTab) {
+      const prevIdx = TAB_INDEX_MAP[activeSubTab];
+      const nextIdx = TAB_INDEX_MAP[targetTab];
+      setDirection(nextIdx > prevIdx ? 1 : -1);
+      setActiveSubTab(targetTab);
+    }
+  }, [location.pathname, location.hash, location.search, defaultSection, activeSubTab]);
+
+  // Gentle, non-disruptive scroll: only adjusts if tabs have scrolled past the viewport top
+  const smartScrollToContent = () => {
     if (typeof window !== 'undefined') {
-      const containerEl = document.getElementById('profile-content-area');
-      if (containerEl) {
-        const yOffset = -80;
-        const y = containerEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      const barEl = document.getElementById('profile-content-area');
+      if (barEl) {
+        const rect = barEl.getBoundingClientRect();
+        // Only scroll if the content top is above the sticky header threshold
+        if (rect.top < 60) {
+          const targetY = window.pageYOffset + rect.top - 80;
+          window.scrollTo({ top: Math.max(0, targetY), behavior: 'smooth' });
+        }
       }
     }
   };
 
   const handleSelectTab = (tabId: string) => {
     const validId = tabId as SubNavId;
+    if (validId === activeSubTab) return;
+
+    const prevIdx = TAB_INDEX_MAP[activeSubTab];
+    const nextIdx = TAB_INDEX_MAP[validId];
+    setDirection(nextIdx > prevIdx ? 1 : -1);
     setActiveSubTab(validId);
 
     // Update query param softly without page reload
@@ -70,7 +128,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
     const newUrl = `${location.pathname}${newSearch ? `?${newSearch}` : ''}`;
     window.history.replaceState(null, '', newUrl);
 
-    scrollToContent();
+    smartScrollToContent();
   };
 
   return (
@@ -85,56 +143,36 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
         />
       </div>
 
-      {/* 2. Dedicated Section Content Area with Smooth Animation */}
-      <div id="profile-content-area" className="w-full">
-        <AnimatePresence mode="wait">
-          {/* DEDICATED SECTION 1: SAMBUTAN */}
-          {activeSubTab === 'sambutan' && (
-            <motion.div
-              key="dedicated-section-sambutan"
-              initial={{ opacity: 0, y: 12, scale: 0.995 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -12, scale: 0.995 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full"
-            >
-              <section id="sambutan" className="scroll-mt-24">
+      {/* 2. Dedicated Section Content Area with Silky Smooth Directional Transitions */}
+      <div id="profile-content-area" className="w-full overflow-hidden">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={`profile-section-${activeSubTab}`}
+            custom={direction}
+            variants={tabContentVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            className="w-full will-change-transform"
+          >
+            {activeSubTab === 'sambutan' && (
+              <section id="sambutan" className="scroll-mt-24 w-full">
                 <SambutanSection />
               </section>
-            </motion.div>
-          )}
+            )}
 
-          {/* DEDICATED SECTION 2: SEJARAH */}
-          {activeSubTab === 'sejarah' && (
-            <motion.div
-              key="dedicated-section-sejarah"
-              initial={{ opacity: 0, y: 12, scale: 0.995 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -12, scale: 0.995 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full"
-            >
-              <section id="sejarah" className="scroll-mt-24">
+            {activeSubTab === 'sejarah' && (
+              <section id="sejarah" className="scroll-mt-24 w-full">
                 <SejarahSection />
               </section>
-            </motion.div>
-          )}
+            )}
 
-          {/* DEDICATED SECTION 3: VISI MISI */}
-          {activeSubTab === 'visi-misi' && (
-            <motion.div
-              key="dedicated-section-visi-misi"
-              initial={{ opacity: 0, y: 12, scale: 0.995 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -12, scale: 0.995 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full"
-            >
-              <section id="visi-misi" className="scroll-mt-24">
+            {activeSubTab === 'visi-misi' && (
+              <section id="visi-misi" className="scroll-mt-24 w-full">
                 <VisiMisiSection />
               </section>
-            </motion.div>
-          )}
+            )}
+          </motion.div>
         </AnimatePresence>
       </div>
     </div>

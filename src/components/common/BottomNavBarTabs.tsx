@@ -162,12 +162,13 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                     {item.isActive && (
                       <motion.div
                         layoutId={`${layoutId}-pill`}
+                        layout="position"
                         className="absolute inset-0.5 rounded-[12px] bg-white/15 dark:bg-white/10 pointer-events-none -z-1"
                         transition={{
                           type: 'spring',
-                          stiffness: 420,
-                          damping: 28,
-                          mass: 0.58,
+                          stiffness: 380,
+                          damping: 30,
+                          mass: 0.55,
                         }}
                       />
                     )}
@@ -176,12 +177,13 @@ export const BottomNavBarTabs: React.FC<BottomNavBarTabsProps> = ({
                     {item.isActive && (
                       <motion.div
                         layoutId={layoutId}
+                        layout="position"
                         className="bottom-curved-pointer"
                         transition={{
                           type: 'spring',
-                          stiffness: 420,
-                          damping: 28,
-                          mass: 0.58,
+                          stiffness: 380,
+                          damping: 30,
+                          mass: 0.55,
                         }}
                       >
                         <svg
