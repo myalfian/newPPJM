@@ -71,12 +71,10 @@ const DEFAULT_CATEGORY_TABS: Record<
 > = {
   'jm-center': {
     parentLabel: 'JM Center',
-    parentHref: '/jm-center/sambutan',
+    parentHref: '/jm-center/profil',
     parentIcon: Landmark,
     tabs: [
-      { id: 'sambutan', label: 'Sambutan', shortLabel: 'Sambutan', href: '/jm-center/sambutan', icon: Compass },
-      { id: 'sejarah', label: 'Sejarah', shortLabel: 'Sejarah', href: '/jm-center/sejarah', icon: Landmark },
-      { id: 'visi-misi', label: 'Visi Misi', shortLabel: 'Visi Misi', href: '/jm-center/visi-misi', icon: HeartHandshake },
+      { id: 'profil', label: 'Profil', shortLabel: 'Profil', href: '/jm-center/profil', icon: Compass },
       { id: 'fasilitas', label: 'Fasilitas', shortLabel: 'Fasilitas', href: '/jm-center/fasilitas', icon: Building2 },
       { id: 'lembaga', label: 'Lembaga', shortLabel: 'Lembaga', href: '/jm-center/lembaga', icon: Layers },
     ],
@@ -264,7 +262,11 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
   }
 
   // Active Tab Detection: Prioritize specific sub-menu items, then Beranda
-  let activeTab = tabs.find((t) => propActiveTabId && t.id === propActiveTabId);
+  let normalizedActiveTabId = propActiveTabId;
+  if (normalizedActiveTabId === 'sambutan' || normalizedActiveTabId === 'sejarah' || normalizedActiveTabId === 'visi-misi') {
+    normalizedActiveTabId = 'profil';
+  }
+  let activeTab = tabs.find((t) => normalizedActiveTabId && t.id === normalizedActiveTabId);
   if (!activeTab) {
     if (pathname === '/') {
       activeTab = tabs.find((t) => t.id === 'beranda') || tabs[0];
@@ -368,14 +370,15 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
           activeTab = subMenuTabs.find((t) => t.id === 'fasilitas');
         } else if (pathname.includes('/lembaga')) {
           activeTab = subMenuTabs.find((t) => t.id === 'lembaga');
-        } else if (pathname.includes('/sejarah')) {
-          activeTab = subMenuTabs.find((t) => t.id === 'sejarah');
-        } else if (pathname.includes('/visi-misi')) {
-          activeTab = subMenuTabs.find((t) => t.id === 'visi-misi');
-        } else if (pathname.includes('/sambutan')) {
-          activeTab = subMenuTabs.find((t) => t.id === 'sambutan');
+        } else if (
+          pathname.includes('/profil') ||
+          pathname.includes('/sambutan') ||
+          pathname.includes('/sejarah') ||
+          pathname.includes('/visi-misi')
+        ) {
+          activeTab = subMenuTabs.find((t) => t.id === 'profil');
         } else {
-          activeTab = subMenuTabs.find((t) => t.id === 'sambutan') || subMenuTabs[0];
+          activeTab = subMenuTabs.find((t) => t.id === 'profil') || subMenuTabs[0];
         }
       }
 

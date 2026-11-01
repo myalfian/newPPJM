@@ -128,6 +128,7 @@ const AdminLayout = lazy(() => import('./layouts/AdminLayout').then(m => ({ defa
 // Public Pages (Route-level code splitting with React.lazy)
 const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
 const JmCenter = lazy(() => import('./pages/jm-center/JmCenter').then(m => ({ default: m.JmCenter })));
+const Profil = lazy(() => import('./pages/jm-center/Profil').then(m => ({ default: m.Profil })));
 const Sambutan = lazy(() => import('./pages/jm-center/Sambutan').then(m => ({ default: m.Sambutan })));
 const Sejarah = lazy(() => import('./pages/jm-center/Sejarah').then(m => ({ default: m.Sejarah })));
 const VisiMisi = lazy(() => import('./pages/jm-center/VisiMisi').then(m => ({ default: m.VisiMisi })));
@@ -216,8 +217,9 @@ export const App: React.FC = () => {
             <Route index element={<Home />} />
 
             {/* JM Center Hub (Hierarki Terpadu: 1. Profil, 2. Fasilitas, 3. Lembaga) */}
-            <Route path="jm-center" element={<JmCenter defaultTab="sambutan" />} />
-            {/* 1. Profil */}
+            <Route path="jm-center" element={<JmCenter defaultTab="profil" />} />
+            {/* 1. Profil (Gabungan Sambutan, Sejarah & Visi Misi) */}
+            <Route path="jm-center/profil" element={<Profil />} />
             <Route path="jm-center/sambutan" element={<Sambutan />} />
             <Route path="jm-center/sejarah" element={<Sejarah />} />
             <Route path="jm-center/visi-misi" element={<VisiMisi />} />

@@ -25,7 +25,7 @@ export const initialHeroSlides: HeroSlide[] = [
     image: '/images/hero/flyer-selamat-datang.webp',
     fallbackImage: 'https://images.unsplash.com/photo-1512632570417-a6032a69792d?auto=format&fit=crop&w=1600&q=85',
     btnText: 'Jelajahi Profil',
-    link: '/jm-center/sambutan',
+    link: '/jm-center/profil',
     cardTheme: 'from-[#052817] via-[#094226] to-[#041c10]',
     badgeTheme: 'bg-emerald-500/20 border-emerald-400/40 text-emerald-200',
     tagColor: 'text-[#d4af37]',

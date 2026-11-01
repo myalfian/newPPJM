@@ -98,7 +98,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     id: 'jm-center',
     label: 'JM Center',
     icon: Landmark,
-    href: '/jm-center/sambutan',
+    href: '/jm-center/profil',
     isDropdown: false,
     color: {
       badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 group-hover:bg-emerald-100 group-hover:text-emerald-800',
@@ -112,9 +112,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
         icon: Compass,
         color: 'emerald',
         items: [
-          { title: 'Sambutan', href: '/jm-center/sambutan', desc: 'Pesan & Arahan Pimpinan Pondok', icon: Compass },
-          { title: 'Sejarah', href: '/jm-center/sejarah', desc: 'Napak tilas dakwah di Lasem Sidayu', icon: Landmark },
-          { title: 'Visi dan Misi', href: '/jm-center/visi-misi', desc: 'Arah & Nilai Luhur Lembaga', icon: HeartHandshake },
+          { title: 'Profil', href: '/jm-center/profil', desc: 'Sambutan, Sejarah, Visi & Misi Lembaga', icon: Compass },
         ]
       },
       {
@@ -135,9 +133,7 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       }
     ],
     items: [
-      { title: 'Sambutan', href: '/jm-center/sambutan', desc: 'Pesan & Arahan Pimpinan Pondok', icon: Compass },
-      { title: 'Sejarah', href: '/jm-center/sejarah', desc: 'Napak tilas dakwah di Lasem Sidayu', icon: Landmark },
-      { title: 'Visi dan Misi', href: '/jm-center/visi-misi', desc: 'Arah & Nilai Luhur Lembaga', icon: HeartHandshake },
+      { title: 'Profil', href: '/jm-center/profil', desc: 'Sambutan, Sejarah, Visi & Misi Lembaga', icon: Compass },
       { title: 'Fasilitas', href: '/jm-center/fasilitas', desc: 'Sarana & prasarana santri dan sekolah', icon: Building2 },
       { title: 'Lembaga', href: '/jm-center/lembaga', desc: 'Pondok pesantren, SMP Plus & Madin', icon: Layers },
     ]
@@ -367,7 +363,7 @@ export const ADMIN_MODULES: AdminModuleItem[] = [
     roles: ['super_admin', 'pengurus_konten'],
     category: 'core',
     publicCategory: 'JM Center',
-    publicHref: '/jm-center/sambutan',
+    publicHref: '/jm-center/profil',
   },
   // 3. Program (Pondok, Sekolah, Madin)
   {

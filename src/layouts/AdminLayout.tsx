@@ -117,7 +117,7 @@ export const ADMIN_SIDEBAR_GROUPS: NavGroupConfig[] = [
         moduleKey: 'profil',
         label: 'Profil, Sejarah & Fasilitas',
         href: '/admin/profil',
-        publicHref: '/jm-center/sambutan',
+        publicHref: '/jm-center/profil',
         icon: Landmark
       }
     ]
