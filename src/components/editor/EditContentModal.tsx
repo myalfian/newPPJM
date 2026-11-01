@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { X, Save, Plus, Trash2, CheckCircle2, Image as ImageIcon, Sparkles, UploadCloud } from 'lucide-react';
 import { compressImageToWebP } from '../../lib/imageCompressor';
+import { SectionWordEditor } from './SectionWordEditor';
 
 interface EditContentModalProps {
   isOpen: boolean;
@@ -133,15 +134,17 @@ export const EditContentModal: React.FC<EditContentModalProps> = ({
                 />
               </div>
 
-              <div>
+              <div className="space-y-1">
                 <label className="block text-xs font-black text-slate-700 dark:text-zinc-300 uppercase tracking-wider mb-1.5">
-                  Teks Kalam Hikmah
+                  Teks Kalam Hikmah (Word Toolbar Contextual)
                 </label>
-                <textarea
-                  rows={4}
-                  value={formData.kalam}
-                  onChange={(e) => handleFieldChange('kalam', e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-sm text-slate-900 dark:text-white leading-relaxed"
+                <SectionWordEditor
+                  sectionType="sambutan"
+                  fieldName="message_full"
+                  value={formData.kalam || ''}
+                  onChange={(val) => handleFieldChange('kalam', val)}
+                  bucket="avatars"
+                  minHeight="180px"
                 />
               </div>
 
@@ -276,15 +279,21 @@ export const EditContentModal: React.FC<EditContentModalProps> = ({
                     />
 
                     {(item.summary !== undefined || item.desc !== undefined) && (
-                      <textarea
-                        rows={2}
-                        placeholder="Deskripsi / Ringkasan Item"
-                        value={item.summary || item.desc || ''}
-                        onChange={(e) =>
-                          handleItemFieldChange(idx, item.summary !== undefined ? 'summary' : 'desc', e.target.value)
-                        }
-                        className="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs text-slate-700 dark:text-zinc-300 leading-normal"
-                      />
+                      <div className="space-y-1">
+                        <label className="text-[11px] font-bold text-zinc-600 dark:text-zinc-400">
+                          Deskripsi / Uraian Item:
+                        </label>
+                        <SectionWordEditor
+                          sectionType="default"
+                          fieldName="description"
+                          value={item.summary || item.desc || ''}
+                          onChange={(val) =>
+                            handleItemFieldChange(idx, item.summary !== undefined ? 'summary' : 'desc', val)
+                          }
+                          bucket="cms-images"
+                          minHeight="120px"
+                        />
+                      </div>
                     )}
 
                     {/* Item Thumbnail / Image with WebP Compression */}

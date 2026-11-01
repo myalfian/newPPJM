@@ -28,6 +28,7 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { compressImageToWebP } from '../../lib/imageCompressor';
 import { KelolaSambutan_FIXED } from './KelolaSambutan_FIXED';
+import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
 
 interface FacilityItem {
   id: string;
@@ -478,14 +479,17 @@ export const KelolaProfil: React.FC = () => {
       {/* TAB C: VISI & 5 PILAR MISI */}
       {activeTab === 'visi-misi' && (
         <form onSubmit={handleSave} className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-md space-y-5">
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Pernyataan Visi Lembaga:</label>
-            <textarea
-              rows={3}
-              required
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+              Pernyataan Visi Lembaga (Word Toolbar Contextual):
+            </label>
+            <SectionWordEditor
+              sectionType="lembaga"
+              fieldName="description"
               value={visiTeks}
-              onChange={(e) => setVisiTeks(e.target.value)}
-              className="w-full p-3.5 text-xs sm:text-sm rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white"
+              onChange={(html) => setVisiTeks(html)}
+              bucket="cms-images"
+              minHeight="140px"
             />
           </div>
 

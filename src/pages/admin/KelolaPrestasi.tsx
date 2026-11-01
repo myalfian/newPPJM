@@ -24,6 +24,7 @@ import {
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
+import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
 
 export interface PrestasiItem {
   id: string;
@@ -537,14 +538,17 @@ export const KelolaPrestasi: React.FC = () => {
           )}
         </div>
 
-        <div className="space-y-1">
-          <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Deskripsi Ringkas:</label>
-          <textarea
-            rows={2}
-            placeholder="Keterangan jalannya perlombaan atau medali yang diraih..."
+        <div className="space-y-1.5">
+          <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+            Deskripsi Prestasi &amp; Catatan Juara (Word Toolbar Contextual):
+          </label>
+          <SectionWordEditor
+            sectionType="prestasi"
+            fieldName="description"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-3 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+            onChange={(html) => setDescription(html)}
+            bucket="cms-images"
+            minHeight="140px"
           />
         </div>
 

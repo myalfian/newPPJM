@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
 
 export interface OsisMember {
   id: string;
@@ -665,15 +666,17 @@ export const KelolaOsis: React.FC = () => {
               </div>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Deskripsi Rencana Kegiatan:</label>
-              <textarea
-                rows={2}
-                required
-                placeholder="Rincian teknis pelaksanaan proker santri..."
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+                Deskripsi Rencana Kegiatan (Word Toolbar Contextual):
+              </label>
+              <SectionWordEditor
+                sectionType="osis"
+                fieldName="program"
                 value={pDesc}
-                onChange={(e) => setPDesc(e.target.value)}
-                className="w-full p-3 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+                onChange={(html) => setPDesc(html)}
+                bucket="cms-images"
+                minHeight="140px"
               />
             </div>
 

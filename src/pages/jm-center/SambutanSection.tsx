@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Quote, Sparkles, Landmark, RefreshCw } from 'lucide-react';
 import { supabase, isSupabaseConfigured, SambutanPerson } from '../../lib/supabase';
+import { SafeRichContent } from '../../components/common/SafeRichContent';
 
 interface GreetingData {
   name: string;
@@ -9,6 +10,7 @@ interface GreetingData {
   image: string;
   quote: string;
   fullMessage: string[];
+  rawMessage?: string;
 }
 
 const DEFAULT_GREETING: GreetingData = {
@@ -53,6 +55,7 @@ export const SambutanSection: React.FC = () => {
             person.message_short ||
             (person.message_full ? person.message_full.slice(0, 240) + '...' : ''),
           fullMessage: fullMsg,
+          rawMessage: person.message_full || '',
         });
         setLoading(false);
         return;
@@ -156,21 +159,28 @@ export const SambutanSection: React.FC = () => {
               &ldquo;{greeting.quote}&rdquo;
             </blockquote>
 
-            {/* Full Message Paragraphs */}
-            <div className="space-y-3 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal">
-              {greeting.fullMessage.map((p, idx) => (
-                <p
-                  key={idx}
-                  className={
-                    idx === 1
-                      ? 'first-letter:text-3xl first-letter:font-black first-letter:text-emerald-800 dark:first-letter:text-emerald-400 first-letter:float-left first-letter:mr-2'
-                      : ''
-                  }
-                >
-                  {p}
-                </p>
-              ))}
-            </div>
+            {/* Full Message Paragraphs / Word Content */}
+            {greeting.rawMessage ? (
+              <SafeRichContent
+                content={greeting.rawMessage}
+                className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal"
+              />
+            ) : (
+              <div className="space-y-3 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal">
+                {greeting.fullMessage.map((p, idx) => (
+                  <p
+                    key={idx}
+                    className={
+                      idx === 1
+                        ? 'first-letter:text-3xl first-letter:font-black first-letter:text-emerald-800 dark:first-letter:text-emerald-400 first-letter:float-left first-letter:mr-2'
+                        : ''
+                    }
+                  >
+                    {p}
+                  </p>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>

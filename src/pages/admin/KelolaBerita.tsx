@@ -26,6 +26,7 @@ import { generateWhatsAppBroadcastUrl } from '../../lib/waFormatter';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { NewsItem, INITIAL_NEWS } from '../../data/newsData';
+import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
 
 export const KelolaBerita: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'list' | 'editor'>('list');
@@ -761,50 +762,21 @@ export const KelolaBerita: React.FC = () => {
             )}
           </div>
 
-          {/* Simple Word/WhatsApp Style Editor Toolbar */}
+          {/* Full Word Ribbon Editor for News Content */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-slate-700">
-                Isi Lengkap Berita / Narasi: <span className="text-rose-500">*</span>
-              </label>
-
-              {/* Formatting Toolbar Buttons */}
-              <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl">
-                <button
-                  type="button"
-                  onClick={() => insertFormat('bold')}
-                  className="p-1.5 rounded-lg hover:bg-white text-slate-700 text-xs font-bold"
-                  title="Tebalkan Teks (*tebal*)"
-                >
-                  <Bold className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertFormat('italic')}
-                  className="p-1.5 rounded-lg hover:bg-white text-slate-700 text-xs font-italic"
-                  title="Miringkan Teks (_miring_)"
-                >
-                  <Italic className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => insertFormat('bullet')}
-                  className="p-1.5 rounded-lg hover:bg-white text-slate-700 text-xs"
-                  title="Tambah Poin (•)"
-                >
-                  <AlignLeft className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            <textarea
-              ref={textareaRef}
-              rows={8}
-              required
-              placeholder="Ketik narasi berita di sini. Anda dapat menggunakan format mirip WhatsApp seperti *kata tebal* atau _kata miring_..."
+            <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
+              <span>Isi Lengkap Berita / Narasi: <span className="text-rose-500">*</span></span>
+              <span className="text-[10px] text-emerald-800 font-bold bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                Word Ribbon Suite Aktif
+              </span>
+            </label>
+            <SectionWordEditor
+              sectionType="berita"
+              fieldName="content"
               value={isiBerita}
-              onChange={(e) => setIsiBerita(e.target.value)}
-              className="w-full p-4 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600 leading-relaxed font-sans"
+              onChange={(html) => setIsiBerita(html)}
+              bucket="berita-images"
+              minHeight="380px"
             />
           </div>
 

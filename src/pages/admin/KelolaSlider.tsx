@@ -33,6 +33,7 @@ import {
 } from '../../lib/sliderSettings';
 import { HeroSlide } from '../../data/heroSlides';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
+import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
 
 interface SlideFormState {
   id: string;
@@ -480,16 +481,17 @@ export const KelolaSlider: React.FC = () => {
                   </p>
                 </div>
 
-                <div>
+                <div className="space-y-1.5">
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    4. Deskripsi Informasi Popup (Opsional)
+                    4. Deskripsi Informasi Popup (Word Toolbar Contextual)
                   </label>
-                  <textarea
-                    rows={3}
+                  <SectionWordEditor
+                    sectionType="slider"
+                    fieldName="description"
                     value={formData.desc}
-                    onChange={(e) => setFormData({ ...formData, desc: e.target.value })}
-                    placeholder="Keterangan lengkap yang akan tampil di dalam jendela popup ketika pengunjung mengklik kartu slide ini..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs sm:text-sm text-slate-900 focus:outline-none focus:border-emerald-600"
+                    onChange={(html) => setFormData({ ...formData, desc: html })}
+                    bucket="cms-images"
+                    minHeight="140px"
                   />
                 </div>
 

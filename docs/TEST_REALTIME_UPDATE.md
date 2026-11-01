@@ -112,3 +112,4 @@ Jika user non-admin atau anon mencoba melakukan modifikasi langsung ke Supabase 
 - [x] Pembersih cache usang (`clearOldCache.ts`) berjalan otomatis saat aplikasi dimuat.
 - [x] Kompilasi TypeScript dan bundler Vite bersih tanpa error (`npm run build` sukses).
 - [x] Konfirmasi: Edit di Admin ➔ Supabase Terupdate ➔ Publik Live Realtime ➔ Refresh F5 Tidak Balik Seed.
+

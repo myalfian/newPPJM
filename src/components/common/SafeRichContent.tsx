@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import DOMPurify from 'dompurify';
 
 interface SafeRichContentProps {
   content?: string | null;
@@ -6,94 +7,70 @@ interface SafeRichContentProps {
 }
 
 /**
- * Parses inline formatting:
- * - [text](url) -> <a>
- * - **bold** or *bold* -> <strong>
- * - _italic_ -> <em>
- * - raw URLs -> <a> (stripping trailing punctuation like . , ! ? : ; ) )
+ * Enhanced SafeRichContent Renderer with Microsoft Word-Like Styling Support.
+ * Safely sanitizes HTML from SectionWordEditor via DOMPurify, preserving
+ * typography (letter-spacing, word-spacing, line-height, text-indent, margins, tables),
+ * and falls back gracefully to structured markdown if raw plain text is provided.
  */
-export const renderInlineFormatting = (text: string): React.ReactNode[] => {
-  const tokenPattern = /(\[[^\]]+\]\(https?:\/\/[^\s)]+\)|\*\*[^*]+\*\*|\*[^*]+\*|_[^_]+_|https?:\/\/[^\s]+)/g;
-  const parts = text.split(tokenPattern);
+export const SafeRichContent: React.FC<SafeRichContentProps> = ({
+  content,
+  className = '',
+}) => {
+  if (!content || typeof content !== 'string') return null;
 
-  return parts.map((part, idx) => {
-    if (!part) return null;
+  // Check whether content contains HTML tags
+  const isHtml = /<[a-z][\s\S]*>/i.test(content);
 
-    // 1. Markdown link: [label](url)
-    const linkMatch = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
-    if (linkMatch) {
-      return (
-        <a
-          key={idx}
-          href={linkMatch[2]}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-emerald-700 dark:text-emerald-400 underline font-semibold hover:text-emerald-900 transition-colors"
-        >
-          {linkMatch[1]}
-        </a>
-      );
-    }
+  const sanitizedHtml = useMemo(() => {
+    if (!isHtml) return '';
 
-    // 2. Bold: **text** or *text*
-    if (
-      (part.startsWith('**') && part.endsWith('**') && part.length > 4) ||
-      (part.startsWith('*') && part.endsWith('*') && part.length > 2)
-    ) {
-      const inner = part.startsWith('**') ? part.slice(2, -2) : part.slice(1, -1);
-      return (
-        <strong key={idx} className="font-bold text-zinc-900 dark:text-white">
-          {inner}
-        </strong>
-      );
-    }
+    // Configure strict DOMPurify whitelist
+    return DOMPurify.sanitize(content, {
+      ALLOWED_TAGS: [
+        'p', 'h1', 'h2', 'h3', 'h4', 'blockquote', 'ul', 'ol', 'li',
+        'strong', 'b', 'em', 'i', 'u', 's', 'sup', 'sub',
+        'a', 'img', 'table', 'tr', 'th', 'td', 'thead', 'tbody',
+        'iframe', 'hr', 'br', 'span', 'div', 'pre', 'code'
+      ],
+      ALLOWED_ATTR: [
+        'href', 'target', 'rel', 'src', 'alt', 'width', 'height',
+        'style', 'class', 'colspan', 'rowspan'
+      ],
+      ALLOWED_URI_REGEXP: /^(?:(?:https?|mailto|tel):|data:image\/(?:jpeg|png|webp|gif|svg\+xml);base64,|\/)/i,
+      ADD_TAGS: ['iframe'],
+      ADD_ATTR: ['allowfullscreen', 'frameborder', 'style'],
+      CUSTOM_ELEMENT_HANDLING: {
+        tagNameCheck: (tagName) => {
+          return ['iframe'].includes(tagName.toLowerCase());
+        },
+        attributeNameCheck: (attr) => {
+          return ['src', 'width', 'height', 'frameborder', 'allowfullscreen', 'style'].includes(attr.toLowerCase());
+        }
+      }
+    });
+  }, [content, isHtml]);
 
-    // 3. Italic: _text_
-    if (part.startsWith('_') && part.endsWith('_') && part.length > 2) {
-      const inner = part.slice(1, -1);
-      return (
-        <em key={idx} className="italic text-zinc-800 dark:text-zinc-200">
-          {inner}
-        </em>
-      );
-    }
+  if (isHtml) {
+    return (
+      <div
+        className={`safe-word-content prose prose-emerald dark:prose-invert max-w-none 
+          prose-p:my-2 prose-headings:font-bold prose-headings:tracking-tight 
+          prose-h1:text-2xl sm:prose-h1:text-3xl prose-h1:mt-4 prose-h1:mb-2
+          prose-h2:text-xl sm:prose-h2:text-2xl prose-h2:mt-3 prose-h2:mb-1.5
+          prose-h3:text-lg sm:prose-h3:text-xl prose-h3:mt-2.5 prose-h3:mb-1
+          prose-blockquote:border-l-4 prose-blockquote:border-[#0E7A4C] prose-blockquote:bg-emerald-50/60 dark:prose-blockquote:bg-emerald-950/20 prose-blockquote:py-2 prose-blockquote:px-4 prose-blockquote:rounded-r-xl prose-blockquote:italic
+          prose-img:rounded-2xl prose-img:shadow-md prose-img:border prose-img:border-zinc-200 dark:prose-img:border-zinc-800 prose-img:my-3
+          prose-a:text-[#0E7A4C] dark:prose-a:text-emerald-400 prose-a:underline hover:prose-a:text-[#0a5a38]
+          prose-table:border-collapse prose-table:w-full prose-table:my-3
+          prose-th:bg-zinc-100 dark:prose-th:bg-zinc-800 prose-th:p-2.5 prose-th:border prose-th:border-zinc-200 dark:prose-th:border-zinc-700
+          prose-td:p-2.5 prose-td:border prose-td:border-zinc-200 dark:prose-td:border-zinc-700
+          ${className}`}
+        dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+      />
+    );
+  }
 
-    // 4. Raw URL with trailing punctuation handling
-    const rawUrlMatch = part.match(/^(https?:\/\/[^\s]+?)([.,!?:;)]+)?$/);
-    if (rawUrlMatch) {
-      const cleanUrl = rawUrlMatch[1];
-      const trailingPunct = rawUrlMatch[2] || '';
-      return (
-        <React.Fragment key={idx}>
-          <a
-            href={cleanUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-emerald-700 dark:text-emerald-400 underline break-all hover:text-emerald-900 transition-colors"
-          >
-            {cleanUrl}
-          </a>
-          {trailingPunct}
-        </React.Fragment>
-      );
-    }
-
-    return <React.Fragment key={idx}>{part}</React.Fragment>;
-  });
-};
-
-interface BlockElement {
-  type: 'quote' | 'ul' | 'ol' | 'p';
-  lines: string[];
-}
-
-/**
- * Safe, zero-dependency Rich Content renderer for React 19.
- * Parses blockquotes, unordered/ordered lists, paragraphs, bold, italic, and URLs without dangerous innerHTML.
- */
-export const SafeRichContent: React.FC<SafeRichContentProps> = ({ content, className = '' }) => {
-  if (!content) return null;
-
+  // Fallback: Markdown Renderer for Plain Text Strings
   const rawBlocks = content.split(/\n{2,}/);
 
   return (
@@ -103,99 +80,19 @@ export const SafeRichContent: React.FC<SafeRichContentProps> = ({ content, class
         if (!trimmed) return null;
 
         const rawLines = trimmed.split('\n');
-        const elements: BlockElement[] = [];
-
-        let currentType: BlockElement['type'] | null = null;
-        let currentLines: string[] = [];
-
-        const flush = () => {
-          if (currentLines.length > 0 && currentType) {
-            elements.push({ type: currentType, lines: currentLines });
-            currentLines = [];
-            currentType = null;
-          }
-        };
-
-        rawLines.forEach((line) => {
-          const lTrimmed = line.trim();
-          if (!lTrimmed) return;
-
-          if (lTrimmed.startsWith('>')) {
-            if (currentType !== 'quote') flush();
-            currentType = 'quote';
-            currentLines.push(lTrimmed.replace(/^>\s?/, ''));
-          } else if (/^[•\-*]\s+/.test(lTrimmed)) {
-            if (currentType !== 'ul') flush();
-            currentType = 'ul';
-            currentLines.push(lTrimmed.replace(/^[•\-*]\s+/, ''));
-          } else if (/^\d+\.\s+/.test(lTrimmed)) {
-            if (currentType !== 'ol') flush();
-            currentType = 'ol';
-            currentLines.push(lTrimmed.replace(/^\d+\.\s+/, ''));
-          } else {
-            if (currentType !== 'p') flush();
-            currentType = 'p';
-            currentLines.push(lTrimmed);
-          }
-        });
-        flush();
 
         return (
-          <React.Fragment key={bIdx}>
-            {elements.map((elem, eIdx) => {
-              const subKey = `${bIdx}-${eIdx}`;
-
-              if (elem.type === 'quote') {
-                return (
-                  <blockquote
-                    key={subKey}
-                    className="border-l-4 border-emerald-600 dark:border-emerald-500 pl-4 py-1 italic text-zinc-700 dark:text-zinc-300 bg-emerald-50/50 dark:bg-emerald-950/20 rounded-r-xl my-3"
-                  >
-                    {elem.lines.map((l, lIdx) => (
-                      <p key={lIdx} className="leading-relaxed">
-                        {renderInlineFormatting(l)}
-                      </p>
-                    ))}
-                  </blockquote>
-                );
-              }
-
-              if (elem.type === 'ul') {
-                return (
-                  <ul key={subKey} className="list-disc list-inside space-y-1.5 my-2 text-zinc-700 dark:text-zinc-300">
-                    {elem.lines.map((l, lIdx) => (
-                      <li key={lIdx} className="leading-relaxed">
-                        {renderInlineFormatting(l)}
-                      </li>
-                    ))}
-                  </ul>
-                );
-              }
-
-              if (elem.type === 'ol') {
-                return (
-                  <ol key={subKey} className="list-decimal list-inside space-y-1.5 my-2 text-zinc-700 dark:text-zinc-300">
-                    {elem.lines.map((l, lIdx) => (
-                      <li key={lIdx} className="leading-relaxed">
-                        {renderInlineFormatting(l)}
-                      </li>
-                    ))}
-                  </ol>
-                );
-              }
-
-              return (
-                <p key={subKey} className="leading-relaxed sm:leading-loose text-zinc-800 dark:text-zinc-200">
-                  {elem.lines.map((l, lIdx) => (
-                    <React.Fragment key={lIdx}>
-                      {lIdx > 0 && <br />}
-                      {renderInlineFormatting(l)}
-                    </React.Fragment>
-                  ))}
-                </p>
-              );
-            })}
-          </React.Fragment>
+          <p
+            key={bIdx}
+            className="leading-relaxed sm:leading-loose text-zinc-800 dark:text-zinc-200"
+          >
+            {rawLines.map((line, lIdx) => (
+              <React.Fragment key={lIdx}>
+                {lIdx > 0 && <br />}
+                {line}
+              </React.Fragment>
+            ))}
+          </p>
         );
       })}
     </div>

@@ -195,6 +195,7 @@ import { loadEditorState, fetchPublishedEditorState, saveEditorDraft, publishEdi
 import { EditorSectionWrapper } from '../../components/editor/EditorSectionWrapper';
 import { EditorItemWrapper } from '../../components/editor/EditorItemWrapper';
 import { EditContentModal } from '../../components/editor/EditContentModal';
+import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
 import { Navbar } from '../../components/common/Navbar';
 import { HeroSlider } from '../../components/HeroSlider';
 import { QuickMenu } from '../../components/QuickMenu';
@@ -2224,12 +2225,14 @@ export const WebVisualEditor: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-bold text-zinc-300 block mb-1">Teks Kalam Sambutan:</label>
-                    <textarea
-                      rows={3}
+                    <label className="text-[11px] font-bold text-zinc-300 block mb-1">
+                      Teks Kalam Sambutan (Word Toolbar):
+                    </label>
+                    <SectionWordEditor
+                      sectionType="sambutan"
+                      fieldName="quote"
                       value={(currentSection.data as any).kalam || ''}
-                      onChange={(e) => {
-                        const val = sanitizeText(e.target.value);
+                      onChange={(val) => {
                         updateEditorState((prev) => ({
                           ...prev,
                           sections: {
@@ -2241,7 +2244,8 @@ export const WebVisualEditor: React.FC = () => {
                           }
                         }));
                       }}
-                      className="w-full p-2 rounded-xl bg-black/40 border border-white/20 text-white focus:outline-none focus:border-[#C8A951]"
+                      bucket="cms-images"
+                      minHeight="140px"
                     />
                   </div>
                 </div>

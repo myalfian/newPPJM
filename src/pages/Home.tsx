@@ -18,6 +18,7 @@ import { useCachedQuery } from '../lib/queryCache';
 import { INITIAL_NEWS } from '../data/newsData';
 import { fetchPublishedEditorState, getPublishedEditorState } from '../lib/editorStorage';
 import { PageEditorState } from '../types/EditorState';
+import { SafeRichContent } from '../components/common/SafeRichContent';
 
 export interface HomeNewsItem {
   id: string;
@@ -231,7 +232,14 @@ export const Home: React.FC = () => {
                   {liveSambutan?.title || 'Mudir & Pengasuh Pondok Pesantren Jauharul Maknuun Lasem Sidayu Gresik'}
                 </p>
                 <blockquote className="text-sm sm:text-base lg:text-lg text-slate-800 font-medium italic leading-relaxed sm:leading-loose border-l-0 lg:border-l-4 lg:border-emerald-700 lg:pl-4">
-                  “{liveSambutan?.message_short || liveSambutan?.message_full || sambutan?.data?.kalam || 'Pesantren bukan hanya tempat menuntut ilmu fiqih dan nahwu, melainkan kawah candradimuka pembentukan akhlaqul karimah, ketajaman spiritual, serta ketangguhan menjawab kemajuan zaman. Santri kami bekali dengan kemurnian turats, hafalan al-Qur\'an, dan sains teknologi aplikatif agar senantiasa menjadi suluh penerang di tengah umat.'}”
+                  <SafeRichContent
+                    content={
+                      liveSambutan?.message_short ||
+                      liveSambutan?.message_full ||
+                      sambutan?.data?.kalam ||
+                      'Pesantren bukan hanya tempat menuntut ilmu fiqih dan nahwu, melainkan kawah candradimuka pembentukan akhlaqul karimah, ketajaman spiritual, serta ketangguhan menjawab kemajuan zaman. Santri kami bekali dengan kemurnian turats, hafalan al-Qur\'an, dan sains teknologi aplikatif agar senantiasa menjadi suluh penerang di tengah umat.'
+                    }
+                  />
                 </blockquote>
                 <div className="pt-2">
                   <Link

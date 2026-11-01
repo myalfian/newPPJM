@@ -27,6 +27,7 @@ import { sanitizeText, sanitizeUrl, isValidImageUrl } from '../../utils/sanitize
 import { publishEditorState, getPublishedEditorState } from '../../lib/editorStorage';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { Link } from 'react-router-dom';
+import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
 
 interface SambutanFormState {
   id?: string;
@@ -800,32 +801,36 @@ export const KelolaSambutan: React.FC = () => {
               </div>
             </div>
 
-            {/* Naskah Sambutan Lengkap */}
-            <div className="space-y-1">
-              <label className="text-xs font-black text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">
-                Naskah Sambutan Lengkap *
+            {/* Naskah Sambutan Lengkap dengan Toolbar Word-Like */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-black text-zinc-700 dark:text-zinc-300 uppercase tracking-wider flex items-center justify-between">
+                <span>Naskah Sambutan Lengkap (Word Toolbar Contextual) *</span>
+                <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded-full border border-emerald-200">
+                  Full Word Ribbon Aktif
+                </span>
               </label>
-              <textarea
-                required
-                rows={7}
-                placeholder="Tuliskan naskah sambutan resmi secara lengkap (dipisah antar paragraf dengan baris baru)..."
+              <SectionWordEditor
+                sectionType="sambutan"
+                fieldName="message_full"
                 value={form.message_full}
-                onChange={(e) => setForm((prev) => ({ ...prev, message_full: e.target.value }))}
-                className="w-full p-3.5 text-xs sm:text-sm rounded-2xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white leading-relaxed focus:ring-2 focus:ring-emerald-500"
+                onChange={(html) => setForm((prev) => ({ ...prev, message_full: html }))}
+                bucket="avatars"
+                minHeight="280px"
               />
             </div>
 
             {/* Ringkasan Kalam Hikmah untuk Beranda */}
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <label className="text-xs font-black text-zinc-700 dark:text-zinc-300 uppercase tracking-wider">
                 Ringkasan Kalam Hikmah (Kutipan Beranda Publik)
               </label>
-              <textarea
-                rows={3}
-                placeholder="Kosongkan untuk mengambil 240 karakter pertama dari naskah di atas..."
+              <SectionWordEditor
+                sectionType="sambutan"
+                fieldName="message_short"
                 value={form.message_short}
-                onChange={(e) => setForm((prev) => ({ ...prev, message_short: e.target.value }))}
-                className="w-full p-3 text-xs rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white"
+                onChange={(html) => setForm((prev) => ({ ...prev, message_short: html }))}
+                bucket="avatars"
+                minHeight="110px"
               />
             </div>
 

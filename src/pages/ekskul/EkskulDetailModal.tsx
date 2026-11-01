@@ -13,6 +13,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { DetailedEkskulItem, EkskulPhoto } from './types';
+import { SafeRichContent } from '../../components/common/SafeRichContent';
 
 interface EkskulDetailModalProps {
   item: DetailedEkskulItem | null;
@@ -157,9 +158,7 @@ export const EkskulDetailModal: React.FC<EkskulDetailModalProps> = ({ item, onCl
               <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-900 dark:text-white">
                 Visi & Fokus Pembinaan
               </h3>
-              <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                {item.description}
-              </p>
+              <SafeRichContent content={item.description} className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-xs sm:text-sm" />
             </div>
 
             {/* Poin Capaian & Keunggulan */}

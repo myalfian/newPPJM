@@ -27,6 +27,7 @@ import {
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { invalidateCache } from '../../lib/queryCache';
+import { SectionWordEditor } from '../../components/editor/SectionWordEditor';
 
 // Kategori warna agenda PPJM
 export type AgendaCategoryType = 'Pondok' | 'Sekolah' | 'Diniyah' | 'Event Akbar' | 'Libur' | 'Tahfidz' | 'Sains & STEM';
@@ -1376,15 +1377,17 @@ export const KelolaAgenda: React.FC = () => {
                 </div>
               </div>
 
-              <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-700">Deskripsi Agenda: *</label>
-                <textarea
-                  rows={3}
-                  required
-                  placeholder="Deskripsikan agenda kegiatan secara lengkap..."
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-700">
+                  Deskripsi Agenda (Word Toolbar Contextual): *
+                </label>
+                <SectionWordEditor
+                  sectionType="agenda"
+                  fieldName="description"
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  className="w-full px-4 py-2 text-xs rounded-xl border border-slate-200"
+                  onChange={(html) => setDescription(html)}
+                  bucket="cms-images"
+                  minHeight="150px"
                 />
               </div>
 

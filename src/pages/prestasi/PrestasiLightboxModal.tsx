@@ -13,6 +13,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { PrestasiItem } from './types';
+import { SafeRichContent } from '../../components/common/SafeRichContent';
 
 interface PrestasiLightboxModalProps {
   item: PrestasiItem | null;
@@ -191,9 +192,7 @@ export const PrestasiLightboxModal: React.FC<PrestasiLightboxModalProps> = ({ it
             <h4 className="font-black text-xs uppercase tracking-wider text-zinc-400">
               Ulasan &amp; Deskripsi Keberhasilan
             </h4>
-            <p className="leading-relaxed text-zinc-700 dark:text-zinc-300">
-              {item.description}
-            </p>
+            <SafeRichContent content={item.description} className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300" />
           </div>
 
           {/* Tags */}

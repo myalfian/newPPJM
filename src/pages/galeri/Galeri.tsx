@@ -22,6 +22,7 @@ import { NavBarTabs } from '../../components/common/NavBarTabs';
 import { YoutubeIcon } from '../../components/common/SocialIcons';
 import { supabase, GalleryItem, isSupabaseConfigured } from '../../lib/supabase';
 import { useCachedQuery, invalidateCache } from '../../lib/queryCache';
+import { SafeRichContent } from '../../components/common/SafeRichContent';
 
 // Helper to reliably extract YouTube Video ID from any URL format
 export const getYouTubeId = (urlOrId?: string): string => {
@@ -879,9 +880,10 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
                 </div>
 
                 {/* Description */}
-                <p className="text-xs text-zinc-400 leading-relaxed line-clamp-2">
-                  {lightboxData.activity.description}
-                </p>
+                <SafeRichContent
+                  content={lightboxData.activity.description}
+                  className="text-xs text-zinc-400 leading-relaxed line-clamp-3"
+                />
               </div>
             </motion.div>
           </div>
@@ -950,9 +952,10 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
 
               {/* Video Description & Actions */}
               <div className="p-4 sm:p-6 bg-zinc-900/90 border-t border-zinc-800 space-y-3 shrink-0">
-                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
-                  {selectedVideo.description}
-                </p>
+                <SafeRichContent
+                  content={selectedVideo.description}
+                  className="text-xs sm:text-sm text-zinc-300 leading-relaxed"
+                />
 
                 <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-2.5">
                   <span className="text-xs text-zinc-400">
