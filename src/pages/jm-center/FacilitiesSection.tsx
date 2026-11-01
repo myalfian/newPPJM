@@ -16,10 +16,23 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 export const FacilitiesSection: React.FC = () => {
   const [facilities, setFacilities] = useState<FacilityItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [categories, setCategories] = useState<string[]>(['Semua']);
   const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [lightboxFacility, setLightboxFacility] = useState<FacilityItem | null>(null);
 
-  const categories = ['Semua', 'Pendidikan', 'Ibadah', 'Hunian', 'Olahraga', 'Penunjang'];
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await (supabase.from('sub_items' as any) as any)
+        .select('title')
+        .eq('parent_module', 'facilities_categories')
+        .eq('is_active', true)
+        .order('order_index', { ascending: true });
+
+      if (data && !error && data.length > 0) {
+        setCategories(['Semua', ...data.map((c: any) => c.title)]);
+      }
+    } catch (e) {}
+  };
 
   const fetchFacilities = async () => {
     if (!isSupabaseConfigured()) {
@@ -31,6 +44,7 @@ export const FacilitiesSection: React.FC = () => {
         .from('facilities')
         .select('*')
         .eq('is_active', true)
+        .order('order_index', { ascending: true })
         .order('created_at', { ascending: true });
 
       if (data && !error) {
@@ -54,6 +68,7 @@ export const FacilitiesSection: React.FC = () => {
   };
 
   useEffect(() => {
+    fetchCategories();
     fetchFacilities();
 
     const channel = supabase
@@ -65,8 +80,18 @@ export const FacilitiesSection: React.FC = () => {
       )
       .subscribe();
 
+    const catChannel = supabase
+      .channel('public-fac-cats-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'sub_items', filter: 'parent_module=eq.facilities_categories' },
+        () => fetchCategories()
+      )
+      .subscribe();
+
     return () => {
       supabase.removeChannel(channel);
+      supabase.removeChannel(catChannel);
     };
   }, []);
 

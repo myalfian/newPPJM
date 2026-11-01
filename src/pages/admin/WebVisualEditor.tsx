@@ -2369,6 +2369,76 @@ export const WebVisualEditor: React.FC = () => {
                 </div>
               )}
 
+              {/* Specific Section Controls for Program Unggulan (Pilar Keunggulan) */}
+              {activeSectionId === 'programUnggulan' && (
+                <div className="space-y-3">
+                  <div className="p-3 bg-emerald-950/40 rounded-xl border border-emerald-500/30 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <Layers className="w-4 h-4 text-emerald-400" />
+                        <span>Multi Pilar Keunggulan</span>
+                      </div>
+                      <p className="text-[10px] text-zinc-400">Tambah pilar tanpa batas via Supabase</p>
+                    </div>
+                    <Link
+                      to="/admin/keunggulan"
+                      target="_blank"
+                      className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold transition flex items-center gap-1"
+                    >
+                      <span>Kelola Pilar</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </Link>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-zinc-300 block mb-1">Mode Grid Kolom:</label>
+                    <select
+                      value={(currentSection.data as any).gridColumns || 'auto'}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        updateEditorState((prev) => ({
+                          ...prev,
+                          sections: {
+                            ...prev.sections,
+                            programUnggulan: {
+                              ...prev.sections.programUnggulan,
+                              data: { ...prev.sections.programUnggulan.data, gridColumns: val }
+                            }
+                          }
+                        }));
+                      }}
+                      className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/20 text-white text-xs focus:outline-none focus:border-[#C8A951]"
+                    >
+                      <option value="auto">Otomatis Responsif (1-4 Kolom)</option>
+                      <option value="4">4 Kolom Penuh</option>
+                      <option value="2">2 Kolom Besar</option>
+                    </select>
+                  </div>
+                </div>
+              )}
+
+              {/* Specific Section Controls for QuickMenu */}
+              {activeSectionId === 'quickMenu' && (
+                <div className="space-y-3">
+                  <div className="p-3 bg-emerald-950/40 rounded-xl border border-emerald-500/30 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <Layers className="w-4 h-4 text-emerald-400" />
+                        <span>Multi Quick Menu</span>
+                      </div>
+                      <p className="text-[10px] text-zinc-400">Tambah menu akses cepat tak terbatas</p>
+                    </div>
+                    <Link
+                      to="/admin/quick-menu"
+                      target="_blank"
+                      className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold transition flex items-center gap-1"
+                    >
+                      <span>Kelola Menu</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </div>
+              )}
+
               <button
                 type="button"
                 onClick={() => {

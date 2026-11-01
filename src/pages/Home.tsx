@@ -20,6 +20,7 @@ import { fetchPublishedEditorState, getPublishedEditorState } from '../lib/edito
 import { PageEditorState } from '../types/EditorState';
 import { SafeRichContent } from '../components/common/SafeRichContent';
 import { HomeSambutanMultiSection } from '../components/home/HomeSambutanMultiSection';
+import { HomeKeunggulanMultiSection } from '../components/home/HomeKeunggulanMultiSection';
 
 export interface HomeNewsItem {
   id: string;
@@ -228,89 +229,8 @@ export const Home: React.FC = () => {
       {/* 2. SAMBUTAN MULTI PEMBERI SAMBUTAN */}
       {sambutan?.isVisible !== false && <HomeSambutanMultiSection />}
 
-      {/* 3. 4 PILAR KEUNGGULAN PESANTREN */}
-      {programUnggulan?.isVisible !== false && (
-        <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 space-y-1.5 sm:space-y-2">
-          <div className="text-center max-w-2xl mx-auto space-y-0.5">
-            <span className="text-xs sm:text-sm font-bold text-gold-700 uppercase tracking-widest">
-              Karakteristik & Keistimewaan
-            </span>
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-emerald-950">
-              {programUnggulan?.data?.headline || 'Empat Pilar Pendidikan PPJM'}
-            </h2>
-            <p className="text-sm sm:text-base text-slate-700 font-medium">
-              {programUnggulan?.data?.subheadline || 'Integrasi harmonis antara pendidikan keagamaan tradisional dan kompetensi sains modern berstandar internasional.'}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1.5 sm:gap-2.5">
-            {visiblePilarItems.map((item, idx) => {
-              // Map default or custom icons and links
-              let Icon = BookOpen;
-              let link = '/program-unggulan/program-madin';
-              let linkText = 'Rincian Jenjang';
-              let isGold = false;
-
-              if (item.id === 'p1' || item.name.toLowerCase().includes('turats')) {
-                Icon = BookOpen;
-                link = '/program-unggulan/program-madin';
-                linkText = 'Rincian Jenjang';
-              } else if (item.id === 'p2' || item.name.toLowerCase().includes('tahfidz')) {
-                Icon = Sparkles;
-                link = '/smart-jm/hafidz/read';
-                linkText = 'Buka Mushaf 30 Juz';
-                isGold = true;
-              } else if (item.id === 'p3' || item.name.toLowerCase().includes('stem')) {
-                Icon = Cpu;
-                link = '/smart-jm/stem/portofolio';
-                linkText = 'Lihat Portofolio';
-              } else if (item.id === 'p4' || item.name.toLowerCase().includes('mandarin') || item.name.toLowerCase().includes('arab')) {
-                Icon = Globe;
-                link = '/smart-jm/mandarin/materi';
-                linkText = 'Kelas Mandarin';
-                isGold = true;
-              }
-
-              return (
-                <div
-                  key={item.id || idx}
-                  className="bg-white rounded-2xl p-3 sm:p-4 shadow-sm hover:shadow-m3-2 border border-slate-200 hover:border-emerald-300 transition-all group flex flex-col justify-between"
-                >
-                  <div className="space-y-2">
-                    <div
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors ${
-                        isGold
-                          ? 'bg-gold-50 text-gold-700 group-hover:bg-gold-500 group-hover:text-emerald-950'
-                          : 'bg-emerald-50 text-emerald-800 group-hover:bg-emerald-800 group-hover:text-white'
-                      }`}
-                    >
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    {item.tag && (
-                      <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200">
-                        {item.tag}
-                      </span>
-                    )}
-                    <h3 className="font-black text-base sm:text-lg text-emerald-950">
-                      {item.name}
-                    </h3>
-                    <p className="text-sm text-slate-700 leading-relaxed font-normal">
-                      {item.desc}
-                    </p>
-                  </div>
-                  <Link
-                    to={link}
-                    className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs sm:text-sm font-bold text-emerald-800 hover:text-emerald-950"
-                  >
-                    <span>{linkText}</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
+      {/* 3. PILAR KEUNGGULAN PESANTREN (MULTI-ITEM DARI SUPABASE) */}
+      {programUnggulan?.isVisible !== false && <HomeKeunggulanMultiSection />}
 
       {/* 4. WARTA & BERITA TERKINI DENGAN 1-KLIK WHATSAPP WALI SANTRI */}
       {editorConfig.sections.beritaTerkini?.isVisible !== false && (

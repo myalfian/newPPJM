@@ -175,6 +175,13 @@ const KelolaSambutan = lazy(() => import('./pages/admin/KelolaSambutan').then(m 
 const KelolaOsis = lazy(() => import('./pages/admin/KelolaOsis').then(m => ({ default: m.KelolaOsis })));
 const KelolaKontak = lazy(() => import('./pages/admin/KelolaKontak').then(m => ({ default: m.KelolaKontak })));
 const KelolaUsers = lazy(() => import('./pages/admin/KelolaUsers').then(m => ({ default: m.KelolaUsers })));
+const KelolaFasilitas = lazy(() => import('./pages/admin/KelolaFasilitas').then(m => ({ default: m.KelolaFasilitas })));
+const KelolaKeunggulan = lazy(() => import('./pages/admin/KelolaKeunggulan').then(m => ({ default: m.KelolaKeunggulan })));
+const KelolaQuickMenu = lazy(() => import('./pages/admin/KelolaQuickMenu').then(m => ({ default: m.KelolaQuickMenu })));
+const KelolaNavbar = lazy(() => import('./pages/admin/KelolaNavbar').then(m => ({ default: m.KelolaNavbar })));
+const KelolaBottomNav = lazy(() => import('./pages/admin/KelolaBottomNav').then(m => ({ default: m.KelolaBottomNav })));
+const KelolaInstitusi = lazy(() => import('./pages/admin/KelolaInstitusi').then(m => ({ default: m.KelolaInstitusi })));
+const KelolaSpmb = lazy(() => import('./pages/admin/KelolaSpmb').then(m => ({ default: m.KelolaSpmb })));
 const WebVisualEditor = lazy(() => import('./pages/admin/WebVisualEditor').then(m => ({ default: m.WebVisualEditor })));
 const UserProfilePage = lazy(() => import('./pages/profile/UserProfilePage').then(m => ({ default: m.UserProfilePage })));
 const IntegrationTestPage = lazy(() => import('./pages/admin/IntegrationTestPage').then(m => ({ default: m.IntegrationTestPage })));
@@ -325,6 +332,14 @@ export const App: React.FC = () => {
             <Route path="prestasi" element={<KelolaPrestasi />} />
             <Route path="ekskul" element={<KelolaEkskul />} />
             <Route path="ekstrakurikuler" element={<Navigate to="/admin/ekskul" replace />} />
+            <Route path="fasilitas" element={<KelolaFasilitas />} />
+            <Route path="keunggulan" element={<KelolaKeunggulan />} />
+            <Route path="quick-menu" element={<KelolaQuickMenu />} />
+            <Route path="navbar" element={<KelolaNavbar />} />
+            <Route path="bottom-nav" element={<KelolaBottomNav />} />
+            <Route path="lembaga" element={<KelolaInstitusi />} />
+            <Route path="institusi" element={<Navigate to="/admin/lembaga" replace />} />
+            <Route path="spmb" element={<KelolaSpmb />} />
             <Route path="sambutan" element={<KelolaSambutan />} />
             <Route path="profil" element={<KelolaProfil />} />
             <Route path="program" element={<KelolaProfil />} />

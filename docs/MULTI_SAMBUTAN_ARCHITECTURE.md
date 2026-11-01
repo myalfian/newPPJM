@@ -129,3 +129,4 @@ Blok Sambutan di Visual Editor Admin kini dilengkapi panel properti khusus:
    - Buka halaman beranda (`/`) pada tab penyamaran (incognito).
    - Ubah naskah atau status tokoh di panel admin.
    - Dalam 1-2 detik, tampilan di tab penyamaran otomatis terbarukan tanpa perlu menekan tombol F5 (refresh).
+
