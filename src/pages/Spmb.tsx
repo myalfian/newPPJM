@@ -21,10 +21,12 @@ import {
   Clock,
   Phone,
   School,
-  ArrowRight
+  ArrowRight,
+  RefreshCw
 } from 'lucide-react';
 import { NavBarTabs } from '../components/common/NavBarTabs';
 import { WhatsAppIcon } from '../components/common/SocialIcons';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 interface FormData {
   namaLengkap: string;
@@ -75,6 +77,48 @@ export const Spmb: React.FC = () => {
   const [formData, setFormData] = useState<FormData>(INITIAL_FORM);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [registrationCode, setRegistrationCode] = useState('');
+  const [spmbInfo, setSpmbInfo] = useState<any>(null);
+
+  // Fetch dynamic SPMB info from Supabase & Subscribe to Realtime
+  useEffect(() => {
+    let isMounted = true;
+    const fetchSpmbInfo = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('spmb_info')
+          .select('*')
+          .eq('is_active', true)
+          .order('created_at', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+
+        if (!error && data && isMounted) {
+          setSpmbInfo(data);
+        }
+      } catch (err) {
+        console.warn('[SPMB] Error fetching spmb_info:', err);
+      }
+    };
+
+    fetchSpmbInfo();
+
+    const channel = supabase
+      .channel('public-spmb-info-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'spmb_info' },
+        () => {
+          fetchSpmbInfo();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   // Handle URL hash / query param (e.g. /spmb#formulir)
   useEffect(() => {
@@ -101,7 +145,7 @@ export const Spmb: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmitForm = (e: React.FormEvent) => {
+  const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Generate unique registration code
@@ -109,10 +153,34 @@ export const Spmb: React.FC = () => {
     setRegistrationCode(randomCode);
     setIsSubmitted(true);
 
+    // Save registration trace to Supabase audit_logs
+    try {
+      if (isSupabaseConfigured()) {
+        await supabase.from('audit_logs').insert({
+          action: 'SUBMIT_SPMB_REGISTRATION',
+          module: 'spmb',
+          section_id: randomCode,
+          new_data: {
+            code: randomCode,
+            nama: formData.namaLengkap,
+            nisn: formData.nisn,
+            program: formData.programPilihan,
+            jalur: formData.jalurPendaftaran,
+            wali_wa: formData.noWhatsappWali,
+            asal_sekolah: formData.sekolahAsal,
+            created_at: new Date().toISOString()
+          }
+        });
+      }
+    } catch (saveErr) {
+      console.warn('[SPMB] Save audit warning:', saveErr);
+    }
+
     // Construct structured WhatsApp message for Admin SPMB
-    const waMessage = `*FORMULIR PENDAFTARAN SPMB PP. JAUHARUL MAKNUUN TP 2026/2027*
+    const waMessage = `*FORMULIR PENDAFTARAN SPMB PP. JAUHARUL MAKNUUN TP ${spmbInfo?.tahun_ajaran || '2026/2027'}*
 ----------------------------------------
 *No. Registrasi:* ${randomCode}
+*Gelombang:* ${spmbInfo?.gelombang || 'Gelombang 1'}
 *Tanggal:* ${new Date().toLocaleDateString('id-ID', { dateStyle: 'full' })}
 
 *A. DATA CALON SANTRI/MURID*
@@ -141,8 +209,8 @@ export const Spmb: React.FC = () => {
 ----------------------------------------
 _Mohon konfirmasi dan arahan jadwal tes observasi SPMB selanjutnya. Terima kasih._`;
 
-    // Target Admin SPMB Hotline
-    const targetPhone = '6285646199273';
+    // Target Admin SPMB Hotline (Dynamic from Supabase if configured)
+    const targetPhone = spmbInfo?.kontak_wa || '6285646199273';
     const waUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(waMessage)}`;
 
     // Open WhatsApp in new tab

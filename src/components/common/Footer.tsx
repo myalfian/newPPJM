@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   MapPin,
@@ -13,10 +13,70 @@ import {
   Share2
 } from 'lucide-react';
 import { YoutubeIcon, InstagramIcon, WhatsAppIcon, TikTokIcon } from './SocialIcons';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+
+interface KontakMedsosItem {
+  id: string;
+  type: string;
+  label: string;
+  url: string;
+  is_active: boolean;
+}
 
 export const Footer: React.FC = () => {
   const [showContactModal, setShowContactModal] = useState(false);
   const [modalType, setModalType] = useState<'contact' | 'calendar' | 'privacy' | 'faq' | null>(null);
+  const [medsosLinks, setMedsosLinks] = useState<Record<string, string>>({
+    wa_admin: 'https://wa.me/6285646199273',
+    instagram: 'https://www.instagram.com/ppjauharulmaknuun?mdxt=MWRieHkydGt5ZDNrNw==',
+    tiktok: 'https://www.tiktok.com/@ppjauharulmaknuun?_r=1&_t=ZS-9ArxcQ3dNKf',
+    youtube: 'https://youtube.com/@ppjauharulmaknuunlasem?si=OHYeRczBA-kLl3Kl',
+    email: 'mailto:humas@ppjauharulmaknuun.sch.id'
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchKontakMedsos = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('kontak_medsos')
+          .select('*')
+          .eq('is_active', true)
+          .order('order_index', { ascending: true });
+
+        if (!error && data && data.length > 0 && isMounted) {
+          const mapped: Record<string, string> = {};
+          data.forEach((item: any) => {
+            if (item.type && item.url) {
+              mapped[item.type] = item.url;
+            }
+          });
+          setMedsosLinks((prev) => ({ ...prev, ...mapped }));
+        }
+      } catch (err) {
+        console.warn('[Footer] Error fetching kontak_medsos:', err);
+      }
+    };
+
+    fetchKontakMedsos();
+
+    const channel = supabase
+      .channel('public-footer-kontak-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'kontak_medsos' },
+        () => {
+          fetchKontakMedsos();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   const openModal = (type: 'contact' | 'calendar' | 'privacy' | 'faq') => {
     setModalType(type);
@@ -76,7 +136,7 @@ export const Footer: React.FC = () => {
                   Ikuti Kami:
                 </span>
                 <a
-                  href="https://wa.me/6285646199273"
+                  href={medsosLinks.wa_admin || "https://wa.me/6285646199273"}
                   target="_blank"
                   rel="noreferrer"
                   className="w-7 h-7 rounded-lg bg-emerald-950/80 hover:bg-emerald-800 text-[#e5a93b] hover:text-white border border-emerald-800/60 flex items-center justify-center transition-all shadow-xs"
@@ -86,7 +146,7 @@ export const Footer: React.FC = () => {
                   <WhatsAppIcon className="w-3.5 h-3.5" />
                 </a>
                 <a
-                  href="https://www.instagram.com/ppjauharulmaknuun?mdxt=MWRieHkydGt5ZDNrNw=="
+                  href={medsosLinks.instagram || "https://www.instagram.com/ppjauharulmaknuun"}
                   target="_blank"
                   rel="noreferrer"
                   className="w-7 h-7 rounded-lg bg-emerald-950/80 hover:bg-emerald-800 text-[#e5a93b] hover:text-white border border-emerald-800/60 flex items-center justify-center transition-all shadow-xs"
@@ -96,7 +156,7 @@ export const Footer: React.FC = () => {
                   <InstagramIcon className="w-3.5 h-3.5" />
                 </a>
                 <a
-                  href="https://www.tiktok.com/@ppjauharulmaknuun?_r=1&_t=ZS-9ArxcQ3dNKf"
+                  href={medsosLinks.tiktok || "https://www.tiktok.com/@ppjauharulmaknuun"}
                   target="_blank"
                   rel="noreferrer"
                   className="w-7 h-7 rounded-lg bg-emerald-950/80 hover:bg-emerald-800 text-[#e5a93b] hover:text-white border border-emerald-800/60 flex items-center justify-center transition-all shadow-xs"
@@ -106,7 +166,7 @@ export const Footer: React.FC = () => {
                   <TikTokIcon className="w-3.5 h-3.5" />
                 </a>
                 <a
-                  href="https://youtube.com/@ppjauharulmaknuunlasem?si=OHYeRczBA-kLl3Kl"
+                  href={medsosLinks.youtube || "https://youtube.com/@ppjauharulmaknuunlasem"}
                   target="_blank"
                   rel="noreferrer"
                   className="w-7 h-7 rounded-lg bg-emerald-950/80 hover:bg-emerald-800 text-[#e5a93b] hover:text-white border border-emerald-800/60 flex items-center justify-center transition-all shadow-xs"

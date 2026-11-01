@@ -28,13 +28,62 @@ import {
 } from '../../lib/quranData';
 import { RepeatMode } from './types';
 import { ReadQuran } from '../../components/smart-jm/hafidz/ReadQuran';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 export const HafidzQuranSection: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState<'read' | 'murojaah'>('read');
 
   // Surah & Ayah state for Murojaah
-  const [surahs] = useState<SurahMeta[]>(QURAN_SURAHS);
+  const [surahs, setSurahs] = useState<SurahMeta[]>(QURAN_SURAHS);
   const [selectedSurah, setSelectedSurah] = useState<SurahMeta>(QURAN_SURAHS[0]);
+
+  // Fetch live custom surah data or audio references from Supabase hafidz_surahs
+  useEffect(() => {
+    let isMounted = true;
+    const fetchLiveSurahs = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('hafidz_surahs')
+          .select('*')
+          .order('number', { ascending: true });
+
+        if (!error && data && data.length > 0 && isMounted) {
+          const mapped: SurahMeta[] = data.map((item: any) => ({
+            number: item.number,
+            nameArabic: item.name_arab || item.name_arabic || '',
+            nameLatin: item.name_latin || '',
+            nameIndo: item.meaning || item.name_indo || '',
+            numberOfAyahs: item.ayah_count || item.number_of_ayahs || 0,
+            revelationType: (item.place === 'Madinah' ? 'Madaniyyah' : 'Makkiyyah') as 'Makkiyyah' | 'Madaniyyah',
+            juzStart: item.juz || item.juz_start || 1
+          }));
+          setSurahs(mapped);
+          if (mapped.length > 0) setSelectedSurah(mapped[0]);
+        }
+      } catch (err) {
+        console.warn('[HafidzQuranSection] Error loading hafidz_surahs:', err);
+      }
+    };
+
+    fetchLiveSurahs();
+
+    const channel = supabase
+      .channel('public-hafidz-surahs-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'hafidz_surahs' },
+        () => {
+          fetchLiveSurahs();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(channel);
+    };
+  }, []);
   const [ayahs, setAyahs] = useState<AyahItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');

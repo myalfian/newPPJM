@@ -41,7 +41,8 @@ import {
   ChevronLeft,
   Database,
   Rocket,
-  Activity
+  Activity,
+  Server
 } from 'lucide-react';
 import { UserRole } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -283,6 +284,15 @@ export const ADMIN_SIDEBAR_GROUPS: NavGroupConfig[] = [
         publicHref: '/admin/data-audit',
         icon: Activity,
         badge: 'Flow'
+      },
+      {
+        id: 'componentCheck',
+        moduleKey: 'componentCheck',
+        label: 'Cek Tabel & Komponen',
+        href: '/admin/component-check',
+        publicHref: '/admin/component-check',
+        icon: Server,
+        badge: '34 Tab'
       }
     ]
   }

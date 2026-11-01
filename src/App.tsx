@@ -180,6 +180,7 @@ const UserProfilePage = lazy(() => import('./pages/profile/UserProfilePage').the
 const IntegrationTestPage = lazy(() => import('./pages/admin/IntegrationTestPage').then(m => ({ default: m.IntegrationTestPage })));
 const GoLiveCheckPage = lazy(() => import('./pages/admin/GoLiveCheckPage').then(m => ({ default: m.GoLiveCheckPage })));
 const DataFlowAuditPage = lazy(() => import('./pages/admin/DataFlowAuditPage').then(m => ({ default: m.DataFlowAuditPage })));
+const ComponentTableCheckPage = lazy(() => import('./pages/admin/ComponentTableCheckPage').then(m => ({ default: m.ComponentTableCheckPage })));
 
 import { clearOldSeedCache } from './utils/clearOldCache';
 
@@ -332,6 +333,7 @@ export const App: React.FC = () => {
             <Route path="integration-test" element={<IntegrationTestPage />} />
             <Route path="go-live-check" element={<GoLiveCheckPage />} />
             <Route path="data-audit" element={<DataFlowAuditPage />} />
+            <Route path="component-check" element={<ComponentTableCheckPage />} />
             <Route path="audit" element={<Navigate to="/admin/integration-test" replace />} />
             <Route path="akun" element={<UserProfilePage />} />
             <Route
