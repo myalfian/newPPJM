@@ -393,9 +393,9 @@ export const KelolaBerita: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2.5 sm:space-y-3.5">
       {/* Top Banner */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-2">
+      <div className="bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-slate-200 shadow-sm space-y-1.5">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold uppercase tracking-wider">
           <Newspaper className="w-3.5 h-3.5 text-emerald-800" />
           <span>CMS • Press Release Resmi PPJM</span>
@@ -600,7 +600,7 @@ export const KelolaBerita: React.FC = () => {
         </div>
       ) : (
         /* Form Inputs */
-        <form onSubmit={handlePublish} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        <form onSubmit={handlePublish} className="bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-slate-200 shadow-sm space-y-3.5 sm:space-y-4">
           <div className="flex items-center justify-between pb-2 border-b border-slate-100">
             <h3 className="font-bold text-base text-emerald-950">
               {editingId ? 'Edit Formulir Warta' : 'Formulir Warta Baru'}

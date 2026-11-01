@@ -117,21 +117,21 @@ export const SimpleFormCard: React.FC<SimpleFormCardProps> = ({
     <div className={`relative bg-white/95 dark:bg-zinc-900/95 border border-zinc-200/80 dark:border-zinc-800 shadow-sm hover:shadow-md rounded-2xl transition-all duration-200 ${className}`}>
       
       {/* 1. Header Kartu Formulir Ramah Pengguna */}
-      <div className="p-5 sm:p-6 border-b border-zinc-100 dark:border-zinc-800/80 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-start gap-3.5">
+      <div className="p-3.5 sm:p-4.5 border-b border-zinc-100 dark:border-zinc-800/80 flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-start gap-3">
           {Icon && (
-            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-[#007acc] flex items-center justify-center shrink-0 border border-blue-100 dark:border-blue-900/50">
-              <Icon className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-[#007acc] flex items-center justify-center shrink-0 border border-blue-100 dark:border-blue-900/50">
+              <Icon className="w-4.5 h-4.5" />
             </div>
           )}
           <div>
-            <div className="flex flex-wrap items-center gap-2.5">
-              <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white leading-tight">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white leading-tight">
                 {title}
               </h3>
               {/* Status Tayang Badge */}
               <span
-                className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
+                className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold ${
                   isPublished
                     ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
                     : 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-200 dark:border-amber-800'
@@ -142,7 +142,7 @@ export const SimpleFormCard: React.FC<SimpleFormCardProps> = ({
               </span>
             </div>
             {subtitle && (
-              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed">
+              <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 leading-relaxed">
                 {subtitle}
               </p>
             )}
@@ -150,19 +150,19 @@ export const SimpleFormCard: React.FC<SimpleFormCardProps> = ({
         </div>
 
         {/* Header Right Actions */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           {onTogglePublished && (
             <button
               type="button"
               onClick={() => onTogglePublished(!isPublished)}
-              className={`min-h-[44px] px-3.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border ${
+              className={`min-h-[38px] px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 border ${
                 isPublished
                   ? 'bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
                   : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-700'
               }`}
               title="Ubah status tayang"
             >
-              {isPublished ? <Eye className="w-4 h-4 text-emerald-600" /> : <EyeOff className="w-4 h-4" />}
+              {isPublished ? <Eye className="w-3.5 h-3.5 text-emerald-600" /> : <EyeOff className="w-3.5 h-3.5" />}
               <span>{isPublished ? 'Publik' : 'Draf'}</span>
             </button>
           )}
@@ -172,12 +172,12 @@ export const SimpleFormCard: React.FC<SimpleFormCardProps> = ({
       </div>
 
       {/* 2. Formulir Konten Utama */}
-      <div className="p-5 sm:p-6 space-y-6">
+      <div className="p-3.5 sm:p-4.5 space-y-3.5 sm:space-y-4">
         {children}
       </div>
 
       {/* 3. Footer Aksi Utama (Ergonomi Ramah Sentuh Jempol >= 48px) */}
-      <div className="p-5 sm:p-6 bg-zinc-50/70 dark:bg-zinc-900/60 border-t border-zinc-100 dark:border-zinc-800/80 rounded-b-2xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+      <div className="p-3.5 sm:p-4.5 bg-zinc-50/70 dark:bg-zinc-900/60 border-t border-zinc-100 dark:border-zinc-800/80 rounded-b-2xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         
         {/* Info Pemulihan Draf & Waktu Tersimpan */}
         <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">

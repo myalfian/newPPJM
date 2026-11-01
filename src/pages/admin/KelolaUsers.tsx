@@ -786,7 +786,7 @@ export const KelolaUsers: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-2.5 sm:space-y-3.5 pb-6">
       {/* Toast Alert */}
       {toastMessage && (
         <div
@@ -806,7 +806,7 @@ export const KelolaUsers: React.FC = () => {
       )}
 
       {/* Header & Title Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-3.5 border-b border-zinc-200 dark:border-zinc-800 pb-3 sm:pb-3.5">
         <div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 dark:bg-red-950/60 border border-red-200 dark:border-red-900 text-red-800 dark:text-red-300 text-xs font-bold uppercase tracking-wider mb-2">
             <Lock className="w-3.5 h-3.5 text-[#DC2626]" />
@@ -837,38 +837,38 @@ export const KelolaUsers: React.FC = () => {
       </div>
 
       {/* Statistics Metric Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-        <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-xs space-y-1">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-2.5">
+        <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-xs space-y-0.5 sm:space-y-1">
           <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider">Total Akun</span>
           <p className="text-2xl font-black text-zinc-900 dark:text-white">{stats.total}</p>
           <span className="text-[10px] text-zinc-500">Terdaftar di DB</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-red-50/50 dark:bg-red-950/20 border border-red-200/80 dark:border-red-900/60 shadow-xs space-y-1">
+        <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-red-50/50 dark:bg-red-950/20 border border-red-200/80 dark:border-red-900/60 shadow-xs space-y-0.5 sm:space-y-1">
           <span className="text-[11px] font-bold text-red-700 dark:text-red-400 uppercase tracking-wider">Super Admin</span>
           <p className="text-2xl font-black text-[#DC2626] dark:text-red-400">{stats.superAdmin}</p>
           <span className="text-[10px] text-red-600/70">Wewenang Penuh</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-900/60 shadow-xs space-y-1">
+        <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/80 dark:border-emerald-900/60 shadow-xs space-y-0.5 sm:space-y-1">
           <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Konten &amp; Media</span>
           <p className="text-2xl font-black text-[#059669] dark:text-emerald-400">{stats.konten}</p>
           <span className="text-[10px] text-emerald-600/70">Warta &amp; Galeri</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/60 shadow-xs space-y-1">
+        <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-blue-50/50 dark:bg-blue-950/20 border border-blue-200/80 dark:border-blue-900/60 shadow-xs space-y-0.5 sm:space-y-1">
           <span className="text-[11px] font-bold text-blue-700 dark:text-blue-400 uppercase tracking-wider">Guru Akademik</span>
           <p className="text-2xl font-black text-[#2563EB] dark:text-blue-400">{stats.guru}</p>
           <span className="text-[10px] text-blue-600/70">STEM, Hafidz, Mandarin</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/60 shadow-xs space-y-1">
+        <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/60 shadow-xs space-y-0.5 sm:space-y-1">
           <span className="text-[11px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">Santri &amp; User</span>
           <p className="text-2xl font-black text-[#D97706] dark:text-amber-400">{stats.santri}</p>
           <span className="text-[10px] text-amber-600/70">Mandiri Santri</span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/80 dark:border-zinc-700 shadow-xs space-y-1">
+        <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/80 dark:border-zinc-700 shadow-xs space-y-0.5 sm:space-y-1">
           <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Status Aktif</span>
           <p className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
             {stats.active} <span className="text-xs font-normal text-zinc-400">/ {stats.inactive} off</span>
@@ -878,7 +878,7 @@ export const KelolaUsers: React.FC = () => {
       </div>
 
       {/* Filter, Search & Sort Control Bar */}
-      <div className="p-4 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
+      <div className="p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-sm flex flex-col md:flex-row items-center justify-between gap-2.5 sm:gap-3">
         {/* Search */}
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 absolute left-3.5 top-3 text-zinc-400" />
@@ -946,17 +946,17 @@ export const KelolaUsers: React.FC = () => {
       </div>
 
       {/* Users Table */}
-      <div className="rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-sm overflow-hidden">
+      <div className="rounded-xl sm:rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-zinc-100 dark:border-zinc-800 bg-zinc-50/60 dark:bg-zinc-800/40 text-zinc-500 uppercase tracking-wider font-bold">
-                <th className="py-3.5 px-4">Pengguna / Administrator</th>
-                <th className="py-3.5 px-4">Role &amp; Otoritas</th>
-                <th className="py-3.5 px-4">NIP / Identitas</th>
-                <th className="py-3.5 px-4">Status Akun</th>
-                <th className="py-3.5 px-4">Terdaftar &amp; Last Login</th>
-                <th className="py-3.5 px-4 text-right">Aksi Manajemen</th>
+                <th className="py-2.5 sm:py-3 px-3 sm:px-4">Pengguna / Administrator</th>
+                <th className="py-2.5 sm:py-3 px-3 sm:px-4">Role &amp; Otoritas</th>
+                <th className="py-2.5 sm:py-3 px-3 sm:px-4">NIP / Identitas</th>
+                <th className="py-2.5 sm:py-3 px-3 sm:px-4">Status Akun</th>
+                <th className="py-2.5 sm:py-3 px-3 sm:px-4">Terdaftar &amp; Last Login</th>
+                <th className="py-2.5 sm:py-3 px-3 sm:px-4 text-right">Aksi Manajemen</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100 dark:divide-zinc-800/60">

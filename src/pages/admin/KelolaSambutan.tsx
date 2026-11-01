@@ -680,7 +680,7 @@ export const KelolaSambutan: React.FC = () => {
   const homeCount = sambutans.filter((s) => s.location?.includes('home')).length;
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto space-y-2.5 sm:space-y-3.5">
       {/* Toast Alert */}
       {toast && (
         <div
@@ -703,7 +703,7 @@ export const KelolaSambutan: React.FC = () => {
       )}
 
       {/* Header Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white dark:bg-zinc-900 p-6 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3.5 bg-white dark:bg-zinc-900 p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-sm">
         <div>
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 rounded-2xl border border-emerald-200/50 dark:border-emerald-800/50">

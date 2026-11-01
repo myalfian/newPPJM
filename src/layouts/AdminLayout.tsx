@@ -345,7 +345,7 @@ export const AdminLayout: React.FC = () => {
       {/* ------------------------------------------------------------- */}
       {/* TOP NAVBAR ADMIN                                              */}
       {/* ------------------------------------------------------------- */}
-      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#0A2116]/95 backdrop-blur-md border-b border-slate-200 dark:border-emerald-900/40 px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 bg-white/95 dark:bg-[#0A2116]/95 backdrop-blur-md border-b border-slate-200 dark:border-emerald-900/40 px-3.5 sm:px-5 h-14 flex items-center justify-between gap-3">
         
         {/* Left: Hamburger & Brand */}
         <div className="flex items-center gap-3">
@@ -470,7 +470,7 @@ export const AdminLayout: React.FC = () => {
           } fixed md:static inset-y-0 left-0 z-30 w-72 bg-white dark:bg-[#0A2116] border-r border-slate-200 dark:border-emerald-900/40 flex flex-col justify-between transition-all duration-300 ease-in-out shadow-xl md:shadow-none pt-16 md:pt-0`}
         >
           {/* Scrollable Nav Item List */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-6">
+          <div className="flex-1 overflow-y-auto p-2.5 sm:p-3 space-y-3.5 sm:space-y-4">
             {ADMIN_SIDEBAR_GROUPS.map((group) => {
               // Filter modul sesuai pencarian jika ada query
               const filteredItems = group.items.filter((item) => {
@@ -606,7 +606,7 @@ export const AdminLayout: React.FC = () => {
         {/* =========================================================== */}
         {/* WORKSPACE AREA (OUTLET CONTENT)                             */}
         {/* =========================================================== */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 overflow-y-auto p-2.5 sm:p-3.5 lg:p-5">
           <Outlet />
         </main>
 

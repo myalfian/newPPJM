@@ -254,10 +254,10 @@ export const KelolaSlider: React.FC = () => {
   const activePreviewSlide = slides[previewActiveIndex] || slides[0];
 
   return (
-    <div className="space-y-8 max-w-5xl pb-16">
+    <div className="space-y-2.5 sm:space-y-3.5 max-w-5xl pb-8">
       
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-3xl p-6 sm:p-8 text-white shadow-m3-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-emerald-900 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 text-white shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3.5">
         <div className="space-y-1.5">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-400 text-emerald-950 text-xs font-bold uppercase tracking-wider">
             <Layers className="w-3.5 h-3.5" />
@@ -299,7 +299,7 @@ export const KelolaSlider: React.FC = () => {
       )}
 
       {/* ================= BAGIAN 1: KELOLA KONTEN SLIDE ================= */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+      <div className="bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-slate-200 shadow-sm space-y-3.5 sm:space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
           <div>
             <h2 className="text-lg sm:text-xl font-extrabold text-emerald-950 flex items-center gap-2">
@@ -337,7 +337,7 @@ export const KelolaSlider: React.FC = () => {
         {showSlideForm && (
           <form
             onSubmit={handleSaveSlideForm}
-            className="p-5 sm:p-6 rounded-2xl bg-slate-50 border border-emerald-200/80 space-y-5 animate-in fade-in duration-150"
+            className="p-3.5 sm:p-4.5 rounded-2xl bg-slate-50 border border-emerald-200/80 space-y-3.5 animate-in fade-in duration-150"
           >
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
               <h3 className="font-extrabold text-sm sm:text-base text-emerald-950">
@@ -612,7 +612,7 @@ export const KelolaSlider: React.FC = () => {
       </div>
 
       {/* ================= BAGIAN 2: PENGATURAN KECEPATAN & AUTOPLAY ================= */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-8">
+      <div className="bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-slate-200 shadow-sm space-y-4">
         <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
           <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
             <Gauge className="w-5 h-5" />

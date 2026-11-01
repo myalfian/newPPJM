@@ -505,13 +505,13 @@ export const Dashboard: React.FC = () => {
   const roleInfo = getRoleBadge(userRole || 'super_admin');
 
   return (
-    <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto pb-12">
+    <div className="space-y-2.5 sm:space-y-3.5 max-w-7xl mx-auto pb-6">
       {/* 1. EXECUTIVE HEADER & ACTION TOOLBAR (Islami Modern - Hijau & Emas) */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-[#0A2116] via-[#0E7A4C] to-[#0A2116] text-white shadow-xl border border-[#C8A951]/30 backdrop-blur-md relative overflow-hidden">
+      <div className="p-3.5 sm:p-5 rounded-2xl bg-gradient-to-br from-[#0A2116] via-[#0E7A4C] to-[#0A2116] text-white shadow-xl border border-[#C8A951]/30 backdrop-blur-md relative overflow-hidden">
         {/* Islamic Geometric Accent Pattern */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-[#C8A951]/20 via-transparent to-transparent pointer-events-none rounded-full blur-3xl" />
         
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3.5 sm:gap-4">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/40 text-[#C8A951] text-xs font-bold border border-[#C8A951]/40 backdrop-blur-md">
               <Sparkles className="w-3.5 h-3.5 text-[#C8A951]" />
@@ -559,128 +559,128 @@ export const Dashboard: React.FC = () => {
       </div>
 
       {/* 2. 4 PRIMARY METRIC HIGHLIGHTS CARDS (Total Berita 47, Agenda 12, Portfolio 28, Prestasi 64) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
         
         {/* CARD 1: Total Berita (47) */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-[#0E7A4C]/25 shadow-md backdrop-blur-md space-y-3 relative overflow-hidden group hover:border-[#0E7A4C] hover:shadow-lg transition-all">
+        <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-[#0E7A4C]/25 shadow-sm backdrop-blur-md space-y-2 relative overflow-hidden group hover:border-[#0E7A4C] hover:shadow-md transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
               Total Berita &amp; Warta
             </span>
-            <div className="w-10 h-10 rounded-xl bg-[#0E7A4C]/10 dark:bg-[#0E7A4C]/25 text-[#0E7A4C] dark:text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Newspaper className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-lg bg-[#0E7A4C]/10 dark:bg-[#0E7A4C]/25 text-[#0E7A4C] dark:text-emerald-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <Newspaper className="w-4 h-4" />
             </div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-black text-zinc-900 dark:text-white tracking-tight">
-              {metrics.newsCount} <span className="text-sm font-semibold text-zinc-400">Artikel</span>
+            <div className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
+              {metrics.newsCount} <span className="text-xs font-semibold text-zinc-400">Artikel</span>
             </div>
-            <div className="flex items-center gap-1.5 mt-2 text-xs">
-              <span className="inline-flex items-center gap-1 text-[#0E7A4C] dark:text-emerald-400 font-bold text-[11px] bg-[#0E7A4C]/10 dark:bg-[#0E7A4C]/20 px-2 py-0.5 rounded-md">
+            <div className="flex items-center gap-1.5 mt-1 text-xs">
+              <span className="inline-flex items-center gap-1 text-[#0E7A4C] dark:text-emerald-400 font-bold text-[10px] bg-[#0E7A4C]/10 dark:bg-[#0E7A4C]/20 px-1.5 py-0.5 rounded">
                 <TrendingUp className="w-3 h-3" />
                 Live Database
               </span>
-              <span className="text-zinc-400 text-[11px]">siap broadcast WA</span>
+              <span className="text-zinc-400 text-[10px]">siap broadcast WA</span>
             </div>
           </div>
-          <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-1.5 overflow-hidden">
-            <div className="bg-[#0E7A4C] h-1.5 rounded-full" style={{ width: '92%' }} />
+          <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-1 overflow-hidden">
+            <div className="bg-[#0E7A4C] h-1 rounded-full" style={{ width: '92%' }} />
           </div>
         </div>
 
         {/* CARD 2: Agenda Aktif (12) */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-[#C8A951]/30 shadow-md backdrop-blur-md space-y-3 relative overflow-hidden group hover:border-[#C8A951] hover:shadow-lg transition-all">
+        <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-[#C8A951]/30 shadow-sm backdrop-blur-md space-y-2 relative overflow-hidden group hover:border-[#C8A951] hover:shadow-md transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
               Agenda Aktif
             </span>
-            <div className="w-10 h-10 rounded-xl bg-[#C8A951]/15 text-[#C8A951] flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Calendar className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-lg bg-[#C8A951]/15 text-[#C8A951] flex items-center justify-center group-hover:scale-105 transition-transform">
+              <Calendar className="w-4 h-4" />
             </div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-black text-zinc-900 dark:text-white tracking-tight">
-              {metrics.agendaCount} <span className="text-sm font-semibold text-zinc-400">Kegiatan</span>
+            <div className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
+              {metrics.agendaCount} <span className="text-xs font-semibold text-zinc-400">Kegiatan</span>
             </div>
-            <div className="flex items-center gap-1.5 mt-2 text-xs">
-              <span className="inline-flex items-center gap-1 text-[#C8A951] font-bold text-[11px] bg-[#C8A951]/15 px-2 py-0.5 rounded-md">
+            <div className="flex items-center gap-1.5 mt-1 text-xs">
+              <span className="inline-flex items-center gap-1 text-[#C8A951] font-bold text-[10px] bg-[#C8A951]/15 px-1.5 py-0.5 rounded">
                 <Clock className="w-3 h-3" />
                 Semester Ini
               </span>
-              <span className="text-zinc-400 text-[11px]">kalender akademik</span>
+              <span className="text-zinc-400 text-[10px]">kalender akademik</span>
             </div>
           </div>
-          <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-1.5 overflow-hidden">
-            <div className="bg-[#C8A951] h-1.5 rounded-full" style={{ width: '85%' }} />
+          <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-1 overflow-hidden">
+            <div className="bg-[#C8A951] h-1 rounded-full" style={{ width: '85%' }} />
           </div>
         </div>
 
         {/* CARD 3: Portfolio STEM (28) */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-sky-500/25 shadow-md backdrop-blur-md space-y-3 relative overflow-hidden group hover:border-sky-500 hover:shadow-lg transition-all">
+        <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-sky-500/25 shadow-sm backdrop-blur-md space-y-2 relative overflow-hidden group hover:border-sky-500 hover:shadow-md transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
               Portofolio Riset STEM
             </span>
-            <div className="w-10 h-10 rounded-xl bg-sky-500/10 dark:bg-sky-500/25 text-sky-600 dark:text-sky-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Cpu className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-lg bg-sky-500/10 dark:bg-sky-500/25 text-sky-600 dark:text-sky-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <Cpu className="w-4 h-4" />
             </div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-black text-zinc-900 dark:text-white tracking-tight">
-              {metrics.stemCount} <span className="text-sm font-semibold text-zinc-400">Karya</span>
+            <div className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
+              {metrics.stemCount} <span className="text-xs font-semibold text-zinc-400">Karya</span>
             </div>
-            <div className="flex items-center gap-1.5 mt-2 text-xs">
-              <span className="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 font-bold text-[11px] bg-sky-500/10 dark:bg-sky-500/20 px-2 py-0.5 rounded-md">
+            <div className="flex items-center gap-1.5 mt-1 text-xs">
+              <span className="inline-flex items-center gap-1 text-sky-600 dark:text-sky-400 font-bold text-[10px] bg-sky-500/10 dark:bg-sky-500/20 px-1.5 py-0.5 rounded">
                 <Zap className="w-3 h-3" />
                 IoT &amp; Nanofiltrasi
               </span>
-              <span className="text-zinc-400 text-[11px]">rubrik 4 param</span>
+              <span className="text-zinc-400 text-[10px]">rubrik 4 param</span>
             </div>
           </div>
-          <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-1.5 overflow-hidden">
-            <div className="bg-sky-500 h-1.5 rounded-full" style={{ width: '90%' }} />
+          <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-1 overflow-hidden">
+            <div className="bg-sky-500 h-1 rounded-full" style={{ width: '90%' }} />
           </div>
         </div>
 
         {/* CARD 4: Prestasi (64) */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-amber-500/25 shadow-md backdrop-blur-md space-y-3 relative overflow-hidden group hover:border-amber-500 hover:shadow-lg transition-all">
+        <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-amber-500/25 shadow-md backdrop-blur-md space-y-2 relative overflow-hidden group hover:border-amber-500 hover:shadow-md transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
               Prestasi Kejuaraan
             </span>
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 dark:bg-amber-500/25 text-amber-600 dark:text-amber-400 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Trophy className="w-5 h-5" />
+            <div className="w-8 h-8 rounded-lg bg-amber-500/10 dark:bg-amber-500/25 text-amber-600 dark:text-amber-400 flex items-center justify-center group-hover:scale-105 transition-transform">
+              <Trophy className="w-4 h-4" />
             </div>
           </div>
           <div>
-            <div className="text-3xl sm:text-4xl font-black text-zinc-900 dark:text-white tracking-tight">
+            <div className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
               {metrics.achievementsCount} <span className="text-sm font-semibold text-zinc-400">Piagam</span>
             </div>
-            <div className="flex items-center gap-1.5 mt-2 text-xs">
-              <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 font-bold text-[11px] bg-amber-500/10 dark:bg-amber-500/20 px-2 py-0.5 rounded-md">
+            <div className="flex items-center gap-1.5 mt-1 text-xs">
+              <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 font-bold text-[10px] bg-amber-500/10 dark:bg-amber-500/20 px-1.5 py-0.5 rounded">
                 <Activity className="w-3 h-3" />
                 Kab/Prov/Nasional
               </span>
-              <span className="text-zinc-400 text-[11px]">terverifikasi</span>
+              <span className="text-zinc-400 text-[10px]">terverifikasi</span>
             </div>
           </div>
-          <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-1.5 overflow-hidden">
-            <div className="bg-amber-500 h-1.5 rounded-full" style={{ width: '94%' }} />
+          <div className="w-full bg-zinc-100 dark:bg-zinc-800 rounded-full h-1 overflow-hidden">
+            <div className="bg-amber-500 h-1 rounded-full" style={{ width: '94%' }} />
           </div>
         </div>
       </div>
 
       {/* 3. MAIN SPLIT CANVAS (8 COLS TASKS & AUDIT LOG / 4 COLS SYSTEM HEALTH & AGENDAS) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-2.5 sm:gap-3.5">
         
         {/* Left Column (8 cols): Pipeline Tugas & Audit Log 5 Terakhir */}
-        <div className="lg:col-span-8 space-y-6">
+        <div className="lg:col-span-8 space-y-2.5 sm:space-y-3.5">
           
           {/* Task Pipeline */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-[#0E7A4C]/25 shadow-md backdrop-blur-md space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="p-3.5 sm:p-4.5 rounded-xl sm:rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-[#0E7A4C]/25 shadow-sm backdrop-blur-md space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
               <div>
-                <h3 className="text-base sm:text-lg font-extrabold text-zinc-900 dark:text-white tracking-tight flex items-center gap-2">
+                <h3 className="text-base font-extrabold text-zinc-900 dark:text-white tracking-tight flex items-center gap-2">
                   <Layers className="w-4 h-4 text-[#0E7A4C] dark:text-emerald-400" />
                   <span>Pipeline Publikasi &amp; Antrean Konten</span>
                 </h3>
@@ -690,13 +690,13 @@ export const Dashboard: React.FC = () => {
               </div>
 
               {/* Filter Tabs */}
-              <div className="flex items-center gap-1 p-1 bg-zinc-100 dark:bg-zinc-800 rounded-xl overflow-x-auto no-scrollbar">
+              <div className="flex items-center gap-1 p-0.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg overflow-x-auto no-scrollbar">
                 {(['all', 'warta', 'stem', 'galeri'] as const).map((filterKey) => (
                   <button
                     key={filterKey}
                     type="button"
                     onClick={() => setActiveFilter(filterKey)}
-                    className={`px-3 py-1 text-xs font-bold rounded-lg transition-all capitalize cursor-pointer ${
+                    className={`px-2.5 py-0.5 text-xs font-bold rounded-md transition-all capitalize cursor-pointer ${
                       activeFilter === filterKey
                         ? 'bg-[#0E7A4C] text-white shadow-xs'
                         : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
@@ -708,28 +708,28 @@ export const Dashboard: React.FC = () => {
               </div>
             </div>
 
-            <div className="space-y-2.5">
+            <div className="space-y-2">
               {filteredTasks.map((task) => {
                 const isHigh = task.priority === 'high';
                 return (
                   <div
                     key={task.id}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 rounded-xl bg-zinc-50/80 dark:bg-zinc-800/50 hover:bg-zinc-100/90 dark:hover:bg-zinc-800/80 border border-zinc-200/60 dark:border-zinc-700/50 transition-all group"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-2.5 sm:p-3 rounded-xl bg-zinc-50/80 dark:bg-zinc-800/50 hover:bg-zinc-100/90 dark:hover:bg-zinc-800/80 border border-zinc-200/60 dark:border-zinc-700/50 transition-all group"
                   >
-                    <div className="space-y-1.5 flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300">
+                    <div className="space-y-1 flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300">
                           {task.categoryLabel}
                         </span>
 
                         {isHigh && (
-                          <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/60">
+                          <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/60">
                             Prioritas
                           </span>
                         )}
 
                         <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${
+                          className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${
                             task.status === 'published'
                               ? 'bg-[#0E7A4C]/15 text-[#0E7A4C] dark:text-emerald-400 border border-[#0E7A4C]/30'
                               : task.status === 'in_review'
@@ -745,9 +745,9 @@ export const Dashboard: React.FC = () => {
                         {task.title}
                       </h4>
 
-                      <div className="flex items-center gap-3 text-[11px] text-zinc-400">
+                      <div className="flex items-center gap-2 text-[10px] text-zinc-400">
                         <span className="flex items-center gap-1">
-                          <span className="w-5 h-5 rounded-full bg-[#0E7A4C]/20 text-[#0E7A4C] dark:text-emerald-300 text-[9px] font-bold flex items-center justify-center">
+                          <span className="w-4 h-4 rounded-full bg-[#0E7A4C]/20 text-[#0E7A4C] dark:text-emerald-300 text-[8px] font-bold flex items-center justify-center">
                             {task.authorInitials}
                           </span>
                           <span className="font-medium text-zinc-600 dark:text-zinc-300">{task.author}</span>
@@ -760,10 +760,10 @@ export const Dashboard: React.FC = () => {
                     <div className="shrink-0 flex items-center gap-2 self-end sm:self-center">
                       <Link
                         to={task.href}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-700 hover:bg-[#0E7A4C] hover:text-white border border-zinc-200 dark:border-zinc-600 transition-all active:scale-95 shadow-2xs"
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-700 hover:bg-[#0E7A4C] hover:text-white border border-zinc-200 dark:border-zinc-600 transition-all active:scale-95 shadow-2xs"
                       >
                         <span>Kelola</span>
-                        <ChevronRight className="w-3.5 h-3.5" />
+                        <ChevronRight className="w-3 h-3" />
                       </Link>
                     </div>
                   </div>
@@ -773,7 +773,7 @@ export const Dashboard: React.FC = () => {
           </div>
 
           {/* AUDIT LOG 5 TERAKHIR (Real-Time Security & Compliance Log) */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-[#C8A951]/30 shadow-md backdrop-blur-md space-y-4">
+          <div className="p-3.5 sm:p-4.5 rounded-xl sm:rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-[#C8A951]/30 shadow-sm backdrop-blur-md space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-[#C8A951]" />
@@ -781,21 +781,21 @@ export const Dashboard: React.FC = () => {
                   Audit Log 5 Aktivitas Terakhir
                 </h3>
               </div>
-              <span className="text-[11px] font-mono text-zinc-400 flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[10px] font-mono text-zinc-400 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Live Log Synchronized
               </span>
             </div>
 
             <div className="divide-y divide-zinc-200/70 dark:divide-zinc-800/80">
               {feed.auditLogs.map((log) => (
-                <div key={log.id} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-                  <div className="space-y-1">
+                <div key={log.id} className="py-2 sm:py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 text-xs">
+                  <div className="space-y-0.5">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-bold text-zinc-900 dark:text-white">
                         {log.operator}
                       </span>
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${log.roleBadge}`}>
+                      <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${log.roleBadge}`}>
                         {log.roleLabel}
                       </span>
                     </div>
@@ -804,7 +804,7 @@ export const Dashboard: React.FC = () => {
                       <span className="font-semibold text-zinc-900 dark:text-zinc-100">{log.target}</span>
                     </p>
                   </div>
-                  <span className="text-[11px] text-zinc-400 font-mono shrink-0">
+                  <span className="text-[10px] text-zinc-400 font-mono shrink-0">
                     {log.timestamp}
                   </span>
                 </div>
@@ -814,10 +814,10 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Right Column (4 cols): Supabase Health, Agendas, Shortcuts */}
-        <div className="lg:col-span-4 space-y-6">
+        <div className="lg:col-span-4 space-y-2.5 sm:space-y-3.5">
           
           {/* Status Koneksi Supabase dengan Dot Hijau Berkedip */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#0A2116] to-[#0d3322] text-white border border-[#0E7A4C]/50 shadow-md space-y-4 relative overflow-hidden">
+          <div className="p-3.5 sm:p-4.5 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#0A2116] to-[#0d3322] text-white border border-[#0E7A4C]/50 shadow-sm space-y-3 relative overflow-hidden">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Database className="w-4 h-4 text-[#C8A951]" />
@@ -855,7 +855,7 @@ export const Dashboard: React.FC = () => {
           </div>
 
           {/* Upcoming Agendas */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-[#0E7A4C]/25 shadow-md backdrop-blur-md space-y-4">
+          <div className="p-3.5 sm:p-4.5 rounded-xl sm:rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-[#0E7A4C]/25 shadow-sm backdrop-blur-md space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-zinc-900 dark:text-white font-extrabold text-xs uppercase tracking-wider">
                 <Calendar className="w-4 h-4 text-[#0E7A4C]" />
@@ -866,21 +866,21 @@ export const Dashboard: React.FC = () => {
               </Link>
             </div>
 
-            <div className="space-y-2.5 text-xs">
+            <div className="space-y-2 text-xs">
               {feed.upcomingAgendas.map((item) => (
                 <div
                   key={item.id}
-                  className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/60 flex items-center justify-between gap-2"
+                  className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/60 flex items-center justify-between gap-2"
                 >
                   <div className="min-w-0">
                     <h5 className="font-bold text-zinc-900 dark:text-white truncate">
                       {item.title}
                     </h5>
-                    <p className="text-[11px] text-zinc-400 mt-0.5 truncate">
+                    <p className="text-[10px] text-zinc-400 mt-0.5 truncate">
                       {item.subtitle}
                     </p>
                   </div>
-                  <span className={`px-2.5 py-1 rounded-xl text-xs font-black shrink-0 ${item.badgeBg}`}>
+                  <span className={`px-2 py-0.5 rounded-lg text-[10px] font-black shrink-0 ${item.badgeBg}`}>
                     {item.hLabel}
                   </span>
                 </div>
@@ -889,57 +889,57 @@ export const Dashboard: React.FC = () => {
           </div>
 
           {/* Quick Shortcuts Grid */}
-          <div className="p-5 sm:p-6 rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-[#C8A951]/25 shadow-md backdrop-blur-md space-y-3">
-            <h4 className="text-xs font-extrabold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+          <div className="p-3.5 sm:p-4.5 rounded-xl sm:rounded-2xl bg-white dark:bg-[#0A2116]/80 border border-[#C8A951]/25 shadow-sm backdrop-blur-md space-y-2">
+            <h4 className="text-[10px] font-extrabold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
               Akses Cepat Modul Utama
             </h4>
-            <div className="grid grid-cols-2 gap-2 text-xs font-bold">
+            <div className="grid grid-cols-2 gap-1.5 text-xs font-bold">
               <Link
                 to="/admin/slider"
-                className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-[#0E7A4C]/10 border border-zinc-200/60 dark:border-zinc-700/60 hover:border-[#0E7A4C] transition-all flex items-center gap-2"
+                className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-[#0E7A4C]/10 border border-zinc-200/60 dark:border-zinc-700/60 hover:border-[#0E7A4C] transition-all flex items-center gap-1.5"
               >
-                <Gauge className="w-4 h-4 text-[#0E7A4C]" />
-                <span>5 Flyer Slider</span>
+                <Gauge className="w-3.5 h-3.5 text-[#0E7A4C]" />
+                <span className="truncate">5 Flyer Slider</span>
               </Link>
 
               <Link
                 to="/admin/stem"
-                className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-sky-500/10 border border-zinc-200/60 dark:border-zinc-700/60 hover:border-sky-500 transition-all flex items-center gap-2"
+                className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-sky-500/10 border border-zinc-200/60 dark:border-zinc-700/60 hover:border-sky-500 transition-all flex items-center gap-1.5"
               >
-                <Cpu className="w-4 h-4 text-sky-600" />
-                <span>Lab STEM</span>
+                <Cpu className="w-3.5 h-3.5 text-sky-600" />
+                <span className="truncate">Lab STEM</span>
               </Link>
 
               <Link
                 to="/admin/mandarin"
-                className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-[#C8A951]/10 border border-zinc-200/60 dark:border-zinc-700/60 hover:border-[#C8A951] transition-all flex items-center gap-2"
+                className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-[#C8A951]/10 border border-zinc-200/60 dark:border-zinc-700/60 hover:border-[#C8A951] transition-all flex items-center gap-1.5"
               >
-                <Globe className="w-4 h-4 text-[#C8A951]" />
-                <span>Mandarin HSK</span>
+                <Globe className="w-3.5 h-3.5 text-[#C8A951]" />
+                <span className="truncate">Mandarin HSK</span>
               </Link>
 
               <Link
                 to="/admin/hafidz"
-                className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-[#0E7A4C]/10 border border-zinc-200/60 dark:border-zinc-700/60 hover:border-[#0E7A4C] transition-all flex items-center gap-2"
+                className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-[#0E7A4C]/10 border border-zinc-200/60 dark:border-zinc-700/60 hover:border-[#0E7A4C] transition-all flex items-center gap-1.5"
               >
-                <BookOpen className="w-4 h-4 text-[#0E7A4C]" />
-                <span>114 Surat</span>
+                <BookOpen className="w-3.5 h-3.5 text-[#0E7A4C]" />
+                <span className="truncate">114 Surat</span>
               </Link>
 
               <Link
                 to="/admin/prestasi"
-                className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-amber-500/10 border border-zinc-200/60 dark:border-zinc-700/60 hover:border-amber-500 transition-all flex items-center gap-2"
+                className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-amber-500/10 border border-zinc-200/60 dark:border-zinc-700/60 hover:border-amber-500 transition-all flex items-center gap-1.5"
               >
-                <Trophy className="w-4 h-4 text-amber-500" />
-                <span>Prestasi Santri</span>
+                <Trophy className="w-3.5 h-3.5 text-amber-500" />
+                <span className="truncate">Prestasi Santri</span>
               </Link>
 
               <Link
                 to="/admin/kontak"
-                className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-rose-500/10 border border-zinc-200/60 dark:border-zinc-700/60 hover:border-rose-500 transition-all flex items-center gap-2"
+                className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 hover:bg-rose-500/10 border border-zinc-200/60 dark:border-zinc-700/60 hover:border-rose-500 transition-all flex items-center gap-1.5"
               >
-                <HeartHandshake className="w-4 h-4 text-rose-500" />
-                <span>7 Kanal Medsos</span>
+                <HeartHandshake className="w-3.5 h-3.5 text-rose-500" />
+                <span className="truncate">7 Kanal Medsos</span>
               </Link>
             </div>
           </div>

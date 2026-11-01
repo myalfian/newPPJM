@@ -460,10 +460,10 @@ export const KelolaProfil: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto pb-16">
+    <div className="space-y-2.5 sm:space-y-3.5 max-w-6xl mx-auto pb-8">
       
       {/* 1. Header Hero Panel */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-gradient-to-r from-[#0A2116] via-[#0E7A4C] to-[#0A2116] text-white shadow-xl border border-[#C8A951]/30 relative overflow-hidden">
+      <div className="p-3.5 sm:p-5 rounded-2xl bg-gradient-to-r from-[#0A2116] via-[#0E7A4C] to-[#0A2116] text-white shadow-xl border border-[#C8A951]/30 relative overflow-hidden">
         <div className="relative z-10 space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/40 text-[#C8A951] text-xs font-bold border border-[#C8A951]/40">
             <Landmark className="w-3.5 h-3.5" />
@@ -575,7 +575,7 @@ export const KelolaProfil: React.FC = () => {
 
       {/* TAB B: SEJARAH LASEM SIDAYU */}
       {activeTab === 'sejarah' && (
-        <form onSubmit={handleSave} className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-md space-y-4">
+        <form onSubmit={handleSave} className="p-3.5 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-3.5 sm:space-y-4">
           <div className="space-y-1">
             <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">Naskah Sejarah Berdirinya Pesantren di Lasem Sidayu Gresik:</label>
             <textarea
@@ -601,7 +601,7 @@ export const KelolaProfil: React.FC = () => {
 
       {/* TAB C: VISI & 5 PILAR MISI */}
       {activeTab === 'visi-misi' && (
-        <form onSubmit={handleSave} className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-md space-y-5">
+        <form onSubmit={handleSave} className="p-3.5 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-3.5 sm:space-y-4">
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
               Pernyataan Visi Lembaga (Word Toolbar Contextual):
@@ -706,7 +706,7 @@ export const KelolaProfil: React.FC = () => {
 
           {/* Form Tambah / Edit Fasilitas */}
           {showFacilityForm && (
-            <form onSubmit={handleSaveFacility} className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-emerald-500/30 dark:border-emerald-700/40 shadow-lg space-y-4 animate-fadeIn">
+            <form onSubmit={handleSaveFacility} className="p-3.5 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-emerald-500/30 dark:border-emerald-700/40 shadow-md space-y-3.5 animate-fadeIn">
               <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
                 <div className="flex items-center gap-2">
                   <Building2 className="w-5 h-5 text-[#0E7A4C]" />
@@ -991,7 +991,7 @@ export const KelolaProfil: React.FC = () => {
 
       {/* TAB E: JADWAL AMALIYAH 24 JAM SANTRI */}
       {activeTab === 'program-pondok' && (
-        <div className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-md space-y-4">
+        <div className="p-3.5 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-3.5">
           <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-3">
             <div>
               <h3 className="font-black text-sm sm:text-base text-zinc-900 dark:text-white">

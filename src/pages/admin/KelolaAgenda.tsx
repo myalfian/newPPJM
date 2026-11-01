@@ -625,11 +625,11 @@ export const KelolaAgenda: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6 pb-12">
+    <div className="space-y-2.5 sm:space-y-3.5 pb-6">
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-emerald-800">
+      <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 text-white shadow-md relative overflow-hidden border border-emerald-800">
         <div className="absolute right-0 top-0 w-96 h-96 bg-gold-400/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3.5 sm:gap-4">
           <div className="space-y-2 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-800/80 border border-emerald-700/60 text-gold-300 text-xs font-bold uppercase tracking-wider">
               <CalendarDays className="w-3.5 h-3.5 text-gold-400" />
@@ -766,8 +766,8 @@ export const KelolaAgenda: React.FC = () => {
 
       {/* TAB 1: KALENDER AKADEMIK BULANAN GRID INTERAKTIF */}
       {activeTab === 'calendar' && (
-        <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        <div className="space-y-2.5 sm:space-y-3.5">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-slate-200 shadow-sm space-y-3.5 sm:space-y-4">
             
             {/* Header Kalender & Bulan Nav */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
@@ -1142,8 +1142,8 @@ export const KelolaAgenda: React.FC = () => {
 
       {/* TAB 3: RUTINITAS SANTRI (HARIAN, MINGGUAN, BULANAN) */}
       {activeTab === 'routines' && (
-        <div className="space-y-6">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        <div className="space-y-2.5 sm:space-y-3.5">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-slate-200 shadow-sm space-y-3.5 sm:space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
               <div className="space-y-1">
                 <h3 className="text-lg font-black text-emerald-950 flex items-center gap-2">

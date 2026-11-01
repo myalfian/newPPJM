@@ -286,9 +286,9 @@ export const KelolaGaleri: React.FC = () => {
   });
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-2.5 sm:space-y-3.5 pb-6">
       {/* Header */}
-      <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-zinc-800 shadow-sm space-y-2">
+      <div className="bg-white dark:bg-zinc-900 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-slate-200 dark:border-zinc-800 shadow-sm space-y-1.5">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider">
           <ImageIcon className="w-3.5 h-3.5 text-emerald-800 dark:text-emerald-400" />
           <span>Manajemen Galeri Dokumentasi</span>
@@ -360,7 +360,7 @@ export const KelolaGaleri: React.FC = () => {
       {/* Form Foto & Video Input */}
       <form
         onSubmit={handleSubmit}
-        className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-zinc-800 shadow-sm space-y-4"
+        className="bg-white dark:bg-zinc-900 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-slate-200 dark:border-zinc-800 shadow-sm space-y-3.5"
       >
         <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-zinc-800">
           <h3 className="font-bold text-sm text-slate-900 dark:text-white">

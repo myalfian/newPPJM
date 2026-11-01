@@ -574,7 +574,7 @@ export const MultiSectionBuilder: React.FC<MultiSectionBuilderProps> = ({
   const featuredCount = items.filter((i) => i.is_featured).length;
 
   return (
-    <div className="bg-slate-50 min-h-screen p-4 sm:p-8 space-y-6 relative">
+    <div className="bg-slate-50 min-h-screen p-2.5 sm:p-4 space-y-3 sm:space-y-3.5 relative">
       {/* Toast Alert Banner */}
       {toastMessage && (
         <div
@@ -593,8 +593,8 @@ export const MultiSectionBuilder: React.FC<MultiSectionBuilderProps> = ({
         </div>
       )}
       {/* Header Stats */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+      <div className="bg-white rounded-2xl p-3.5 sm:p-4.5 shadow-sm border border-slate-200">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3.5">
           <div>
             <div className="flex items-center gap-3">
               <span className="p-2.5 bg-emerald-50 text-emerald-700 rounded-xl">
