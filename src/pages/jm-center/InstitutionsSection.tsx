@@ -49,13 +49,13 @@ export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initia
             const categoryTag = isMadin
               ? 'Pendidikan Keagamaan Formal/Salaf'
               : isFormal
-              ? 'Lembaga Pendidikan Formal'
+              ? 'Pendidikan Formal dan Pesantren'
               : 'Lembaga Kepesantrenan';
 
             const tagline = isMadin
               ? 'Pembelajaran Agama & Bahasa Arab Pengantar Turats Berizin Kemenag RI'
               : isFormal
-              ? 'Terakreditasi "A" BAN-PDM, Unggul Akademik & Inovasi Sains Teknologi STEM'
+              ? 'SMP Plus Jauharul Maknuun “Islamic Boarding School” (Terakreditasi "A" BAN-PDM)'
               : 'Kawah Candradimuka Santri Mukim, Tahfidz 30 Juz Bersanad & Karakter Salaf';
 
             const curriculumList = Array.isArray(row.curriculum)
@@ -75,10 +75,12 @@ export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initia
                 ]
               : isFormal
               ? [
-                  'Kurikulum Merdeka terintegrasi nilai-nilai kepesantrenan',
-                  'Laboratorium riset STEM aplikatif, robotika, & komputer multimedia',
-                  'Tenaga pendidik profesional linier berdedikasi tinggi',
-                  'Program pembinaan olimpiade sains & literasi adaptif',
+                  '4 Sintesa Kurikulum: Gontor, Yanbu’ul Qur’an, Mambaus Sholihin, & SD IRADA',
+                  'Satu manajemen mutu terpadu dengan SD IRADA “Full Day Education” Gresik',
+                  'Kepala Sekolah: Ferany Ardiana, S.S., M.Pd. (085850868616)',
+                  'Program Unggulan: Tahfidz, JM Camp, Student Exchange, Bilingual Class, & SQ',
+                  'Ekstrakurikuler: Robotik STEM, Perisai Diri, Mandarin, Kaligrafi, Panahan, Futsal',
+                  'Alamat: Jl. Raya Dukun – Lasem RT 01 RW 01 Ds. Lasem, Kec. Sidayu, Kab. Gresik',
                 ]
               : [
                   'Bimbingan talaqqi dan sanad keilmuan muttashil 30 Juz',
@@ -97,9 +99,14 @@ export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initia
                 ]
               : isFormal
               ? [
-                  { label: 'Akreditasi', value: 'A (Unggul) BAN-PDM' },
-                  { label: 'Jenjang', value: 'SMP Formal Terpadu' },
-                  { label: 'Sistem', value: 'Boarding & Full Day' },
+                  { label: 'Status Akreditasi', value: 'A (Unggul)' },
+                  { label: 'NPSN', value: '70045189' },
+                  { label: 'Tahun Berdiri', value: '2023' },
+                  { label: 'Jumlah Santri', value: '128 Siswa' },
+                  { label: 'Tenaga Pendidik', value: '27 Guru' },
+                  { label: 'Status Sekolah', value: 'Swasta / Yayasan' },
+                  { label: 'Kontak / Telp', value: '082131606535' },
+                  { label: 'Email Resmi', value: 'smpplusjauharulmaknuun@gmail.com' },
                 ]
               : [
                   { label: 'Sistem Pembelajaran', value: 'Terpadu 24 Jam' },
