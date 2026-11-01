@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { X, Save, Plus, Trash2, CheckCircle2, Image as ImageIcon, Sparkles } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { X, Save, Plus, Trash2, CheckCircle2, Image as ImageIcon, Sparkles, UploadCloud } from 'lucide-react';
+import { compressImageToWebP } from '../../lib/imageCompressor';
 
 interface EditContentModalProps {
   isOpen: boolean;
@@ -158,6 +159,49 @@ export const EditContentModal: React.FC<EditContentModalProps> = ({
             </div>
           )}
 
+          {/* Image Field (Top level) */}
+          {(formData.imageUrl !== undefined || formData.bannerImage !== undefined || formData.photoUrl !== undefined) && (
+            <div className="space-y-2 p-3.5 rounded-2xl bg-slate-50 dark:bg-zinc-800/40 border border-slate-200 dark:border-zinc-700">
+              <label className="block text-xs font-black text-slate-700 dark:text-zinc-300 uppercase tracking-wider">
+                Foto / Gambar Utama (WebP Auto-Compressor)
+              </label>
+              <div className="flex items-center gap-3">
+                <div className="w-16 h-16 rounded-xl overflow-hidden border border-slate-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 shrink-0 shadow-xs">
+                  <img
+                    src={formData.imageUrl || formData.bannerImage || formData.photoUrl || ''}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1 space-y-1">
+                  <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition cursor-pointer">
+                    <UploadCloud className="w-3.5 h-3.5" />
+                    <span>Pilih Foto dari Komputer</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        try {
+                          const res = await compressImageToWebP(file, 1200, 1200, 0.82);
+                          const targetKey = formData.imageUrl !== undefined ? 'imageUrl' : formData.bannerImage !== undefined ? 'bannerImage' : 'photoUrl';
+                          handleFieldChange(targetKey, res.dataUrl);
+                        } catch (err: any) {
+                          alert('Gagal mengompres gambar: ' + (err?.message || 'Error'));
+                        }
+                      }}
+                    />
+                  </label>
+                  <p className="text-[10px] text-slate-500 dark:text-zinc-400">
+                    Otomatis dikonversi ke format WebP terkompresi hemat kuota santri & wali.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Contact Fields */}
           {formData.alamat !== undefined && (
             <div className="space-y-3">
@@ -241,6 +285,39 @@ export const EditContentModal: React.FC<EditContentModalProps> = ({
                         }
                         className="w-full px-3 py-1.5 rounded-lg border border-slate-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-xs text-slate-700 dark:text-zinc-300 leading-normal"
                       />
+                    )}
+
+                    {/* Item Thumbnail / Image with WebP Compression */}
+                    {(item.thumbnail !== undefined || item.imageUrl !== undefined || item.image !== undefined) && (
+                      <div className="flex items-center gap-2.5 pt-1">
+                        <div className="w-10 h-10 rounded-lg overflow-hidden border border-slate-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 shrink-0">
+                          <img
+                            src={item.thumbnail || item.imageUrl || item.image || ''}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <label className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold transition cursor-pointer">
+                          <UploadCloud className="w-3 h-3" />
+                          <span>Unggah Foto (WebP)</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              try {
+                                const res = await compressImageToWebP(file, 800, 800, 0.82);
+                                const imgKey = item.thumbnail !== undefined ? 'thumbnail' : item.imageUrl !== undefined ? 'imageUrl' : 'image';
+                                handleItemFieldChange(idx, imgKey, res.dataUrl);
+                              } catch (err: any) {
+                                alert('Gagal mengompres gambar: ' + (err?.message || 'Error'));
+                              }
+                            }}
+                          />
+                        </label>
+                      </div>
                     )}
                   </div>
                 ))}

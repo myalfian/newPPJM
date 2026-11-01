@@ -90,6 +90,8 @@ export const PATH_TO_MODULE: Record<string, ModuleKey> = {
   '/admin/audit': 'integrationTest',
   '/admin/akun': 'akunRbac',
   '/admin/rbac': 'akunRbac',
+  '/admin/users': 'akunRbac',
+  '/admin/administrators': 'akunRbac',
 };
 
 // ==============================================================================

@@ -174,6 +174,7 @@ const KelolaProfil = lazy(() => import('./pages/admin/KelolaProfil').then(m => (
 const KelolaSambutan_FIXED = lazy(() => import('./pages/admin/KelolaSambutan_FIXED').then(m => ({ default: m.KelolaSambutan_FIXED })));
 const KelolaOsis = lazy(() => import('./pages/admin/KelolaOsis').then(m => ({ default: m.KelolaOsis })));
 const KelolaKontak = lazy(() => import('./pages/admin/KelolaKontak').then(m => ({ default: m.KelolaKontak })));
+const KelolaUsers = lazy(() => import('./pages/admin/KelolaUsers').then(m => ({ default: m.KelolaUsers })));
 const WebVisualEditor = lazy(() => import('./pages/admin/WebVisualEditor').then(m => ({ default: m.WebVisualEditor })));
 const UserProfilePage = lazy(() => import('./pages/profile/UserProfilePage').then(m => ({ default: m.UserProfilePage })));
 const IntegrationTestPage = lazy(() => import('./pages/admin/IntegrationTestPage').then(m => ({ default: m.IntegrationTestPage })));
@@ -326,6 +327,8 @@ export const App: React.FC = () => {
             <Route path="data-audit" element={<DataFlowAuditPage />} />
             <Route path="audit" element={<Navigate to="/admin/integration-test" replace />} />
             <Route path="akun" element={<UserProfilePage />} />
+            <Route path="users" element={<KelolaUsers />} />
+            <Route path="administrators" element={<Navigate to="/admin/users" replace />} />
             <Route path="profile" element={<Navigate to="/admin/akun" replace />} />
             <Route path="*" element={<Dashboard />} />
           </Route>

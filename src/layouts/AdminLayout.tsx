@@ -10,6 +10,7 @@ import {
   LogOut,
   ExternalLink,
   ShieldCheck,
+  UserCheck,
   User,
   Menu,
   X,
@@ -239,9 +240,18 @@ export const ADMIN_SIDEBAR_GROUPS: NavGroupConfig[] = [
         badge: '7 Kanal'
       },
       {
+        id: 'users',
+        moduleKey: 'akunRbac',
+        label: 'Kelola Administrator',
+        href: '/admin/users',
+        publicHref: '/admin/users',
+        icon: UserCheck,
+        badge: 'Super'
+      },
+      {
         id: 'akunRbac',
         moduleKey: 'akunRbac',
-        label: 'Akun RBAC & Akses',
+        label: 'Profil Akun & RBAC',
         href: '/admin/akun',
         publicHref: '/profil',
         icon: ShieldCheck,

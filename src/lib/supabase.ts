@@ -40,7 +40,15 @@ export interface AdminProfile {
   phone?: string;
   bio?: string;
   department?: string;
+  email?: string;
   nis_or_nip?: string;
+  nip?: string;
+  class?: string;
+  motto?: string;
+  is_active?: boolean;
+  created_by?: string;
+  last_login_at?: string;
+  address?: string;
   status_badge?: string;
   must_change_password?: boolean;
   last_password_change?: string;
