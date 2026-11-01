@@ -130,11 +130,150 @@ export function stripHtmlToPlainText(htmlOrText: string, maxLength?: number): st
 }
 
 /**
+ * Mengonversi sintaks Markdown atau teks terstruktur menjadi HTML semantik yang bersih.
+ */
+export function markdownToHtml(md: string): string {
+  if (!md || typeof md !== 'string') return '';
+
+  // Jika teks sudah mengandung tag blok HTML, kembalikan langsung
+  if (/<(p|div|h[1-6]|ul|ol|li|blockquote|table|section|article)\b/i.test(md)) {
+    return md;
+  }
+
+  // 1. Perbaiki kalimat yang menempel tanpa spasi setelah tanda titik (contoh: "Saw.Pondok" -> "Saw. Pondok")
+  let text = md.replace(/([a-zA-Z0-9\.\'\’\”\)])\.([A-Z\u0600-\u06FF])/g, '$1. $2');
+
+  const lines = text.split(/\r?\n/);
+  const htmlParts: string[] = [];
+  let inList: 'ul' | 'ol' | null = null;
+  let inBlockquote = false;
+  let blockquoteBuffer: string[] = [];
+
+  const flushBlockquote = () => {
+    if (inBlockquote && blockquoteBuffer.length > 0) {
+      htmlParts.push(`<blockquote>${blockquoteBuffer.join('<br />')}</blockquote>`);
+      blockquoteBuffer = [];
+      inBlockquote = false;
+    }
+  };
+
+  const flushList = () => {
+    if (inList) {
+      htmlParts.push(`</${inList}>`);
+      inList = null;
+    }
+  };
+
+  const parseInline = (str: string): string => {
+    return str
+      // Bold + Italic: ***text***
+      .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
+      // Bold: **text** atau __text__
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/__(.*?)__/g, '<strong>$1</strong>')
+      // Italic: *text* atau _text_
+      .replace(/\*([^\*]+?)\*/g, '<em>$1</em>')
+      .replace(/_([^_]+?)_/g, '<em>$1</em>')
+      // Inline Code: `code`
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      // Links: [text](url)
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const rawLine = lines[i];
+    const line = rawLine.trim();
+
+    if (!line) {
+      flushList();
+      flushBlockquote();
+      continue;
+    }
+
+    // Horizontal Rule (---, ***, ___)
+    if (/^(\-{3,}|\*{3,}|_{3,})$/.test(line)) {
+      flushList();
+      flushBlockquote();
+      htmlParts.push('<hr />');
+      continue;
+    }
+
+    // Heading 1 (# Title)
+    if (line.startsWith('# ')) {
+      flushList();
+      flushBlockquote();
+      htmlParts.push(`<h1>${parseInline(line.substring(2).trim())}</h1>`);
+      continue;
+    }
+
+    // Heading 2 (## Subheading)
+    if (line.startsWith('## ')) {
+      flushList();
+      flushBlockquote();
+      htmlParts.push(`<h2>${parseInline(line.substring(3).trim())}</h2>`);
+      continue;
+    }
+
+    // Heading 3 (### Subtitle)
+    if (line.startsWith('### ')) {
+      flushList();
+      flushBlockquote();
+      htmlParts.push(`<h3>${parseInline(line.substring(4).trim())}</h3>`);
+      continue;
+    }
+
+    // Blockquote (> Quote)
+    if (line.startsWith('> ')) {
+      flushList();
+      inBlockquote = true;
+      blockquoteBuffer.push(parseInline(line.substring(2).trim()));
+      continue;
+    } else {
+      flushBlockquote();
+    }
+
+    // Unordered List item (- atau *)
+    if (/^[-*]\s+/.test(line)) {
+      if (inList !== 'ul') {
+        flushList();
+        inList = 'ul';
+        htmlParts.push('<ul>');
+      }
+      const itemContent = line.replace(/^[-*]\s+/, '').trim();
+      htmlParts.push(`<li>${parseInline(itemContent)}</li>`);
+      continue;
+    }
+
+    // Ordered List item (1. 2.)
+    if (/^\d+\.\s+/.test(line)) {
+      if (inList !== 'ol') {
+        flushList();
+        inList = 'ol';
+        htmlParts.push('<ol>');
+      }
+      const itemContent = line.replace(/^\d+\.\s+/, '').trim();
+      htmlParts.push(`<li>${parseInline(itemContent)}</li>`);
+      continue;
+    }
+
+    // Paragraf biasa
+    flushList();
+    htmlParts.push(`<p>${parseInline(line)}</p>`);
+  }
+
+  flushList();
+  flushBlockquote();
+
+  return htmlParts.join('\n');
+}
+
+/**
  * Menormalkan konten HTML sebelum ditampilkan di public via SafeRichContent.
  * - Mengembalikan tag HTML yang ter-escape secara tidak sengaja (&lt;p&gt; -> <p>).
  * - Membersihkan paragraf kosong beruntun (<p><br></p>, <p>&nbsp;</p>).
  * - Menangani double-encoded entities (&amp;nbsp; -> &nbsp;).
  * - Menghilangkan non-breaking space liar yang menyebabkan overflow tabel/card di mobile.
+ * - Mengonversi format Markdown menjadi HTML jika input tidak berformat HTML.
  */
 export function cleanAndNormalizeHtml(content: string): string {
   if (!content || typeof content !== 'string') return '';
@@ -159,11 +298,15 @@ export function cleanAndNormalizeHtml(content: string): string {
     .replace(/&amp;lt;/gi, '&lt;')
     .replace(/&amp;gt;/gi, '&gt;');
 
-  // 3. Bersihkan tumpukan paragraf kosong berlebih (<p><br></p>, <p>&nbsp;</p>, dsb.)
-  // Mengganti 3 atau lebih paragraf kosong berturut-turut menjadi satu paragraf kosong
+  // 3. Jika belum berbentuk HTML, konversikan dari format Markdown
+  if (!/<[a-z][\s\S]*>/i.test(normalized)) {
+    normalized = markdownToHtml(normalized);
+  }
+
+  // 4. Bersihkan tumpukan paragraf kosong berlebih (<p><br></p>, <p>&nbsp;</p>, dsb.)
   normalized = normalized.replace(/(<p[^>]*>(\s*|&nbsp;|<br\s*\/?>)*<\/p>\s*){2,}/gi, '<p><br/></p>');
 
-  // 4. Rapikan paragraf kosong di paling awal atau paling akhir
+  // 5. Rapikan paragraf kosong di paling awal atau paling akhir
   normalized = normalized.replace(/^(<p[^>]*>(\s*|&nbsp;|<br\s*\/?>)*<\/p>\s*)+/gi, '');
   normalized = normalized.replace(/(<p[^>]*>(\s*|&nbsp;|<br\s*\/?>)*<\/p>\s*)+$/gi, '');
 

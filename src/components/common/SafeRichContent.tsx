@@ -104,6 +104,38 @@ export const SafeRichContent: React.FC<SafeRichContentProps> = ({
       if (data.tagName === 'td') {
         el.setAttribute('class', 'px-3 py-2 border border-slate-200 dark:border-zinc-700 text-slate-700 dark:text-zinc-300');
       }
+
+      // F. Tipografi Headings & Paragraf
+      if (data.tagName === 'h1') {
+        el.setAttribute('class', 'text-2xl sm:text-3xl font-black text-slate-900 dark:text-white mt-6 mb-3 tracking-tight leading-tight');
+      }
+      if (data.tagName === 'h2') {
+        el.setAttribute('class', 'text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-emerald-100 mt-5 mb-2.5 tracking-tight border-b border-emerald-500/20 pb-1.5');
+      }
+      if (data.tagName === 'h3') {
+        el.setAttribute('class', 'text-lg sm:text-xl font-bold text-slate-800 dark:text-zinc-100 mt-4 mb-2');
+      }
+      if (data.tagName === 'p') {
+        el.setAttribute('class', 'mb-3.5 leading-relaxed sm:leading-loose text-slate-700 dark:text-zinc-300');
+      }
+      if (data.tagName === 'ul') {
+        el.setAttribute('class', 'my-3 ml-5 space-y-2 list-disc marker:text-emerald-600 dark:marker:text-emerald-400');
+      }
+      if (data.tagName === 'ol') {
+        el.setAttribute('class', 'my-3 ml-5 space-y-2 list-decimal marker:font-bold marker:text-emerald-600 dark:marker:text-emerald-400');
+      }
+      if (data.tagName === 'li') {
+        el.setAttribute('class', 'pl-1 leading-relaxed text-slate-700 dark:text-zinc-300');
+      }
+      if (data.tagName === 'hr') {
+        el.setAttribute('class', 'my-6 border-slate-200 dark:border-zinc-700/80');
+      }
+      if (data.tagName === 'strong' || data.tagName === 'b') {
+        el.setAttribute('class', 'font-bold text-slate-900 dark:text-white');
+      }
+      if (data.tagName === 'em' || data.tagName === 'i') {
+        el.setAttribute('class', 'italic');
+      }
     });
 
     const sanitized = DOMPurify.sanitize(preparedContent, {

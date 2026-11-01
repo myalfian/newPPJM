@@ -36,6 +36,7 @@ import {
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured, SambutanPerson } from '../../lib/supabase';
 import { sanitizeText, sanitizeUrl, isValidImageUrl } from '../../utils/sanitize';
+import { cleanAndNormalizeHtml } from '../../utils/richContentUtils';
 import { compressImageToWebP, CompressionResult } from '../../lib/imageCompressor';
 import { Link } from 'react-router-dom';
 import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
@@ -318,7 +319,7 @@ export const KelolaSambutan: React.FC = () => {
     const title = sanitizeText(form.title.trim(), 150);
     const quote = sanitizeText(form.quote.trim(), 150);
     const messageShort = form.message_short.trim() ? sanitizeText(form.message_short.trim(), 200) : quote;
-    const messageFull = sanitizeText(form.message_full.trim(), 5000);
+    const messageFull = cleanAndNormalizeHtml(form.message_full.trim());
 
     if (!name || name.length < 3) {
       showToast('Nama Lengkap wajib diisi minimal 3 karakter.', 'error');
