@@ -14,10 +14,10 @@ export type JmCenterTab = 'profil' | 'fasilitas' | 'lembaga' | 'sambutan' | 'sej
 
 export interface JmCenterProps {
   defaultTab?: JmCenterTab;
-  defaultSection?: 'sambutan' | 'sejarah' | 'visi-misi' | 'all';
+  defaultSection?: 'sambutan' | 'sejarah' | 'visi-misi';
 }
 
-export const JmCenter: React.FC<JmCenterProps> = ({ defaultTab = 'profil', defaultSection = 'all' }) => {
+export const JmCenter: React.FC<JmCenterProps> = ({ defaultTab = 'profil', defaultSection = 'sambutan' }) => {
   const location = useLocation();
 
   // Tab State determination from URL or props: 'profil' | 'fasilitas' | 'lembaga'

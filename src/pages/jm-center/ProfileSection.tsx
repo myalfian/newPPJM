@@ -14,22 +14,21 @@ interface ProfileSectionProps {
 }
 
 interface SubNavItem {
-  id: 'all' | 'sambutan' | 'sejarah' | 'visi-misi';
+  id: 'sambutan' | 'sejarah' | 'visi-misi';
   label: string;
   shortLabel: string;
 }
 
 const SUB_NAV_ITEMS: SubNavItem[] = [
-  { id: 'all', label: 'Semua Profil', shortLabel: 'Semua' },
-  { id: 'sambutan', label: 'Sambutan Pimpinan', shortLabel: 'Sambutan' },
-  { id: 'sejarah', label: 'Sejarah & Linimasa', shortLabel: 'Sejarah' },
-  { id: 'visi-misi', label: 'Visi & Misi Lembaga', shortLabel: 'Visi Misi' },
+  { id: 'sambutan', label: 'Sambutan Pimpinan', shortLabel: 'Sambutan Pimpinan' },
+  { id: 'sejarah', label: 'Sejarah & Linimasa', shortLabel: 'Sejarah & Linimasa' },
+  { id: 'visi-misi', label: 'Visi & Misi Lembaga', shortLabel: 'Visi & Misi' },
 ];
 
-export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection = 'all' }) => {
+export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection = 'sambutan' }) => {
   const location = useLocation();
 
-  const [activeSubTab, setActiveSubTab] = useState<'all' | 'sambutan' | 'sejarah' | 'visi-misi'>(() => {
+  const [activeSubTab, setActiveSubTab] = useState<'sambutan' | 'sejarah' | 'visi-misi'>(() => {
     const hash = (typeof window !== 'undefined' ? window.location.hash : '').toLowerCase();
     const path = location.pathname.toLowerCase();
     const search = new URLSearchParams(location.search);
@@ -37,8 +36,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
 
     if (hash.includes('sejarah') || path.includes('sejarah') || secParam === 'sejarah' || defaultSection === 'sejarah') return 'sejarah';
     if (hash.includes('visi') || path.includes('visi') || secParam === 'visi-misi' || defaultSection === 'visi-misi') return 'visi-misi';
-    if (hash.includes('sambutan') || path.includes('sambutan') || secParam === 'sambutan' || defaultSection === 'sambutan') return 'sambutan';
-    return 'all';
+    return 'sambutan';
   });
 
   // Sync state with URL hash or query params
@@ -52,23 +50,17 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
       setActiveSubTab('sejarah');
     } else if (hash.includes('visi') || path.includes('visi') || secParam === 'visi-misi') {
       setActiveSubTab('visi-misi');
-    } else if (hash.includes('sambutan') || path.includes('sambutan') || secParam === 'sambutan') {
+    } else {
       setActiveSubTab('sambutan');
-    } else if (secParam === 'all' || defaultSection === 'all') {
-      setActiveSubTab('all');
     }
   }, [location.pathname, location.hash, location.search, defaultSection]);
 
-  const handleSelectTab = (tabId: 'all' | 'sambutan' | 'sejarah' | 'visi-misi') => {
+  const handleSelectTab = (tabId: 'sambutan' | 'sejarah' | 'visi-misi') => {
     setActiveSubTab(tabId);
 
     // Update query param softly without page reload
     const currentParams = new URLSearchParams(location.search);
-    if (tabId === 'all') {
-      currentParams.delete('section');
-    } else {
-      currentParams.set('section', tabId);
-    }
+    currentParams.set('section', tabId);
     const newSearch = currentParams.toString();
     const newUrl = `${location.pathname}${newSearch ? `?${newSearch}` : ''}`;
     window.history.replaceState(null, '', newUrl);
@@ -85,15 +77,15 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
   };
 
   return (
-    <div className="space-y-2 sm:space-y-2.5">
-      {/* 1. Curved Emerald Notch TabBar: Balanced 4-Column Grid Across All Screen Sizes */}
+    <div className="space-y-2.5 sm:space-y-3.5">
+      {/* 1. Curved Emerald Notch TabBar: Harmonious & Enlarged 3-Column Grid */}
       <nav
         aria-label="Navigasi Menu Bagian Profil JM Center"
-        className="w-full sticky top-14 sm:top-16 z-20 py-0.5"
+        className="w-full sticky top-14 sm:top-16 z-20 py-1"
       >
-        <div className="w-full rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#0a6847] via-[#0f5132] to-[#073a23] dark:from-[#064e3b] dark:via-[#022c22] dark:to-[#042018] shadow-[0_8px_24px_-6px_rgba(15,81,50,0.4),0_3px_10px_-2px_rgba(15,23,42,0.1)] border border-emerald-600/30 dark:border-emerald-700/40 p-0.5 sm:p-1 backdrop-blur-md">
-          {/* Equal 4-Column Balanced Grid */}
-          <ul className="grid grid-cols-4 gap-1 sm:gap-1.5 w-full m-0 p-0 list-none">
+        <div className="w-full rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#0a6847] via-[#0f5132] to-[#073a23] dark:from-[#064e3b] dark:via-[#022c22] dark:to-[#042018] shadow-[0_8px_24px_-6px_rgba(15,81,50,0.4),0_3px_10px_-2px_rgba(15,23,42,0.1)] border border-emerald-600/30 dark:border-emerald-700/40 p-1 sm:p-1.5 backdrop-blur-md">
+          {/* Equal 3-Column Balanced Grid */}
+          <ul className="grid grid-cols-3 gap-1 sm:gap-2 w-full m-0 p-0 list-none">
             {SUB_NAV_ITEMS.map((item) => {
               const isActive = activeSubTab === item.id;
               return (
@@ -102,17 +94,17 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
                     type="button"
                     onClick={() => handleSelectTab(item.id)}
                     aria-pressed={isActive}
-                    className={`group relative flex items-center justify-center w-full h-8.5 sm:h-9.5 px-1 sm:px-1.5 rounded-lg sm:rounded-xl transition-all duration-250 cursor-pointer select-none outline-none ${
+                    className={`group relative flex items-center justify-center w-full h-10 sm:h-11 md:h-12 px-2 sm:px-3 rounded-lg sm:rounded-xl transition-all duration-250 cursor-pointer select-none outline-none ${
                       isActive
-                        ? 'text-[#facc15] font-extrabold'
-                        : 'text-white/80 hover:text-white hover:bg-white/10 active:scale-98 font-semibold sm:font-bold'
+                        ? 'text-[#facc15] font-black'
+                        : 'text-white/80 hover:text-white hover:bg-white/10 active:scale-98 font-bold'
                     }`}
                   >
                     {/* Animated Sliding Notch Pointer & Radiant Floating Gold Jewel at the BOTTOM */}
                     {isActive && (
                       <motion.div
                         layoutId="profileCurvedCutoutPointer"
-                        className="absolute -bottom-0.5 sm:-bottom-1 left-1/2 -translate-x-1/2 w-[68px] h-[20px] pointer-events-none z-10"
+                        className="absolute -bottom-1 sm:-bottom-1.5 left-1/2 -translate-x-1/2 w-[76px] h-[22px] pointer-events-none z-10"
                         transition={{
                           type: 'spring',
                           stiffness: 360,
@@ -144,7 +136,7 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
                           <circle
                             cx="37"
                             cy="16"
-                            r="4.8"
+                            r="5"
                             fill="url(#profileNotchDotGrad)"
                             className="drop-shadow-[0_-2px_4px_rgba(217,119,6,0.5)]"
                           />
@@ -152,8 +144,8 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
                       </motion.div>
                     )}
 
-                    {/* Adaptive Label with Clearance above bottom notch - No Icon, Smaller Typography */}
-                    <span className="text-[9.5px] sm:text-[11px] md:text-[11.5px] tracking-tight truncate leading-none pb-0.5 sm:pb-1 text-center">
+                    {/* Harmonious & Enlarged Typography */}
+                    <span className="text-xs sm:text-[13px] md:text-sm tracking-tight truncate leading-tight pb-0.5 sm:pb-1 text-center font-bold sm:font-extrabold">
                       <span className="sm:hidden">{item.shortLabel}</span>
                       <span className="hidden sm:inline">{item.label}</span>
                     </span>
@@ -210,59 +202,6 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection =
               transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
               className="w-full"
             >
-              <section id="visi-misi" className="scroll-mt-24">
-                <VisiMisiSection />
-              </section>
-            </motion.div>
-          )}
-
-          {/* DEDICATED SECTION 4: SEMUA PROFIL (PANORAMIC INTEGRATED VIEW) */}
-          {activeSubTab === 'all' && (
-            <motion.div
-              key="dedicated-section-all"
-              initial={{ opacity: 0, y: 10, scale: 0.995 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.995 }}
-              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-              className="space-y-2 sm:space-y-2.5 w-full"
-            >
-              {/* Seksi Sambutan */}
-              <section id="sambutan" className="scroll-mt-24">
-                <SambutanSection />
-              </section>
-
-              {/* Separator Accent */}
-              <div className="relative py-0.5">
-                <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                  <div className="w-full border-t border-dashed border-emerald-300/50 dark:border-emerald-800/50" />
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-[#FBFBFA] dark:bg-zinc-900 px-3 text-[11px] font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-widest inline-flex items-center gap-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 py-0.5 shadow-2xs">
-                    <Landmark className="w-3.5 h-3.5 text-amber-500" />
-                    Napak Tilas Dakwah
-                  </span>
-                </div>
-              </div>
-
-              {/* Seksi Sejarah */}
-              <section id="sejarah" className="scroll-mt-24">
-                <SejarahSection />
-              </section>
-
-              {/* Separator Accent */}
-              <div className="relative py-0.5">
-                <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                  <div className="w-full border-t border-dashed border-emerald-300/50 dark:border-emerald-800/50" />
-                </div>
-                <div className="relative flex justify-center">
-                  <span className="bg-[#FBFBFA] dark:bg-zinc-900 px-3 text-[11px] font-black text-emerald-800 dark:text-emerald-300 uppercase tracking-widest inline-flex items-center gap-1.5 rounded-full border border-emerald-200 dark:border-emerald-800 py-0.5 shadow-2xs">
-                    <Star className="w-3.5 h-3.5 text-amber-500" />
-                    Visi, Misi &amp; Nilai Karakter
-                  </span>
-                </div>
-              </div>
-
-              {/* Seksi Visi Misi */}
               <section id="visi-misi" className="scroll-mt-24">
                 <VisiMisiSection />
               </section>
