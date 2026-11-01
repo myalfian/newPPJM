@@ -187,7 +187,8 @@ import {
   RefreshCw,
   AlertCircle,
   KeyRound,
-  Search
+  Search,
+  Quote
 } from 'lucide-react';
 
 import { PageEditorState, INITIAL_EDITOR_STATE, NewsItem, QuickMenuItem, SectionMeta } from '../../types/EditorState';
@@ -2202,7 +2203,123 @@ export const WebVisualEditor: React.FC = () => {
 
               {/* Specific Section Controls for Sambutan */}
               {activeSectionId === 'sambutan' && (
-                <div className="space-y-2">
+                <div className="space-y-3">
+                  <div className="p-3 bg-emerald-950/40 rounded-xl border border-emerald-500/30 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <Quote className="w-4 h-4 text-emerald-400" />
+                        <span>Multi Pemberi Sambutan</span>
+                      </div>
+                      <p className="text-[10px] text-zinc-400">Kelola foto, video, gelar & banyak pimpinan</p>
+                    </div>
+                    <Link
+                      to="/admin/sambutan"
+                      target="_blank"
+                      className="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold transition flex items-center gap-1"
+                    >
+                      <span>Buka Manager</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </Link>
+                  </div>
+
+                  <div>
+                    <label className="text-[11px] font-bold text-zinc-300 block mb-1">Mode Tampilan Beranda:</label>
+                    <select
+                      value={(currentSection.data as any).displayMode || 'featured_list'}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        updateEditorState((prev) => ({
+                          ...prev,
+                          sections: {
+                            ...prev.sections,
+                            sambutan: {
+                              ...prev.sections.sambutan,
+                              data: { ...prev.sections.sambutan.data, displayMode: val }
+                            }
+                          }
+                        }));
+                      }}
+                      className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/20 text-white text-xs focus:outline-none focus:border-[#C8A951]"
+                    >
+                      <option value="featured_list">Featured Hero + Grid Pimpinan</option>
+                      <option value="grid">Grid Semua Tokoh</option>
+                      <option value="single">Single Hero Tokoh Utama Saja</option>
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <label className="flex items-center gap-2 p-2 rounded-xl bg-black/30 border border-white/10 text-xs text-zinc-300 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={(currentSection.data as any).showCredentials !== false}
+                        onChange={(e) => {
+                          const val = e.target.checked;
+                          updateEditorState((prev) => ({
+                            ...prev,
+                            sections: {
+                              ...prev.sections,
+                              sambutan: {
+                                ...prev.sections.sambutan,
+                                data: { ...prev.sections.sambutan.data, showCredentials: val }
+                              }
+                            }
+                          }));
+                        }}
+                        className="rounded text-emerald-600"
+                      />
+                      <span>Gelar Badges</span>
+                    </label>
+
+                    <label className="flex items-center gap-2 p-2 rounded-xl bg-black/30 border border-white/10 text-xs text-zinc-300 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={(currentSection.data as any).showQuote !== false}
+                        onChange={(e) => {
+                          const val = e.target.checked;
+                          updateEditorState((prev) => ({
+                            ...prev,
+                            sections: {
+                              ...prev.sections,
+                              sambutan: {
+                                ...prev.sections.sambutan,
+                                data: { ...prev.sections.sambutan.data, showQuote: val }
+                              }
+                            }
+                          }));
+                        }}
+                        className="rounded text-emerald-600"
+                      />
+                      <span>Kutipan Emas</span>
+                    </label>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between text-[11px] font-bold text-zinc-300 mb-1">
+                      <span>Maksimal Tokoh di Beranda:</span>
+                      <span className="text-[#C8A951]">{(currentSection.data as any).maxItemsHome || 4} Tokoh</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={1}
+                      max={8}
+                      value={(currentSection.data as any).maxItemsHome || 4}
+                      onChange={(e) => {
+                        const val = parseInt(e.target.value) || 4;
+                        updateEditorState((prev) => ({
+                          ...prev,
+                          sections: {
+                            ...prev.sections,
+                            sambutan: {
+                              ...prev.sections.sambutan,
+                              data: { ...prev.sections.sambutan.data, maxItemsHome: val }
+                            }
+                          }
+                        }));
+                      }}
+                      className="w-full accent-emerald-500"
+                    />
+                  </div>
+
                   <div>
                     <label className="text-[11px] font-bold text-zinc-300 block mb-1">Nama Pimpinan / Pengasuh:</label>
                     <input
@@ -2221,9 +2338,10 @@ export const WebVisualEditor: React.FC = () => {
                           }
                         }));
                       }}
-                      className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/20 text-white focus:outline-none focus:border-[#C8A951]"
+                      className="w-full px-3 py-2 rounded-xl bg-black/40 border border-white/20 text-white focus:outline-none focus:border-[#C8A951] text-xs"
                     />
                   </div>
+
                   <div>
                     <label className="text-[11px] font-bold text-zinc-300 block mb-1">
                       Teks Kalam Sambutan (Word Toolbar):

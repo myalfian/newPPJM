@@ -61,6 +61,20 @@ export interface SambutanPerson {
   name: string;
   title: string;
   role_type: string;
+  type?: string;
+  quote?: string | null;
+  video_url?: string | null;
+  social_links?: {
+    wa?: string;
+    ig?: string;
+    email?: string;
+    youtube?: string;
+    [key: string]: string | undefined;
+  } | null;
+  start_date?: string | null;
+  end_date?: string | null;
+  credentials?: string[] | null;
+  achievements?: string[] | null;
   photo_url?: string | null;
   message_short?: string | null;
   message_full?: string | null;

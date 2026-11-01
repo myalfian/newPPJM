@@ -19,6 +19,7 @@ import { INITIAL_NEWS } from '../data/newsData';
 import { fetchPublishedEditorState, getPublishedEditorState } from '../lib/editorStorage';
 import { PageEditorState } from '../types/EditorState';
 import { SafeRichContent } from '../components/common/SafeRichContent';
+import { HomeSambutanMultiSection } from '../components/home/HomeSambutanMultiSection';
 
 export interface HomeNewsItem {
   id: string;
@@ -224,79 +225,8 @@ export const Home: React.FC = () => {
       {/* Divider Spacing Halus untuk Desktop */}
       <div className="hidden lg:block h-0.5" />
 
-      {/* 2. SAMBUTAN SINGKAT PENGASUH */}
-      {sambutan?.isVisible !== false && (
-        <section className="max-w-7xl mx-auto px-2.5 sm:px-4 lg:px-6 py-0">
-          {loadingSambutan && !liveSambutan ? (
-            <div className="bg-white rounded-2xl p-6 shadow-m3-1 border border-slate-200/90 animate-pulse flex flex-col md:flex-row items-center gap-6">
-              <div className="w-36 h-44 rounded-xl bg-slate-200 shrink-0" />
-              <div className="space-y-3 flex-1 w-full">
-                <div className="h-4 w-32 bg-slate-200 rounded-full" />
-                <div className="h-7 w-64 bg-slate-200 rounded-xl" />
-                <div className="h-4 w-48 bg-slate-200 rounded" />
-                <div className="h-16 w-full bg-slate-200 rounded-xl" />
-              </div>
-            </div>
-          ) : sambutanError && !liveSambutan ? (
-            <div className="bg-rose-50 border border-rose-200 text-rose-800 rounded-2xl p-4 text-center text-xs font-semibold">
-              Gagal memuat data sambutan: {sambutanError}. Periksa koneksi atau kebijakan RLS Supabase.
-            </div>
-          ) : !liveSambutan ? (
-            <div className="bg-slate-50 border border-slate-200 text-slate-500 rounded-2xl p-4 text-center text-xs">
-              Belum ada naskah sambutan aktif. Silakan hubungi administrator pesantren.
-            </div>
-          ) : (
-            <div className="bg-white rounded-2xl p-2 sm:p-3 lg:p-3.5 shadow-m3-1 border border-slate-200/90 relative overflow-hidden">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-2 sm:gap-3.5 items-center">
-                <div className="lg:col-span-4 flex justify-center">
-                  <div className="relative">
-                    <div className="w-40 h-48 sm:w-52 sm:h-60 rounded-xl sm:rounded-2xl overflow-hidden shadow-lg border-4 border-emerald-50 bg-slate-100">
-                      <img
-                        src={liveSambutan.photo_url || '/logo-ppjm.svg'}
-                        alt={liveSambutan.name}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="absolute -bottom-3.5 left-1/2 -translate-x-1/2 bg-emerald-900 text-gold-300 px-3.5 py-1 rounded-full text-[11px] font-bold shadow-md whitespace-nowrap">
-                      {liveSambutan.title || 'Pengasuh Pondok Pesantren'}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="lg:col-span-8 space-y-2.5 text-center lg:text-left">
-                  <span className="text-xs sm:text-sm font-bold text-gold-700 tracking-wider uppercase bg-gold-50 px-3 py-1 rounded-full border border-gold-200">
-                    Kalam Hikmah & Ma'had Barokah
-                  </span>
-                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-950">
-                    {liveSambutan.name}
-                  </h2>
-                  <p className="text-sm sm:text-base font-bold text-emerald-800">
-                    {liveSambutan.title}
-                  </p>
-                  <blockquote className="text-sm sm:text-base lg:text-lg text-slate-800 font-medium italic leading-relaxed sm:leading-loose border-l-0 lg:border-l-4 lg:border-emerald-700 lg:pl-4">
-                    <SafeRichContent
-                      content={
-                        liveSambutan.message_short ||
-                        liveSambutan.message_full ||
-                        'Selamat datang di Pondok Pesantren Jauharul Maknuun.'
-                      }
-                    />
-                  </blockquote>
-                  <div className="pt-2">
-                    <Link
-                      to="/jm-center/sambutan"
-                      className="inline-flex items-center gap-1.5 text-sm sm:text-base font-extrabold text-emerald-800 hover:text-emerald-950 underline underline-offset-4"
-                    >
-                      <span>Baca Selengkapnya Sambutan Pengasuh</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </section>
-      )}
+      {/* 2. SAMBUTAN MULTI PEMBERI SAMBUTAN */}
+      {sambutan?.isVisible !== false && <HomeSambutanMultiSection />}
 
       {/* 3. 4 PILAR KEUNGGULAN PESANTREN */}
       {programUnggulan?.isVisible !== false && (
