@@ -354,7 +354,8 @@ export interface AuditLogEntry {
     | 'DELETE_SECTION'
     | 'PUBLISH_LIVE'
     | 'RESET_DEFAULT'
-    | 'RESTORE_VERSION';
+    | 'RESTORE_VERSION'
+    | 'BULK_INPUT';
   sectionId: string;
   details: string;
 }

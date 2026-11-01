@@ -205,10 +205,12 @@ export const KelolaGaleri: React.FC = () => {
     let savedId = editingId || `g-${Date.now()}`;
     const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(editingId || '');
 
+    const itemCategory: 'foto' | 'video' = tab === 'video' ? 'video' : 'foto';
+
     if (isSupabaseConfigured()) {
       try {
         const payload: any = {
-          category: tab,
+          category: itemCategory,
           title: judul,
           slug: `${slug}-${Date.now().toString().slice(-4)}`,
           event_date: finalDate,
@@ -222,7 +224,7 @@ export const KelolaGaleri: React.FC = () => {
         const { data, error } = await supabase.from('galleries').upsert(payload).select().maybeSingle();
         if (error) {
           console.warn('Galleries upsert notice, trying galeri_foto:', error.message);
-          if (tab === 'foto') {
+          if (itemCategory === 'foto') {
             await supabase.from('galeri_foto').upsert({
               title: judul,
               description: deskripsi,
@@ -246,7 +248,7 @@ export const KelolaGaleri: React.FC = () => {
             ? {
                 ...it,
                 title: judul,
-                category: tab,
+                category: itemCategory,
                 event_date: finalDate,
                 description: deskripsi,
                 cover_image: finalCover,
@@ -261,7 +263,7 @@ export const KelolaGaleri: React.FC = () => {
         id: savedId,
         slug: `${slug}-${Date.now()}`,
         title: judul,
-        category: tab,
+        category: itemCategory,
         event_date: finalDate,
         description: deskripsi,
         cover_image: finalCover,
