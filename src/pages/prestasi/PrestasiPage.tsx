@@ -13,11 +13,10 @@ import {
   CalendarDays
 } from 'lucide-react';
 import { NavBarTabs } from '../../components/common/NavBarTabs';
-import { PrestasiFilterPills } from './PrestasiFilterPills';
 import { PrestasiCard } from './PrestasiCard';
 import { PrestasiLightboxModal } from './PrestasiLightboxModal';
 import { PRESTASI_DATASET } from './prestasiData';
-import { PrestasiItem, PrestasiCategory, PrestasiTingkat } from './types';
+import { PrestasiItem, PrestasiCategory } from './types';
 import { supabase } from '../../lib/supabase';
 import { useCachedQuery, invalidateCache } from '../../lib/queryCache';
 
@@ -118,9 +117,6 @@ export const PrestasiPage: React.FC = () => {
   }, [urlCategory]);
 
   const [selectedCategory, setSelectedCategory] = useState<PrestasiCategory>(initialCategory);
-  const [selectedTingkat, setSelectedTingkat] = useState<PrestasiTingkat>('Semua Tingkat');
-  const [selectedYear, setSelectedYear] = useState<string>('Semua');
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [activeModalItem, setActiveModalItem] = useState<PrestasiItem | null>(null);
 
   // Sync state when URL param changes externally
@@ -188,64 +184,12 @@ export const PrestasiPage: React.FC = () => {
     }
   };
 
-  // Extract unique available years
-  const availableYears = useMemo(() => {
-    const yearsSet = new Set<string>();
-    achievements.forEach((item) => yearsSet.add(String(item.year)));
-    return Array.from(yearsSet).sort((a, b) => Number(b) - Number(a));
-  }, [achievements]);
-
-  // Compute category counts
-  const categoryDefinitions = useMemo(() => {
-    const counts: Record<PrestasiCategory, number> = {
-      Semua: achievements.length,
-      Olimpiade: 0,
-      Olahraga: 0,
-      Seni: 0,
-      Keagamaan: 0,
-      Umum: 0,
-    };
-
-    achievements.forEach((item) => {
-      if (counts[item.category] !== undefined) {
-        counts[item.category]++;
-      }
-    });
-
-    return [
-      { id: 'Semua' as PrestasiCategory, label: 'Semua Prestasi', icon: Trophy, count: counts.Semua },
-      { id: 'Olimpiade' as PrestasiCategory, label: 'Olimpiade & Sains', icon: Award, count: counts.Olimpiade },
-      { id: 'Olahraga' as PrestasiCategory, label: 'Olahraga & Silat', icon: Activity, count: counts.Olahraga },
-      { id: 'Seni' as PrestasiCategory, label: 'Seni & Bahasa', icon: Palette, count: counts.Seni },
-      { id: 'Keagamaan' as PrestasiCategory, label: 'Keagamaan & MQK', icon: BookOpen, count: counts.Keagamaan },
-      { id: 'Umum' as PrestasiCategory, label: 'Umum & Riset', icon: Sparkles, count: counts.Umum },
-    ];
-  }, [achievements]);
-
-  // Filtered dataset
+  // Filtered dataset by category
   const filteredAchievements = useMemo(() => {
     return achievements.filter((item) => {
-      const matchCategory =
-        selectedCategory === 'Semua' || item.category === selectedCategory;
-
-      const matchTingkat =
-        selectedTingkat === 'Semua Tingkat' || item.tingkat === selectedTingkat;
-
-      const matchYear =
-        selectedYear === 'Semua' || String(item.year) === selectedYear;
-
-      const q = searchQuery.toLowerCase();
-      const matchSearch =
-        !q ||
-        item.title.toLowerCase().includes(q) ||
-        item.winner_name.toLowerCase().includes(q) ||
-        item.event_name.toLowerCase().includes(q) ||
-        item.medal_type.toLowerCase().includes(q) ||
-        item.description.toLowerCase().includes(q);
-
-      return matchCategory && matchTingkat && matchYear && matchSearch;
+      return selectedCategory === 'Semua' || item.category === selectedCategory;
     });
-  }, [achievements, selectedCategory, selectedTingkat, selectedYear, searchQuery]);
+  }, [achievements, selectedCategory]);
 
   // Overview statistics
   const goldMedalCount = useMemo(() => {
@@ -318,18 +262,7 @@ export const PrestasiPage: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Sub-filter Navigation & Search Bar */}
-      <PrestasiFilterPills
-        selectedTingkat={selectedTingkat}
-        onSelectTingkat={setSelectedTingkat}
-        selectedYear={selectedYear}
-        onSelectYear={setSelectedYear}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        availableYears={availableYears}
-      />
-
-      {/* 4. Grid of Achievements */}
+      {/* 3. Grid of Achievements */}
       {filteredAchievements.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
           {filteredAchievements.map((item) => (
@@ -347,19 +280,14 @@ export const PrestasiPage: React.FC = () => {
             Tidak Ada Prestasi yang Cocok
           </h3>
           <p className="text-xs text-zinc-500 max-w-sm mx-auto">
-            Tidak ditemukan data prestasi dengan kriteria atau kata kunci pencarian tersebut. Silakan pilih kategori atau filter lain.
+            Tidak ditemukan data prestasi untuk kategori ini. Silakan pilih kategori prestasi lainnya.
           </p>
           <button
             type="button"
-            onClick={() => {
-              setSelectedCategory('Semua');
-              setSelectedTingkat('Semua Tingkat');
-              setSelectedYear('Semua');
-              setSearchQuery('');
-            }}
+            onClick={() => handleSelectCategory('Semua')}
             className="px-4 py-2 rounded-xl bg-emerald-800 text-white font-bold text-xs hover:bg-emerald-900 cursor-pointer"
           >
-            Reset Semua Filter
+            Tampilkan Semua Prestasi
           </button>
         </div>
       )}
