@@ -85,7 +85,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
       );
     }
     if (tab.id === 'galeri') return location.pathname.startsWith('/galeri');
-    if (tab.id === 'agenda') return location.pathname.startsWith('/agenda') || location.pathname.startsWith('/karya-siswa');
+    if (tab.id === 'agenda' || tab.id === 'karya-siswa') return location.pathname.startsWith('/karya-siswa') || location.pathname.startsWith('/agenda');
     return false;
   };
 

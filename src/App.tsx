@@ -151,6 +151,7 @@ const MandarinQuizPage = lazy(() => import('./pages/smart-jm/mandarin/MandarinQu
 const Prestasi = lazy(() => import('./pages/Prestasi').then(m => ({ default: m.Prestasi })));
 const Ekskul = lazy(() => import('./pages/Ekskul').then(m => ({ default: m.Ekskul })));
 const Agenda = lazy(() => import('./pages/Agenda').then(m => ({ default: m.Agenda })));
+const KaryaSiswa = lazy(() => import('./pages/KaryaSiswa').then(m => ({ default: m.KaryaSiswa })));
 const Osis = lazy(() => import('./pages/Osis').then(m => ({ default: m.Osis })));
 const GaleriFoto = lazy(() => import('./pages/galeri/GaleriFoto').then(m => ({ default: m.GaleriFoto })));
 const GaleriVideo = lazy(() => import('./pages/galeri/GaleriVideo').then(m => ({ default: m.GaleriVideo })));
@@ -259,7 +260,7 @@ export const App: React.FC = () => {
             <Route path="osis" element={<Osis />} />
 
             {/* Karya Siswa & Agenda Santri (Inovasi, Riset & Portofolio) */}
-            <Route path="karya-siswa" element={<Agenda />} />
+            <Route path="karya-siswa" element={<KaryaSiswa />} />
             <Route path="agenda" element={<Agenda />} />
 
             {/* JM News Hub: Berita & Press Release */}

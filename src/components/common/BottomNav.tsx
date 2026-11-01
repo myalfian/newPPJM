@@ -259,13 +259,13 @@ export const BottomNav: React.FC = () => {
               </span>
             </div>
 
-            {/* 4. Agenda & Kalender Santri */}
+            {/* 4. Karya Siswa Santri */}
             <button
               type="button"
-              onClick={() => navigate('/agenda')}
+              onClick={() => navigate('/karya-siswa')}
               className="flex flex-col items-center justify-center h-full relative cursor-pointer group py-1"
-              aria-label="Agenda"
-              title="Kalender & Agenda Santri"
+              aria-label="Karya Siswa"
+              title="Galeri & Karya Santri"
             >
               <motion.div
                 whileTap={{ scale: 0.88 }}
@@ -280,7 +280,7 @@ export const BottomNav: React.FC = () => {
                     : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
                 }`}
               >
-                <CalendarDays className="w-5 h-5 stroke-[2.3]" />
+                <Sparkles className="w-5 h-5 stroke-[2.3]" />
               </motion.div>
               <span
                 className={`text-[11px] sm:text-[11.5px] tracking-tight mt-1 leading-none transition-colors duration-200 ${
@@ -289,7 +289,7 @@ export const BottomNav: React.FC = () => {
                     : 'font-bold text-slate-500 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200'
                 }`}
               >
-                Agenda
+                Karya
               </span>
             </button>
 

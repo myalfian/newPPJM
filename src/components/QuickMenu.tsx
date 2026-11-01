@@ -149,11 +149,11 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
     route: '/osis'
   },
   {
-    id: 'agenda',
-    label: 'Agenda',
-    icon: CalendarDays,
+    id: 'karya-siswa',
+    label: 'Karya Siswa',
+    icon: Sparkles,
     ...THEME_PALETTES[6],
-    route: '/agenda'
+    route: '/karya-siswa'
   },
   {
     id: 'galeri-sekolah',

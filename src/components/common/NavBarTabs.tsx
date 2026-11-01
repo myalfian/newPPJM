@@ -173,6 +173,19 @@ const DEFAULT_CATEGORY_TABS: Record<
       { id: 'rutin', label: 'Agenda Rutin', shortLabel: 'Rutin', href: '/agenda?tab=rutin', icon: Sparkles },
     ],
   },
+  'karya-siswa': {
+    parentLabel: 'Karya Siswa',
+    parentHref: '/karya-siswa',
+    parentIcon: Sparkles,
+    tabs: [
+      { id: 'semua', label: 'Semua Karya', shortLabel: 'Semua', href: '/karya-siswa', icon: Layers },
+      { id: 'buku', label: 'Buku Santri', shortLabel: 'Buku', href: '/karya-siswa?tab=buku', icon: BookOpen },
+      { id: 'batik', label: 'Katalog Batik', shortLabel: 'Batik', href: '/karya-siswa?tab=batik', icon: Palette },
+      { id: 'video-lagu-batik', label: 'Lagu Batik', shortLabel: 'Lagu Batik', href: '/karya-siswa?tab=video-lagu-batik', icon: Video },
+      { id: 'video-lagu-ustad', label: 'Lagu Ustadz Shobirin', shortLabel: 'Lagu Ustadz', href: '/karya-siswa?tab=video-lagu-ustad', icon: HeartHandshake },
+      { id: 'showroom', label: 'Show Room', shortLabel: 'Show Room', href: '/karya-siswa?tab=showroom', icon: Sparkles },
+    ],
+  },
   'osis': {
     parentLabel: 'OSIS',
     parentHref: '/osis',
@@ -223,7 +236,8 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
   let detectedCategory = '';
   if (pathname.includes('/spmb') || pathname.includes('/ppdb')) detectedCategory = 'spmb';
   else if (pathname.includes('/jm-news') || pathname.includes('/berita')) detectedCategory = 'jm-news';
-  else if (pathname.includes('/agenda') || pathname.includes('/karya-siswa')) detectedCategory = 'agenda';
+  else if (pathname.includes('/karya-siswa')) detectedCategory = 'karya-siswa';
+  else if (pathname.includes('/agenda')) detectedCategory = 'agenda';
   else if (pathname.includes('/osis')) detectedCategory = 'osis';
   else if (pathname.includes('/jm-center')) detectedCategory = 'jm-center';
   else if (pathname.includes('/program-unggulan') || pathname.startsWith('/program')) detectedCategory = 'program-unggulan';
@@ -296,7 +310,25 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
         }
       }
 
-      // 4. Agenda Tab Matching
+      // 4. Karya Siswa Tab Matching
+      if (!activeTab && (pathname === '/karya-siswa' || pathname.startsWith('/karya-siswa'))) {
+        const tabParam = new URLSearchParams(location.search).get('tab')?.toLowerCase();
+        if (tabParam === 'buku') {
+          activeTab = subMenuTabs.find((t) => t.id === 'buku');
+        } else if (tabParam === 'batik') {
+          activeTab = subMenuTabs.find((t) => t.id === 'batik');
+        } else if (tabParam === 'video-lagu-batik') {
+          activeTab = subMenuTabs.find((t) => t.id === 'video-lagu-batik');
+        } else if (tabParam === 'video-lagu-ustad') {
+          activeTab = subMenuTabs.find((t) => t.id === 'video-lagu-ustad');
+        } else if (tabParam === 'showroom') {
+          activeTab = subMenuTabs.find((t) => t.id === 'showroom');
+        } else {
+          activeTab = subMenuTabs.find((t) => t.id === 'semua');
+        }
+      }
+
+      // 5. Agenda Tab Matching
       if (!activeTab && (pathname === '/agenda' || pathname.startsWith('/agenda'))) {
         const tabParam = new URLSearchParams(location.search).get('tab')?.toLowerCase();
         if (tabParam === 'upcoming') {

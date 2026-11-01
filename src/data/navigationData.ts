@@ -293,10 +293,10 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
     ]
   },
   {
-    id: 'agenda',
-    label: 'Agenda',
-    icon: CalendarDays,
-    href: '/agenda',
+    id: 'karya-siswa',
+    label: 'Karya Siswa',
+    icon: Sparkles,
+    href: '/karya-siswa',
     isDropdown: false,
     color: {
       badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200/80 group-hover:bg-emerald-100 group-hover:text-emerald-800',
@@ -305,9 +305,11 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       activeDot: 'bg-[#d4af37]',
     },
     items: [
-      { title: 'Kalender Akademik & Pesantren', href: '/agenda', desc: 'Jadwal terpadu kalender akademik & pondok', icon: CalendarDays },
-      { title: 'Agenda Terdekat', href: '/agenda?tab=upcoming', desc: 'Hitung mundur kegiatan & event terdekat', icon: Clock },
-      { title: 'Agenda Rutin', href: '/agenda?tab=rutin', desc: 'Rutinitas harian, mingguan & bulanan santri', icon: Sparkles },
+      { title: 'Flyer Buku Santri', href: '/karya-siswa?tab=buku', desc: 'Buku literatur & karya tulis santri', icon: BookOpen },
+      { title: 'Katalog Batik Lasem', href: '/karya-siswa?tab=batik', desc: 'Kriya & kain batik karya santriwati', icon: Palette },
+      { title: 'Video Lagu Batik', href: '/karya-siswa?tab=video-lagu-batik', desc: 'Video musik orisinal kidung batik', icon: Video },
+      { title: 'Lagu Ustadz Shobirin', href: '/karya-siswa?tab=video-lagu-ustad', desc: 'Gita mahabbah khidmat santri untuk guru', icon: HeartHandshake },
+      { title: 'Show Room Santri', href: '/karya-siswa?tab=showroom', desc: 'Etalase robotik STEM & kaligrafi seni', icon: Sparkles },
     ]
   },
 ];
@@ -476,19 +478,19 @@ export const ADMIN_MODULES: AdminModuleItem[] = [
     publicHref: '/osis',
     badge: 'Organisasi',
   },
-  // 9. Agenda & Kalender
+  // 9. Karya Siswa & Etalase Santri
   {
-    id: 'agenda',
-    title: '9. Agenda & Kalender Kegiatan',
-    shortLabel: 'Agenda Kegiatan',
-    desc: 'Jadwal kalender akademik pondok, pengajian akbar & agenda santri terdekat',
+    id: 'karya-siswa',
+    title: '9. Karya Siswa & Etalase Santri',
+    shortLabel: 'Karya Siswa',
+    desc: 'Buku karya santri, batik Lasem, video lagu, dan showroom karya kreatif santri',
     href: '/admin/agenda',
-    icon: CalendarDays,
+    icon: Sparkles,
     roles: ['super_admin', 'pengurus_konten'],
     category: 'media',
-    publicCategory: 'Agenda',
-    publicHref: '/agenda',
-    badge: 'Kalender',
+    publicCategory: 'Karya Siswa',
+    publicHref: '/karya-siswa',
+    badge: 'Kreativitas',
   },
   // 10. Kontak & Medsos Pop-up
   {
