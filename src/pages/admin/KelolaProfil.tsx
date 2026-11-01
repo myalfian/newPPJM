@@ -34,6 +34,7 @@ import { compressImageToWebP, CompressionResult } from '../../lib/imageCompresso
 import { KelolaSambutan } from './KelolaSambutan';
 import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 import { SafeRichContent } from '../../components/common/SafeRichContent';
+import { BulkPhotoUploader } from '../../components/admin/bulk/BulkPhotoUploader';
 
 interface FacilityItem {
   id: string;
@@ -196,6 +197,7 @@ export const KelolaProfil: React.FC = () => {
   const [facilities, setFacilities] = useState<FacilityItem[]>(DEFAULT_FACILITIES);
   const [facilityCategory, setFacilityCategory] = useState<'Semua' | 'Asrama' | 'Ibadah' | 'Akademik' | 'Lab STEM' | 'Olahraga'>('Semua');
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const [showBulkFacModal, setShowBulkFacModal] = useState(false);
 
   // Form State Tambah / Edit Fasilitas
   const [showFacilityForm, setShowFacilityForm] = useState(false);
@@ -767,10 +769,18 @@ export const KelolaProfil: React.FC = () => {
               ))}
             </div>
 
-            <div className="flex items-center gap-3">
-              <span className="text-xs text-zinc-400 font-mono">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xs text-zinc-400 font-mono hidden sm:inline">
                 Total {filteredFacilities.length} Fasilitas
               </span>
+              <button
+                type="button"
+                onClick={() => setShowBulkFacModal(true)}
+                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#0E7A4C] to-emerald-700 text-[#C8A951] font-bold text-xs shadow-md border border-[#C8A951]/40 flex items-center gap-1.5 hover:brightness-105 transition cursor-pointer"
+              >
+                <UploadCloud className="w-4 h-4" />
+                <span>⚡ Bulk Upload Foto</span>
+              </button>
               <button
                 type="button"
                 onClick={() => {
@@ -1285,6 +1295,23 @@ export const KelolaProfil: React.FC = () => {
                 <span>Bagikan ke WhatsApp</span>
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* BULK UPLOAD FOTO FASILITAS MODAL */}
+      {showBulkFacModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-4xl bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl p-4 sm:p-6 overflow-hidden">
+            <BulkPhotoUploader
+              targetCategory="fasilitas"
+              onClose={() => setShowBulkFacModal(false)}
+              onSuccess={() => {
+                setShowBulkFacModal(false);
+                setSavedAlert(true);
+                setTimeout(() => setSavedAlert(false), 2000);
+              }}
+            />
           </div>
         </div>
       )}

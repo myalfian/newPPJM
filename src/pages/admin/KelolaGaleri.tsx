@@ -9,7 +9,9 @@ import {
   Calendar,
   Search,
   Video,
-  X
+  X,
+  UploadCloud,
+  Sparkles
 } from 'lucide-react';
 import { YoutubeIcon } from '../../components/common/SocialIcons';
 import { compressImageToWebP } from '../../lib/imageCompressor';
@@ -17,6 +19,7 @@ import type { CompressionResult } from '../../lib/imageCompressor';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
+import { BulkPhotoUploader } from '../../components/admin/bulk/BulkPhotoUploader';
 
 export interface GalleryAdminItem {
   id: string;
@@ -71,7 +74,7 @@ const INITIAL_GALLERY_ITEMS: GalleryAdminItem[] = [
 
 export const KelolaGaleri: React.FC = () => {
   const [items, setItems] = useState<GalleryAdminItem[]>(INITIAL_GALLERY_ITEMS);
-  const [tab, setTab] = useState<'foto' | 'video'>('foto');
+  const [tab, setTab] = useState<'foto' | 'video' | 'bulk'>('foto');
   const [filterType, setFilterType] = useState<'all' | 'foto' | 'video'>('all');
   const [search, setSearch] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -315,7 +318,7 @@ export const KelolaGaleri: React.FC = () => {
 
       {/* Mode / Category Switcher for Form */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => {
@@ -344,6 +347,21 @@ export const KelolaGaleri: React.FC = () => {
           >
             2. Form Video & Reels
           </button>
+          <button
+            type="button"
+            onClick={() => {
+              setTab('bulk');
+              if (!editingId) resetForm();
+            }}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              tab === 'bulk'
+                ? 'bg-[#0E7A4C] text-[#C8A951] shadow-md border border-[#C8A951]/40'
+                : 'bg-white dark:bg-zinc-900 border border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 hover:bg-emerald-50'
+            }`}
+          >
+            <UploadCloud className="w-4 h-4 text-[#C8A951]" />
+            <span>3. Bulk Upload Multi-Foto ⚡</span>
+          </button>
         </div>
 
         {editingId && (
@@ -357,7 +375,18 @@ export const KelolaGaleri: React.FC = () => {
         )}
       </div>
 
-      {/* Form Foto & Video Input */}
+      {/* Render Bulk Uploader or Standard Form */}
+      {tab === 'bulk' ? (
+        <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-md">
+          <BulkPhotoUploader
+            onSuccess={() => {
+              setSaved(true);
+              setTab('foto');
+            }}
+          />
+        </div>
+      ) : (
+      /* Form Foto & Video Input */
       <form
         onSubmit={handleSubmit}
         className="bg-white dark:bg-zinc-900 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 border border-slate-200 dark:border-zinc-800 shadow-sm space-y-3.5"
@@ -472,6 +501,7 @@ export const KelolaGaleri: React.FC = () => {
           </button>
         </div>
       </form>
+      )}
 
       {/* LIST GRID OF EXISTING MEDIA */}
       <div className="bg-white dark:bg-zinc-900 rounded-3xl p-6 sm:p-8 border border-slate-200 dark:border-zinc-800 shadow-sm space-y-4">

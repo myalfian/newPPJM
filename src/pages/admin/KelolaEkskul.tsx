@@ -17,7 +17,8 @@ import {
   Save,
   UploadCloud,
   Image as ImageIcon,
-  Link as LinkIcon
+  Link as LinkIcon,
+  FileSpreadsheet
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
@@ -26,6 +27,7 @@ import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
 import { EkskulDetailModal } from '../ekskul/EkskulDetailModal';
 import { DetailedEkskulItem } from '../ekskul/types';
 import { stripHtmlToPlainText } from '../../utils/richContentUtils';
+import { BulkEkskulInputModal } from '../../components/admin/bulk/BulkEkskulInputModal';
 
 export interface EkskulItem {
   id: string;
@@ -103,6 +105,7 @@ export const KelolaEkskul: React.FC = () => {
   const [search, setSearch] = useState('');
   const [filterCat, setFilterCat] = useState<'Semua' | 'Sains' | 'Olahraga' | 'Seni' | 'Agama' | 'Pramuka'>('Semua');
   const [selectedDetailModal, setSelectedDetailModal] = useState<DetailedEkskulItem | null>(null);
+  const [bulkModalOpen, setBulkModalOpen] = useState(false);
 
   const handleOpenDetailModal = (item: EkskulItem) => {
     let publicCategory: 'Sains & Teknologi' | 'Seni & Bahasa' | 'Olahraga & Bela Diri' | 'Kepanduan & Keagamaan' | 'Agama' | 'Pramuka' = 'Sains & Teknologi';
@@ -389,21 +392,31 @@ export const KelolaEkskul: React.FC = () => {
 
       {/* Form Input Ekskul */}
       <form onSubmit={handleSubmit} className="p-6 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-md space-y-4">
-        <div className="flex items-center justify-between pb-2 border-b border-zinc-100 dark:border-zinc-800">
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-2 border-b border-zinc-100 dark:border-zinc-800">
           <h3 className="font-extrabold text-sm sm:text-base text-zinc-900 dark:text-white flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-[#C8A951]" />
             <span>{editingId ? 'Edit Ekstrakurikuler (Ekskul)' : 'Tambah Ekstrakurikuler (Ekskul) Baru'}</span>
           </h3>
-          {editingId && (
+          <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={resetForm}
-              className="text-xs font-bold text-rose-500 hover:underline flex items-center gap-1"
+              onClick={() => setBulkModalOpen(true)}
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#0E7A4C] to-emerald-700 text-[#C8A951] font-bold text-xs shadow-md border border-[#C8A951]/40 flex items-center gap-1.5 hover:brightness-105 transition cursor-pointer"
             >
-              <X className="w-3.5 h-3.5" />
-              <span>Batal Edit</span>
+              <FileSpreadsheet className="w-4 h-4" />
+              <span>⚡ Bulk Input Ekskul (Spreadsheet / Excel)</span>
             </button>
-          )}
+            {editingId && (
+              <button
+                type="button"
+                onClick={resetForm}
+                className="text-xs font-bold text-rose-500 hover:underline flex items-center gap-1"
+              >
+                <X className="w-3.5 h-3.5" />
+                <span>Batal Edit</span>
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -664,6 +677,16 @@ export const KelolaEkskul: React.FC = () => {
       <EkskulDetailModal
         item={selectedDetailModal}
         onClose={() => setSelectedDetailModal(null)}
+      />
+
+      {/* BULK EKSKUL INPUT MODAL */}
+      <BulkEkskulInputModal
+        isOpen={bulkModalOpen}
+        onClose={() => setBulkModalOpen(false)}
+        onSuccess={() => {
+          setSavedAlert(true);
+          setTimeout(() => setSavedAlert(false), 2500);
+        }}
       />
 
     </div>

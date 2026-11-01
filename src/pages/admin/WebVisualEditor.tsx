@@ -192,7 +192,9 @@ import {
   GraduationCap,
   Landmark,
   Users,
-  CalendarDays
+  CalendarDays,
+  UploadCloud,
+  FileSpreadsheet
 } from 'lucide-react';
 
 import { PageEditorState, INITIAL_EDITOR_STATE, NewsItem, QuickMenuItem, SectionMeta } from '../../types/EditorState';
@@ -225,6 +227,7 @@ import { Galeri } from '../galeri/Galeri';
 import { Berita } from '../Berita';
 import { Spmb } from '../Spmb';
 import { SmartJmHub } from '../smart-jm/SmartJmHub';
+import { BulkInputHubModal } from '../../components/admin/bulk/BulkInputHubModal';
 
 // ============================================================================
 // FASE 2: HARDENING & SECURITY SANITIZERS (ENTERPRISE DEFENSE)
@@ -757,6 +760,10 @@ export const WebVisualEditor: React.FC = () => {
   // Version Snapshots State
   const [versionSnapshots, setVersionSnapshots] = useState<VersionSnapshot[]>(() => getStoredVersionSnapshots());
   const [versionModalOpen, setVersionModalOpen] = useState(false);
+
+  // Bulk Input Hub State
+  const [bulkHubOpen, setBulkHubOpen] = useState(false);
+  const [bulkHubTab, setBulkHubTab] = useState<'foto' | 'prestasi' | 'ekskul'>('foto');
 
   // Quick-Jump Page / Module Switcher Dropdown State
   const [pageSwitcherOpen, setPageSwitcherOpen] = useState(false);
@@ -1724,6 +1731,23 @@ export const WebVisualEditor: React.FC = () => {
         {/* Action Buttons Toolbar */}
         <div className="flex items-center gap-2">
           
+          {/* Bulk Input Data & Foto Hub Button */}
+          <button
+            type="button"
+            onClick={() => {
+              if (selectedPage === 'galeri') setBulkHubTab('foto');
+              else if (selectedPage === 'prestasi') setBulkHubTab('prestasi');
+              else if (selectedPage === 'ekskul') setBulkHubTab('ekskul');
+              else setBulkHubTab('foto');
+              setBulkHubOpen(true);
+            }}
+            className="flex h-9 items-center gap-1.5 rounded-xl border border-[#C8A951]/50 bg-gradient-to-r from-[#0E7A4C] to-emerald-800 text-[#C8A951] font-black px-3 text-xs shadow-md hover:brightness-110 active:scale-95 transition cursor-pointer"
+            title="Bulk Input Massal: Foto Galeri, Prestasi Santri & Ekskul"
+          >
+            <UploadCloud className="w-3.5 h-3.5 text-[#C8A951]" />
+            <span className="hidden sm:inline">Bulk Input</span>
+          </button>
+
           {/* Tombol Tambah Seksi dari 21 Library */}
           <button
             type="button"
@@ -3131,6 +3155,19 @@ export const WebVisualEditor: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* ========================================================================= */}
+      {/* 14. BULK INPUT HUB MODAL                                                 */}
+      {/* ========================================================================= */}
+      <BulkInputHubModal
+        isOpen={bulkHubOpen}
+        onClose={() => setBulkHubOpen(false)}
+        initialTab={bulkHubTab}
+        onSuccess={() => {
+          showToast('Alhamdulillah, data bulk input berhasil diterbitkan ke Supabase!');
+          recordAudit('BULK_INPUT', selectedPage, 'Bulk input data massal berhasil disinkronkan');
+        }}
+      />
 
     </div>
   );
