@@ -42,7 +42,8 @@ import {
   Database,
   Rocket,
   Activity,
-  Server
+  Server,
+  Palette
 } from 'lucide-react';
 import { UserRole } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -215,6 +216,15 @@ export const ADMIN_SIDEBAR_GROUPS: NavGroupConfig[] = [
         href: '/admin/osis',
         publicHref: '/osis',
         icon: Users
+      },
+      {
+        id: 'karya-siswa',
+        moduleKey: 'karyaSiswa',
+        label: 'Karya Siswa',
+        href: '/admin/karya-siswa',
+        publicHref: '/karya-siswa',
+        icon: Palette,
+        badge: 'Karya'
       },
       {
         id: 'agenda',

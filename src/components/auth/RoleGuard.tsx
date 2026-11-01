@@ -36,6 +36,7 @@ export type ModuleKey =
   | 'prestasi'
   | 'ekskul'
   | 'osis'
+  | 'karyaSiswa'
   | 'agenda'
   | 'kontak'
   | 'akunRbac'
@@ -57,6 +58,7 @@ export const MODULE_ACCESS: Record<ModuleKey, UserRole[]> = {
   prestasi: ['super_admin', 'pengurus_konten', 'guru_akademik'],
   ekskul: ['super_admin', 'pengurus_konten'],
   osis: ['super_admin', 'pengurus_konten'],
+  karyaSiswa: ['super_admin', 'pengurus_konten', 'guru_akademik'],
   agenda: ['super_admin', 'pengurus_konten'],
   kontak: ['super_admin', 'pengurus_konten'],
   akunRbac: ['super_admin'],
@@ -84,6 +86,8 @@ export const PATH_TO_MODULE: Record<string, ModuleKey> = {
   '/admin/prestasi': 'prestasi',
   '/admin/ekskul': 'ekskul',
   '/admin/osis': 'osis',
+  '/admin/karya-siswa': 'karyaSiswa',
+  '/admin/karya': 'karyaSiswa',
   '/admin/agenda': 'agenda',
   '/admin/kontak': 'kontak',
   '/admin/integration-test': 'integrationTest',

@@ -175,6 +175,7 @@ const KelolaEkskul = lazy(() => import('./pages/admin/KelolaEkskul').then(m => (
 const KelolaProfil = lazy(() => import('./pages/admin/KelolaProfil').then(m => ({ default: m.KelolaProfil })));
 const KelolaSambutan = lazy(() => import('./pages/admin/KelolaSambutan').then(m => ({ default: m.KelolaSambutan })));
 const KelolaOsis = lazy(() => import('./pages/admin/KelolaOsis').then(m => ({ default: m.KelolaOsis })));
+const KelolaKaryaSiswa = lazy(() => import('./pages/admin/KelolaKaryaSiswa').then(m => ({ default: m.KelolaKaryaSiswa })));
 const KelolaKontak = lazy(() => import('./pages/admin/KelolaKontak').then(m => ({ default: m.KelolaKontak })));
 const KelolaUsers = lazy(() => import('./pages/admin/KelolaUsers').then(m => ({ default: m.KelolaUsers })));
 const KelolaFasilitas = lazy(() => import('./pages/admin/KelolaFasilitas').then(m => ({ default: m.KelolaFasilitas })));
@@ -348,6 +349,8 @@ export const App: React.FC = () => {
             <Route path="profil" element={<KelolaProfil />} />
             <Route path="program" element={<KelolaProgram />} />
             <Route path="osis" element={<KelolaOsis />} />
+            <Route path="karya-siswa" element={<KelolaKaryaSiswa />} />
+            <Route path="karya" element={<Navigate to="/admin/karya-siswa" replace />} />
             <Route path="kontak" element={<KelolaKontak />} />
             <Route path="integration-test" element={<IntegrationTestPage />} />
             <Route path="go-live-check" element={<GoLiveCheckPage />} />

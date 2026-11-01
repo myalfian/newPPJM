@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   BookOpen,
   Palette,
@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { KARYA_SISWA_ITEMS, KaryaSiswaItem } from '../data/karyaSiswaData';
 import { SafeRichContent } from '../components/common/SafeRichContent';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 type CategoryFilter = 'all' | 'buku' | 'batik' | 'video-lagu-batik' | 'video-lagu-ustad' | 'showroom';
 
@@ -33,30 +34,86 @@ const CATEGORY_TABS: { id: CategoryFilter; label: string; icon: React.ComponentT
 ];
 
 export const KaryaSiswa: React.FC = () => {
+  const [items, setItems] = useState<KaryaSiswaItem[]>(() => {
+    try {
+      const cached = localStorage.getItem('ppjm_karya_siswa_cache');
+      if (cached) return JSON.parse(cached);
+    } catch {}
+    return KARYA_SISWA_ITEMS;
+  });
+
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeModalItem, setActiveModalItem] = useState<KaryaSiswaItem | null>(null);
 
+  // Sync with Supabase & localStorage
+  useEffect(() => {
+    const fetchCloud = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        const { data, error } = await supabase
+          .from('site_settings')
+          .select('value')
+          .eq('key', 'karya_siswa')
+          .maybeSingle();
+
+        if (!error && data && data.value && Array.isArray(data.value)) {
+          setItems(data.value as unknown as KaryaSiswaItem[]);
+          localStorage.setItem('ppjm_karya_siswa_cache', JSON.stringify(data.value));
+        }
+      } catch (err) {
+        console.warn('Error fetching live karya_siswa:', err);
+      }
+    };
+    fetchCloud();
+
+    const handleLocalUpdate = (e: any) => {
+      if (e.detail && Array.isArray(e.detail)) {
+        setItems(e.detail);
+      }
+    };
+    window.addEventListener('ppjm-karya-siswa-updated', handleLocalUpdate);
+
+    const channel = supabase
+      .channel('public-karya-siswa-live')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'site_settings', filter: 'key=eq.karya_siswa' },
+        (payload: any) => {
+          if (payload.new && payload.new.value && Array.isArray(payload.new.value)) {
+            setItems(payload.new.value);
+            localStorage.setItem('ppjm_karya_siswa_cache', JSON.stringify(payload.new.value));
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      window.removeEventListener('ppjm-karya-siswa-updated', handleLocalUpdate);
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
   // Filter items
   const filteredItems = useMemo(() => {
-    return KARYA_SISWA_ITEMS.filter((item) => {
+    return items.filter((item) => {
       const matchCategory = selectedCategory === 'all' || item.category === selectedCategory;
       const q = searchQuery.toLowerCase();
       const matchSearch =
         !searchQuery ||
         item.title.toLowerCase().includes(q) ||
         item.author.toLowerCase().includes(q) ||
-        item.description.toLowerCase().includes(q) ||
-        item.tags.some((t) => t.toLowerCase().includes(q));
+        (item.description && item.description.toLowerCase().includes(q)) ||
+        (item.tags && item.tags.some((t) => t.toLowerCase().includes(q)));
 
       return matchCategory && matchSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [items, selectedCategory, searchQuery]);
 
   // Counts per tab
   const getCount = (cat: CategoryFilter) => {
-    if (cat === 'all') return KARYA_SISWA_ITEMS.length;
-    return KARYA_SISWA_ITEMS.filter((i) => i.category === cat).length;
+    if (cat === 'all') return items.length;
+    return items.filter((i) => i.category === cat).length;
   };
 
   const handleShare = (item: KaryaSiswaItem) => {
