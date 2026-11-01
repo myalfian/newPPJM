@@ -13,16 +13,19 @@ import {
   Search,
   User,
   Filter,
-  Layers
+  Layers,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { OsisDepartment, OsisProgram } from './types';
-import { OSIS_DEPARTMENTS as INITIAL_DEPARTMENTS } from './osisData';
+import { OSIS_DEPARTMENTS as INITIAL_DEPARTMENTS, OSIS_METADATA_2026 } from './osisData';
 
 export const OsisProgramsSection: React.FC = () => {
   const [departments, setDepartments] = useState<OsisDepartment[]>(INITIAL_DEPARTMENTS);
   const [selectedDeptId, setSelectedDeptId] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [showGoals, setShowGoals] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchPrograms = async () => {
@@ -145,6 +148,62 @@ export const OsisProgramsSection: React.FC = () => {
           Rancangan program kerja resmi terpadu untuk penguatan karakter, prestasi sains, kedisiplinan, bahasa, dan kebersihan santri.
         </p>
       </div>
+
+      {/* 7 TUJUAN UTAMA OSIS (STRATEGIC FOUNDATION FOR WORK PROGRAMS) */}
+      <section className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-50/70 via-white to-amber-50/40 dark:from-zinc-900 dark:via-zinc-900 dark:to-emerald-950/20 border border-emerald-600/20 dark:border-emerald-500/20 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-950/10 dark:border-emerald-500/10 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#0E7A4C] to-[#0A2116] text-[#C8A951] flex items-center justify-center shadow-xs border border-[#C8A951]/40 shrink-0">
+              <Target className="w-5 h-5 text-[#C8A951]" />
+            </div>
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald-800 dark:text-emerald-300 uppercase tracking-wider">
+                <Sparkles className="w-3 h-3 text-[#C8A951]" />
+                <span>Landasan Filosofis &amp; Orientasi Strategis</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-black text-zinc-900 dark:text-white tracking-tight">
+                7 Tujuan Utama OSIS SMP Plus Jauharul Maknuun
+              </h3>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setShowGoals(!showGoals)}
+            className="self-start sm:self-auto px-3 py-1.5 rounded-xl text-xs font-bold bg-white dark:bg-zinc-800 text-emerald-900 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-50 dark:hover:bg-zinc-700 transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+          >
+            <span>{showGoals ? 'Ringkas Tujuan' : 'Buka 7 Tujuan'}</span>
+            {showGoals ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+          </button>
+        </div>
+
+        {showGoals && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 animate-in fade-in duration-200">
+            {OSIS_METADATA_2026.goals.map((g) => (
+              <div
+                key={g.id}
+                className="group relative p-3.5 rounded-2xl bg-white dark:bg-zinc-900/90 border border-zinc-200/80 dark:border-zinc-800 hover:border-[#0E7A4C]/60 hover:shadow-md transition-all flex flex-col justify-between space-y-2"
+              >
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#0E7A4C] to-[#0A2116] text-[#C8A951] font-black text-xs flex items-center justify-center shadow-2xs border border-[#C8A951]/30">
+                      {String(g.id).padStart(2, '0')}
+                    </span>
+                    <span className="text-[10px] font-mono text-zinc-400 group-hover:text-[#0E7A4C] dark:group-hover:text-emerald-400 transition-colors">
+                      Pilar {g.id}
+                    </span>
+                  </div>
+                  <h4 className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 group-hover:text-[#0E7A4C] dark:group-hover:text-emerald-400 transition-colors leading-snug">
+                    {g.title}
+                  </h4>
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    {g.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
       {/* Control Bar: Division Pills & Search Input */}
       <div className="space-y-2.5">

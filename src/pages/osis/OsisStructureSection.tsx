@@ -12,7 +12,6 @@ import {
   Quote,
   Maximize2,
   X,
-  Target,
   Compass,
   CheckCircle2
 } from 'lucide-react';
@@ -314,42 +313,6 @@ export const OsisStructureSection: React.FC = () => {
       {/* 3. Official Structure Organogram (Bagan Interaktif HTML) */}
       <section className="space-y-2">
         <OsisHtmlOrganogram />
-      </section>
-
-      {/* 4. 7 Tujuan Utama OSIS */}
-      <section className="space-y-3">
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-bold text-xs">
-            <Target className="w-4 h-4" />
-          </div>
-          <div>
-            <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white">
-              7 Tujuan Utama OSIS SMP Plus Jauharul Maknuun
-            </h3>
-            <span className="text-xs text-zinc-500">Amanat pokok pembinaan karakter, adab, dan intelektual santri</span>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {OSIS_METADATA_2026.goals.map((g) => (
-            <div
-              key={g.id}
-              className="p-3.5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-xs hover:border-[#0E7A4C]/50 transition-all space-y-1.5"
-            >
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-lg bg-[#0E7A4C]/10 dark:bg-[#0E7A4C]/30 text-[#0E7A4C] dark:text-emerald-400 font-bold text-xs flex items-center justify-center">
-                  {g.id}
-                </span>
-                <h4 className="font-bold text-xs sm:text-sm text-zinc-800 dark:text-zinc-200">
-                  {g.title}
-                </h4>
-              </div>
-              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed pl-8">
-                {g.description}
-              </p>
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* ========================================================= */}
