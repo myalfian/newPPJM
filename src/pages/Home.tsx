@@ -21,6 +21,7 @@ import { PageEditorState } from '../types/EditorState';
 import { SafeRichContent } from '../components/common/SafeRichContent';
 import { HomeSambutanMultiSection } from '../components/home/HomeSambutanMultiSection';
 import { HomeKeunggulanMultiSection } from '../components/home/HomeKeunggulanMultiSection';
+import { stripHtmlToPlainText } from '../utils/richContentUtils';
 
 export interface HomeNewsItem {
   id: string;
@@ -76,7 +77,7 @@ const fetchHomeNews = async (): Promise<HomeNewsItem[]> => {
           })
         : 'Terbaru',
       category: row.category || 'Warta Pondok',
-      excerpt: row.summary || (row.content ? row.content.substring(0, 140) + '...' : ''),
+      excerpt: stripHtmlToPlainText(row.summary || row.content || '', 150),
       image: row.thumbnail || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
       link: `/berita/${row.slug}`
     }));
@@ -282,7 +283,7 @@ export const Home: React.FC = () => {
                     </h3>
 
                     <p className="text-sm text-slate-700 line-clamp-3 leading-relaxed font-normal">
-                      {news.excerpt}
+                      {stripHtmlToPlainText(news.excerpt, 150)}
                     </p>
                   </div>
                 </div>

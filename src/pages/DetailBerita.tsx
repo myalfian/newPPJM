@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   Calendar,
@@ -7,7 +7,10 @@ import {
   ArrowLeft,
   Newspaper,
   Sparkles,
-  ChevronRight
+  ChevronRight,
+  Clock,
+  Copy,
+  Check
 } from 'lucide-react';
 import { NavBarTabs } from '../components/common/NavBarTabs';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
@@ -15,6 +18,7 @@ import { useCachedQuery } from '../lib/queryCache';
 import { NewsItem, INITIAL_NEWS } from '../data/newsData';
 import { generateWhatsAppBroadcastUrl } from '../lib/waFormatter';
 import { SafeRichContent } from '../components/common/SafeRichContent';
+import { estimateReadingTime, stripHtmlToPlainText } from '../utils/richContentUtils';
 
 const fetchNewsBySlug = async (slug?: string): Promise<{ article: NewsItem | null; related: NewsItem[] }> => {
   if (!slug) return { article: null, related: [] };
@@ -107,17 +111,26 @@ export const DetailBerita: React.FC = () => {
 
   const article = data?.article;
   const related = data?.related || [];
+  const [copied, setCopied] = useState(false);
+
+  const readingTime = article?.content ? estimateReadingTime(article.content) : 1;
 
   const handleShareWA = () => {
     if (!article) return;
     const url = generateWhatsAppBroadcastUrl({
       title: article.title,
       category: article.category,
-      excerpt: article.summary,
+      excerpt: stripHtmlToPlainText(article.summary || article.content || '', 150),
       targetUrl: window.location.href,
       tanggal: article.date_display
     });
     window.open(url, '_blank');
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
   };
 
   if (!article && !isLoading) {
@@ -157,7 +170,7 @@ export const DetailBerita: React.FC = () => {
       </div>
 
       {article && (
-        <article className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-5 border border-slate-200 shadow-xs space-y-3">
+        <article className="bg-white rounded-xl sm:rounded-2xl p-3.5 sm:p-6 border border-slate-200 shadow-xs space-y-3.5 sm:space-y-4">
           {/* Header Metadata */}
           <div className="space-y-2.5">
             <div className="flex flex-wrap items-center gap-2">
@@ -177,7 +190,7 @@ export const DetailBerita: React.FC = () => {
             </h1>
 
             <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-100 text-xs sm:text-sm text-slate-500 font-semibold">
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
                 <div className="flex items-center gap-1.5">
                   <Calendar className="w-4 h-4 text-emerald-700" />
                   <span>{article.date_display}</span>
@@ -186,21 +199,36 @@ export const DetailBerita: React.FC = () => {
                   <User className="w-4 h-4 text-slate-400" />
                   <span>{article.author || 'Humas PPJM'}</span>
                 </div>
+                <div className="flex items-center gap-1.5 text-slate-400">
+                  <Clock className="w-3.5 h-3.5 text-amber-600" />
+                  <span>~{readingTime} menit baca</span>
+                </div>
               </div>
 
-              <button
-                onClick={handleShareWA}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors cursor-pointer"
-              >
-                <Share2 className="w-3.5 h-3.5 text-emerald-700" />
-                <span>Bagikan ke WhatsApp</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleCopyLink}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-colors cursor-pointer"
+                  title="Salin tautan berita ini"
+                >
+                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
+                  <span>{copied ? 'Tersalin!' : 'Salin Link'}</span>
+                </button>
+
+                <button
+                  onClick={handleShareWA}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition-colors cursor-pointer"
+                >
+                  <Share2 className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>Bagikan ke WhatsApp</span>
+                </button>
+              </div>
             </div>
           </div>
 
           {/* Featured Image */}
           {article.thumbnail && (
-            <div className="rounded-xl overflow-hidden max-h-[450px] bg-slate-100">
+            <div className="rounded-xl overflow-hidden max-h-[460px] bg-slate-100 shadow-2xs">
               <img
                 src={article.thumbnail}
                 alt={article.title}
@@ -209,8 +237,15 @@ export const DetailBerita: React.FC = () => {
             </div>
           )}
 
-          {/* Article Body */}
-          <div className="prose prose-emerald max-w-none text-slate-800 leading-relaxed sm:leading-loose text-sm sm:text-base">
+          {/* Executive Summary / Lead Paragraph (jika tersedia) */}
+          {article.summary && (
+            <div className="bg-emerald-50/70 dark:bg-emerald-950/20 border-l-4 border-emerald-600 p-3 sm:p-4 rounded-r-xl text-slate-800 dark:text-zinc-200 text-xs sm:text-sm font-medium italic leading-relaxed">
+              {stripHtmlToPlainText(article.summary)}
+            </div>
+          )}
+
+          {/* Article Body dengan SafeRichContent yang telah dinormalkan */}
+          <div className="py-1">
             <SafeRichContent content={article.content} />
           </div>
 
@@ -221,7 +256,7 @@ export const DetailBerita: React.FC = () => {
                 Bagikan Kabar Pesantren Ini
               </h4>
               <p className="text-xs text-slate-600">
-                Teruskan pengumuman ini ke grup wali santri atau media sosial keluarga pesantren.
+                Teruskan pengumuman resmi ini ke grup wali santri atau media sosial keluarga pesantren.
               </p>
             </div>
             <button
@@ -258,9 +293,12 @@ export const DetailBerita: React.FC = () => {
                   <h4 className="font-bold text-xs sm:text-sm text-emerald-950 group-hover:text-emerald-700 line-clamp-2">
                     {item.title}
                   </h4>
+                  <p className="text-[11px] text-slate-500 line-clamp-2">
+                    {stripHtmlToPlainText(item.summary || item.content || '', 90)}
+                  </p>
                 </div>
                 <div className="mt-2 pt-1.5 border-t border-slate-100 flex items-center justify-between text-xs text-emerald-800 font-bold">
-                  <span>Baca</span>
+                  <span>Baca Rincian</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </div>
               </Link>

@@ -327,9 +327,9 @@ export const KaryaSiswa: React.FC = () => {
               {/* Description */}
               <div className="space-y-1">
                 <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Deskripsi &amp; Makna Karya</h4>
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-                  {activeModalItem.description}
-                </p>
+                <div className="text-xs sm:text-sm text-slate-700 leading-relaxed">
+                  <SafeRichContent content={activeModalItem.description} />
+                </div>
               </div>
 
               {/* Specifications / Detail Teknis */}

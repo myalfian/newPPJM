@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured, SambutanPerson } from '../../lib/supabase';
 import { SafeRichContent } from '../../components/common/SafeRichContent';
+import { stripHtmlToPlainText } from '../../utils/richContentUtils';
 
 export const SambutanSection: React.FC = () => {
   const [sambutans, setSambutans] = useState<SambutanPerson[]>([]);
@@ -228,14 +229,13 @@ export const SambutanSection: React.FC = () => {
 
                   {/* Full Message / Rich Content */}
                   <div className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal space-y-2">
-                    <SafeRichContent
-                      content={
-                        expandedIds.includes(featured.id)
-                          ? featured.message_full || ''
-                          : (featured.message_full || '').slice(0, 320) +
-                            ((featured.message_full || '').length > 320 ? '...' : '')
-                      }
-                    />
+                    {expandedIds.includes(featured.id) ? (
+                      <SafeRichContent content={featured.message_full || ''} />
+                    ) : (
+                      <p className="line-clamp-4 text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed font-normal">
+                        {stripHtmlToPlainText(featured.message_full || '', 320)}
+                      </p>
+                    )}
                   </div>
 
                   <div className="pt-1 flex items-center gap-2 flex-wrap">
@@ -329,14 +329,13 @@ export const SambutanSection: React.FC = () => {
 
                         {/* Message Preview or Full */}
                         <div className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                          <SafeRichContent
-                            content={
-                              isExpanded
-                                ? person.message_full || ''
-                                : (person.message_full || '').slice(0, 200) +
-                                  ((person.message_full || '').length > 200 ? '...' : '')
-                            }
-                          />
+                          {isExpanded ? (
+                            <SafeRichContent content={person.message_full || ''} />
+                          ) : (
+                            <p className="line-clamp-3">
+                              {stripHtmlToPlainText(person.message_full || '', 200)}
+                            </p>
+                          )}
                         </div>
                       </div>
 

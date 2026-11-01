@@ -13,6 +13,7 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useCachedQuery, invalidateCache } from '../lib/queryCache';
 import { NewsItem, INITIAL_NEWS } from '../data/newsData';
 import { generateWhatsAppBroadcastUrl } from '../lib/waFormatter';
+import { stripHtmlToPlainText } from '../utils/richContentUtils';
 
 const CATEGORIES = [
   'Semua Kategori',
@@ -59,7 +60,7 @@ const fetchPublicNews = async (): Promise<NewsItem[]> => {
       title: row.title,
       slug: row.slug,
       category: row.category || 'Warta Pondok',
-      summary: row.summary || row.excerpt || (row.content ? row.content.substring(0, 160) + '...' : ''),
+      summary: stripHtmlToPlainText(row.summary || row.excerpt || row.content || '', 180),
       content: row.content,
       thumbnail: row.thumbnail || row.image_url || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
       is_pinned: !!row.is_pinned,
@@ -202,7 +203,7 @@ export const Berita: React.FC = () => {
 
                   {/* Deskripsi Lengkap Rilis Pers */}
                   <p className="text-xs sm:text-sm text-slate-600 line-clamp-3 sm:line-clamp-4 leading-relaxed font-normal">
-                    {news.summary}
+                    {stripHtmlToPlainText(news.summary, 180)}
                   </p>
                 </div>
               </div>

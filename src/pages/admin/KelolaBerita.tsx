@@ -27,6 +27,7 @@ import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { invalidateCache } from '../../lib/queryCache';
 import { NewsItem, INITIAL_NEWS } from '../../data/newsData';
 import { WordLikeEditor } from '../../components/editor/WordLikeEditor';
+import { stripHtmlToPlainText } from '../../utils/richContentUtils';
 
 export const KelolaBerita: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'list' | 'editor'>('list');
@@ -236,6 +237,7 @@ export const KelolaBerita: React.FC = () => {
       customThumbnail ||
       compressionResult?.dataUrl ||
       'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80';
+    const cleanSummary = stripHtmlToPlainText(ringkasan || isiBerita, 180);
 
     let effectiveSlug = generatedUniqueSlug;
 
@@ -252,7 +254,7 @@ export const KelolaBerita: React.FC = () => {
                 title: judul,
                 slug: effectiveSlug,
                 category: kategori,
-                summary: ringkasan || isiBerita.substring(0, 160) + '...',
+                summary: cleanSummary,
                 content: isiBerita,
                 thumbnail: finalThumbnail,
                 author,
@@ -268,7 +270,7 @@ export const KelolaBerita: React.FC = () => {
           const payload = {
             title: judul,
             category: kategori,
-            summary: ringkasan || isiBerita.substring(0, 160) + '...',
+            summary: cleanSummary,
             content: isiBerita,
             thumbnail: finalThumbnail,
             author,
@@ -308,7 +310,7 @@ export const KelolaBerita: React.FC = () => {
             title: judul,
             slug: generatedUniqueSlug,
             category: kategori,
-            summary: ringkasan || isiBerita.substring(0, 160) + '...',
+            summary: cleanSummary,
             content: isiBerita,
             thumbnail: finalThumbnail,
             author,
@@ -351,7 +353,7 @@ export const KelolaBerita: React.FC = () => {
         title: judul,
         slug: effectiveSlug,
         category: kategori,
-        summary: ringkasan || isiBerita.substring(0, 160) + '...',
+        summary: cleanSummary,
         content: isiBerita,
         thumbnail: finalThumbnail,
         author,
