@@ -178,8 +178,12 @@ export const KelolaProfil: React.FC = () => {
   );
 
   // State Visi & 5 Pilar Misi
+  const [visiJudul, setVisiJudul] = useState('Visi Misi dan Tujuan');
   const [visiTeks, setVisiTeks] = useState(
-    'Terwujudnya insan santri yang bertauhid lurus, berakhlak mulia, mutafaqqih fiddin, menguasai sains teknologi, serta berdaya saing global berlandaskan Ahlussunnah wal Jama’ah An-Nahdliyyah.'
+    'Visi SMP Plus Jauharul Maknuun “Islamic Boarding School” adalah “SHALIH, CERDAS, TERAMPIL, UNGGUL”'
+  );
+  const [indikatorVisi, setIndikatorVisi] = useState(
+    'Sholeh dalam beribadah dan berakhlak; Cerdas dalam akademik; Terampil dalam mengembangkan bakat dan kemampuan; Unggul dalam segala aspek kehidupan, baik akademik maupun non akademik'
   );
   const [pilar1, setPilar1] = useState('Pilar 1: Tauhid, Tasawuf, dan Keluhuran Adab Santri');
   const [pilar2, setPilar2] = useState('Pilar 2: Tafaqquh Fiddin & Kemurnian Sanad Kitab Kuning Turats');
@@ -352,6 +356,8 @@ export const KelolaProfil: React.FC = () => {
           .maybeSingle();
 
         if (visiData && isMounted) {
+          if (visiData.title) setVisiJudul(visiData.title);
+
           const extra = (visiData.extra_data as any) || {};
 
           // 1. Load Visi Text
@@ -362,12 +368,17 @@ export const KelolaProfil: React.FC = () => {
             setVisiTeks(parts[0] || visiData.content);
           }
 
-          // 2. Load 5 Pilar Misi
+          // 2. Load Indikator Visi
+          if (extra.vision_indicator) {
+            setIndikatorVisi(extra.vision_indicator);
+          }
+
+          // 3. Load 5 Pilar Misi
           if (Array.isArray(extra.missions) && extra.missions.length > 0) {
             if (extra.missions[0] !== undefined) setPilar1(extra.missions[0]);
             if (extra.missions[1] !== undefined) setPilar2(extra.missions[1]);
             if (extra.missions[2] !== undefined) setPilar3(extra.missions[2]);
-            if (extra.missions[3] !== undefined) setPilar4(extra.missions[3]);
+            if (extra.missions[3] !== undefined) setPilar4(extra.missions[4]);
             if (extra.missions[4] !== undefined) setPilar5(extra.missions[4]);
           } else if (visiData.content) {
             const parts = visiData.content.split('\n\n');
@@ -450,15 +461,16 @@ export const KelolaProfil: React.FC = () => {
           const updatedExtra = {
             ...existingExtra,
             vision: visiTeks,
+            vision_indicator: indikatorVisi,
             missions: missionsList
           };
 
-          const fullCombinedContent = `${visiTeks}\n\n${missionsList.join('\n')}`;
+          const fullCombinedContent = `${visiTeks}\n\nIndikator Visi:\n${indikatorVisi}\n\n${missionsList.join('\n')}`;
 
           const { error } = await supabase.from('jm_center_pages').upsert(
             {
               slug: 'visi-misi',
-              title: 'Visi & 5 Pilar Misi',
+              title: visiJudul || 'Visi Misi dan Tujuan',
               content: fullCombinedContent,
               extra_data: updatedExtra,
               updated_at: new Date().toISOString()
@@ -648,11 +660,37 @@ export const KelolaProfil: React.FC = () => {
       {/* TAB C: VISI & 5 PILAR MISI */}
       {activeTab === 'visi-misi' && (
         <form onSubmit={handleSave} className="p-3.5 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-3.5 sm:space-y-4">
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+              Judul Halaman / Section:
+            </label>
+            <input
+              type="text"
+              value={visiJudul}
+              onChange={(e) => setVisiJudul(e.target.value)}
+              placeholder="Visi Misi dan Tujuan"
+              className="w-full px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 font-bold text-zinc-900 dark:text-white"
+            />
+          </div>
+
           <div className="space-y-1.5">
             <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
-              Pernyataan Visi Lembaga (Word Toolbar Contextual):
+              Pernyataan Visi Lembaga:
             </label>
-            <WordLikeEditor value={visiTeks} onChange={(html) => setVisiTeks(html)} bucket="cms-images" minHeight="140px" toolbarMode="full" />
+            <WordLikeEditor value={visiTeks} onChange={(html) => setVisiTeks(html)} bucket="cms-images" minHeight="120px" toolbarMode="full" />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300">
+              Indikator Visi (Format terpisah titik koma &quot;;&quot;):
+            </label>
+            <textarea
+              rows={3}
+              value={indikatorVisi}
+              onChange={(e) => setIndikatorVisi(e.target.value)}
+              placeholder="Sholeh dalam beribadah dan berakhlak; Cerdas dalam akademik; Terampil dalam mengembangkan bakat dan kemampuan; Unggul dalam segala aspek kehidupan, baik akademik maupun non akademik"
+              className="w-full p-3 text-xs sm:text-sm rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-white leading-relaxed"
+            />
           </div>
 
           <div className="space-y-3 pt-2 border-t border-zinc-200 dark:border-zinc-800">
@@ -699,7 +737,7 @@ export const KelolaProfil: React.FC = () => {
               className="px-6 py-2.5 rounded-xl bg-[#0E7A4C] hover:bg-[#128a57] text-[#C8A951] font-bold text-xs shadow-md flex items-center gap-2 border border-[#C8A951]/30 cursor-pointer"
             >
               <Save className="w-4 h-4" />
-              <span>Simpan Visi &amp; 5 Pilar Misi</span>
+              <span>Simpan Visi, Indikator &amp; 5 Pilar Misi</span>
             </button>
           </div>
         </form>

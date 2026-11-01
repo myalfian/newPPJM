@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Star, CheckCircle2, ShieldCheck } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Star, CheckCircle2, ShieldCheck, Target, Sparkles } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { SafeRichContent } from '../../components/common/SafeRichContent';
 
@@ -9,7 +9,9 @@ interface ValueItem {
 }
 
 export const VisiMisiSection: React.FC = () => {
+  const [sectionTitle, setSectionTitle] = useState<string>('Visi Misi dan Tujuan');
   const [vision, setVision] = useState<string>('');
+  const [visionIndicator, setVisionIndicator] = useState<string>('');
   const [missions, setMissions] = useState<string[]>([]);
   const [values, setValues] = useState<ValueItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -29,12 +31,18 @@ export const VisiMisiSection: React.FC = () => {
           .maybeSingle();
 
         if (data && isMounted) {
+          if (data.title) setSectionTitle(data.title);
+
           const extra = (data.extra_data as any) || {};
           if (extra.vision) {
             setVision(extra.vision);
           } else if (data.content) {
             const parts = data.content.split('\n\n');
             setVision(parts[0] || data.content);
+          }
+
+          if (extra.vision_indicator) {
+            setVisionIndicator(extra.vision_indicator);
           }
 
           if (Array.isArray(extra.missions) && extra.missions.length > 0) {
@@ -72,6 +80,14 @@ export const VisiMisiSection: React.FC = () => {
     };
   }, []);
 
+  const parsedIndicators = useMemo(() => {
+    if (!visionIndicator) return [];
+    if (visionIndicator.includes(';')) {
+      return visionIndicator.split(';').map((s) => s.trim()).filter(Boolean);
+    }
+    return [visionIndicator.trim()];
+  }, [visionIndicator]);
+
   if (loading) {
     return (
       <div className="py-12 text-center text-xs text-zinc-400 animate-pulse">
@@ -81,26 +97,62 @@ export const VisiMisiSection: React.FC = () => {
   }
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-3.5 sm:space-y-4">
       {/* Visi: Banner Statement Besar Glassmorphism */}
       {vision && (
-        <div className="relative rounded-xl sm:rounded-2xl p-3.5 sm:p-5 lg:p-6 overflow-hidden bg-gradient-to-br from-[#06331c] via-[#0b4d2a] to-[#042013] border border-emerald-700/50 text-white shadow-lg card-hover-smooth">
+        <div className="relative rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-7 overflow-hidden bg-gradient-to-br from-[#06331c] via-[#0b4d2a] to-[#042013] border border-emerald-700/50 text-white shadow-xl card-hover-smooth space-y-4">
           <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-emerald-400/15 blur-3xl pointer-events-none" />
-          <div className="relative z-10 max-w-4xl space-y-2">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[11px] font-bold uppercase tracking-wider">
-              <Star className="w-3.5 h-3.5 fill-current" />
-              <span>Visi Utama Lembaga</span>
-            </span>
-            <div className="text-base sm:text-lg lg:text-xl font-bold tracking-tight leading-relaxed text-zinc-100">
-              <SafeRichContent content={vision} className="text-zinc-100 [&_p]:text-zinc-100 [&_span]:!text-zinc-100 [&_strong]:text-amber-300 [&_strong]:font-extrabold [&_em]:italic" />
+          <div className="absolute -left-20 -bottom-20 w-64 h-64 rounded-full bg-amber-400/10 blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 max-w-4xl space-y-2.5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/35 text-[11px] font-black uppercase tracking-wider shadow-2xs">
+                <Star className="w-3.5 h-3.5 fill-current" />
+                <span>Visi Utama Lembaga</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-900/60 text-emerald-200 border border-emerald-600/40 text-[11px] font-bold shadow-2xs">
+                <Target className="w-3.5 h-3.5 text-emerald-400" />
+                <span>{sectionTitle}</span>
+              </span>
+            </div>
+
+            <div className="text-base sm:text-xl lg:text-2xl font-black tracking-tight leading-relaxed text-zinc-100">
+              <SafeRichContent
+                content={vision}
+                className="text-zinc-100 [&_p]:text-zinc-100 [&_span]:!text-zinc-100 [&_strong]:text-amber-300 [&_strong]:font-black [&_em]:italic"
+              />
             </div>
           </div>
+
+          {/* Indikator Visi */}
+          {parsedIndicators.length > 0 && (
+            <div className="relative z-10 pt-4 border-t border-emerald-600/30 space-y-2.5">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-amber-300 text-[11px] font-black uppercase tracking-wider">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>Indikator Visi</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
+                {parsedIndicators.map((ind, i) => (
+                  <div
+                    key={i}
+                    className="p-3 rounded-xl bg-white/10 backdrop-blur-md border border-white/15 text-xs text-emerald-50 leading-relaxed font-medium flex items-start gap-2.5 shadow-2xs hover:bg-white/15 transition-colors"
+                  >
+                    <span className="w-5 h-5 rounded-full bg-amber-400/25 text-amber-300 border border-amber-400/40 text-[10.5px] font-black flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                      {i + 1}
+                    </span>
+                    <span className="font-semibold text-zinc-100">{ind}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
       {/* 5 Pilar Misi Utama Pesantren */}
       {missions.length > 0 && (
-        <div className="space-y-2 sm:space-y-2.5">
+        <div className="space-y-2.5">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             <h3 className="text-sm sm:text-lg font-black text-zinc-900 dark:text-white tracking-tight">

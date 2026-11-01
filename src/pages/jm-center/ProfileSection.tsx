@@ -22,7 +22,7 @@ interface SubNavItem {
 const SUB_NAV_ITEMS: SubNavItem[] = [
   { id: 'sambutan', label: 'Sambutan Pimpinan', shortLabel: 'Sambutan Pimpinan' },
   { id: 'sejarah', label: 'Sejarah & Linimasa', shortLabel: 'Sejarah & Linimasa' },
-  { id: 'visi-misi', label: 'Visi & Misi Lembaga', shortLabel: 'Visi & Misi' },
+  { id: 'visi-misi', label: 'Visi, Misi & Tujuan', shortLabel: 'Visi & Misi' },
 ];
 
 export const ProfileSection: React.FC<ProfileSectionProps> = ({ defaultSection = 'sambutan' }) => {

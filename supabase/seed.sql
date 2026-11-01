@@ -25,7 +25,7 @@ INSERT INTO public.jm_center_pages (slug, title, subtitle, quotes, content, bann
 ),
 (
     'visi-misi',
-    'Visi, Misi & Falsafah Pesantren',
+    'Visi Misi dan Tujuan',
     'Arah Langkah Strategis Menuju Generasi Mutafaqqih Fiddin Berwawasan Global',
     'Mencetak generasi berakhlak mulia, hafidz al-Qur''an, mendalami kitab salaf, dan piawai dalam teknologi.',
     'VISI PESANTREN:\n"Menjadi pusat keunggulan pendidikan Islam salaf-modern yang melahirkan ulama amilin, cendekiawan berakhlak mulia, dan pelopor inovasi teknologi yang berdaya saing global."\n\nMISI PESANTREN:\n1. Menanamkan aqidah Ahlussunnah wal Jama''ah an-Nahdliyyah dan keluhuran akhlak karimah dalam setiap sendi kehidupan santri.\n2. Menyelenggarakan kajian kitab kuning (turats) secara komprehensif, bersanad, dan berjenjang.\n3. Membimbing santri menghafal Al-Qur''an 30 Juz dengan tajwid yang fasih dan pemahaman makna.\n4. Mengembangkan literasi sains dan teknologi (STEM) aplikatif yang solutif bagi kemaslahatan umat.\n5. Membekali santri kecakapan bahasa internasional (Arab, Inggris, dan Mandarin) untuk dakwah global.',
