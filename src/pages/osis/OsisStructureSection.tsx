@@ -19,54 +19,43 @@ import {
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { OsisMember, OsisHierarchyLevel } from './types';
 import { OSIS_METADATA_2026 } from './osisData';
+import { OsisHtmlOrganogram } from './OsisHtmlOrganogram';
 
 export const OSIS_MEMBERS: OsisMember[] = [
   // --- LEVEL 1: PIMPINAN (Ketua & Wakil) ---
   {
     id: 'lead-1',
-    name: 'Muhammad Faizur Rahman',
-    role: 'Ketua OSIS Putra',
+    name: 'Afif Ezza Alfath',
+    role: 'Ketua OSIS',
     hierarchy: 'pimpinan',
     department: 'Presidium Utama',
-    classGrade: 'Kelas IX-A (SMP Plus JM)',
+    classGrade: 'SMP Plus Jauharul Maknuun',
     photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
-    motto: 'Memimpin dengan keteladanan akhlaq, mengabdi untuk barokah kiai.',
-    badgeLabel: 'Mandat Utama',
+    motto: 'Memimpin dengan keteladanan akhlaq, disiplin, dan amanah tholabul ilmi.',
+    badgeLabel: 'Ketua OSIS',
     badgeColor: 'gold'
   },
   {
     id: 'lead-2',
-    name: 'Nabila Zahra Al-Munawwarah',
-    role: 'Ketua OSIS Putri',
-    hierarchy: 'pimpinan',
-    department: 'Presidium Utama',
-    classGrade: 'Kelas IX-B (SMP Plus JM)',
-    photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80',
-    motto: 'Santriwati tangguh, berilmu amaliyah, dan berjiwa kepemimpinan islami.',
-    badgeLabel: 'Mandat Utama',
-    badgeColor: 'gold'
-  },
-  {
-    id: 'lead-3',
-    name: 'M. Raihan Al-Ghifari',
+    name: 'Yumma Salsabila',
     role: 'Wakil Ketua OSIS',
     hierarchy: 'pimpinan',
     department: 'Presidium Utama',
-    classGrade: 'Kelas VIII-A (SMP Plus JM)',
-    photoUrl: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=600&q=80',
-    motto: 'Sinergi langkah nyata mewujudkan santri unggul dan berprestasi.',
-    badgeLabel: 'Wakil Pimpinan',
-    badgeColor: 'sapphire'
+    classGrade: 'SMP Plus Jauharul Maknuun',
+    photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80',
+    motto: 'Santriwati tangguh, berilmu amaliyah, dan berjiwa kepemimpinan islami.',
+    badgeLabel: 'Wakil Ketua',
+    badgeColor: 'gold'
   },
 
   // --- LEVEL 2: INTI (Sekretaris & Bendahara) ---
   {
     id: 'core-1',
-    name: 'M. Rizqi Syaifullah',
-    role: 'Sekretaris 1',
+    name: 'Ofat Rozzan',
+    role: 'Sekretaris OSIS',
     hierarchy: 'inti',
     department: 'Sekretariat Jenderal',
-    classGrade: 'Kelas IX-A',
+    classGrade: 'SMP Plus Jauharul Maknuun',
     photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
     motto: 'Tertib administrasi wujud amanah dan akuntabilitas organisasi.',
     badgeLabel: 'Sekretaris',
@@ -74,96 +63,83 @@ export const OSIS_MEMBERS: OsisMember[] = [
   },
   {
     id: 'core-2',
-    name: 'Aisyah Nur Fathimah',
-    role: 'Sekretaris 2',
-    hierarchy: 'inti',
-    department: 'Sekretariat Jenderal',
-    classGrade: 'Kelas VIII-B',
-    photoUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80',
-    motto: 'Ketelitian dalam dokumentasi, kerapian dalam arsip warta santri.',
-    badgeLabel: 'Sekretaris',
-    badgeColor: 'emerald'
-  },
-  {
-    id: 'core-3',
-    name: 'Fatimah Az-Zahra',
+    name: 'Anandita Sasi Kirana',
     role: 'Bendahara 1',
     hierarchy: 'inti',
     department: 'Kebendaharaan Umum',
-    classGrade: 'Kelas IX-B',
+    classGrade: 'SMP Plus Jauharul Maknuun',
     photoUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80',
     motto: 'Amanah, transparan, dan barokah dalam mengelola kas organisasi.',
-    badgeLabel: 'Bendahara',
+    badgeLabel: 'Bendahara 1',
     badgeColor: 'sapphire'
   },
   {
-    id: 'core-4',
-    name: 'Ahmad Zidan Al-Farisi',
+    id: 'core-3',
+    name: 'Arytasha',
     role: 'Bendahara 2',
     hierarchy: 'inti',
     department: 'Kebendaharaan Umum',
-    classGrade: 'Kelas VIII-A',
-    photoUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
+    classGrade: 'SMP Plus Jauharul Maknuun',
+    photoUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80',
     motto: 'Disiplin pembukuan anggaran menjamin kelancaran setiap program.',
-    badgeLabel: 'Bendahara',
+    badgeLabel: 'Bendahara 2',
     badgeColor: 'sapphire'
   },
 
   // --- LEVEL 3: KOORDINATOR DIVISI/SEKBID ---
   {
     id: 'sek-1',
-    name: 'Hilmi Mubarok',
-    role: 'Koordinator Sekbid Bahasa',
+    name: 'Khalif Rama H',
+    role: 'Koordinator Divisi Pendidikan',
     hierarchy: 'sekbid',
-    department: 'Divisi Bahasa Asing (Arab & Mandarin)',
-    classGrade: 'Kelas VIII-A',
-    photoUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80',
-    motto: 'Lidah fasih berbahasa internasional, hati teguh berjiwa santri.',
-    badgeLabel: 'Sekbid Bahasa',
+    department: 'Divisi Pendidikan, Riset & Literasi',
+    classGrade: 'SMP Plus Jauharul Maknuun',
+    photoUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=600&q=80',
+    motto: 'Belajar tanpa henti, berprestasi untuk kemaslahatan madrasah.',
+    badgeLabel: 'Div. Pendidikan',
     badgeColor: 'emerald'
   },
   {
     id: 'sek-2',
-    name: 'Daniar Pratama',
-    role: 'Koordinator Sekbid Pendidikan',
+    name: 'Ananda Desta Putra',
+    role: 'Koordinator Divisi Bahasa',
     hierarchy: 'sekbid',
-    department: 'Divisi Pendidikan, Riset & STEM',
-    classGrade: 'Kelas VIII-A',
-    photoUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=600&q=80',
-    motto: 'Belajar tanpa henti, meneliti untuk kemaslahatan umat.',
-    badgeLabel: 'Sekbid Pendidikan',
+    department: 'Divisi Bahasa (Arab & Inggris)',
+    classGrade: 'SMP Plus Jauharul Maknuun',
+    photoUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80',
+    motto: 'Lidah fasih berbahasa internasional, hati teguh berjiwa santri salaf.',
+    badgeLabel: 'Div. Bahasa',
     badgeColor: 'sapphire'
   },
   {
     id: 'sek-3',
-    name: 'Salman Al-Farisi',
-    role: 'Koordinator Sekbid Kebersihan',
+    name: 'Nanda Pratama',
+    role: 'Koordinator Divisi Keamanan',
     hierarchy: 'sekbid',
-    department: 'Divisi Kebersihan, Lingkungan & UKS',
-    classGrade: 'Kelas VIII-B',
-    photoUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80',
-    motto: 'Kebersihan pesantren sebagian dari kesempurnaan iman.',
-    badgeLabel: 'Sekbid Kebersihan',
-    badgeColor: 'emerald'
+    department: 'Divisi Kedisiplinan & Ketertiban',
+    classGrade: 'SMP Plus Jauharul Maknuun',
+    photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80',
+    motto: 'Tegas dalam kedisiplinan shalat dan adab, santun dalam mengayomi.',
+    badgeLabel: 'Div. Keamanan',
+    badgeColor: 'purple'
   },
   {
     id: 'sek-4',
-    name: 'Fikri Ramadhan',
-    role: 'Koordinator Sekbid Keamanan',
+    name: 'Ghazy Mahardika H',
+    role: 'Koordinator Divisi Kebersihan & Kesehatan',
     hierarchy: 'sekbid',
-    department: 'Divisi Kedisiplinan & Tata Tertib',
-    classGrade: 'Kelas IX-A',
-    photoUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=600&q=80',
-    motto: 'Tegas dalam kedisiplinan, santun dalam mengayomi adik kelas.',
-    badgeLabel: 'Sekbid Keamanan',
-    badgeColor: 'purple'
+    department: 'Divisi Kebersihan, Lingkungan & UKS',
+    classGrade: 'SMP Plus Jauharul Maknuun',
+    photoUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80',
+    motto: 'Kebersihan pesantren dan kebugaran fisik adalah cermin kesempurnaan iman.',
+    badgeLabel: 'Div. Kesehatan',
+    badgeColor: 'emerald'
   }
 ];
 
 export const OsisStructureSection: React.FC = () => {
   const [members, setMembers] = useState<OsisMember[]>(OSIS_MEMBERS);
   const [activeDepartmentFilter, setActiveDepartmentFilter] = useState<string>('all');
-  const [showChartModal, setShowChartModal] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchStructure = async () => {
@@ -335,44 +311,10 @@ export const OsisStructureSection: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Official Structure Chart Preview (Lightbox Ready) */}
-      <div className="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden shadow-sm">
-        <div className="p-3.5 sm:p-4 bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Compass className="w-4 h-4 text-[#0E7A4C] dark:text-emerald-400" />
-            <h3 className="font-bold text-xs sm:text-sm text-zinc-900 dark:text-white">
-              Bagan Resmi Struktur Organisasi OSIS (Dokumen Resmi 2026/2027)
-            </h3>
-          </div>
-          <button
-            type="button"
-            onClick={() => setShowChartModal(true)}
-            className="px-3 py-1.5 rounded-xl bg-[#0E7A4C] hover:bg-[#128a57] text-[#C8A951] font-bold text-xs flex items-center gap-1.5 shadow-sm transition cursor-pointer"
-          >
-            <Maximize2 className="w-3.5 h-3.5" />
-            <span>Perbesar HD</span>
-          </button>
-        </div>
-        <div 
-          onClick={() => setShowChartModal(true)}
-          className="relative group cursor-pointer aspect-[16/9] sm:aspect-[21/9] bg-zinc-900 overflow-hidden flex items-center justify-center"
-        >
-          <img
-            src={OSIS_METADATA_2026.chartImageUrl}
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).src = OSIS_METADATA_2026.chartImageFallback;
-            }}
-            alt="Bagan Struktur OSIS SMP Plus JM 2026/2027"
-            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
-          />
-          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-            <span className="px-3.5 py-1.5 rounded-full bg-black/70 text-white text-xs font-bold backdrop-blur-md flex items-center gap-2 opacity-90 group-hover:opacity-100 group-hover:scale-110 transition-all">
-              <Maximize2 className="w-3.5 h-3.5 text-[#C8A951]" />
-              Klik untuk memperbesar bagan HD
-            </span>
-          </div>
-        </div>
-      </div>
+      {/* 3. Official Structure Organogram (Bagan Interaktif HTML) */}
+      <section className="space-y-2">
+        <OsisHtmlOrganogram />
+      </section>
 
       {/* 4. 7 Tujuan Utama OSIS */}
       <section className="space-y-3">
@@ -486,37 +428,6 @@ export const OsisStructureSection: React.FC = () => {
           {sekbidOfficers.map((m) => renderMemberCard(m, false))}
         </div>
       </section>
-
-      {/* Lightbox Modal HD for Structure Chart */}
-      {showChartModal && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col p-3 sm:p-6 animate-in fade-in duration-200">
-          <div className="flex items-center justify-between pb-3 text-white border-b border-white/20">
-            <div>
-              <h4 className="font-bold text-sm sm:text-base text-[#C8A951]">
-                Bagan Resmi Struktur OSIS SMP Plus Jauharul Maknuun 2026/2027
-              </h4>
-              <p className="text-xs text-zinc-300">Dokumen Tata Kelola Organisasi Resmi Pesantren</p>
-            </div>
-            <button
-              type="button"
-              onClick={() => setShowChartModal(false)}
-              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-          <div className="flex-1 overflow-auto flex items-center justify-center p-2 sm:p-4">
-            <img
-              src={OSIS_METADATA_2026.chartImageUrl}
-              onError={(e) => {
-                (e.currentTarget as HTMLImageElement).src = OSIS_METADATA_2026.chartImageFallback;
-              }}
-              alt="Bagan Struktur HD OSIS"
-              className="max-h-[85vh] max-w-full object-contain rounded-xl shadow-2xl"
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 };

@@ -1,5 +1,155 @@
 import { OsisDepartment, OsisArticleEvent } from './types';
 
+
+export interface OsisAdvisor {
+  role: string;
+  name: string;
+  title: string;
+  badge: string;
+}
+
+export interface OsisLeaderPerson {
+  role: string;
+  name: string;
+  badge: string;
+  gender: 'putra' | 'putri';
+}
+
+export interface OsisDivisionStructure {
+  id: string;
+  name: string;
+  arabicName: string;
+  iconName: string;
+  colorScheme: 'emerald' | 'amber' | 'blue' | 'purple';
+  members: string[];
+}
+
+export const OFFICIAL_ORGANOGRAM_2026 = {
+  institution: 'SMP PLUS JAUHARUL MAKNUUN',
+  period: 'Masa Bakti 2026-2027',
+  curriculum: 'Kurikulum Merdeka Belajar',
+  advisors: [
+    {
+      role: 'Kepala Sekolah',
+      name: 'Ferany Ardiana, S.S., M.Pd',
+      title: 'Pimpinan & Penanggung Jawab Madrasah',
+      badge: 'Penanggung Jawab'
+    },
+    {
+      role: 'Waka Kesiswaan',
+      name: 'Fajar Nurul Wahid, M.Pd',
+      title: 'Pengarah Bidang Kesiswaan & Kedisiplinan',
+      badge: 'Pengarah'
+    },
+    {
+      role: 'Pembina OSIS',
+      name: 'Alifia Fitranti, M.Pd',
+      title: 'Pembina & Pendamping Teknis OSIS',
+      badge: 'Pembina'
+    }
+  ] as OsisAdvisor[],
+  leaders: [
+    {
+      role: 'Ketua OSIS',
+      name: 'Afif Ezza Alfath',
+      badge: 'Mandat Utama Putra',
+      gender: 'putra' as const
+    },
+    {
+      role: 'Wakil Ketua OSIS',
+      name: 'Yumma Salsabila',
+      badge: 'Mandat Utama Putri',
+      gender: 'putri' as const
+    }
+  ],
+  secretariat: {
+    secretary: {
+      role: 'Sekretaris',
+      name: 'Ofat Rozzan',
+      badge: 'BPH Administrasi'
+    },
+    treasurers: {
+      role: 'Bendahara',
+      names: ['Anandita Sasi Kirana', 'Arytasha'],
+      badge: 'BPH Kebendaharaan'
+    }
+  },
+  divisions: [
+    {
+      id: 'div-pendidikan',
+      name: 'Divisi Pendidikan',
+      arabicName: 'قسم التربية والتعليم',
+      iconName: 'BookOpen',
+      colorScheme: 'emerald' as const,
+      members: [
+        'Khalif Rama H',
+        'M. Rizki Zahran A',
+        'M. Mahfraz Amsyar',
+        'M. Ali Muzakki',
+        'Kayla Akifah Azzah',
+        "Fatiqha Annisa' Ilmi",
+        'Raisa Anjani',
+        'Jingga Rindu Awani',
+        'Annisa Syariah I'
+      ]
+    },
+    {
+      id: 'div-bahasa',
+      name: 'Divisi Bahasa',
+      arabicName: 'قسم ترقية اللغة',
+      iconName: 'Languages',
+      colorScheme: 'blue' as const,
+      members: [
+        'Ananda Desta Putra',
+        'M. Abdurrahman Faiz',
+        'Danish Danial Yoga',
+        'A. Raihan Halim W',
+        'Dafinah Syauqiyah F',
+        'Amirah Faizah',
+        'Namirah Faizah',
+        'Nabila Hasna Amira'
+      ]
+    },
+    {
+      id: 'div-keamanan',
+      name: 'Divisi Keamanan',
+      arabicName: 'قسم الأمن والنظام',
+      iconName: 'Shield',
+      colorScheme: 'purple' as const,
+      members: [
+        'Nanda Pratama',
+        'Albi Sabda Titta',
+        'Afif Assyakir Fillah',
+        'Ghaisan Tsaqqif',
+        'M. Sultan Firmansyah',
+        'Aulia Mudilah Ali',
+        'Maulidiyah Kayla',
+        'Shabitah Ayunindya',
+        'Nafisa Nasikhatul M',
+        'Najwa Zahrina A'
+      ]
+    },
+    {
+      id: 'div-kebersihan',
+      name: 'Divisi Kebersihan dan Kesehatan',
+      arabicName: 'قسم النظافة والصحة',
+      iconName: 'HeartPulse',
+      colorScheme: 'amber' as const,
+      members: [
+        'Ghazy Mahardika H',
+        'M. Yasin Aliimuddin',
+        'M. Amirul Ihsan',
+        'M. Aqil Nur Hasan',
+        'M. Maheer Al Kayyis',
+        'Muniya Zahira Ajwa',
+        'Nayla Iktrina H',
+        'Ayesha Assyifa Qolbi',
+        'Putri Dwi Auliyah'
+      ]
+    }
+  ]
+};
+
 export interface OsisGoal {
   id: number;
   title: string;
