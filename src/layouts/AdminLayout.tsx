@@ -43,7 +43,8 @@ import {
   Rocket,
   Activity,
   Server,
-  Palette
+  Palette,
+  School
 } from 'lucide-react';
 import { UserRole } from '../lib/supabase';
 import { useAuth } from '../context/AuthContext';
@@ -120,6 +121,15 @@ export const ADMIN_SIDEBAR_GROUPS: NavGroupConfig[] = [
         href: '/admin/profil',
         publicHref: '/jm-center/profil',
         icon: Landmark
+      },
+      {
+        id: 'lembaga',
+        moduleKey: 'profil',
+        label: 'Kelola 3 Lembaga',
+        href: '/admin/profil?tab=lembaga',
+        publicHref: '/jm-center/lembaga',
+        icon: School,
+        badge: '3 Unit'
       }
     ]
   },

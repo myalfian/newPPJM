@@ -172,6 +172,27 @@ export const KelolaProfil: React.FC = () => {
     return 'sambutan';
   });
 
+  // Sinkronisasi otomatis URL query params ke activeTab
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tabParam = params.get('tab');
+    if (tabParam === 'lembaga' || tabParam === 'institusi') {
+      setActiveTab('lembaga');
+    } else if (tabParam === 'fasilitas') {
+      setActiveTab('fasilitas');
+    } else if (tabParam === 'madin') {
+      setActiveTab('flyer-madin');
+    } else if (tabParam === 'amaliyah') {
+      setActiveTab('program-pondok');
+    } else if (tabParam === 'visi' || tabParam === 'visi-misi') {
+      setActiveTab('visi-misi');
+    } else if (tabParam === 'sejarah') {
+      setActiveTab('sejarah');
+    } else if (tabParam === 'sambutan') {
+      setActiveTab('sambutan');
+    }
+  }, [location.search]);
+
   // State Sambutan Mudir KH. M. Jauharul Maknuun
   const [namaPimpinan, setNamaPimpinan] = useState('KH. Muhammad Jauharul Maknuun, Lc., M.Pd.I.');
   const [jabatan, setJabatan] = useState('Pengasuh & Pendiri Pondok Pesantren Jauharul Maknuun');
@@ -601,8 +622,15 @@ export const KelolaProfil: React.FC = () => {
               : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100'
           }`}
         >
-          <Layers className="w-4 h-4" />
+          <School className="w-4 h-4" />
           <span>Lembaga</span>
+          <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${
+            activeTab === 'lembaga'
+              ? 'bg-[#C8A951] text-emerald-950'
+              : 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
+          }`}>
+            3
+          </span>
         </button>
 
         <button

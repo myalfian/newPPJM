@@ -65,12 +65,12 @@ export const OFFICIAL_ORGANOGRAM_2026 = {
   secretariat: {
     secretary: {
       role: 'Sekretaris',
-      name: 'Ofat Rozzan',
+      name: 'Olfat Rozzan',
       badge: 'BPH Administrasi'
     },
     treasurers: {
       role: 'Bendahara',
-      names: ['Anandita Sasi Kirana', 'Arytasha'],
+      names: ['Anandita Sasi Kirana Arytasha'],
       badge: 'BPH Kebendaharaan'
     }
   },
