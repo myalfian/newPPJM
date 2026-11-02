@@ -25,95 +25,42 @@ interface StemShowcaseProps {
 
 const DEFAULT_PROJECTS: StemProject[] = [
   {
-    id: 'p1',
-    slug: 'iot-smart-irrigation',
-    title: 'Sistem Otomasi Penyiram Tanaman Hidroponik Berbasis ESP32',
-    category: 'Internet of Things (IoT)',
-    description: 'Proyek rekayasa sains santri yang memadukan sensor kelembaban kapasitif, modul mikrokontroler ESP32, dan protokol MQTT untuk otomatisasi irigasi kebun hidroponik pesantren secara presisi.',
+    id: 'p-hydrolift',
+    slug: 'hydrolift-hukum-pascal',
+    title: 'LKPD STEM • HYDROLIFT: Alat Pengangkat Berbasis Tekanan Hukum Pascal',
+    category: 'Fisika Tekanan Fluida (IPA Kelas VIII)',
+    description: 'Rancang dan buat alat pengangkat sederhana berbasis tekanan hidrolik yang mampu mengangkat beban menggunakan sistem 2–4 spuit, selang air, dan rangka kardus/stik melalui tahapan Engineering Design Process (EDP).',
     specs: {
-      'Mikrokontroler': 'ESP32 NodeMCU 38-Pin',
-      'Sensor': 'Capacitive Soil Moisture V2.0',
-      'Sumber Daya': 'Solar Panel 20W + Baterai Li-Ion 18650',
-      'Protokol Cloud': 'MQTT Dashboard Pesantren',
-      'Efisiensi Air': 'Hemat air hingga 40%'
+      'Pengampu': 'Ustadzah Ria & Ustadzah Anggun',
+      'Jenjang Kelas': 'IPA Kelas VIII SMP Plus JM',
+      'Model Belajar': 'PjBL - Engineering Design Process (EDP)',
+      'Alat Utama': '2–4 Spuit, Selang, Air, Kardus/Stik, Lem',
+      'Pengujian': '3 Percobaan Variasi Massa Beban & Iterasi'
     },
-    syllabus_url: '#unduh-silabus',
-    assignment_doc_url: '#unduh-tugas',
-    cover_image: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
+    syllabus_url: 'https://youtu.be/LjSuHty6xTg?si=qTXhw-jYnuxX87Iv',
+    assignment_doc_url: '/docs/stem/LKPD_STEM_Hydrolift_Hukum_Pascal_Kelas_8.docx',
+    cover_image: '/images/stem/hydrolift_foto_display_topik.jpg',
     is_portfolio: true,
-    author_santri: 'Ahmad Zaki & Tim Robotika Santri PPJM'
+    author_santri: 'Tim Riset Santriwati Kelas VIII (Pembina: Us. Ria & Us. Anggun)'
   },
   {
-    id: 'p2',
-    slug: 'smart-water-filtration',
-    title: 'Purifier Air Minum Nanofiltrasi Karbon Aktif Kelapa Sawit',
-    category: 'Sains Lingkungan & Kimia Terapan',
-    description: 'Penelitian santri dalam memurnikan sumber air sumur payau kawasan pesisir Sidayu menjadi air layak konsumsi dengan multi-stage filter zeolit, silika, dan karbon aktif bersanad ramah lingkungan.',
+    id: 'p-roket-air',
+    slug: 'roket-air-hukum-iii-newton',
+    title: 'LKPD STEM • Merancang Roket Air & Hukum III Newton (Kelas VII)',
+    category: 'Fisika Gaya & Gerak (IPA Kelas VII)',
+    description: 'Merancang, membuat, dan menguji roket air dari botol PET 1,5 L yang dapat terbang setinggi atau sejauh mungkin dan meluncur stabil berdasarkan pasangan gaya aksi–reaksi Hukum III Newton.',
     specs: {
-      'Kapasitas Aliran': '50 Liter / Jam',
-      'Tingkat Kejernihan': 'TDS < 30 ppm (Standar Depkes)',
-      'Media Filtrasi': 'Karbon Aktif, Pasir Silika Bangka, Zeolit Malang',
-      'Sterilisasi': 'Ultraviolet 11 Watt Chamber'
+      'Pengampu': 'Ustadzah Ria & Ustadzah Anggun',
+      'Jenjang Kelas': 'IPA Kelas VII SMP Plus JM',
+      'Alokasi Waktu': '2 Pertemuan (@ 2 × 40 Menit)',
+      'Alat Utama': 'Botol PET 1,5 L, Karton Sirip & Hidung, Pompa Peluncur',
+      'Pengujian': '3 Percobaan per Variabel & Grafik Millimeter Block'
     },
-    syllabus_url: '#unduh-silabus',
-    assignment_doc_url: '#unduh-tugas',
-    cover_image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
+    syllabus_url: 'https://youtu.be/cY8cBMl_-94?si=EY7KhIj7EZG8XcoP',
+    assignment_doc_url: '/docs/stem/LKPD_STEM_Roket_Air_Hukum_III_Newton_Kelas_7.docx',
+    cover_image: '/images/stem/roket_air_foto_display_topik.webp',
     is_portfolio: true,
-    author_santri: 'Farhan Maulana & Muhammad Iqbal'
-  },
-  {
-    id: 'p3',
-    slug: 'line-follower-robotics',
-    title: 'Modul Silabus & Penugasan Robotika Line Follower Santri',
-    category: 'Robotika & Mekatronika',
-    description: 'Silabus terstruktur kurikulum semester gasal untuk santri jenjang wustho: pengenalan logika pemrograman C++, pembacaan array sensor fotodioda, dan tuning algoritma kendali PID.',
-    specs: {
-      'Platform': 'Arduino Nano / Uno R3',
-      'Sensor': '8-Channel IR Sensor Array',
-      'Driver Motor': 'L298N Dual H-Bridge',
-      'Target Kompetisi': 'Olimpiade Robotika Santri Jatim'
-    },
-    syllabus_url: '#unduh-silabus',
-    assignment_doc_url: '#unduh-tugas',
-    cover_image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80',
-    is_portfolio: false,
-    author_santri: 'Laboratorium STEM Jauharul Maknuun'
-  },
-  {
-    id: 'p4',
-    slug: 'smart-greenhouse-iot',
-    title: 'Smart Greenhouse Pengendali Suhu & Kelembaban Kandang Hidroponik',
-    category: 'Internet of Things (IoT) & Agrikultur',
-    description: 'Silabus modul dan penugasan santri untuk merakit sistem kontrol mikroklimat otomatis pada miniatur rumah kaca menggunakan kipas DC, mist maker, dan mikrokontroler terprogram.',
-    specs: {
-      'Mikrokontroler': 'ESP8266 Wi-Fi Modul',
-      'Sensor Suhu': 'DHT22 Digital Temperature & Humidity',
-      'Aktuator': 'Relay 4-Channel 5V + Exhaust Fan DC 12V',
-      'Indikator Display': 'OLED 0.96 inch I2C'
-    },
-    syllabus_url: '#unduh-silabus',
-    assignment_doc_url: '#unduh-tugas',
-    cover_image: 'https://images.unsplash.com/photo-1530595467537-0b5996c41f2d?auto=format&fit=crop&w=800&q=80',
-    is_portfolio: false,
-    author_santri: 'Ustadz Pembina Lab STEM & Santri Kelas IX'
-  },
-  {
-    id: 'p5',
-    slug: 'solar-tracker-santri',
-    title: 'Solar Tracker Dua Sumbu Pembangkit Listrik Pesantren',
-    category: 'Energi Terbarukan',
-    description: 'Karya inovasi teknologi ramah lingkungan oleh santri aliyah berupa panel surya yang mampu bergerak otomatis mengikuti arah datangnya sinar matahari untuk efisiensi daya.',
-    specs: {
-      'Motor Penggerak': 'Dual Servo SG90 Metal Gear',
-      'Sensor Cahaya': '4x LDR Light Dependent Resistor',
-      'Output Listrik': 'Charging Station Powerbank Santri',
-      'Peningkatan Daya': '32% lebih optimal dibanding panel statis'
-    },
-    syllabus_url: '#unduh-silabus',
-    assignment_doc_url: '#unduh-tugas',
-    cover_image: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=800&q=80',
-    is_portfolio: true,
-    author_santri: 'Muhammad Hilmi & Tim Riset Energi PPJM'
+    author_santri: 'Tim Rekayasa Muda Kelas VII (Pembina: Us. Ria & Us. Anggun)'
   }
 ];
 

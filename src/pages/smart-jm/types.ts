@@ -15,15 +15,39 @@ export interface StemRubricItem {
   scaleDescription: string;
 }
 
+export interface StemEdpStep {
+  step: string;
+  title: string;
+  desc: string;
+}
+
+export interface StemVideoRef {
+  title: string;
+  url: string;
+  durationOrLabel?: string;
+}
+
+export interface StemPhotoDoc {
+  url: string;
+  caption: string;
+}
+
 export interface StemWorksheetItem {
   id: string;
   title: string;
   category: string;
   targetLevel: string;
+  teacherMentor?: string;
+  learningModel?: string;
   objective: string;
   context: string;
+  safetyRules?: string[];
   setupPhoto: string;
   toolsAndMaterials: string[];
+  edpSteps?: StemEdpStep[];
+  lkpdPages?: StemPhotoDoc[];
+  documentationPhotos?: StemPhotoDoc[];
+  videoRefs?: StemVideoRef[];
   rubric: StemRubricItem[];
   downloadDocUrl?: string;
   duration: string;
@@ -35,7 +59,11 @@ export interface StemPortfolioItem {
   category: string;
   studentName: string;
   studentClass: string;
+  teacherMentor?: string;
   photoUrl: string;
+  galleryPhotos?: StemPhotoDoc[];
+  videoRefs?: StemVideoRef[];
+  downloadDocUrl?: string;
   description: string;
   procedure: string[];
   results: string;

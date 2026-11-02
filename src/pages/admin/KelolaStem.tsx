@@ -88,100 +88,57 @@ export interface StudentPortfolioItem {
 
 const INITIAL_WORKSHEETS: WorksheetItem[] = [
   {
-    id: 'ws-1',
-    title: 'Otomasi Irigasi Hidroponik ESP32',
-    category: 'IoT',
-    level: 'SMP Kelas 8',
-    duration: '3 Minggu (6 Pertemuan)',
-    description: 'Panduan rekayasa sistem otomasi penyiram air dan nutrisi tanaman hidroponik berbasis mikrokontroler ESP32 NodeMCU dengan sensor capacitive soil moisture.',
-    learningObjectives: 'Santri mampu merakit sirkuit elektronika daya 5V, membaca nilai analog sensor kelembaban, dan memprogram logika otomasi relay pompa air menggunakan Arduino C++.',
-    toolsAndMaterials: [
-      'ESP32 NodeMCU 38-Pin CP2102',
-      'Sensor Kelembaban Kapasitif V2.0',
-      'Modul Relay 5V 1-Channel dengan Optocoupler',
-      'Pompa Submersible Mini 5V DC',
-      'Selang Silikon 8mm & Kabel Jumper Dupont'
-    ],
-    steps: [
-      'Siapkan papan breadboard dan tancapkan modul ESP32 NodeMCU secara presisi pada alur tengah.',
-      'Hubungkan pin VCC dan GND sensor kapasitif ke pin 3.3V dan GND pada ESP32.',
-      'Hubungkan pin sinyal analog (AOUT) sensor ke pin GPIO34 (ADC1_CH6) ESP32.',
-      'Rangkai modul relay dengan pin kontrol terhubung ke pin GPIO26.',
-      'Unggah firmware sketch kalibrasi batas ambang kering (< 1800) dan basah (> 3000) melalui Arduino IDE.',
-      'Lakukan pengujian respon pompa saat sensor dimasukkan ke media nutrisi rockwool.'
-    ],
-    illustrationImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
-    pdfFileUrl: '#lembar-kerja-esp32.pdf'
-  },
-  {
-    id: 'ws-2',
-    title: 'Nanofiltrasi Karbon Aktif Air Payau',
-    category: 'Filtrasi',
-    level: 'SMP Kelas 9',
-    duration: '2 Minggu (4 Pertemuan)',
-    description: 'Eksperimen pemurnian sumber air sumur payau di pesisir Lasem Sidayu menjadi air bersih menggunakan tabung kolom multi-stage zeolit dan karbon aktif sawit.',
-    learningObjectives: 'Santri memahami prinsip adsorpsi pori mikro karbon aktif, ion exchange zeolit alam, dan pengujian kualitas air berbasis parameter TDS dan pH meter.',
-    toolsAndMaterials: [
-      'Tabung Kolom Akrilik Diameter 70mm x 50cm',
-      'Karbon Aktif Tempurung Kelapa Sawit Mesh 8x30',
-      'Pasir Silika Bangka Mesh 20-40',
-      'Zeolit Alam Teraktivasi',
-      'TDS Meter & Digital pH Meter'
-    ],
-    steps: [
-      'Bilas seluruh media adsorben dengan air demineralisasi hingga air bilasan tidak lagi keruh.',
-      'Susun lapisan secara berurutan: spon filter, pasir silika (10 cm), zeolit (10 cm), dan karbon aktif (20 cm).',
-      'Ukur nilai TDS dan pH sampel air sumur payau mentah sebelum dialirkan ke kolom filtrasi.',
-      'Alirkan air sampel dengan debit gravitasi stabil 20 mL/menit.',
-      'Tampung filtrat dan catat penurunan nilai TDS (target < 50 ppm) serta nilai pH (target 6.8 - 7.5).'
-    ],
-    illustrationImage: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
-    pdfFileUrl: '#lembar-kerja-filtrasi.pdf'
-  },
-  {
-    id: 'ws-3',
-    title: 'Sistem Monitoring Kualitas Udara MQ-135',
+    id: 'ws-hydrolift',
+    title: 'LKPD STEM • HYDROLIFT: Alat Pengangkat Berbasis Tekanan Hukum Pascal',
     category: 'Energi',
     level: 'SMP Kelas 8',
-    duration: '2 Minggu (4 Pertemuan)',
-    description: 'Pendeteksian gas amonia dan konsentrasi CO2 di ruang asrama santri menggunakan sensor gas MQ-135 dan layar OLED 0.96 inch.',
-    learningObjectives: 'Memahami cara kalibrasi sensor gas resistif dan menampilkan grafik indeks kualitas udara secara mandiri.',
+    duration: '2 Pertemuan (EDP)',
+    description: 'Rancang dan buat alat pengangkat sederhana berbasis tekanan hidrolik (Hukum Pascal) yang mampu mengangkat beban menggunakan sistem spuit dan selang air (Pengampu: Us. Ria & Us. Anggun).',
+    learningObjectives: 'Santri mampu menjelaskan prinsip Hukum Pascal, merancang dan membuat prototipe Hydrolift dengan tahapan Engineering Design Process (EDP), serta melakukan minimal 3 kali uji beban dan perbaikan desain.',
     toolsAndMaterials: [
-      'Arduino Nano ATmega328P',
-      'Sensor Gas Udara MQ-135',
-      'Display OLED I2C 128x64 Blue',
-      'Buzzer Alarm 5V'
+      '2–4 Spuit (Syringe Tanpa Jarum)',
+      'Selang Transparan Fleksibel',
+      'Air (Fluida Hidrolik)',
+      'Kardus / Stik Kayu Es Krim',
+      'Selotip / Lem Tembak',
+      'Beban Uji (Kantong Batu Kerikil) & Penggaris (cm)'
     ],
     steps: [
-      'Panaskan heater sensor MQ-135 selama 15 menit untuk stabilisasi tahanan load resistor.',
-      'Sambungkan pin I2C SDA dan SCL layar OLED ke pin A4 dan A5 Arduino Nano.',
-      'Kalibrasi nilai Ro di udara terbuka bebas kontaminasi.',
-      'Uji respon buzzer saat sensor mendeteksi asap atau gas terkonsentrasi.'
+      'Siapkan spuit tanpa jarum dan selang transparan.',
+      'Hubungkan kedua spuit dengan selang secara rapat.',
+      'Isi sistem dengan air dan kurangi udara di dalam selang.',
+      'Pasang satu spuit sebagai penggerak dan satu sebagai pengangkat.',
+      'Buat platform sederhana untuk meletakkan beban.',
+      'Pastikan sambungan kuat dan alat dapat bergerak, lalu lakukan minimal 3 percobaan uji beban.'
     ],
-    illustrationImage: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80'
+    illustrationImage: '/images/stem/hydrolift_foto_display_topik.jpg',
+    pdfFileUrl: '/docs/stem/LKPD_STEM_Hydrolift_Hukum_Pascal_Kelas_8.docx'
   },
   {
-    id: 'ws-4',
-    title: 'Line Follower Robotika Kendali PID',
+    id: 'ws-roket-air',
+    title: 'LKPD STEM • Merancang Roket Air & Hukum III Newton',
     category: 'Robotik',
     level: 'SMP Kelas 7',
-    duration: '3 Minggu (6 Pertemuan)',
-    description: 'Mobil otonom mini pembaca garis lintasan sirkuit menggunakan array photodiode inframerah dan kendali logika proporsional-integral-derivatif.',
-    learningObjectives: 'Menerapkan logika biner pembacaan sensor dan rumus kalkulasi konstanta Kp-Ki-Kd pada pergerakan dual motor DC.',
+    duration: '2 Pertemuan (@ 2 × 40 Menit)',
+    description: 'Merancang roket air dari botol PET 1,5 L bekas yang dapat terbang setinggi/sejauh mungkin dan meluncur dengan stabil berdasarkan pasangan gaya aksi–reaksi Hukum III Newton (Pengampu: Us. Ria & Us. Anggun).',
+    learningObjectives: 'Menjelaskan pasangan gaya aksi–reaksi pada roket air berdasarkan Hukum III Newton, merancang serta menguji roket air mengikuti langkah Engineering Design Process (EDP), dan memperbaiki rancangan berbasis data.',
     toolsAndMaterials: [
-      'Chassis 2-Wheel Robot Akrilik',
-      'Driver Motor Dual H-Bridge L298N',
-      'Sensor Array 8-Channel IR TCRT5000',
-      'Arduino Uno R3',
-      'Baterai Li-Ion 2S 7.4V'
+      'Botol PET 1,5 L Utuh',
+      'Karton Tebal (Sirip & Kerucut Hidung)',
+      'Selotip, Gunting & Penggaris',
+      'Air Bersih (Variasi Volume Uji)',
+      'Pompa Udara dengan Adaptor & Sumbat Berlubang',
+      'Meteran, Stopwatch HP & Kertas Millimeter Block'
     ],
     steps: [
-      'Rakit dudukan sensor array pada bagian paling depan bawah sirkuit chassis.',
-      'Hubungkan output motor ke terminal driver L298N dan atur jumper ENA/ENB untuk modulasi PWM.',
-      'Tulis algoritma pembobotan error garis dari -4 sampai +4.',
-      'Tuning nilai Kp secara bertahap hingga robot melaju mulus di tikungan 90 derajat.'
+      'Potong karton menjadi sirip sesuai rancangan sketsa kelompok.',
+      'Tempel sirip secara simetris di dekat leher botol dengan selotip.',
+      'Buat kerucut hidung dari karton dan rekatkan pada dasar botol.',
+      'Periksa keseimbangan: roket harus bisa berdiri tegak pada siripnya.',
+      'Luncurkan roket di lapangan terbuka sesuai aturan K3 sebanyak 3 kali untuk tiap kondisi variabel dan hitung rata-ratanya.'
     ],
-    illustrationImage: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80'
+    illustrationImage: '/images/stem/roket_air_foto_display_topik.webp',
+    pdfFileUrl: '/docs/stem/LKPD_STEM_Roket_Air_Hukum_III_Newton_Kelas_7.docx'
   }
 ];
 
@@ -238,58 +195,50 @@ const INITIAL_RUBRICS: RubricParameter[] = [
 
 const INITIAL_PORTFOLIO: StudentPortfolioItem[] = [
   {
-    id: 'port-1',
-    studentName: 'Ahmad Zaki Al-Maknuuni & Tim',
-    studentClass: 'SMP Plus Kelas IX-A',
-    projectTitle: 'Sistem Irigasi Tetes Cerdas Kebun Hidroponik Selada ESP32',
-    category: 'IoT',
-    resultDescription: 'Mampu menghemat penggunaan air nutrisi hingga 42% dengan respon otomatis pompa menyala saat kelembaban rockwool di bawah 40%.',
+    id: 'port-hydrolift-1',
+    studentName: 'Tim Riset Santriwati Kelas VIII-A & VIII-B',
+    studentClass: 'SMP Plus Kelas VIII (Pembina: Us. Ria & Us. Anggun)',
+    projectTitle: 'Prototipe Hydrolift Rangka Stik Kayu Pengangkat Beban (Hukum Pascal)',
+    category: 'Energi',
+    resultDescription: 'Prototipe Hydrolift berhasil mengangkat beban batu uji secara stabil menggunakan tekanan air pada 2 spuit tanpa jarum sesuai Hukum Pascal.',
     photos: [
-      'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80'
+      '/images/stem/hydrolift_dokumentasi_pelaksanaan1.jpg',
+      '/images/stem/hydrolift_dokumentasi_pelaksanaan.jpg',
+      '/images/stem/hydrolift_dokumentasi_pelaksanaan3.jpg',
+      '/images/stem/hydrolift_foto_display_topik.jpg'
     ],
-    youtubeUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    youtubeUrl: 'https://youtu.be/LjSuHty6xTg?si=qTXhw-jYnuxX87Iv',
+    status: 'Lolos Uji',
+    finalScore: 95
+  },
+  {
+    id: 'port-hydrolift-2',
+    studentName: 'Kelompok Eksperimen Sains Putri Kelas VIII',
+    studentClass: 'SMP Plus Kelas VIII (Pembina: Us. Ria & Us. Anggun)',
+    projectTitle: 'Eksperimen Uji Beban Menara Hydrolift Berbasis Syringe Hidrolik',
+    category: 'Energi',
+    resultDescription: 'Mampu menahan dan mengangkat beban ganda dua kantong batu kerikil setelah penguatan penyangga vertikal pada uji kedua (Tahap Improve).',
+    photos: [
+      '/images/stem/hydrolift_dokumentasi_pelaksanaan2.jpg',
+      '/images/stem/hydrolift_dokumentasi_pelaksanaan3.jpg'
+    ],
+    youtubeUrl: 'https://youtu.be/31pxVTL7HwU?si=VCZA9-p34H2eYvMu',
+    status: 'Lolos Uji',
+    finalScore: 93
+  },
+  {
+    id: 'port-roket-1',
+    studentName: 'Tim Rekayasa Muda Kelas VII SMP Plus JM',
+    studentClass: 'SMP Plus Kelas VII (Pembina: Us. Ria & Us. Anggun)',
+    projectTitle: 'Rancang Bangun Roket Air Botol PET 1,5 L & Pengujian Hukum III Newton',
+    category: 'Robotik',
+    resultDescription: 'Pengisian volume air 1/3 botol dengan sirip karton simetris menghasilkan jarak meluncur rata-rata terjauh pada 3 kali percobaan lapangan.',
+    photos: [
+      '/images/stem/roket_air_foto_display_topik.webp'
+    ],
+    youtubeUrl: 'https://youtu.be/cY8cBMl_-94?si=EY7KhIj7EZG8XcoP',
     status: 'Lolos Uji',
     finalScore: 94
-  },
-  {
-    id: 'port-2',
-    studentName: 'Muhammad Faiz & Farhan Maulana',
-    studentClass: 'SMP Plus Kelas IX-B',
-    projectTitle: 'Reaktor Nanofiltrasi Karbon Aktif Kelapa Sawit Air Payau',
-    category: 'Filtrasi',
-    resultDescription: 'Menurunkan kadar TDS air sumur pesisir dari 480 ppm menjadi 34 ppm dengan pH stabil di angka 7.2 (layak pakai santri).',
-    photos: [
-      'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80'
-    ],
-    status: 'Lolos Uji',
-    finalScore: 92
-  },
-  {
-    id: 'port-3',
-    studentName: 'Hilman Abdullah & Fajar Shodiq',
-    studentClass: 'SMP Plus Kelas VIII-A',
-    projectTitle: 'Robot Pembersih Lorong Asrama Terkendali Bluetooth & Line Follower',
-    category: 'Robotik',
-    resultDescription: 'Prototipe mobil roda 4 dengan sapu mikrofiber putar, mampu menavigasi garis koridor asrama secara mandiri.',
-    photos: [
-      'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=800&q=80'
-    ],
-    status: 'Proses',
-    finalScore: 78
-  },
-  {
-    id: 'port-4',
-    studentName: 'Rayhan Arya Pratama',
-    studentClass: 'SMP Plus Kelas VIII-B',
-    projectTitle: 'Solar Tracker Sederhana Sensor LDR Dual-Axis',
-    category: 'Energi',
-    resultDescription: 'Panel surya 10W mini yang dapat bergerak mengikuti arah datang cahaya matahari untuk efisiensi pengisian baterai lab.',
-    photos: [
-      'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=800&q=80'
-    ],
-    status: 'Revisi',
-    finalScore: 68
   }
 ];
 
