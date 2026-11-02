@@ -234,6 +234,7 @@ export const KaryaSiswa: React.FC = () => {
                 {CATEGORY_TABS.map((tab) => {
                   const Icon = tab.icon;
                   const isActive = selectedCategory === tab.id;
+                  const count = getCount(tab.id);
 
                   return (
                     <li
@@ -271,14 +272,11 @@ export const KaryaSiswa: React.FC = () => {
                             >
                               <defs>
                                 <radialGradient id="karyaNotchDotGrad" cx="35%" cy="35%" r="65%">
-                                  <stop offset="0%" stopColor="#ffffff" />
-                                  <stop offset="60%" stopColor="#ffffff" />
-                                  <stop offset="85%" stopColor="#f8fafc" />
-                                  <stop offset="100%" stopColor="#e2e8f0" />
+                                  <stop offset="0%" stopColor="#fffbeb" />
+                                  <stop offset="35%" stopColor="#fde047" />
+                                  <stop offset="75%" stopColor="#d97706" />
+                                  <stop offset="100%" stopColor="#92400e" />
                                 </radialGradient>
-                                <filter id="karyaWhiteDotShadow" x="-30%" y="-30%" width="160%" height="160%">
-                                  <feDropShadow dx="0" dy="1.2" stdDeviation="1" floodColor="#000000" floodOpacity="0.4" />
-                                </filter>
                               </defs>
                               {/* Notch Surface matching hero background tone */}
                               <path
@@ -287,24 +285,22 @@ export const KaryaSiswa: React.FC = () => {
                                 style={{ fill: '#042818' }}
                                 stroke="none"
                               />
-                              {/* High-Contrast Luminous White Floating Sphere */}
+                              {/* Radiant Jewel Gold Floating Indicator */}
                               <circle
                                 cx="37"
                                 cy="6"
                                 r="4.8"
                                 fill="url(#karyaNotchDotGrad)"
-                                filter="url(#karyaWhiteDotShadow)"
                                 className="curved-notch-dot"
-                                stroke="#ffffff"
-                                strokeWidth="0.3"
+                                stroke="none"
                               />
-                              {/* Specular Highlight Reflection */}
+                              {/* Specular Gem Reflection */}
                               <circle
                                 cx="35.5"
                                 cy="4.5"
-                                r="1.5"
+                                r="1.4"
                                 fill="#ffffff"
-                                opacity="0.95"
+                                opacity="0.85"
                                 stroke="none"
                               />
                             </svg>
@@ -319,6 +315,15 @@ export const KaryaSiswa: React.FC = () => {
                           />
                           <span className="sm:hidden font-extrabold">{tab.shortLabel || tab.label}</span>
                           <span className="hidden sm:inline font-bold">{tab.label}</span>
+                          <span
+                            className={`curved-tab-badge ml-1 px-1.5 py-0.2 rounded-full text-[9px] font-black transition-colors ${
+                              isActive
+                                ? 'bg-[#fbbf24] text-[#064e3b] shadow-xs'
+                                : 'bg-white/20 text-emerald-100'
+                            }`}
+                          >
+                            {count}
+                          </span>
                         </span>
                       </button>
                     </li>
