@@ -394,7 +394,7 @@ export const StemAreaSection: React.FC = () => {
 
   useEffect(() => {
     const fetchStem = async () => {
-      return; // Supabase disabled for static mock data
+      if (!isSupabaseConfigured()) return;
       try {
         const { data, error } = await supabase
           .from('stem_projects')
