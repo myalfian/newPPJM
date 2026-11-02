@@ -110,8 +110,8 @@ export const JmCenter: React.FC<JmCenterProps> = ({ defaultTab = 'profil', defau
         </div>
       </section>
 
-      {/* 2. CATEGORY CHIP TABS - 10% OVERLAP WITH HERO CONTAINER ABOVE */}
-      <section className="max-w-6xl mx-auto px-2.5 sm:px-4 -mt-[4.5px] sm:-mt-[4.6px] relative z-20 select-none">
+      {/* 2. CATEGORY CHIP TABS - 25% OVERLAP WITH HERO CONTAINER ABOVE */}
+      <section className="max-w-6xl mx-auto px-2.5 sm:px-4 -mt-[11px] sm:-mt-[11.5px] relative z-20 select-none">
         <nav aria-label="Kategori JM Center" className="curved-navbar-wrapper w-full">
           <div className="curved-navbar-bar w-full">
             <div
