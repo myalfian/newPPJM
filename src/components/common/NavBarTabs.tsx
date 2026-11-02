@@ -174,12 +174,11 @@ const DEFAULT_CATEGORY_TABS: Record<
     parentHref: '/karya-siswa',
     parentIcon: Sparkles,
     tabs: [
-      { id: 'semua', label: 'Semua Karya', shortLabel: 'Semua', href: '/karya-siswa', icon: Layers },
-      { id: 'buku', label: 'Buku Santri', shortLabel: 'Buku', href: '/karya-siswa?tab=buku', icon: BookOpen },
+      { id: 'buku', label: 'Flyer Buku Santri', shortLabel: 'Buku', href: '/karya-siswa?tab=buku', icon: BookOpen },
       { id: 'batik', label: 'Katalog Batik', shortLabel: 'Batik', href: '/karya-siswa?tab=batik', icon: Palette },
-      { id: 'video-lagu-batik', label: 'Lagu Batik', shortLabel: 'Lagu Batik', href: '/karya-siswa?tab=video-lagu-batik', icon: Video },
+      { id: 'video-lagu-batik', label: 'Video Lagu Batik', shortLabel: 'Lagu Batik', href: '/karya-siswa?tab=video-lagu-batik', icon: Video },
       { id: 'video-lagu-ustad', label: 'Lagu Ustadz Shobirin', shortLabel: 'Lagu Ustadz', href: '/karya-siswa?tab=video-lagu-ustad', icon: HeartHandshake },
-      { id: 'showroom', label: 'Show Room', shortLabel: 'Show Room', href: '/karya-siswa?tab=showroom', icon: Sparkles },
+      { id: 'showroom', label: 'Show Room Santri', shortLabel: 'Show Room', href: '/karya-siswa?tab=showroom', icon: Sparkles },
     ],
   },
   'osis': {
@@ -322,7 +321,7 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
         } else if (tabParam === 'showroom') {
           activeTab = subMenuTabs.find((t) => t.id === 'showroom');
         } else {
-          activeTab = subMenuTabs.find((t) => t.id === 'semua');
+          activeTab = subMenuTabs.find((t) => t.id === 'buku') || subMenuTabs[0];
         }
       }
 
@@ -519,7 +518,7 @@ export const NavBarTabs: React.FC<NavBarTabsProps> = ({
                     </span>
 
                     {/* Optional Badge */}
-                    {tab.badge && (
+                    {tab.badge !== undefined && tab.badge !== '' && (
                       <span className="curved-tab-badge">
                         {tab.badge}
                       </span>
