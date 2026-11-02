@@ -229,18 +229,18 @@ export const MadinFlyerSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-1.5 sm:space-y-2">
       {/* ========================================================= */}
       {/* HEADER & FILTER SELECTOR */}
       {/* ========================================================= */}
-      <section className="space-y-2.5 sm:space-y-3">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
+      <section className="space-y-1.5 sm:space-y-2">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-1.5 sm:gap-2 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-1.5 sm:pb-2">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-1">
+            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 text-[10.5px] font-bold uppercase tracking-wider mb-0.5">
               <BookOpen className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
               <span>Khazanah Turats &amp; Ubudiyah Santri</span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white leading-tight">
               Galeri Poster Kitab &amp; Panduan Ubudiyah
             </h2>
           </div>
@@ -250,7 +250,7 @@ export const MadinFlyerSection: React.FC = () => {
         </div>
 
         {/* Filter Bar: Category & Level */}
-        <div className="flex flex-wrap items-center justify-between gap-2.5 bg-zinc-50 dark:bg-zinc-900/60 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60">
+        <div className="flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 bg-zinc-50 dark:bg-zinc-900/60 p-1 sm:p-1.5 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60">
           {/* Main Category Filter (Liquid Mercury) */}
           <div className="shrink-0 max-w-full overflow-x-auto no-scrollbar">
             <LiquidMercuryControl<'all' | FlyerCategory>

@@ -887,15 +887,15 @@ export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initia
   );
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-1.5 sm:space-y-2">
       {/* Top Bar: Title & Filter Pills */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-1.5 sm:gap-2">
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-1">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[10.5px] font-bold uppercase tracking-wider mb-0.5">
             <Layers className="w-3.5 h-3.5" />
             <span>Tritunggal Lembaga Terpadu</span>
           </div>
-          <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight">
+          <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight leading-tight">
             Tiga Unit Entitas Pendidikan Terintegrasi
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">

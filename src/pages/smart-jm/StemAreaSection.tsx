@@ -394,17 +394,17 @@ export const StemAreaSection: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="space-y-1.5 sm:space-y-2">
       {/* ========================================================= */}
       {/* SUB-SECTION TOGGLER: WORKSHEET vs PORTOFOLIO */}
       {/* ========================================================= */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-2 sm:pb-2.5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-1.5 sm:pb-2">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-800 dark:text-blue-300 text-[11px] font-bold uppercase tracking-wider mb-1">
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200/80 dark:border-blue-800/80 text-blue-800 dark:text-blue-300 text-[10.5px] font-bold uppercase tracking-wider mb-0.5">
             <Cpu className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
             <span>Laboratorium Sains &amp; Robotika Santri</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white leading-tight">
             STEM &amp; Riset Terapan PPJM
           </h2>
         </div>
@@ -428,7 +428,7 @@ export const StemAreaSection: React.FC = () => {
       {/* KONTEN 1: WORKSHEET PROYEK STEM & RUBRIK PENILAIAN */}
       {/* ========================================================= */}
       {activeSubTab === 'worksheet' && (
-        <div className="space-y-3 sm:space-y-4 animate-in fade-in duration-300">
+        <div className="space-y-2 sm:space-y-2.5 animate-in fade-in duration-300">
           {/* Selector Proyek Worksheet */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
             {worksheets.map((ws) => {

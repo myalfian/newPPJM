@@ -379,17 +379,17 @@ export const MandarinClassSection: React.FC = () => {
   };
 
   return (
-    <div className="space-y-10 sm:space-y-14">
+    <div className="space-y-2 sm:space-y-2.5">
       {/* ========================================================= */}
       {/* SUB-SECTION TOGGLER: MATERI BELAJAR vs QUIZ INTERAKTIF */}
       {/* ========================================================= */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-1.5 sm:pb-2">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 dark:bg-red-950/60 border border-red-200/80 dark:border-red-800/80 text-red-800 dark:text-red-300 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-50 dark:bg-red-950/60 border border-red-200/80 dark:border-red-800/80 text-red-800 dark:text-red-300 text-[10.5px] font-bold uppercase tracking-wider mb-0.5">
             <Globe className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
             <span>Kelas Bahasa Mandarin Santri</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white leading-tight">
             Mandarin Class PPJM
           </h2>
         </div>
@@ -413,7 +413,7 @@ export const MandarinClassSection: React.FC = () => {
       {/* KONTEN 1: MATERI BELAJAR BERBASIS TOPIK */}
       {/* ========================================================= */}
       {activeSubTab === 'materi' && (
-        <div className="space-y-8 animate-in fade-in duration-300">
+        <div className="space-y-2.5 sm:space-y-3 animate-in fade-in duration-300">
           {/* Topik Pills Horizontal Selector (Liquid Mercury) */}
           <div className="shrink-0 max-w-full overflow-x-auto no-scrollbar">
             <LiquidMercuryControl
