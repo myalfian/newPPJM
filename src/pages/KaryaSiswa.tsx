@@ -56,7 +56,6 @@ export const KaryaSiswa: React.FC = () => {
   const initialCategory: CategoryFilter = urlTab && validTabs.includes(urlTab) ? urlTab : 'buku';
 
   const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>(initialCategory);
-  const [searchQuery, setSearchQuery] = useState('');
   const [activeModalItem, setActiveModalItem] = useState<KaryaSiswaItem | null>(null);
 
   const tabListRef = useRef<HTMLDivElement | null>(null);
@@ -149,21 +148,10 @@ export const KaryaSiswa: React.FC = () => {
     };
   }, []);
 
-  // Filter items
+  // Filter items by selected category
   const filteredItems = useMemo(() => {
-    return items.filter((item) => {
-      const matchCategory = item.category === selectedCategory;
-      const q = searchQuery.toLowerCase();
-      const matchSearch =
-        !searchQuery ||
-        item.title.toLowerCase().includes(q) ||
-        item.author.toLowerCase().includes(q) ||
-        (item.description && item.description.toLowerCase().includes(q)) ||
-        (item.tags && item.tags.some((t) => t.toLowerCase().includes(q)));
-
-      return matchCategory && matchSearch;
-    });
-  }, [items, selectedCategory, searchQuery]);
+    return items.filter((item) => item.category === selectedCategory);
+  }, [items, selectedCategory]);
 
   // Counts per tab
   const getCount = (cat: CategoryFilter) => {
@@ -177,79 +165,56 @@ export const KaryaSiswa: React.FC = () => {
   };
 
   return (
-    <div className="bg-slate-50 min-h-screen pb-8">
-      {/* 1. HERO HEADER SECTION */}
-      <section className="bg-gradient-to-b from-[#0E7A4C] via-[#095736] to-[#042818] text-white py-6 sm:py-8 px-3 sm:px-5 relative overflow-hidden">
+    <div className="bg-slate-50 min-h-screen pb-4">
+      {/* 1. HERO HEADER SECTION - COMPACT VERTICAL SPACING (SEARCH REMOVED) */}
+      <section className="bg-gradient-to-b from-[#0E7A4C] via-[#095736] to-[#042818] text-white py-3.5 sm:py-5 px-3 sm:px-4 relative overflow-hidden">
         {/* Ambient Lights */}
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#C8A951]/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 -right-24 w-80 h-80 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-6xl mx-auto relative z-10 space-y-2.5 text-center">
-          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#C8A951] text-[11px] font-bold uppercase tracking-widest shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-[#C8A951]" />
+        <div className="max-w-6xl mx-auto relative z-10 space-y-1.5 text-center">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#C8A951] text-[10.5px] font-bold uppercase tracking-widest shadow-2xs">
+            <Sparkles className="w-3 h-3 text-[#C8A951]" />
             <span>Kreativitas, Vokasi &amp; Mahabbah Santri</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white drop-shadow-2xs">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white drop-shadow-2xs">
             Galeri &amp; Etalase Karya Siswa
           </h1>
 
           <p className="max-w-2xl mx-auto text-xs sm:text-sm text-emerald-100/90 leading-relaxed font-normal">
             Etalase dedikasi santri Pondok Pesantren Jauharul Maknuun: mulai dari penerbitan buku literatur, karya kriya batik tulis Lasem, video lagu orisinal, persembahan khidmat untuk asatidz, hingga pameran riset inovasi santri.
           </p>
-
-          {/* Search Bar Input */}
-          <div className="pt-2 max-w-lg mx-auto">
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Cari karya buku, batik, lagu, atau nama santri..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white text-slate-800 placeholder-slate-400 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#C8A951] text-xs sm:text-sm"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* 3. CATEGORY CHIP TABS - NAVBAR TABS LUXURY STYLE & ANIMATION */}
-      <section className="max-w-6xl mx-auto px-2.5 sm:px-4 -mt-4 relative z-20 select-none">
+      {/* 3. CATEGORY CHIP TABS - HORIZONTALLY DISTRIBUTED WITH WHITE NOTCH BACKGROUND */}
+      <section className="max-w-6xl mx-auto px-2.5 sm:px-4 -mt-3.5 sm:-mt-4 relative z-20 select-none">
         <nav aria-label="Kategori Karya Siswa" className="curved-navbar-wrapper w-full">
           <div className="curved-navbar-bar w-full">
             <div
               ref={tabListRef}
-              className="curved-scroll-track w-full flex items-center justify-start overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full px-1.5 sm:px-2"
+              className="curved-scroll-track w-full flex items-center justify-start overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full px-1 sm:px-2"
             >
-              <ul className="curved-tab-list flex items-center justify-start w-full gap-1 sm:gap-2">
+              <ul className="curved-tab-list flex items-center justify-between w-full gap-1 sm:gap-1.5">
                 {CATEGORY_TABS.map((tab) => {
                   const Icon = tab.icon;
                   const isActive = selectedCategory === tab.id;
-                  const count = getCount(tab.id);
 
                   return (
                     <li
                       key={tab.id}
-                      className="curved-tab-col flex-none h-full flex items-center justify-center shrink-0 snap-start"
+                      className="curved-tab-col flex-1 h-full flex items-center justify-center min-w-[125px] sm:min-w-0 snap-start"
                     >
                       <button
                         ref={isActive ? activeTabRef : null}
                         type="button"
                         onClick={() => handleSelectCategory(tab.id)}
-                        className={`curved-tab-link bg-transparent border-0 relative flex items-center justify-center cursor-pointer ${
+                        className={`curved-tab-link w-full bg-transparent border-0 relative flex items-center justify-center cursor-pointer px-1.5 sm:px-2 ${
                           isActive ? 'active' : ''
                         }`}
                       >
-                        {/* Animated Sliding Notch Pointer & Radiant Floating Gold Jewel */}
+                        {/* Animated Sliding Notch Pointer with Pristine White Cutout Notch & Radiant Gold Jewel */}
                         {isActive && (
                           <motion.div
                             layoutId="karyaSiswaCurvedPointer"
@@ -277,20 +242,24 @@ export const KaryaSiswa: React.FC = () => {
                                   <stop offset="75%" stopColor="#d97706" />
                                   <stop offset="100%" stopColor="#92400e" />
                                 </radialGradient>
+                                <filter id="karyaGoldJewelShadow" x="-20%" y="-20%" width="140%" height="140%">
+                                  <feDropShadow dx="0" dy="1" stdDeviation="0.8" floodColor="#78350f" floodOpacity="0.4" />
+                                </filter>
                               </defs>
-                              {/* Notch Surface matching hero background tone */}
+                              {/* 2. Warna dibelakang bola emas diubah menjadi putih murni */}
                               <path
                                 d="M 0 0 C 16 0, 22 18, 37 18 C 52 18, 58 0, 74 0 Z"
                                 className="curved-notch-surface"
-                                style={{ fill: '#042818' }}
+                                style={{ fill: '#ffffff' }}
                                 stroke="none"
                               />
-                              {/* Radiant Jewel Gold Floating Indicator */}
+                              {/* Radiant Jewel Gold Floating Indicator over White Background */}
                               <circle
                                 cx="37"
                                 cy="6"
                                 r="4.8"
                                 fill="url(#karyaNotchDotGrad)"
+                                filter="url(#karyaGoldJewelShadow)"
                                 className="curved-notch-dot"
                                 stroke="none"
                               />
@@ -307,7 +276,8 @@ export const KaryaSiswa: React.FC = () => {
                           </motion.div>
                         )}
 
-                        <span className="curved-tab-text !flex-row items-center gap-1.5 whitespace-nowrap font-bold tracking-tight">
+                        {/* 1. Nama tabmenu tanpa badge angka & 3. Distribusi horizontal terpusat */}
+                        <span className="curved-tab-text !flex-row items-center justify-center gap-1.5 whitespace-nowrap font-bold tracking-tight text-center">
                           <Icon
                             className={`w-3.5 h-3.5 shrink-0 transition-colors ${
                               isActive ? 'text-[#facc15]' : 'text-emerald-200/80'
@@ -315,15 +285,6 @@ export const KaryaSiswa: React.FC = () => {
                           />
                           <span className="sm:hidden font-extrabold">{tab.shortLabel || tab.label}</span>
                           <span className="hidden sm:inline font-bold">{tab.label}</span>
-                          <span
-                            className={`curved-tab-badge ml-1 px-1.5 py-0.2 rounded-full text-[9px] font-black transition-colors ${
-                              isActive
-                                ? 'bg-[#fbbf24] text-[#064e3b] shadow-xs'
-                                : 'bg-white/20 text-emerald-100'
-                            }`}
-                          >
-                            {count}
-                          </span>
                         </span>
                       </button>
                     </li>
@@ -336,15 +297,15 @@ export const KaryaSiswa: React.FC = () => {
       </section>
 
       {/* 4. MAIN CONTENT CARDS GRID */}
-      <main className="max-w-6xl mx-auto px-2.5 sm:px-4 pt-4 sm:pt-6">
+      <main className="max-w-6xl mx-auto px-2.5 sm:px-4 pt-2.5 sm:pt-3">
         {filteredItems.length === 0 ? (
           <div className="p-10 text-center bg-white rounded-xl border border-slate-200 space-y-2">
             <Layers className="w-10 h-10 text-slate-300 mx-auto" />
-            <h3 className="text-sm font-bold text-slate-700">Tidak ada karya yang sesuai dengan pencarian</h3>
+            <h3 className="text-sm font-bold text-slate-700">Tidak ada karya dalam kategori ini</h3>
             <p className="text-xs text-slate-400">Coba gunakan kata kunci lain atau pilih tab kategori yang berbeda.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5">
             {filteredItems.map((item) => {
               const isVideo = item.category === 'video-lagu-batik' || item.category === 'video-lagu-ustad';
 
@@ -391,7 +352,7 @@ export const KaryaSiswa: React.FC = () => {
                     </div>
 
                     {/* Card Body */}
-                    <div className="p-3 sm:p-3.5 space-y-2">
+                    <div className="p-2.5 sm:p-3 space-y-1.5">
                       <div>
                         <span className="text-[10px] font-bold text-emerald-800 tracking-wider uppercase block">
                           {item.authorRole}
@@ -421,7 +382,7 @@ export const KaryaSiswa: React.FC = () => {
                   </div>
 
                   {/* Card Footer Actions */}
-                  <div className="px-3.5 py-2.5 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between">
+                  <div className="px-3 py-1.5 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between">
                     <button
                       onClick={() => handleShare(item)}
                       className="p-1.5 text-slate-400 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors cursor-pointer"
