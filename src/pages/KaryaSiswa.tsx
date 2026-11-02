@@ -189,7 +189,7 @@ export const KaryaSiswa: React.FC = () => {
       </section>
 
       {/* 3. CATEGORY CHIP TABS - HORIZONTALLY DISTRIBUTED WITH WHITE NOTCH BACKGROUND */}
-      <section className="max-w-6xl mx-auto px-2.5 sm:px-4 -mt-3.5 sm:-mt-4 relative z-20 select-none">
+      <section className="max-w-6xl mx-auto px-2.5 sm:px-4 mt-2.5 sm:mt-3 relative z-20 select-none">
         <nav aria-label="Kategori Karya Siswa" className="curved-navbar-wrapper w-full">
           <div className="curved-navbar-bar w-full">
             <div
