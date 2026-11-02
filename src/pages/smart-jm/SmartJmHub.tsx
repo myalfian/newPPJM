@@ -86,7 +86,7 @@ export const SmartJmHub: React.FC<SmartJmHubProps> = ({ defaultTab = 'stem' }) =
   };
 
   return (
-    <div className="bg-slate-50 min-h-screen pb-4">
+    <div className="bg-slate-50 min-h-screen pb-2.5">
       {/* 1. HERO HEADER SECTION */}
       <section className="bg-gradient-to-b from-[#0E7A4C] via-[#095736] to-[#042818] text-white py-3.5 sm:py-5 px-3 sm:px-4 relative overflow-hidden">
         {/* Ambient Lights */}
@@ -213,7 +213,7 @@ export const SmartJmHub: React.FC<SmartJmHubProps> = ({ defaultTab = 'stem' }) =
       </section>
 
       {/* 3. TAB CONTENT SECTIONS */}
-      <main className="max-w-6xl mx-auto px-2.5 sm:px-4 pt-2.5 sm:pt-3 min-h-[500px]">
+      <main className="max-w-6xl mx-auto px-2 sm:px-3 pt-1.5 sm:pt-2 min-h-[500px]">
         <AnimatePresence mode="wait">
           {activeTab === 'stem' && (
             <motion.div

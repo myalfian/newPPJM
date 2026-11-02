@@ -205,28 +205,28 @@ export const ReadQuran: React.FC = () => {
   const nextSurah = currentIndex < QURAN_SURAHS.length - 1 ? QURAN_SURAHS[currentIndex + 1] : null;
 
   return (
-    <div className="space-y-6 sm:space-y-8 select-none">
+    <div className="space-y-2 sm:space-y-2.5 select-none">
       {/* ========================================================= */}
       {/* 1. TOP SURAH BAR & QUICK SELECTOR */}
       {/* ========================================================= */}
-      <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md p-4 sm:p-5 rounded-3xl border border-zinc-200/80 dark:border-zinc-800 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md p-2.5 sm:p-3 rounded-2xl border border-zinc-200/80 dark:border-zinc-800 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-2 sm:gap-2.5">
         {/* Surah Name & Trigger Button */}
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-800 to-emerald-950 text-[#d4af37] font-black text-sm flex flex-col items-center justify-center shrink-0 shadow-md shadow-emerald-950/20">
-            <span className="text-[8.5px] uppercase tracking-wider text-emerald-200">NO</span>
-            <span className="text-base leading-none">{selectedSurah.number}</span>
+        <div className="flex items-center gap-2.5">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-emerald-800 to-emerald-950 text-[#d4af37] font-black text-xs sm:text-sm flex flex-col items-center justify-center shrink-0 shadow-md shadow-emerald-950/20">
+            <span className="text-[7.5px] uppercase tracking-wider text-emerald-200">NO</span>
+            <span className="text-sm sm:text-base leading-none">{selectedSurah.number}</span>
           </div>
 
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight">
+            <div className="flex items-center gap-1.5">
+              <h2 className="text-base sm:text-lg font-black text-zinc-900 dark:text-white tracking-tight leading-tight">
                 QS. {selectedSurah.nameLatin}
               </h2>
               <span className="text-xs text-zinc-400 font-semibold">
                 ({selectedSurah.nameArabic})
               </span>
             </div>
-            <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 font-medium">
+            <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 mt-0.5 font-medium">
               {selectedSurah.nameIndo} • {selectedSurah.numberOfAyahs} Ayat • Juz {selectedSurah.juzStart} •{' '}
               <span className="font-semibold text-emerald-700 dark:text-emerald-400">
                 {selectedSurah.revelationType}
@@ -320,14 +320,14 @@ export const ReadQuran: React.FC = () => {
       {/* 2. BISMILLAH BANNER (Except At-Taubah 9 & Al-Fatihah 1) */}
       {/* ========================================================= */}
       {selectedSurah.number !== 9 && selectedSurah.number !== 1 && (
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-emerald-50 via-white to-emerald-50 dark:from-zinc-900 dark:via-zinc-850 dark:to-zinc-900 border border-emerald-200/60 dark:border-zinc-800 text-center shadow-xs">
+        <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-emerald-50 via-white to-emerald-50 dark:from-zinc-900 dark:via-zinc-850 dark:to-zinc-900 border border-emerald-200/60 dark:border-zinc-800 text-center shadow-xs">
           <p
-            className="font-quran text-2xl sm:text-3xl text-emerald-950 dark:text-emerald-100 leading-relaxed font-normal"
+            className="font-quran text-xl sm:text-2xl text-emerald-950 dark:text-emerald-100 leading-normal font-normal"
             dir="rtl"
           >
             بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
           </p>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2 font-medium">
+          <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 mt-1 font-medium">
             Dengan nama Allah Yang Maha Pengasih lagi Maha Penyayang.
           </p>
         </div>
@@ -337,14 +337,14 @@ export const ReadQuran: React.FC = () => {
       {/* 3. AYAH READING STREAM */}
       {/* ========================================================= */}
       {loading ? (
-        <div className="py-20 text-center space-y-3">
-          <div className="w-10 h-10 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs sm:text-sm text-zinc-500 font-bold">
+        <div className="py-12 text-center space-y-2">
+          <div className="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xs text-zinc-500 font-bold">
             Memuat ayat-ayat Surat {selectedSurah.nameLatin}...
           </p>
         </div>
       ) : ayahs.length > 0 ? (
-        <div className="space-y-4">
+        <div className="space-y-2 sm:space-y-2.5">
           {ayahs.map((ayah) => {
             const isPlayingThisAyah =
               audioState.status === 'PLAYING' &&
@@ -365,14 +365,14 @@ export const ReadQuran: React.FC = () => {
                 ref={(el) => {
                   ayahRefs.current[ayah.numberInSurah] = el;
                 }}
-                className={`group relative p-4 sm:p-6 rounded-3xl transition-all duration-300 border ${
+                className={`group relative p-3 sm:p-4 rounded-2xl transition-all duration-300 border ${
                   isPlayingThisAyah
                     ? 'bg-amber-50/70 dark:bg-amber-950/20 border-l-4 border-amber-500 border-t-amber-200/60 border-r-amber-200/60 border-b-amber-200/60 dark:border-amber-700/60 shadow-md ring-1 ring-amber-400/30'
                     : 'bg-white dark:bg-zinc-900 hover:bg-zinc-50/90 dark:hover:bg-zinc-850/70 border-zinc-200/80 dark:border-zinc-800 shadow-2xs'
                 }`}
               >
                 {/* Ayah Header Bar: Ayah Number Badge + Interactive Actions */}
-                <div className="flex items-center justify-between gap-3 mb-4 pb-3 border-b border-zinc-100 dark:border-zinc-800/80">
+                <div className="flex items-center justify-between gap-2.5 mb-2.5 pb-2 border-b border-zinc-100 dark:border-zinc-800/80">
                   {/* Ornate Ayah Counter Badge */}
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-xl bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-300/80 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 flex items-center justify-center font-black text-xs">
@@ -437,16 +437,16 @@ export const ReadQuran: React.FC = () => {
                 </div>
 
                 {/* Arabic Text (Naskh Font Amiri) */}
-                <div className="pt-2 pb-4 text-right" dir="rtl">
+                <div className="pt-1 pb-2 text-right" dir="rtl">
                   <p
                     className="font-quran text-zinc-900 dark:text-zinc-100 font-normal select-text tracking-wide"
                     style={{
                       fontSize: `${arabicFontSize}px`,
-                      lineHeight: `${arabicFontSize * 2.3}px`
+                      lineHeight: `${arabicFontSize * 2.1}px`
                     }}
                   >
                     {ayah.textArabic}
-                    <span className="inline-block mx-2 text-emerald-700 dark:text-emerald-400 font-quran text-lg">
+                    <span className="inline-block mx-1.5 text-emerald-700 dark:text-emerald-400 font-quran text-base sm:text-lg">
                       ۝
                     </span>
                   </p>
@@ -454,14 +454,14 @@ export const ReadQuran: React.FC = () => {
 
                 {/* Transliterasi Latin */}
                 {showLatin && ayah.textLatin && (
-                  <p className="text-xs sm:text-sm text-emerald-800 dark:text-emerald-400 font-medium italic leading-relaxed pt-1 select-text">
+                  <p className="text-xs sm:text-sm text-emerald-800 dark:text-emerald-400 font-medium italic leading-relaxed pt-0.5 select-text">
                     {ayah.textLatin}
                   </p>
                 )}
 
                 {/* Terjemahan Bahasa Indonesia */}
                 {showTranslation && ayah.translationIndo && (
-                  <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pt-2 select-text border-t border-zinc-100/80 dark:border-zinc-800/80 mt-2">
+                  <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-300 leading-relaxed pt-1.5 select-text border-t border-zinc-100/80 dark:border-zinc-800/80 mt-1.5">
                     {ayah.translationIndo}
                   </p>
                 )}
@@ -470,9 +470,9 @@ export const ReadQuran: React.FC = () => {
           })}
         </div>
       ) : (
-        <div className="p-12 text-center rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-3">
-          <AlertCircle className="w-10 h-10 text-amber-500 mx-auto" />
-          <h3 className="font-bold text-base text-zinc-800 dark:text-zinc-200">
+        <div className="p-8 text-center rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 space-y-2">
+          <AlertCircle className="w-8 h-8 text-amber-500 mx-auto" />
+          <h3 className="font-bold text-sm text-zinc-800 dark:text-zinc-200">
             Ayat Tidak Dapat Dimuat
           </h3>
           <p className="text-xs text-zinc-500 max-w-sm mx-auto">
@@ -481,7 +481,7 @@ export const ReadQuran: React.FC = () => {
           <button
             type="button"
             onClick={() => handleSurahSelect(selectedSurah)}
-            className="px-4 py-2 rounded-xl bg-emerald-800 text-white font-bold text-xs"
+            className="px-3.5 py-1.5 rounded-xl bg-emerald-800 text-white font-bold text-xs"
           >
             Coba Lagi
           </button>
@@ -491,7 +491,7 @@ export const ReadQuran: React.FC = () => {
       {/* ========================================================= */}
       {/* 4. PREV / NEXT SURAH NAVIGATION FOOTER */}
       {/* ========================================================= */}
-      <div className="p-4 rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between gap-3">
+      <div className="p-2.5 sm:p-3 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex items-center justify-between gap-2.5">
         {prevSurah ? (
           <button
             type="button"

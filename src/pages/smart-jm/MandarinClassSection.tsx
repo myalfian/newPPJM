@@ -429,30 +429,30 @@ export const MandarinClassSection: React.FC = () => {
           </div>
 
           {/* Kartu Detail Materi Terpilih */}
-          <div className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 p-6 sm:p-8 lg:p-10 shadow-xs space-y-8">
+          <div className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 p-3 sm:p-4 lg:p-4.5 shadow-xs space-y-3">
             {/* Header Topik */}
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/70 px-3 py-1 rounded-full border border-red-200/60 dark:border-red-800/60">
+            <div className="space-y-1">
+              <div className="flex items-center gap-1.5">
+                <span className="text-[11px] font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/70 px-2.5 py-0.5 rounded-full border border-red-200/60 dark:border-red-800/60">
                   {selectedTopic.level}
                 </span>
-                <span className="text-sm font-semibold text-zinc-400 font-mono">
+                <span className="text-xs font-semibold text-zinc-400 font-mono">
                   {selectedTopic.chineseName}
                 </span>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+              <h3 className="text-lg sm:text-xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-tight">
                 {selectedTopic.topicName}
               </h3>
-              <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl">
+              <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-2xl">
                 {selectedTopic.summary}
               </p>
             </div>
 
             {/* Split Grid: Poster Ringkasan Visual (aspect-[3/4]) & Kosakata */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-start">
               {/* Poster Flyer Visual (aspect-[3/4], rounded-xl, lightbox zoom) */}
               <div
-                className="lg:col-span-4 relative aspect-[3/4] overflow-hidden rounded-2xl bg-zinc-950 border border-zinc-200/60 dark:border-zinc-800/60 shadow-md cursor-pointer group"
+                className="lg:col-span-4 relative aspect-[3/4] overflow-hidden rounded-xl bg-zinc-950 border border-zinc-200/60 dark:border-zinc-800/60 shadow-xs cursor-pointer group"
                 onClick={() => setFlyerLightbox(selectedTopic.posterFlyer)}
                 title="Klik untuk perbesar poster materi"
               >
@@ -463,65 +463,65 @@ export const MandarinClassSection: React.FC = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
 
-                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="w-8 h-8 rounded-full bg-white/90 text-zinc-800 flex items-center justify-center shadow-md">
-                    <Maximize2 className="w-4 h-4" />
+                <div className="absolute top-2.5 right-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-7 h-7 rounded-full bg-white/90 text-zinc-800 flex items-center justify-center shadow-md">
+                    <Maximize2 className="w-3.5 h-3.5" />
                   </div>
                 </div>
 
-                <div className="absolute bottom-4 left-4 right-4 text-white space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-red-400 tracking-wider block">
+                <div className="absolute bottom-3 left-3 right-3 text-white space-y-0.5">
+                  <span className="text-[9.5px] uppercase font-bold text-red-400 tracking-wider block">
                     Poster Ringkasan Kosakata
                   </span>
-                  <div className="text-lg font-bold font-mono">
+                  <div className="text-base font-bold font-mono">
                     {selectedTopic.chineseName}
                   </div>
-                  <p className="text-[11px] text-zinc-300 line-clamp-2">
+                  <p className="text-[10.5px] text-zinc-300 line-clamp-2">
                     {selectedTopic.summary}
                   </p>
                 </div>
               </div>
 
               {/* Teks Penjelasan & Tabel Kosakata Tematik */}
-              <div className="lg:col-span-8 space-y-6">
+              <div className="lg:col-span-8 space-y-2.5 sm:space-y-3">
                 {/* Narasi Kontekstual */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/50 dark:border-zinc-800/50 space-y-2 text-xs sm:text-sm">
-                  <h4 className="font-bold text-zinc-900 dark:text-white uppercase tracking-wider text-xs">
-                    Pengantar Konteks & Catatan Santri:
+                <div className="p-2.5 sm:p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/50 dark:border-zinc-800/50 space-y-1.5 text-xs sm:text-sm">
+                  <h4 className="font-bold text-zinc-900 dark:text-white uppercase tracking-wider text-[11px]">
+                    Pengantar Konteks &amp; Catatan Santri:
                   </h4>
-                  <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                     {selectedTopic.narrative}
                   </p>
                   {selectedTopic.culturalNote && (
-                    <div className="text-xs text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/40 p-2.5 rounded-xl border border-red-100 dark:border-red-900/30 mt-2">
+                    <div className="text-[11px] text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/40 p-2 rounded-lg border border-red-100 dark:border-red-900/30 mt-1">
                       💡 <strong>Catatan Pelafalan:</strong> {selectedTopic.culturalNote}
                     </div>
                   )}
                 </div>
 
                 {/* Daftar Kosakata Inti (Cards List) */}
-                <div className="space-y-3">
+                <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-zinc-900 dark:text-white text-sm">
-                      Daftar Kosakata Hanzi, Pinyin & Makna
+                    <h4 className="font-bold text-zinc-900 dark:text-white text-xs sm:text-sm">
+                      Daftar Kosakata Hanzi, Pinyin &amp; Makna
                     </h4>
-                    <span className="text-xs text-zinc-400">
+                    <span className="text-[10.5px] text-zinc-400">
                       Klik ikon speaker untuk audio pelafalan
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {selectedTopic.vocabularies.map((vocab, idx) => (
                       <div
                         key={idx}
-                        className="p-3.5 rounded-2xl bg-white dark:bg-zinc-800/80 border border-zinc-200/70 dark:border-zinc-800/70 shadow-xs hover:border-red-500/40 transition-all flex items-start justify-between gap-3"
+                        className="p-2.5 rounded-xl bg-white dark:bg-zinc-800/80 border border-zinc-200/70 dark:border-zinc-800/70 shadow-2xs hover:border-red-500/40 transition-all flex items-start justify-between gap-2"
                       >
-                        <div className="space-y-1">
-                          <div className="flex items-baseline gap-2">
-                            <span className="text-2xl font-bold text-red-600 dark:text-red-400 font-serif">
+                        <div className="space-y-0.5">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-xl font-bold text-red-600 dark:text-red-400 font-serif">
                               {vocab.hanzi}
                             </span>
-                            <span className="text-xs font-bold text-zinc-500 font-mono">
+                            <span className="text-[11px] font-bold text-zinc-500 font-mono">
                               {vocab.pinyin}
                             </span>
                           </div>
@@ -529,7 +529,7 @@ export const MandarinClassSection: React.FC = () => {
                             {vocab.indonesian}
                           </div>
                           {vocab.exampleSentence && (
-                            <div className="text-[11px] text-zinc-400 dark:text-zinc-500 italic mt-0.5">
+                            <div className="text-[10.5px] text-zinc-400 dark:text-zinc-500 italic mt-0.5">
                               {vocab.exampleSentence}
                             </div>
                           )}
@@ -539,10 +539,10 @@ export const MandarinClassSection: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => speakChinese(vocab.hanzi)}
-                          className="w-8 h-8 rounded-full bg-red-50 hover:bg-red-100 dark:bg-red-950/80 dark:hover:bg-red-900/80 text-red-600 dark:text-red-300 flex items-center justify-center shrink-0 transition-transform active:scale-95 cursor-pointer"
+                          className="w-7 h-7 rounded-full bg-red-50 hover:bg-red-100 dark:bg-red-950/80 dark:hover:bg-red-900/80 text-red-600 dark:text-red-300 flex items-center justify-center shrink-0 transition-transform active:scale-95 cursor-pointer"
                           title="Dengarkan pelafalan asli"
                         >
-                          <Volume2 className="w-4 h-4" />
+                          <Volume2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     ))}
@@ -558,10 +558,10 @@ export const MandarinClassSection: React.FC = () => {
       {/* KONTEN 2: QUIZ INTERAKTIF BERBASIS TOPIK */}
       {/* ========================================================= */}
       {activeSubTab === 'quiz' && (
-        <div className="space-y-8 animate-in fade-in duration-300">
+        <div className="space-y-2.5 sm:space-y-3 animate-in fade-in duration-300">
           {/* Filter Topik Kuis */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider mr-1">
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mr-1">
               Pilih Kuis:
             </span>
             {MANDARIN_QUIZZES.map((qz) => {
@@ -571,7 +571,7 @@ export const MandarinClassSection: React.FC = () => {
                   key={qz.id}
                   type="button"
                   onClick={() => handleSwitchQuizTopic(qz)}
-                  className={`px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer min-h-[38px] active:scale-[0.98] ${
+                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer min-h-[30px] active:scale-[0.98] ${
                     isSelected
                       ? 'bg-red-600 text-white shadow-xs'
                       : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200'
@@ -585,14 +585,14 @@ export const MandarinClassSection: React.FC = () => {
 
           {/* Area Kuis Interaktif */}
           {!isQuizCompleted ? (
-            <div className="max-w-2xl mx-auto bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 p-6 sm:p-8 shadow-md space-y-6">
+            <div className="max-w-2xl mx-auto bg-white/95 dark:bg-zinc-900/90 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 p-4 sm:p-5 shadow-xs space-y-3.5">
               {/* Header Kuis: Indikator Nomor & Progress */}
-              <div className="space-y-3">
+              <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs text-zinc-500">
-                  <span className="font-bold text-red-600 dark:text-red-400 uppercase tracking-wider">
+                  <span className="font-bold text-red-600 dark:text-red-400 uppercase tracking-wider text-[11px]">
                     {activeQuizTopic.chineseTitle}
                   </span>
-                  <span>
+                  <span className="text-[11px]">
                     Soal <strong>{currentQuestionIndex + 1}</strong> dari{' '}
                     <strong>{currentQuestions.length}</strong>
                   </span>
@@ -610,26 +610,26 @@ export const MandarinClassSection: React.FC = () => {
               </div>
 
               {/* Kartu Soal */}
-              <div className="text-center py-4 space-y-3">
+              <div className="text-center py-2 space-y-1.5">
                 {currentQuestion.hanzi && (
-                  <div className="space-y-1">
-                    <span className="text-4xl sm:text-5xl font-extrabold text-red-600 dark:text-red-400 font-serif block">
+                  <div className="space-y-0.5">
+                    <span className="text-3xl sm:text-4xl font-extrabold text-red-600 dark:text-red-400 font-serif block">
                       {currentQuestion.hanzi}
                     </span>
                     {currentQuestion.pinyin && (
-                      <span className="text-sm font-semibold text-zinc-400 font-mono block">
+                      <span className="text-xs font-semibold text-zinc-400 font-mono block">
                         ({currentQuestion.pinyin})
                       </span>
                     )}
                   </div>
                 )}
-                <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white">
+                <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white">
                   {currentQuestion.question}
                 </h3>
               </div>
 
               {/* Pilihan Opsi Jawaban (Feedback Instan Hijau/Merah) */}
-              <div className="space-y-2.5">
+              <div className="space-y-1.5">
                 {currentQuestion.options.map((option, idx) => {
                   const isChosen = selectedAnswerIndex === idx;
                   const isCorrect = idx === currentQuestion.correctIndex;

@@ -430,7 +430,7 @@ export const StemAreaSection: React.FC = () => {
       {activeSubTab === 'worksheet' && (
         <div className="space-y-2 sm:space-y-2.5 animate-in fade-in duration-300">
           {/* Selector Proyek Worksheet */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
             {worksheets.map((ws) => {
               const isSelected = selectedWorksheet.id === ws.id;
               return (
@@ -438,21 +438,21 @@ export const StemAreaSection: React.FC = () => {
                   key={ws.id}
                   type="button"
                   onClick={() => setSelectedWorksheet(ws)}
-                  className={`text-left p-3 rounded-xl border transition-all cursor-pointer active:scale-[0.98] flex flex-col justify-between ${
+                  className={`text-left p-2.5 rounded-xl border transition-all cursor-pointer active:scale-[0.98] flex flex-col justify-between ${
                     isSelected
                       ? 'bg-blue-50/70 dark:bg-blue-950/40 border-blue-500/70 shadow-xs ring-2 ring-blue-500/20'
                       : 'bg-white/80 dark:bg-zinc-900/80 border-zinc-200/70 dark:border-zinc-800/70 hover:border-zinc-300'
                   }`}
                 >
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-blue-100/60 dark:bg-blue-900/50 px-2 py-0.5 rounded-full">
+                    <span className="text-[9.5px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 bg-blue-100/60 dark:bg-blue-900/50 px-2 py-0.5 rounded-full">
                       {ws.category}
                     </span>
-                    <h3 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white mt-1.5 line-clamp-2">
+                    <h3 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white mt-1 line-clamp-2">
                       {ws.title}
                     </h3>
                   </div>
-                  <div className="flex items-center justify-between text-[11px] text-zinc-400 mt-2 pt-1.5 border-t border-zinc-100 dark:border-zinc-800">
+                  <div className="flex items-center justify-between text-[10.5px] text-zinc-400 mt-1.5 pt-1 border-t border-zinc-100 dark:border-zinc-800">
                     <span>{ws.targetLevel}</span>
                     <span>{ws.duration}</span>
                   </div>
@@ -462,26 +462,26 @@ export const StemAreaSection: React.FC = () => {
           </div>
 
           {/* Detail Worksheet yang Dipilih */}
-          <div className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 p-3.5 sm:p-5 lg:p-6 shadow-xs space-y-4">
+          <div className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 p-3 sm:p-4 lg:p-4.5 shadow-xs space-y-2.5 sm:space-y-3">
             {/* Header Proyek */}
-            <div className="space-y-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-xs font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/80 px-3 py-1 rounded-full border border-blue-200/60 dark:border-blue-800/60">
+            <div className="space-y-1.5">
+              <div className="flex flex-wrap items-center gap-1.5">
+                <span className="text-[11px] font-bold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/80 px-2.5 py-0.5 rounded-full border border-blue-200/60 dark:border-blue-800/60">
                   {selectedWorksheet.category}
                 </span>
                 <span className="text-xs text-zinc-400">• {selectedWorksheet.targetLevel}</span>
                 <span className="text-xs text-zinc-400">• Durasi: {selectedWorksheet.duration}</span>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-tight">
                 {selectedWorksheet.title}
               </h3>
             </div>
 
             {/* Split Grid: Foto Dokumentasi Setup & Narasi Konteks */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-start">
               {/* Foto Dokumentasi Setup (aspect-[16/10], rounded-xl) */}
               <div
-                className="lg:col-span-5 relative aspect-[16/10] overflow-hidden rounded-2xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-zinc-800/60 shadow-xs cursor-pointer group"
+                className="lg:col-span-5 relative aspect-[16/10] overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-zinc-800/60 shadow-xs cursor-pointer group"
                 onClick={() => setLightboxImage(selectedWorksheet.setupPhoto)}
                 title="Klik untuk perbesar dokumentasi setup alat"
               >
@@ -492,55 +492,55 @@ export const StemAreaSection: React.FC = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
 
-                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="w-8 h-8 rounded-full bg-white/90 text-zinc-800 flex items-center justify-center shadow-md">
-                    <Maximize2 className="w-4 h-4" />
+                <div className="absolute top-2.5 right-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="w-7 h-7 rounded-full bg-white/90 text-zinc-800 flex items-center justify-center shadow-md">
+                    <Maximize2 className="w-3.5 h-3.5" />
                   </div>
                 </div>
 
-                <div className="absolute bottom-3 left-3 right-3 text-white">
-                  <span className="text-[10px] font-semibold text-blue-300 uppercase tracking-wider block">
+                <div className="absolute bottom-2.5 left-2.5 right-2.5 text-white">
+                  <span className="text-[9.5px] font-semibold text-blue-300 uppercase tracking-wider block">
                     Dokumentasi Setup Laboratorium
                   </span>
-                  <span className="text-xs font-bold drop-shadow-sm">
+                  <span className="text-xs font-bold drop-shadow-sm line-clamp-1">
                     {selectedWorksheet.title}
                   </span>
                 </div>
               </div>
 
               {/* Narasi Konteks & Tujuan Proyek */}
-              <div className="lg:col-span-7 space-y-4 text-zinc-700 dark:text-zinc-300 text-sm leading-relaxed">
-                <div className="p-4 rounded-2xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 space-y-2">
-                  <div className="flex items-center gap-2 text-xs font-bold text-blue-900 dark:text-blue-300 uppercase tracking-wider">
-                    <Microscope className="w-4 h-4 text-blue-600" />
+              <div className="lg:col-span-7 space-y-2.5 text-zinc-700 dark:text-zinc-300 text-xs sm:text-sm leading-relaxed">
+                <div className="p-2.5 sm:p-3 rounded-xl bg-blue-50/50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 space-y-1">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-blue-900 dark:text-blue-300 uppercase tracking-wider">
+                    <Microscope className="w-3.5 h-3.5 text-blue-600" />
                     <span>Tujuan Pembelajaran Proyek:</span>
                   </div>
-                  <p className="text-xs sm:text-sm text-zinc-700 dark:text-zinc-300">
+                  <p className="text-xs text-zinc-700 dark:text-zinc-300">
                     {selectedWorksheet.objective}
                   </p>
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider mb-1.5">
-                    Latar Belakang & Konteks Eksperimen:
+                  <h4 className="text-[11px] font-bold text-zinc-900 dark:text-white uppercase tracking-wider mb-1">
+                    Latar Belakang &amp; Konteks Eksperimen:
                   </h4>
-                  <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
                     {selectedWorksheet.context}
                   </p>
                 </div>
 
                 {/* Alat & Bahan */}
-                <div className="pt-2">
-                  <h4 className="text-xs font-bold text-zinc-900 dark:text-white uppercase tracking-wider mb-2">
-                    Daftar Alat & Bahan Praktikum:
+                <div className="pt-1">
+                  <h4 className="text-[11px] font-bold text-zinc-900 dark:text-white uppercase tracking-wider mb-1">
+                    Daftar Alat &amp; Bahan Praktikum:
                   </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
                     {selectedWorksheet.toolsAndMaterials.map((item, idx) => (
                       <div
                         key={idx}
-                        className="flex items-start gap-2 text-xs text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/60 p-2 rounded-xl border border-zinc-200/50 dark:border-zinc-800/50"
+                        className="flex items-start gap-1.5 text-[11px] text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/60 p-1.5 rounded-lg border border-zinc-200/50 dark:border-zinc-800/50"
                       >
-                        <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                        <CheckCircle2 className="w-3 h-3 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                         <span>{item}</span>
                       </div>
                     ))}
@@ -550,45 +550,45 @@ export const StemAreaSection: React.FC = () => {
             </div>
 
             {/* Rubrik Penilaian Interaktif (Mobile Card List, Desktop Clean Table) */}
-            <div className="space-y-4 pt-4 border-t border-zinc-200/70 dark:border-zinc-800/70">
+            <div className="space-y-2.5 pt-2.5 border-t border-zinc-200/70 dark:border-zinc-800/70">
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white">
-                    Rubrik & Standar Penilaian Proyek
+                  <h4 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white leading-tight">
+                    Rubrik &amp; Standar Penilaian Proyek
                   </h4>
-                  <p className="text-xs text-zinc-500">
+                  <p className="text-[11px] text-zinc-500">
                     Pedoman evaluasi objektivitas hasil karya sains santri oleh guru pengampu STEM.
                   </p>
                 </div>
-                <span className="hidden sm:inline-block text-xs font-bold px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60">
+                <span className="hidden sm:inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60">
                   Total Bobot: 100%
                 </span>
               </div>
 
               {/* Tampilan Desktop: Clean Table */}
-              <div className="hidden md:block overflow-hidden rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-xs">
+              <div className="hidden md:block overflow-hidden rounded-xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xs">
                 <table className="w-full text-left text-xs">
-                  <thead className="bg-zinc-50 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 font-bold border-b border-zinc-200 dark:border-zinc-700 uppercase tracking-wider">
+                  <thead className="bg-zinc-50 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 font-bold border-b border-zinc-200 dark:border-zinc-700 uppercase tracking-wider text-[10.5px]">
                     <tr>
-                      <th className="py-3 px-4">Kategori Kriteria</th>
-                      <th className="py-3 px-3 text-center">Bobot</th>
-                      <th className="py-3 px-4">Deskripsi Indikator</th>
-                      <th className="py-3 px-4">Skala Penilaian Unggul</th>
+                      <th className="py-2 px-3">Kategori Kriteria</th>
+                      <th className="py-2 px-2.5 text-center">Bobot</th>
+                      <th className="py-2 px-3">Deskripsi Indikator</th>
+                      <th className="py-2 px-3">Skala Penilaian Unggul</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-zinc-200/60 dark:divide-zinc-800/60 text-zinc-600 dark:text-zinc-400">
                     {selectedWorksheet.rubric.map((r) => (
                       <tr key={r.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40 transition-colors">
-                        <td className="py-3.5 px-4 font-bold text-zinc-900 dark:text-white">
+                        <td className="py-2 px-3 font-bold text-zinc-900 dark:text-white">
                           {r.category}
                         </td>
-                        <td className="py-3.5 px-3 text-center">
-                          <span className="px-2.5 py-1 rounded-full font-bold text-[11px] bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60">
+                        <td className="py-2 px-2.5 text-center">
+                          <span className="px-2 py-0.5 rounded-full font-bold text-[10.5px] bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 border border-blue-200/60 dark:border-blue-800/60">
                             {r.weight}
                           </span>
                         </td>
-                        <td className="py-3.5 px-4">{r.criteria}</td>
-                        <td className="py-3.5 px-4 text-emerald-700 dark:text-emerald-400 font-medium">
+                        <td className="py-2 px-3">{r.criteria}</td>
+                        <td className="py-2 px-3 text-emerald-700 dark:text-emerald-400 font-medium">
                           {r.scaleDescription}
                         </td>
                       </tr>
@@ -598,24 +598,24 @@ export const StemAreaSection: React.FC = () => {
               </div>
 
               {/* Tampilan Mobile: Adaptif Card List */}
-              <div className="md:hidden space-y-3">
+              <div className="md:hidden space-y-2">
                 {selectedWorksheet.rubric.map((r) => (
                   <div
                     key={r.id}
-                    className="p-4 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-800/60 space-y-2"
+                    className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-800/60 space-y-1.5"
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-xs text-zinc-900 dark:text-white">
                         {r.category}
                       </span>
-                      <span className="px-2.5 py-0.5 rounded-full font-bold text-[10px] bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200">
+                      <span className="px-2 py-0.5 rounded-full font-bold text-[10px] bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border border-blue-200">
                         Bobot {r.weight}
                       </span>
                     </div>
-                    <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
                       {r.criteria}
                     </p>
-                    <div className="text-[11px] font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 p-2 rounded-lg border border-emerald-100 dark:border-emerald-900/30">
+                    <div className="text-[10.5px] font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 p-1.5 rounded-lg border border-emerald-100 dark:border-emerald-900/30">
                       {r.scaleDescription}
                     </div>
                   </div>
@@ -630,10 +630,10 @@ export const StemAreaSection: React.FC = () => {
       {/* KONTEN 2: PORTOFOLIO KARYA SISWA STEM */}
       {/* ========================================================= */}
       {activeSubTab === 'portfolio' && (
-        <div className="space-y-3 sm:space-y-4 animate-in fade-in duration-300">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5">
+        <div className="space-y-2 sm:space-y-2.5 animate-in fade-in duration-300">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1">
             <div>
-              <h3 className="text-lg sm:text-xl font-bold text-zinc-900 dark:text-white">
+              <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white leading-tight">
                 Galeri Portofolio Proyek Santri
               </h3>
               <p className="text-xs text-zinc-500">
@@ -646,7 +646,7 @@ export const StemAreaSection: React.FC = () => {
           </div>
 
           {/* Cards Showcase Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2.5 sm:gap-3.5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-2 sm:gap-2.5">
             {portfolios.map((item) => (
               <article
                 key={item.id}
@@ -684,8 +684,8 @@ export const StemAreaSection: React.FC = () => {
                   </div>
 
                   {/* Body Content */}
-                  <div className="p-3.5 sm:p-4 space-y-2">
-                    <div className="flex items-center gap-2 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
+                  <div className="p-2.5 sm:p-3 space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-zinc-700 dark:text-zinc-300">
                       <User className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                       <span className="truncate">{item.studentName}</span>
                     </div>
@@ -695,16 +695,16 @@ export const StemAreaSection: React.FC = () => {
                     </p>
 
                     {/* Stats Metrics Grid */}
-                    <div className="grid grid-cols-3 gap-1.5 pt-1.5 border-t border-zinc-100 dark:border-zinc-800">
+                    <div className="grid grid-cols-3 gap-1 pt-1 border-t border-zinc-100 dark:border-zinc-800">
                       {item.stats.map((st, idx) => (
                         <div
                           key={idx}
-                          className="bg-zinc-50 dark:bg-zinc-800/60 p-1.5 rounded-lg text-center border border-zinc-200/50 dark:border-zinc-800/50"
+                          className="bg-zinc-50 dark:bg-zinc-800/60 p-1 rounded-lg text-center border border-zinc-200/50 dark:border-zinc-800/50"
                         >
-                          <span className="text-[9px] text-zinc-400 block truncate">
+                          <span className="text-[8.5px] text-zinc-400 block truncate">
                             {st.label}
                           </span>
-                          <span className="text-xs font-bold text-blue-700 dark:text-blue-300">
+                          <span className="text-[11px] font-bold text-blue-700 dark:text-blue-300">
                             {st.value}
                           </span>
                         </div>
@@ -714,11 +714,11 @@ export const StemAreaSection: React.FC = () => {
                 </div>
 
                 {/* Footer Action */}
-                <div className="p-3.5 sm:p-4 pt-0">
+                <div className="p-2.5 sm:p-3 pt-0">
                   <button
                     type="button"
                     onClick={() => setSelectedPortfolio(item)}
-                    className="w-full py-2 px-3 rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-bold text-xs flex items-center justify-center gap-1.5 border border-blue-200/60 dark:border-blue-800/60 transition-all cursor-pointer active:scale-[0.98]"
+                    className="w-full py-1.5 px-2.5 rounded-lg bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900/60 text-blue-700 dark:text-blue-300 font-bold text-xs flex items-center justify-center gap-1.5 border border-blue-200/60 dark:border-blue-800/60 transition-all cursor-pointer active:scale-[0.98]"
                   >
                     <span>Lihat Prosedur &amp; Hasil Proyek</span>
                     <ArrowRight className="w-3.5 h-3.5" />
