@@ -27,19 +27,19 @@ const fetchAchievementsFromDb = async (): Promise<PrestasiItem[]> => {
       .select('*')
       .order('year', { ascending: false });
 
-    if (error || !data) {
-      console.warn('Error fetching achievements:', error);
-      return [];
+    if (error || !data || data.length === 0) {
+      if (error) console.warn('Error fetching achievements, fallback to local dataset:', error);
+      return PRESTASI_DATASET;
     }
 
     return data.map((item) => {
       // Map category
       let category: PrestasiCategory = 'Umum';
       const catLower = (item.category || '').toLowerCase();
-      if (catLower.includes('olimpiade') || catLower.includes('stem') || catLower.includes('robotika')) category = 'Olimpiade';
+      if (catLower.includes('olimpiade') || catLower.includes('stem') || catLower.includes('robotika') || catLower.includes('sains')) category = 'Olimpiade';
       else if (catLower.includes('olahraga') || catLower.includes('silat') || catLower.includes('futsal')) category = 'Olahraga';
-      else if (catLower.includes('seni') || catLower.includes('kaligrafi') || catLower.includes('hadrah') || catLower.includes('bahasa')) category = 'Seni';
-      else if (catLower.includes('kitab') || catLower.includes('mqk') || catLower.includes('tahfidz') || catLower.includes('quran') || catLower.includes('agama')) category = 'Keagamaan';
+      else if (catLower.includes('seni') || catLower.includes('kaligrafi') || catLower.includes('hadrah') || catLower.includes('banjari') || catLower.includes('singing') || catLower.includes('bahasa')) category = 'Seni';
+      else if (catLower.includes('kitab') || catLower.includes('mqk') || catLower.includes('tahfidz') || catLower.includes('quran') || catLower.includes('agama') || catLower.includes('dakwah') || catLower.includes("da'i") || catLower.includes('ceramah')) category = 'Keagamaan';
 
       // Map tingkat
       let tingkat: 'Internasional' | 'Nasional' | 'Provinsi' | 'Kabupaten' = 'Provinsi';
@@ -47,7 +47,7 @@ const fetchAchievementsFromDb = async (): Promise<PrestasiItem[]> => {
       if (titleLower.includes('internasional')) tingkat = 'Internasional';
       else if (titleLower.includes('nasional') || titleLower.includes('nusantara')) tingkat = 'Nasional';
       else if (titleLower.includes('provinsi') || titleLower.includes('jawa timur') || titleLower.includes('jatim')) tingkat = 'Provinsi';
-      else if (titleLower.includes('kabupaten') || titleLower.includes('gresik')) tingkat = 'Kabupaten';
+      else if (titleLower.includes('kabupaten') || titleLower.includes('gresik') || titleLower.includes('surabaya')) tingkat = 'Kabupaten';
 
       return {
         id: item.id,
@@ -59,7 +59,7 @@ const fetchAchievementsFromDb = async (): Promise<PrestasiItem[]> => {
         winner_class: 'SMP Plus JM',
         medal_type: item.medal_type || 'Juara 1',
         event_name: 'Kompetisi Resmi Santri',
-        organizer: 'Kemenag / Puspresnas',
+        organizer: 'Kemenag / Puspresnas / Panitia Resmi',
         certificate_url: item.certificate_url || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80',
         photo_url: item.certificate_url || undefined,
         description: item.description || '',
@@ -67,8 +67,8 @@ const fetchAchievementsFromDb = async (): Promise<PrestasiItem[]> => {
       };
     });
   } catch (err) {
-    console.warn('Failed to fetch achievements:', err);
-    return [];
+    console.warn('Failed to fetch achievements, fallback to local dataset:', err);
+    return PRESTASI_DATASET;
   }
 };
 
