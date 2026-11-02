@@ -184,6 +184,50 @@ const STEM_WORKSHEETS: StemWorksheetItem[] = [
       }
     ]
   }
+,
+  {
+    id: 'ws-hydraulic-lift',
+    title: 'Hydraulic Lift Hukum Pascal',
+    category: 'Fisika & Mekanika',
+    targetLevel: 'Kelas VII SMP Plus JM',
+    duration: '2 Pekan Praktikum',
+    objective: 'Mempelajari prinsip Hukum Pascal melalui percobaan lift hidrolik buatan santri.',
+    context: 'Proyek praktikum fisika untuk memahami hubungan tekanan dan gaya pada fluida.',
+    setupPhoto: '/images/stem/hydrolift_foto_display_topik.jpg',
+    toolsAndMaterials: [
+      'Silinder PVC 5 cm',
+      'Pompa udara manual',
+      'Meteran tekanan',
+      'Air bersih',
+      'Alat ukur tinggi (ruler)'
+    ],
+    rubric: [
+      { id: 'r9', category: 'Eksperimen & Analisis', weight: '40%', criteria: 'Kejelasan prosedur dan akurasi pengukuran tekanan.', scaleDescription: 'Sangat Baik (85-100): Data konsisten, grafik tepat.' },
+      { id: 'r10', category: 'Laporan & Presentasi', weight: '30%', criteria: 'Kerapian laporan, diagram, dan penjelasan fenomena.', scaleDescription: 'Sangat Baik (85-100): Laporan terstruktur, visual jelas.' },
+      { id: 'r11', category: 'Kerjasama Tim', weight: '30%', criteria: 'Pembagian tugas, kolaborasi, dan dokumentasi tim.', scaleDescription: 'Sangat Baik (85-100): Semua anggota berkontribusi aktif.' }
+    ]
+  },
+  {
+    id: 'ws-roket-air',
+    title: 'Roket Air Hukum III Newton',
+    category: 'Fisika & Teknologi',
+    targetLevel: 'Kelas VII SMP Plus JM',
+    duration: '2 Pekan Praktikum',
+    objective: 'Menerapkan Hukum III Newton pada desain dan peluncuran roket air.',
+    context: 'Proyek STEM untuk memahami aksi‑reaksi dan aerodinamika sederhana.',
+    setupPhoto: '/images/stem/roket_air_foto_display_topik.webp',
+    toolsAndMaterials: [
+      'Botol PET 1,5 L',
+      'Kartun, selotip, gunting',
+      'Air, pompa udara',
+      'Mata pengukuran ketinggian (meteran)'
+    ],
+    rubric: [
+      { id: 'r12', category: 'Desain & Konstruksi', weight: '35%', criteria: 'Stabilitas roket, keseimbangan massa, dan aerodinamika.', scaleDescription: 'Sangat Baik (85-100): Roket terbang lurus, tidak berputar.' },
+      { id: 'r13', category: 'Pengujian & Data', weight: '35%', criteria: 'Pengukuran tinggi/jarak terbang, konsistensi tiga percobaan.', scaleDescription: 'Sangat Baik (85-100): Data akurat, variasi < 5%.' },
+      { id: 'r14', category: 'Laporan & Refleksi', weight: '30%', criteria: 'Analisis hasil, penjelasan fisika, dan perbaikan desain.', scaleDescription: 'Sangat Baik (85-100): Laporan mendalam, saran perbaikan jelas.' }
+    ]
+  }
 ];
 
 // ========================
@@ -293,6 +337,50 @@ const STEM_PORTFOLIO: StemPortfolioItem[] = [
       { label: 'Ketahanan Baterai', value: '7 Hari' }
     ],
     completionDate: 'Maret 2026'
+  }
+,
+  {
+    id: 'ws-hydraulic-lift',
+    title: 'Hydraulic Lift Hukum Pascal',
+    category: 'Fisika & Mekanika',
+    targetLevel: 'Kelas VII SMP Plus JM',
+    duration: '2 Pekan Praktikum',
+    objective: 'Mempelajari prinsip Hukum Pascal melalui percobaan lift hidrolik buatan santri.',
+    context: 'Proyek praktikum fisika untuk memahami hubungan tekanan dan gaya pada fluida.',
+    setupPhoto: '/images/stem/hydrolift_foto_display_topik.jpg',
+    toolsAndMaterials: [
+      'Silinder PVC 5 cm',
+      'Pompa udara manual',
+      'Meteran tekanan',
+      'Air bersih',
+      'Alat ukur tinggi (ruler)'
+    ],
+    rubric: [
+      { id: 'r9', category: 'Eksperimen & Analisis', weight: '40%', criteria: 'Kejelasan prosedur dan akurasi pengukuran tekanan.', scaleDescription: 'Sangat Baik (85-100): Data konsisten, grafik tepat.' },
+      { id: 'r10', category: 'Laporan & Presentasi', weight: '30%', criteria: 'Kerapian laporan, diagram, dan penjelasan fenomena.', scaleDescription: 'Sangat Baik (85-100): Laporan terstruktur, visual jelas.' },
+      { id: 'r11', category: 'Kerjasama Tim', weight: '30%', criteria: 'Pembagian tugas, kolaborasi, dan dokumentasi tim.', scaleDescription: 'Sangat Baik (85-100): Semua anggota berkontribusi aktif.' }
+    ]
+  },
+  {
+    id: 'ws-roket-air',
+    title: 'Roket Air Hukum III Newton',
+    category: 'Fisika & Teknologi',
+    targetLevel: 'Kelas VII SMP Plus JM',
+    duration: '2 Pekan Praktikum',
+    objective: 'Menerapkan Hukum III Newton pada desain dan peluncuran roket air.',
+    context: 'Proyek STEM untuk memahami aksi‑reaksi dan aerodinamika sederhana.',
+    setupPhoto: '/images/stem/roket_air_foto_display_topik.webp',
+    toolsAndMaterials: [
+      'Botol PET 1,5 L',
+      'Kartun, selotip, gunting',
+      'Air, pompa udara',
+      'Mata pengukuran ketinggian (meteran)'
+    ],
+    rubric: [
+      { id: 'r12', category: 'Desain & Konstruksi', weight: '35%', criteria: 'Stabilitas roket, keseimbangan massa, dan aerodinamika.', scaleDescription: 'Sangat Baik (85-100): Roket terbang lurus, tidak berputar.' },
+      { id: 'r13', category: 'Pengujian & Data', weight: '35%', criteria: 'Pengukuran tinggi/jarak terbang, konsistensi tiga percobaan.', scaleDescription: 'Sangat Baik (85-100): Data akurat, variasi < 5%.' },
+      { id: 'r14', category: 'Laporan & Refleksi', weight: '30%', criteria: 'Analisis hasil, penjelasan fisika, dan perbaikan desain.', scaleDescription: 'Sangat Baik (85-100): Laporan mendalam, saran perbaikan jelas.' }
+    ]
   }
 ];
 
