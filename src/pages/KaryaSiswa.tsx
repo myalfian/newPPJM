@@ -1,4 +1,6 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import {
   BookOpen,
   Palette,
@@ -21,16 +23,21 @@ import {
 import { KARYA_SISWA_ITEMS, KaryaSiswaItem } from '../data/karyaSiswaData';
 import { SafeRichContent } from '../components/common/SafeRichContent';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import '../components/common/NavBarTabs.css';
 
-type CategoryFilter = 'all' | 'buku' | 'batik' | 'video-lagu-batik' | 'video-lagu-ustad' | 'showroom';
+type CategoryFilter = 'buku' | 'batik' | 'video-lagu-batik' | 'video-lagu-ustad' | 'showroom';
 
-const CATEGORY_TABS: { id: CategoryFilter; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
-  { id: 'all', label: 'Semua Karya', icon: Layers },
-  { id: 'buku', label: 'Flyer Buku Santri', icon: BookOpen },
-  { id: 'batik', label: 'Katalog Batik', icon: Palette },
-  { id: 'video-lagu-batik', label: 'Video Lagu Batik', icon: Music },
-  { id: 'video-lagu-ustad', label: 'Lagu Ustadz Shobirin', icon: Heart },
-  { id: 'showroom', label: 'Show Room Santri', icon: Sparkles },
+const CATEGORY_TABS: {
+  id: CategoryFilter;
+  label: string;
+  shortLabel?: string;
+  icon: React.ComponentType<{ className?: string }>;
+}[] = [
+  { id: 'buku', label: 'Flyer Buku Santri', shortLabel: 'Buku Santri', icon: BookOpen },
+  { id: 'batik', label: 'Katalog Batik', shortLabel: 'Katalog Batik', icon: Palette },
+  { id: 'video-lagu-batik', label: 'Video Lagu Batik', shortLabel: 'Lagu Batik', icon: Music },
+  { id: 'video-lagu-ustad', label: 'Lagu Ustadz Shobirin', shortLabel: 'Lagu Ustadz', icon: Heart },
+  { id: 'showroom', label: 'Show Room Santri', shortLabel: 'Show Room', icon: Sparkles },
 ];
 
 export const KaryaSiswa: React.FC = () => {
@@ -42,9 +49,57 @@ export const KaryaSiswa: React.FC = () => {
     return KARYA_SISWA_ITEMS;
   });
 
-  const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>('all');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const urlTab = searchParams.get('tab') as CategoryFilter | null;
+
+  const validTabs: CategoryFilter[] = ['buku', 'batik', 'video-lagu-batik', 'video-lagu-ustad', 'showroom'];
+  const initialCategory: CategoryFilter = urlTab && validTabs.includes(urlTab) ? urlTab : 'buku';
+
+  const [selectedCategory, setSelectedCategory] = useState<CategoryFilter>(initialCategory);
   const [searchQuery, setSearchQuery] = useState('');
   const [activeModalItem, setActiveModalItem] = useState<KaryaSiswaItem | null>(null);
+
+  const tabListRef = useRef<HTMLDivElement | null>(null);
+  const activeTabRef = useRef<HTMLButtonElement | null>(null);
+
+  // Sync state if URL query param changes
+  useEffect(() => {
+    if (urlTab && validTabs.includes(urlTab)) {
+      setSelectedCategory(urlTab);
+    } else if (!urlTab) {
+      setSelectedCategory('buku');
+    }
+  }, [urlTab]);
+
+  const handleSelectCategory = (cat: CategoryFilter) => {
+    setSelectedCategory(cat);
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (cat === 'buku') {
+          next.delete('tab');
+        } else {
+          next.set('tab', cat);
+        }
+        return next;
+      },
+      { replace: true }
+    );
+  };
+
+  // Auto-center active tab on mobile viewport
+  useEffect(() => {
+    if (activeTabRef.current && tabListRef.current) {
+      const container = tabListRef.current;
+      const activeEl = activeTabRef.current;
+      const scrollLeft =
+        activeEl.offsetLeft - container.offsetWidth / 2 + activeEl.offsetWidth / 2;
+      container.scrollTo({
+        left: Math.max(0, scrollLeft),
+        behavior: 'smooth',
+      });
+    }
+  }, [selectedCategory]);
 
   // Sync with Supabase & localStorage
   useEffect(() => {
@@ -97,7 +152,7 @@ export const KaryaSiswa: React.FC = () => {
   // Filter items
   const filteredItems = useMemo(() => {
     return items.filter((item) => {
-      const matchCategory = selectedCategory === 'all' || item.category === selectedCategory;
+      const matchCategory = item.category === selectedCategory;
       const q = searchQuery.toLowerCase();
       const matchSearch =
         !searchQuery ||
@@ -112,7 +167,6 @@ export const KaryaSiswa: React.FC = () => {
 
   // Counts per tab
   const getCount = (cat: CategoryFilter) => {
-    if (cat === 'all') return items.length;
     return items.filter((i) => i.category === cat).length;
   };
 
@@ -168,37 +222,117 @@ export const KaryaSiswa: React.FC = () => {
         </div>
       </section>
 
-      {/* 3. CATEGORY CHIP TABS */}
-      <section className="max-w-6xl mx-auto px-2.5 sm:px-4 -mt-4 relative z-20">
-        <div className="bg-white rounded-xl sm:rounded-2xl p-1.5 sm:p-2 shadow-md border border-slate-200/80 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-          {CATEGORY_TABS.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = selectedCategory === tab.id;
-            const count = getCount(tab.id);
+      {/* 3. CATEGORY CHIP TABS - NAVBAR TABS LUXURY STYLE & ANIMATION */}
+      <section className="max-w-6xl mx-auto px-2.5 sm:px-4 -mt-4 relative z-20 select-none">
+        <nav aria-label="Kategori Karya Siswa" className="curved-navbar-wrapper w-full">
+          <div className="curved-navbar-bar w-full">
+            <div
+              ref={tabListRef}
+              className="curved-scroll-track w-full flex items-center justify-start overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full px-1.5 sm:px-2"
+            >
+              <ul className="curved-tab-list flex items-center justify-start w-full gap-1 sm:gap-2">
+                {CATEGORY_TABS.map((tab) => {
+                  const Icon = tab.icon;
+                  const isActive = selectedCategory === tab.id;
+                  const count = getCount(tab.id);
 
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setSelectedCategory(tab.id)}
-                className={`px-3 py-1.5 rounded-lg font-bold text-xs flex items-center gap-1.5 whitespace-nowrap transition-all duration-200 cursor-pointer ${
-                  isActive
-                    ? 'bg-[#0E7A4C] text-white shadow-2xs'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
-                }`}
-              >
-                <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-[#C8A951]' : 'text-slate-500'}`} />
-                <span>{tab.label}</span>
-                <span
-                  className={`text-[9.5px] px-1.5 py-0.2 rounded-full font-extrabold ${
-                    isActive ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
-                  }`}
-                >
-                  {count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
+                  return (
+                    <li
+                      key={tab.id}
+                      className="curved-tab-col flex-none h-full flex items-center justify-center shrink-0 snap-start"
+                    >
+                      <button
+                        ref={isActive ? activeTabRef : null}
+                        type="button"
+                        onClick={() => handleSelectCategory(tab.id)}
+                        className={`curved-tab-link bg-transparent border-0 relative flex items-center justify-center cursor-pointer ${
+                          isActive ? 'active' : ''
+                        }`}
+                      >
+                        {/* Animated Sliding Notch Pointer & Radiant Floating Gold Jewel */}
+                        {isActive && (
+                          <motion.div
+                            layoutId="karyaSiswaCurvedPointer"
+                            className="curved-pointer"
+                            transition={{
+                              type: 'spring',
+                              stiffness: 420,
+                              damping: 28,
+                              mass: 0.58,
+                            }}
+                          >
+                            <svg
+                              viewBox="0 0 74 22"
+                              className="curved-notch-svg"
+                              width="74"
+                              height="22"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                              aria-hidden="true"
+                            >
+                              <defs>
+                                <radialGradient id="karyaNotchDotGrad" cx="35%" cy="35%" r="65%">
+                                  <stop offset="0%" stopColor="#fffbeb" />
+                                  <stop offset="35%" stopColor="#fde047" />
+                                  <stop offset="75%" stopColor="#d97706" />
+                                  <stop offset="100%" stopColor="#92400e" />
+                                </radialGradient>
+                              </defs>
+                              {/* Notch Surface matching hero background tone */}
+                              <path
+                                d="M 0 0 C 16 0, 22 18, 37 18 C 52 18, 58 0, 74 0 Z"
+                                className="curved-notch-surface"
+                                style={{ fill: '#042818' }}
+                                stroke="none"
+                              />
+                              {/* Radiant Jewel Gold Floating Indicator */}
+                              <circle
+                                cx="37"
+                                cy="6"
+                                r="4.8"
+                                fill="url(#karyaNotchDotGrad)"
+                                className="curved-notch-dot"
+                                stroke="none"
+                              />
+                              {/* Specular Gem Reflection */}
+                              <circle
+                                cx="35.5"
+                                cy="4.5"
+                                r="1.4"
+                                fill="#ffffff"
+                                opacity="0.85"
+                                stroke="none"
+                              />
+                            </svg>
+                          </motion.div>
+                        )}
+
+                        <span className="curved-tab-text !flex-row items-center gap-1.5 whitespace-nowrap font-bold tracking-tight">
+                          <Icon
+                            className={`w-3.5 h-3.5 shrink-0 transition-colors ${
+                              isActive ? 'text-[#facc15]' : 'text-emerald-200/80'
+                            }`}
+                          />
+                          <span className="sm:hidden font-extrabold">{tab.shortLabel || tab.label}</span>
+                          <span className="hidden sm:inline font-bold">{tab.label}</span>
+                          <span
+                            className={`curved-tab-badge ml-1 px-1.5 py-0.2 rounded-full text-[9px] font-black transition-colors ${
+                              isActive
+                                ? 'bg-[#fbbf24] text-[#064e3b] shadow-xs'
+                                : 'bg-white/20 text-emerald-100'
+                            }`}
+                          >
+                            {count}
+                          </span>
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        </nav>
       </section>
 
       {/* 4. MAIN CONTENT CARDS GRID */}
