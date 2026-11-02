@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import confetti from 'canvas-confetti';
 import {
   Globe,
@@ -19,6 +19,7 @@ import {
   Languages
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { LiquidMercuryControl } from '../../components/common/LiquidMercuryControl';
 import {
   MandarinTopicItem,
   MandarinQuizTopic,
@@ -393,32 +394,18 @@ export const MandarinClassSection: React.FC = () => {
           </h2>
         </div>
 
-        {/* Pill Sub-Navigation Switcher */}
-        <div className="inline-flex p-1 bg-zinc-100 dark:bg-zinc-900 rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60 shrink-0">
-          <button
-            type="button"
-            onClick={() => setActiveSubTab('materi')}
-            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[44px] flex items-center gap-2 active:scale-[0.98] ${
-              activeSubTab === 'materi'
-                ? 'bg-white dark:bg-zinc-800 text-red-700 dark:text-red-300 shadow-sm border border-zinc-200/70 dark:border-zinc-700/70'
-                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
-            }`}
-          >
-            <BookOpen className="w-4 h-4" />
-            <span>Materi Belajar</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveSubTab('quiz')}
-            className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[44px] flex items-center gap-2 active:scale-[0.98] ${
-              activeSubTab === 'quiz'
-                ? 'bg-white dark:bg-zinc-800 text-red-700 dark:text-red-300 shadow-sm border border-zinc-200/70 dark:border-zinc-700/70'
-                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
-            }`}
-          >
-            <HelpCircle className="w-4 h-4" />
-            <span>Quiz Interaktif</span>
-          </button>
+        {/* Liquid Mercury Sub-Navigation Switcher */}
+        <div className="shrink-0">
+          <LiquidMercuryControl<'materi' | 'quiz'>
+            size="md"
+            options={[
+              { id: 'materi', label: 'Materi Belajar', icon: BookOpen },
+              { id: 'quiz', label: 'Quiz Interaktif', icon: HelpCircle }
+            ]}
+            value={activeSubTab}
+            onChange={setActiveSubTab}
+            ariaLabel="Sub-Navigasi Mandarin Class"
+          />
         </div>
       </div>
 
@@ -427,26 +414,18 @@ export const MandarinClassSection: React.FC = () => {
       {/* ========================================================= */}
       {activeSubTab === 'materi' && (
         <div className="space-y-8 animate-in fade-in duration-300">
-          {/* Topik Pills Horizontal Selector */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-            {topics.map((topic) => {
-              const isSelected = selectedTopic.id === topic.id;
-              return (
-                <button
-                  key={topic.id}
-                  type="button"
-                  onClick={() => setSelectedTopic(topic)}
-                  className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[44px] flex items-center gap-2 active:scale-[0.98] ${
-                    isSelected
-                      ? 'bg-red-600 text-white shadow-xs'
-                      : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200/70 dark:border-zinc-800/70 hover:bg-zinc-50'
-                  }`}
-                >
-                  <Languages className="w-3.5 h-3.5" />
-                  <span>{topic.topicName}</span>
-                </button>
-              );
-            })}
+          {/* Topik Pills Horizontal Selector (Liquid Mercury) */}
+          <div className="shrink-0 max-w-full overflow-x-auto no-scrollbar">
+            <LiquidMercuryControl
+              size="sm"
+              options={topics.map((t) => ({ id: t.id, label: t.topicName, icon: Languages }))}
+              value={selectedTopic.id}
+              onChange={(id) => {
+                const found = topics.find((t) => t.id === id);
+                if (found) setSelectedTopic(found);
+              }}
+              ariaLabel="Filter Topik Materi Mandarin"
+            />
           </div>
 
           {/* Kartu Detail Materi Terpilih */}

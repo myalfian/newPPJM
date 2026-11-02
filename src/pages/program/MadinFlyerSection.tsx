@@ -13,6 +13,7 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { LiquidMercuryControl } from '../../components/common/LiquidMercuryControl';
 import {
   MadinFlyerItem,
   FlyerCategory,
@@ -250,29 +251,22 @@ export const MadinFlyerSection: React.FC = () => {
 
         {/* Filter Bar: Category & Level */}
         <div className="flex flex-wrap items-center justify-between gap-2.5 bg-zinc-50 dark:bg-zinc-900/60 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60">
-          {/* Main Category Filter */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-            {[
-              { id: 'all', label: 'Semua Poster' },
-              { id: 'kitab', label: 'Kurikulum Kitab Kuning' },
-              { id: 'ubudiyah', label: 'Panduan Ubudiyah' }
-            ].map((f) => (
-              <button
-                key={f.id}
-                type="button"
-                onClick={() => {
-                  setCategoryFilter(f.id as any);
-                  if (f.id === 'ubudiyah') setLevelFilter('all');
-                }}
-                className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[32px] active:scale-[0.98] ${
-                  categoryFilter === f.id
-                    ? 'bg-emerald-700 text-white shadow-xs'
-                    : 'bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 border border-zinc-200/80 dark:border-zinc-700/80'
-                }`}
-              >
-                {f.label}
-              </button>
-            ))}
+          {/* Main Category Filter (Liquid Mercury) */}
+          <div className="shrink-0 max-w-full overflow-x-auto no-scrollbar">
+            <LiquidMercuryControl<FlyerCategory>
+              size="sm"
+              options={[
+                { id: 'all', label: 'Semua Poster' },
+                { id: 'kitab', label: 'Kurikulum Kitab Kuning' },
+                { id: 'ubudiyah', label: 'Panduan Ubudiyah' }
+              ]}
+              value={categoryFilter}
+              onChange={(val) => {
+                setCategoryFilter(val);
+                if (val === 'ubudiyah') setLevelFilter('all');
+              }}
+              ariaLabel="Filter Kategori Poster Madin"
+            />
           </div>
 
           {/* Level Filter (Only active if Kitab or All) */}
@@ -281,25 +275,18 @@ export const MadinFlyerSection: React.FC = () => {
               <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-medium mr-1 hidden sm:inline">
                 Jenjang:
               </span>
-              {[
-                { id: 'all', label: 'Semua Jenjang' },
-                { id: 'Ula', label: 'Tingkat Ula' },
-                { id: 'Wustho', label: 'Tingkat Wustho' },
-                { id: 'Ulya', label: 'Tingkat Ulya' }
-              ].map((lvl) => (
-                <button
-                  key={lvl.id}
-                  type="button"
-                  onClick={() => setLevelFilter(lvl.id)}
-                  className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer whitespace-nowrap min-h-[28px] ${
-                    levelFilter === lvl.id
-                      ? 'bg-amber-600 text-white shadow-xs'
-                      : 'bg-zinc-200/70 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300/70 dark:hover:bg-zinc-700'
-                  }`}
-                >
-                  {lvl.label}
-                </button>
-              ))}
+              <LiquidMercuryControl<FlyerLevel>
+                size="sm"
+                options={[
+                  { id: 'all', label: 'Semua Jenjang' },
+                  { id: 'Ula', label: 'Tingkat Ula' },
+                  { id: 'Wustho', label: 'Tingkat Wustho' },
+                  { id: 'Ulya', label: 'Tingkat Ulya' }
+                ]}
+                value={levelFilter}
+                onChange={setLevelFilter}
+                ariaLabel="Filter Jenjang Poster"
+              />
             </div>
           )}
         </div>

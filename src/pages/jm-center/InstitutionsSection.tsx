@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { SafeRichContent } from '../../components/common/SafeRichContent';
+import { LiquidMercuryControl } from '../../components/common/LiquidMercuryControl';
 
 export interface InstitutionsSectionProps {
   initialFilter?: 'all' | 'pesantren' | 'formal' | 'madin';
@@ -902,52 +903,20 @@ export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initia
           </p>
         </div>
 
-        {/* Filter Pills (Matches Attached Image Style Exactly) */}
-        <div className="flex items-center gap-1 p-1 bg-zinc-100 dark:bg-zinc-800/80 rounded-xl border border-zinc-200 dark:border-zinc-700/60 text-xs overflow-x-auto shrink-0 shadow-2xs">
-          <button
-            type="button"
-            onClick={() => setFilter('all')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition-all text-xs whitespace-nowrap cursor-pointer ${
-              filter === 'all'
-                ? 'bg-emerald-800 dark:bg-emerald-700 text-white shadow-xs'
-                : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-700/60'
-            }`}
-          >
-            Semua Unit
-          </button>
-          <button
-            type="button"
-            onClick={() => setFilter('pesantren')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition-all text-xs whitespace-nowrap cursor-pointer ${
-              filter === 'pesantren'
-                ? 'bg-emerald-800 dark:bg-emerald-700 text-white shadow-xs'
-                : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-700/60'
-            }`}
-          >
-            Pondok Pesantren
-          </button>
-          <button
-            type="button"
-            onClick={() => setFilter('formal')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition-all text-xs whitespace-nowrap cursor-pointer ${
-              filter === 'formal'
-                ? 'bg-emerald-800 dark:bg-emerald-700 text-white shadow-xs'
-                : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-700/60'
-            }`}
-          >
-            SMP Plus (Sekolah)
-          </button>
-          <button
-            type="button"
-            onClick={() => setFilter('madin')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition-all text-xs whitespace-nowrap cursor-pointer ${
-              filter === 'madin'
-                ? 'bg-emerald-800 dark:bg-emerald-700 text-white shadow-xs'
-                : 'text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/60 dark:hover:bg-zinc-700/60'
-            }`}
-          >
-            Madrasah Diniyah
-          </button>
+        {/* Liquid Mercury Segmented Filter */}
+        <div className="shrink-0 max-w-full overflow-x-auto no-scrollbar">
+          <LiquidMercuryControl<'all' | 'pesantren' | 'formal' | 'madin'>
+            size="sm"
+            options={[
+              { id: 'all', label: 'Semua Unit' },
+              { id: 'pesantren', label: 'Pondok Pesantren' },
+              { id: 'formal', label: 'SMP Plus (Sekolah)' },
+              { id: 'madin', label: 'Madrasah Diniyah' },
+            ]}
+            value={filter}
+            onChange={setFilter}
+            ariaLabel="Filter Unit Lembaga"
+          />
         </div>
       </div>
 

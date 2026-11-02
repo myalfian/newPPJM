@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Building2,
@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { FacilityItem } from './types';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { LiquidMercuryControl } from '../../components/common/LiquidMercuryControl';
 
 export const FacilitiesSection: React.FC = () => {
   const [facilities, setFacilities] = useState<FacilityItem[]>([]);
@@ -99,6 +100,11 @@ export const FacilitiesSection: React.FC = () => {
     ? facilities
     : facilities.filter((f) => f.category === selectedCategory);
 
+  const categoryOptions = useMemo(
+    () => categories.map((cat) => ({ id: cat, label: cat })),
+    [categories]
+  );
+
   return (
     <div className="space-y-2 sm:space-y-2.5">
       {/* Header Info & Category Pills */}
@@ -116,22 +122,15 @@ export const FacilitiesSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Filter Pills */}
-        <div className="flex items-center gap-1 overflow-x-auto pb-0.5 no-scrollbar shrink-0">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-2.5 py-0.5 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer whitespace-nowrap min-h-[28px] ${
-                selectedCategory === cat
-                  ? 'bg-emerald-700 text-white shadow-2xs'
-                  : 'bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+        {/* Liquid Mercury Segmented Filter */}
+        <div className="shrink-0 max-w-full overflow-x-auto no-scrollbar">
+          <LiquidMercuryControl
+            size="sm"
+            options={categoryOptions}
+            value={selectedCategory}
+            onChange={setSelectedCategory}
+            ariaLabel="Filter Kategori Fasilitas"
+          />
         </div>
       </div>
 

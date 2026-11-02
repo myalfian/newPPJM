@@ -29,6 +29,7 @@ import {
 import { RepeatMode } from './types';
 import { ReadQuran } from '../../components/smart-jm/hafidz/ReadQuran';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { LiquidMercuryControl } from '../../components/common/LiquidMercuryControl';
 
 export const HafidzQuranSection: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState<'read' | 'murojaah'>('read');
@@ -250,36 +251,22 @@ export const HafidzQuranSection: React.FC = () => {
           </h2>
         </div>
 
-        {/* Pill Sub-Navigation Switcher */}
-        <div className="inline-flex p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 shrink-0">
-          <button
-            type="button"
-            onClick={() => {
+        {/* Liquid Mercury Sub-Navigation Switcher */}
+        <div className="shrink-0">
+          <LiquidMercuryControl<'read' | 'murojaah'>
+            size="md"
+            options={[
+              { id: 'read', label: 'Read Quran (114 Surat)', icon: BookOpen },
+              { id: 'murojaah', label: 'Latihan Murojaah', icon: Headphones }
+            ]}
+            value={activeSubTab}
+            onChange={(val) => {
               if (audioRef.current) audioRef.current.pause();
               setIsPlayingAudio(false);
-              setActiveSubTab('read');
+              setActiveSubTab(val);
             }}
-            className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[36px] flex items-center gap-1.5 active:scale-[0.98] ${
-              activeSubTab === 'read'
-                ? 'bg-white dark:bg-zinc-800 text-emerald-800 dark:text-emerald-300 shadow-sm border border-zinc-200/70 dark:border-zinc-700/70 font-black'
-                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
-            }`}
-          >
-            <BookOpen className="w-4 h-4 text-[#d4af37]" />
-            <span>Read Quran (114 Surat)</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveSubTab('murojaah')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[36px] flex items-center gap-1.5 active:scale-[0.98] ${
-              activeSubTab === 'murojaah'
-                ? 'bg-white dark:bg-zinc-800 text-emerald-800 dark:text-emerald-300 shadow-sm border border-zinc-200/70 dark:border-zinc-700/70 font-black'
-                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
-            }`}
-          >
-            <Headphones className="w-4 h-4 text-[#d4af37]" />
-            <span>Latihan Murojaah</span>
-          </button>
+            ariaLabel="Sub-Navigasi Hafidz Quran"
+          />
         </div>
       </div>
 

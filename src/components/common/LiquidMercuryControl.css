@@ -1,0 +1,236 @@
+/* Liquid Mercury Segmented Control with Metallic Stretch Animation
+ * Inspired by CodeFronts Liquid Mercury Button Group:
+ * https://codefronts.com/components/css-button-groups/liquid-mercury/
+ *
+ * Features:
+ * - Specular liquid chrome gradient with rotating sheen angle (--mercury-sheen)
+ * - Sweeping glint reflection shimmer (mercury-glint)
+ * - Elastic squash & stretch surface tension animation during tab transition (mercury-squash)
+ * - Deep dark slate track with inset bevel shadow
+ * - High-contrast dark obsidian typography on active metallic thumb
+ * - Adaptive layout: works on fixed grids and dynamic-width scrolling pills
+ * - Zero lag, hardware-accelerated transitions
+ */
+
+@property --mercury-sheen {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+.liquid-mercury-wrapper {
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+}
+
+.liquid-mercury-track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  background: #141822;
+  border: 1px solid #2a3142;
+  border-radius: 9999px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.65), 0 2px 6px -1px rgba(0, 0, 0, 0.25);
+  user-select: none;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.liquid-mercury-track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Size Variants */
+.liquid-mercury-track--sm {
+  padding: 3.5px;
+  gap: 2px;
+}
+
+.liquid-mercury-track--md {
+  padding: 4.5px;
+  gap: 3px;
+}
+
+.liquid-mercury-track--lg {
+  padding: 6px;
+  gap: 4px;
+}
+
+/* Individual Option Button */
+.liquid-mercury-opt {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  font-weight: 700;
+  color: #8b93a7;
+  cursor: pointer;
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  outline: none;
+  border-radius: 9999px;
+  transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.liquid-mercury-opt--sm {
+  min-height: 28px;
+  padding: 3px 12px;
+  font-size: 11.5px;
+  letter-spacing: -0.01em;
+}
+
+.liquid-mercury-opt--md {
+  min-height: 36px;
+  padding: 5px 16px;
+  font-size: 13px;
+}
+
+.liquid-mercury-opt--lg {
+  min-height: 44px;
+  padding: 8px 20px;
+  font-size: 14.5px;
+}
+
+.liquid-mercury-opt:hover {
+  color: #ffffff;
+}
+
+.liquid-mercury-opt:active {
+  transform: scale(0.97);
+}
+
+.liquid-mercury-opt:focus-visible {
+  outline: 2px solid #9fb0ff;
+  outline-offset: 2px;
+}
+
+/* Active Option Label */
+.liquid-mercury-opt.is-active {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.liquid-mercury-opt.is-active svg {
+  color: #0f172a !important;
+  stroke: #0f172a !important;
+}
+
+.liquid-mercury-opt:not(.is-active) svg {
+  color: #8b93a7;
+  transition: color 0.25s;
+}
+
+.liquid-mercury-opt:not(.is-active):hover svg {
+  color: #ffffff;
+}
+
+/* The Liquid Mercury Thumb */
+.liquid-mercury-thumb {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 9999px;
+  background: linear-gradient(
+    var(--mercury-sheen, 0deg),
+    #f4f6fb 0%,
+    #c3cad9 30%,
+    #7a8398 55%,
+    #dfe4ee 80%,
+    #f4f6fb 100%
+  );
+  box-shadow: 
+    0 4px 14px -4px rgba(0, 0, 0, 0.8),
+    inset 0 1px 1px rgba(255, 255, 255, 0.95),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.32);
+  animation: mercury-sheen 5s linear infinite;
+  overflow: hidden;
+  transition: left 0.45s cubic-bezier(0.5, -0.2, 0.3, 1.3),
+              top 0.45s cubic-bezier(0.5, -0.2, 0.3, 1.3),
+              width 0.45s cubic-bezier(0.5, -0.2, 0.3, 1.3),
+              height 0.45s cubic-bezier(0.5, -0.2, 0.3, 1.3);
+}
+
+/* Glint Specular Highlight Animation */
+.liquid-mercury-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.85) 50%,
+    transparent 65%
+  );
+  transform: translateX(-120%);
+  animation: mercury-glint 5s ease-in-out infinite;
+}
+
+/* Squash & Stretch Motion on Tab Change */
+.liquid-mercury-thumb.is-squashing {
+  animation: mercury-sheen 5s linear infinite, mercury-squash 0.48s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes mercury-sheen {
+  to {
+    --mercury-sheen: 360deg;
+  }
+}
+
+@keyframes mercury-glint {
+  0%,
+  60% {
+    transform: translateX(-120%);
+  }
+  80%,
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes mercury-squash {
+  0% {
+    transform: scale(1, 1);
+  }
+  40% {
+    transform: scale(1.15, 0.82);
+  }
+  70% {
+    transform: scale(0.95, 1.08);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
+
+/* Equal Columns Layout Variant */
+.liquid-mercury-track--equal {
+  display: grid;
+  width: 100%;
+}
+
+.liquid-mercury-track--equal .liquid-mercury-opt {
+  width: 100%;
+}
+
+/* Accessibility: Reduce Motion */
+@media (prefers-reduced-motion: reduce) {
+  .liquid-mercury-thumb,
+  .liquid-mercury-thumb::after {
+    animation: none !important;
+    transition: left 0.2s, top 0.2s, width 0.2s, height 0.2s !important;
+  }
+  .liquid-mercury-thumb.is-squashing {
+    animation: none !important;
+  }
+}
+

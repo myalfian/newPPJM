@@ -20,6 +20,7 @@ import {
   Info
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { LiquidMercuryControl } from '../../components/common/LiquidMercuryControl';
 import {
   StemWorksheetItem,
   StemPortfolioItem,
@@ -408,32 +409,18 @@ export const StemAreaSection: React.FC = () => {
           </h2>
         </div>
 
-        {/* Pill Sub-Navigation Switcher */}
-        <div className="inline-flex p-1 bg-zinc-100 dark:bg-zinc-900 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60 shrink-0">
-          <button
-            type="button"
-            onClick={() => setActiveSubTab('worksheet')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[36px] flex items-center gap-1.5 active:scale-[0.98] ${
-              activeSubTab === 'worksheet'
-                ? 'bg-white dark:bg-zinc-800 text-blue-700 dark:text-blue-300 shadow-sm border border-zinc-200/70 dark:border-zinc-700/70'
-                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
-            }`}
-          >
-            <FileCode2 className="w-4 h-4" />
-            <span>Worksheet Proyek</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveSubTab('portfolio')}
-            className={`px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer min-h-[36px] flex items-center gap-1.5 active:scale-[0.98] ${
-              activeSubTab === 'portfolio'
-                ? 'bg-white dark:bg-zinc-800 text-blue-700 dark:text-blue-300 shadow-sm border border-zinc-200/70 dark:border-zinc-700/70'
-                : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'
-            }`}
-          >
-            <Sparkles className="w-4 h-4" />
-            <span>Portofolio Siswa</span>
-          </button>
+        {/* Liquid Mercury Sub-Navigation Switcher */}
+        <div className="shrink-0">
+          <LiquidMercuryControl<'worksheet' | 'portfolio'>
+            size="md"
+            options={[
+              { id: 'worksheet', label: 'Worksheet Proyek', icon: FileCode2 },
+              { id: 'portfolio', label: 'Portofolio Siswa', icon: Sparkles }
+            ]}
+            value={activeSubTab}
+            onChange={setActiveSubTab}
+            ariaLabel="Sub-Navigasi STEM"
+          />
         </div>
       </div>
 
