@@ -520,80 +520,56 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
   }, [videoActivities, searchQuery]);
 
   return (
-    <div className="bg-slate-50 min-h-screen pb-8">
-      {/* 1. HERO HEADER SECTION */}
-      <section className="bg-gradient-to-b from-[#0E7A4C] via-[#095736] to-[#042818] text-white py-6 sm:py-8 px-3 sm:px-5 relative overflow-hidden">
+    <div className="bg-slate-50 min-h-screen pb-4">
+      {/* 1. HERO HEADER SECTION - COMPACT VERTICAL SPACING (SEARCH REMOVED) */}
+      <section className="bg-gradient-to-b from-[#0E7A4C] via-[#095736] to-[#042818] text-white py-3.5 sm:py-5 px-3 sm:px-4 relative overflow-hidden">
         {/* Ambient Lights */}
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#C8A951]/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 -right-24 w-80 h-80 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-6xl mx-auto relative z-10 space-y-2.5 text-center">
-          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#C8A951] text-[11px] font-bold uppercase tracking-widest shadow-2xs">
-            <Sparkles className="w-3.5 h-3.5 text-[#C8A951]" />
+        <div className="max-w-6xl mx-auto relative z-10 space-y-1.5 text-center">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#C8A951] text-[10.5px] font-bold uppercase tracking-widest shadow-2xs">
+            <Sparkles className="w-3 h-3 text-[#C8A951]" />
             <span>Arsip Dokumentasi &amp; Multimedia PPJM</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black tracking-tight text-white drop-shadow-2xs">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white drop-shadow-2xs">
             Galeri Kegiatan &amp; Media Resmi
           </h1>
 
           <p className="max-w-2xl mx-auto text-xs sm:text-sm text-emerald-100/90 leading-relaxed font-normal">
             Jejak visual dinamika santri, lantunan kalam suci, majelis ilmu salafiyah, hingga kreasi teknologi STEM yang dirangkum dalam dokumentasi foto dan video resmi Pondok Pesantren Jauharul Maknuun Lasem.
           </p>
-
-          {/* Search Bar Input */}
-          <div className="pt-2 max-w-lg mx-auto">
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Cari dokumentasi agenda foto atau video..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-white text-slate-800 placeholder-slate-400 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#C8A951] text-xs sm:text-sm"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-          </div>
         </div>
       </section>
 
-      {/* 2. CATEGORY CHIP TABS - NAVBAR TABS LUXURY STYLE & ANIMATION */}
-      <section className="max-w-6xl mx-auto px-2.5 sm:px-4 -mt-4 relative z-20 select-none">
+      {/* 2. CATEGORY CHIP TABS - HORIZONTALLY DISTRIBUTED WITH WHITE NOTCH BACKGROUND */}
+      <section className="max-w-6xl mx-auto px-2.5 sm:px-4 -mt-3.5 sm:-mt-4 relative z-20 select-none">
         <nav aria-label="Kategori Galeri" className="curved-navbar-wrapper w-full">
           <div className="curved-navbar-bar w-full">
             <div
               ref={tabListRef}
-              className="curved-scroll-track w-full flex items-center justify-start overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full px-1.5 sm:px-2"
+              className="curved-scroll-track w-full flex items-center justify-start overflow-x-auto snap-x snap-mandatory no-scrollbar scroll-smooth h-full px-1 sm:px-2"
             >
-              <ul className="curved-tab-list flex items-center justify-start w-full gap-1 sm:gap-2">
+              <ul className="curved-tab-list flex items-center justify-between w-full gap-1 sm:gap-1.5">
                 {GALLERY_TABS.map((tab) => {
                   const Icon = tab.icon;
                   const isActive = activeTab === tab.id;
-                  const count = tab.id === 'foto' ? photoActivities.length : videoActivities.length;
 
                   return (
                     <li
                       key={tab.id}
-                      className="curved-tab-col flex-none h-full flex items-center justify-center shrink-0 snap-start"
+                      className="curved-tab-col flex-1 h-full flex items-center justify-center min-w-[125px] sm:min-w-0 snap-start"
                     >
                       <button
                         ref={isActive ? activeTabRef : null}
                         type="button"
                         onClick={() => handleTabChange(tab.id as 'foto' | 'video')}
-                        className={`curved-tab-link bg-transparent border-0 relative flex items-center justify-center cursor-pointer ${
+                        className={`curved-tab-link w-full bg-transparent border-0 relative flex items-center justify-center cursor-pointer px-1.5 sm:px-2 ${
                           isActive ? 'active' : ''
                         }`}
                       >
-                        {/* Animated Sliding Notch Pointer & Radiant Floating Gold Jewel */}
+                        {/* Animated Sliding Notch Pointer with Pristine White Cutout Notch & Radiant Gold Jewel */}
                         {isActive && (
                           <motion.div
                             layoutId="galeriCurvedPointer"
@@ -622,11 +598,11 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
                                   <stop offset="100%" stopColor="#92400e" />
                                 </radialGradient>
                               </defs>
-                              {/* Notch Surface matching hero background tone */}
+                              {/* Pristine White Cutout Notch Surface matching page background tone */}
                               <path
                                 d="M 0 0 C 16 0, 22 18, 37 18 C 52 18, 58 0, 74 0 Z"
                                 className="curved-notch-surface"
-                                style={{ fill: '#042818' }}
+                                style={{ fill: '#ffffff' }}
                                 stroke="none"
                               />
                               {/* Radiant Jewel Gold Floating Indicator */}
@@ -659,15 +635,6 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
                           />
                           <span className="sm:hidden font-extrabold">{tab.shortLabel || tab.label}</span>
                           <span className="hidden sm:inline font-bold">{tab.label}</span>
-                          <span
-                            className={`curved-tab-badge ml-1 px-1.5 py-0.2 rounded-full text-[9px] font-black transition-colors ${
-                              isActive
-                                ? 'bg-[#fbbf24] text-[#064e3b] shadow-xs'
-                                : 'bg-white/20 text-emerald-100'
-                            }`}
-                          >
-                            {count}
-                          </span>
                         </span>
                       </button>
                     </li>
@@ -680,7 +647,7 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
       </section>
 
       {/* 3. MAIN CONTENT CONTAINER */}
-      <main className="max-w-6xl mx-auto px-2.5 sm:px-4 pt-4 sm:pt-6">
+      <main className="max-w-6xl mx-auto px-2.5 sm:px-4 pt-2.5 sm:pt-3">
         <AnimatePresence mode="wait">
         {/* ================================================================= */}
         {/* TAB 1: FOTO KEGIATAN (Grid Mini 3-Foto per Kartu)                */}
