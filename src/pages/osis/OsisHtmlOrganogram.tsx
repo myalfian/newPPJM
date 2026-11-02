@@ -151,23 +151,23 @@ export const OsisHtmlOrganogram: React.FC = () => {
   };
 
   return (
-    <div className="space-y-3 sm:space-y-4 rounded-2xl sm:rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-sm overflow-hidden">
+    <div className="space-y-2 sm:space-y-2.5 rounded-xl sm:rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 shadow-xs overflow-hidden">
       {/* ======================================================== */}
       {/* 1. HEADER TOOLBAR */}
       {/* ======================================================== */}
-      <div className="p-3.5 sm:p-5 bg-gradient-to-r from-emerald-950 via-[#0E7A4C] to-[#042818] text-white flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[#C8A951]/30">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/40 border border-[#C8A951]/40 text-[#C8A951] text-[10.5px] font-bold uppercase tracking-wider">
+      <div className="p-2.5 sm:p-3 bg-gradient-to-r from-emerald-950 via-[#0E7A4C] to-[#042818] text-white flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-[#C8A951]/30">
+        <div className="space-y-0.5">
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/40 border border-[#C8A951]/40 text-[#C8A951] text-[10px] font-bold uppercase tracking-wider">
             <Sparkles className="w-3 h-3 text-[#C8A951]" />
             <span>Dokumen Tata Kelola Resmi • Garis Komando &amp; Koordinasi</span>
           </div>
-          <h3 className="text-base sm:text-xl font-black text-white tracking-tight flex flex-wrap items-center gap-2">
+          <h3 className="text-sm sm:text-lg font-black text-white tracking-tight flex flex-wrap items-center gap-1.5">
             <span>Bagan Struktur Organisasi OSIS</span>
-            <span className="text-[11px] px-2 py-0.5 rounded-md bg-[#C8A951] text-[#042818] font-bold font-mono">
+            <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-[#C8A951] text-[#042818] font-bold font-mono">
               2026/2027
             </span>
           </h3>
-          <p className="text-[11px] sm:text-xs text-emerald-100/85">
+          <p className="text-[10.5px] sm:text-[11px] text-emerald-100/85">
             SMP Plus Jauharul Maknuun Lasem, Sidayu, Gresik • Total {totalMembersCount} Pengurus &amp; Pembina
           </p>
         </div>
@@ -268,23 +268,23 @@ export const OsisHtmlOrganogram: React.FC = () => {
       {/* ======================================================== */}
       {/* 2. INTERACTIVE SEARCH & QUICK LEGEND TOGGLE */}
       {/* ======================================================== */}
-      <div className="px-3 sm:px-6 pt-1 sm:pt-2 space-y-2">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+      <div className="px-2.5 sm:px-4 pt-1 space-y-1.5">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-1.5">
           {/* Search Input */}
           <div className="relative flex-1">
-            <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Cari nama pengurus (Afif, Yumma, Ofat, Desta, Ghazy...)"
-              className="w-full pl-9 pr-8 py-2 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-[#0E7A4C]"
+              className="w-full pl-8 pr-7 py-1.5 text-xs rounded-xl bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-[#0E7A4C]"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 text-xs cursor-pointer p-1"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 text-xs cursor-pointer p-0.5"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -295,27 +295,27 @@ export const OsisHtmlOrganogram: React.FC = () => {
           <button
             type="button"
             onClick={() => setShowLegend(!showLegend)}
-            className="text-xs text-zinc-600 dark:text-zinc-400 hover:text-[#0E7A4C] dark:hover:text-emerald-400 font-bold flex items-center gap-1.5 self-start sm:self-auto cursor-pointer px-1 py-1"
+            className="text-xs text-zinc-600 dark:text-zinc-400 hover:text-[#0E7A4C] dark:hover:text-emerald-400 font-bold flex items-center gap-1 self-start sm:self-auto cursor-pointer px-1 py-0.5"
           >
             <HelpCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-            <span>{showLegend ? 'Tutup Petunjuk Garis' : 'Petunjuk Garis Komando'}</span>
+            <span>{showLegend ? 'Tutup Petunjuk' : 'Petunjuk Garis'}</span>
             {showLegend ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
           </button>
         </div>
 
         {/* Search Results Summary Banner */}
         {query && (
-          <div className="p-2 sm:p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/80 text-xs flex items-center justify-between gap-2 text-amber-900 dark:text-amber-200">
+          <div className="p-1.5 sm:p-2 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800/80 text-xs flex items-center justify-between gap-2 text-amber-900 dark:text-amber-200">
             <div className="flex items-center gap-1.5 truncate">
               <Sparkles className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-              <span className="font-bold">
+              <span className="font-bold text-[11px] sm:text-xs">
                 {matchingMembers.length > 0
                   ? `Ditemukan ${matchingMembers.length} pengurus cocok dengan "${searchQuery}"`
                   : `Tidak ditemukan pengurus dengan nama "${searchQuery}"`}
               </span>
             </div>
             {matchingMembers.length > 0 && (
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-200/80 dark:bg-amber-900 text-amber-950 dark:text-amber-100 font-black shrink-0">
+              <span className="text-[9.5px] font-mono px-2 py-0.5 rounded-full bg-amber-200/80 dark:bg-amber-900 text-amber-950 dark:text-amber-100 font-black shrink-0">
                 Sorotan Emas Aktif
               </span>
             )}
@@ -324,39 +324,39 @@ export const OsisHtmlOrganogram: React.FC = () => {
 
         {/* Collapsible Legend Drawer */}
         {showLegend && (
-          <div className="p-3 sm:p-3.5 rounded-2xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/60 text-xs text-zinc-600 dark:text-zinc-400 grid grid-cols-1 sm:grid-cols-3 gap-2.5 animate-in fade-in duration-200">
-            <div className="flex items-start gap-2">
-              <span className="w-5 h-1 bg-[#0E7A4C] rounded-full inline-block mt-1.5 shrink-0" />
+          <div className="p-2 sm:p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/80 dark:border-zinc-700/60 text-xs text-zinc-600 dark:text-zinc-400 grid grid-cols-1 sm:grid-cols-3 gap-2 animate-in fade-in duration-200">
+            <div className="flex items-start gap-1.5">
+              <span className="w-4 h-1 bg-[#0E7A4C] rounded-full inline-block mt-1.5 shrink-0" />
               <div>
-                <span className="font-bold text-zinc-800 dark:text-zinc-200 block">
-                  Garis Komando Resmi (↓)
+                <span className="font-bold text-zinc-800 dark:text-zinc-200 block text-[11px]">
+                  Garis Komando (↓)
                 </span>
-                <span className="text-[10.5px] text-zinc-500 leading-tight">
-                  Alur mandat tugas pokok &amp; instruksi hierarkis langsung.
+                <span className="text-[10px] text-zinc-500 leading-tight">
+                  Alur mandat tugas pokok &amp; hierarkis.
                 </span>
               </div>
             </div>
 
-            <div className="flex items-start gap-2">
-              <span className="w-5 h-0 border-t-2 border-dashed border-amber-500 inline-block mt-1.5 shrink-0" />
+            <div className="flex items-start gap-1.5">
+              <span className="w-4 h-0 border-t-2 border-dashed border-amber-500 inline-block mt-1.5 shrink-0" />
               <div>
-                <span className="font-bold text-zinc-800 dark:text-zinc-200 block">
-                  Garis Pembinaan &amp; Bimbingan (↓)
+                <span className="font-bold text-zinc-800 dark:text-zinc-200 block text-[11px]">
+                  Garis Pembinaan (↓)
                 </span>
-                <span className="text-[10.5px] text-zinc-500 leading-tight">
-                  Pendampingan teknis kesiswaan, tata tertib, &amp; evaluasi berkala.
+                <span className="text-[10px] text-zinc-500 leading-tight">
+                  Pendampingan &amp; evaluasi berkala.
                 </span>
               </div>
             </div>
 
-            <div className="flex items-start gap-2">
-              <span className="w-5 h-0 border-t-2 border-dotted border-blue-500 inline-block mt-1.5 shrink-0" />
+            <div className="flex items-start gap-1.5">
+              <span className="w-4 h-0 border-t-2 border-dotted border-blue-500 inline-block mt-1.5 shrink-0" />
               <div>
-                <span className="font-bold text-zinc-800 dark:text-zinc-200 block">
-                  Garis Koordinasi Presidium (↔)
+                <span className="font-bold text-zinc-800 dark:text-zinc-200 block text-[11px]">
+                  Garis Koordinasi (↔)
                 </span>
-                <span className="text-[10.5px] text-zinc-500 leading-tight">
-                  Kerja sama kemitraan antarketua, BPH, &amp; seksi bidang pelaksana.
+                <span className="text-[10px] text-zinc-500 leading-tight">
+                  Kerja sama kemitraan antardivisi.
                 </span>
               </div>
             </div>
@@ -368,7 +368,7 @@ export const OsisHtmlOrganogram: React.FC = () => {
       {/* 3. MAIN CONTENT: MODE 1 - ALUR VERTIKAL (MOBILE-FIT)    */}
       {/* ======================================================== */}
       {activeViewMode === 'flow' && (
-        <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
+        <div className="p-2.5 sm:p-4 space-y-2.5 sm:space-y-3.5">
           {/* Quick Notice on Mobile */}
           <div className="md:hidden flex items-center justify-between gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/60 text-[11px] text-emerald-800 dark:text-emerald-300 font-medium">
             <div className="flex items-center gap-1.5">

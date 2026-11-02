@@ -100,25 +100,25 @@ export const OsisEventsSection: React.FC = () => {
       : events.filter((e) => e.category === activeCategoryFilter);
 
   return (
-    <div className="space-y-4 sm:space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-2 sm:space-y-2.5 animate-in fade-in duration-300">
       {/* Intro Header */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-1.5 border-b border-zinc-200/70 dark:border-zinc-800/70 pb-1.5">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-1">
-            <Newspaper className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold uppercase tracking-wider mb-0.5">
+            <Newspaper className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
             <span>Dokumentasi &amp; Berita Terkini Masa Bakti 2026/2027</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white">
+          <h2 className="text-base sm:text-xl font-bold tracking-tight text-zinc-900 dark:text-white">
             Agenda Kegiatan &amp; Dokumentasi OSIS
           </h2>
         </div>
-        <p className="text-xs sm:text-sm text-zinc-500 max-w-md">
+        <p className="text-[11px] sm:text-xs text-zinc-500 max-w-md">
           Liputan resmi, siaran pers, dan dokumentasi visual peristiwa penting kepengurusan OSIS SMP Plus Jauharul Maknuun.
         </p>
       </div>
 
       {/* Category Filter Pills */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar select-none">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar select-none">
         {categories.map((cat) => {
           const isSelected = activeCategoryFilter === cat;
           return (
@@ -126,9 +126,9 @@ export const OsisEventsSection: React.FC = () => {
               key={cat}
               type="button"
               onClick={() => setActiveCategoryFilter(cat)}
-              className={`px-3 py-1.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap min-h-[36px] flex items-center gap-1.5 active:scale-[0.98] ${
+              className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[32px] flex items-center gap-1.5 active:scale-[0.98] ${
                 isSelected
-                  ? 'bg-[#0E7A4C] text-[#C8A951] shadow-md border border-[#C8A951]/40'
+                  ? 'bg-[#0E7A4C] text-[#C8A951] shadow-xs border border-[#C8A951]/40'
                   : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200/70 dark:border-zinc-800/70 hover:bg-zinc-50'
               }`}
             >
@@ -142,12 +142,12 @@ export const OsisEventsSection: React.FC = () => {
       </div>
 
       {/* Event Articles Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5">
         {filteredEvents.map((event) => (
           <article
             key={event.id}
             onClick={() => setSelectedArticle(event)}
-            className="group bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 overflow-hidden shadow-xs hover:shadow-xl hover:border-[#0E7A4C]/50 transition-all duration-300 flex flex-col justify-between cursor-pointer active:scale-[0.99] select-none"
+            className="group bg-white/95 dark:bg-zinc-900/90 rounded-xl sm:rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 overflow-hidden shadow-2xs hover:shadow-md hover:border-[#0E7A4C]/50 transition-all duration-300 flex flex-col justify-between cursor-pointer active:scale-[0.99] select-none"
           >
             <div>
               {/* Photo Banner with Aspect 16/9 */}
@@ -161,47 +161,47 @@ export const OsisEventsSection: React.FC = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
 
                 {/* Category Pill Tag */}
-                <div className="absolute top-3 left-3">
-                  <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-black/60 text-[#C8A951] border border-[#C8A951]/40 backdrop-blur-md shadow-xs">
+                <div className="absolute top-2.5 left-2.5">
+                  <span className="text-[9.5px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/60 text-[#C8A951] border border-[#C8A951]/40 backdrop-blur-md shadow-2xs">
                     {event.category}
                   </span>
                 </div>
 
                 {/* Date Tag */}
-                <div className="absolute bottom-3 left-3 flex items-center gap-1.5 text-xs text-white/90 font-medium drop-shadow-md">
-                  <Calendar className="w-3.5 h-3.5 text-[#C8A951]" />
+                <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 text-[11px] text-white/90 font-medium drop-shadow-md">
+                  <Calendar className="w-3 h-3 text-[#C8A951]" />
                   <span>{event.date}</span>
                 </div>
               </div>
 
               {/* Title & Excerpt */}
-              <div className="p-4 sm:p-5 space-y-2.5">
-                <h3 className="text-base sm:text-lg font-bold text-zinc-900 dark:text-white group-hover:text-[#0E7A4C] dark:group-hover:text-emerald-400 transition-colors leading-snug line-clamp-2">
+              <div className="p-2.5 sm:p-3.5 space-y-1.5">
+                <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white group-hover:text-[#0E7A4C] dark:group-hover:text-emerald-400 transition-colors leading-snug line-clamp-2">
                   {event.title}
                 </h3>
 
-                <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 line-clamp-3 leading-relaxed">
+                <p className="text-[11.5px] sm:text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed">
                   {event.summary}
                 </p>
 
                 {event.sloganQuote && (
-                  <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/60 text-xs font-semibold text-amber-900 dark:text-amber-200 italic">
+                  <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/60 text-[11px] font-semibold text-amber-900 dark:text-amber-200 italic">
                     &quot;{event.sloganQuote}&quot;
                   </div>
                 )}
 
-                <div className="flex items-center gap-2 text-xs text-zinc-400 pt-2 border-t border-zinc-100 dark:border-zinc-800">
-                  <User className="w-3.5 h-3.5 text-[#0E7A4C]" />
+                <div className="flex items-center gap-1.5 text-[11px] text-zinc-400 pt-1.5 border-t border-zinc-100 dark:border-zinc-800">
+                  <User className="w-3 h-3 text-[#0E7A4C]" />
                   <span className="truncate">{event.author}</span>
                 </div>
               </div>
             </div>
 
             {/* Read More Action */}
-            <div className="p-4 sm:p-5 pt-0">
-              <div className="flex items-center justify-between text-xs font-bold text-[#0E7A4C] dark:text-emerald-400 group-hover:underline">
+            <div className="p-2.5 sm:p-3.5 pt-0">
+              <div className="flex items-center justify-between text-[11px] font-bold text-[#0E7A4C] dark:text-emerald-400 group-hover:underline">
                 <span>Baca Dokumentasi Lengkap</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>
           </article>

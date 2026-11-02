@@ -84,24 +84,24 @@ export const OsisHub: React.FC<OsisHubProps> = ({ defaultTab = 'struktur' }) => 
   };
 
   return (
-    <div className="bg-slate-50 min-h-screen pb-4">
+    <div className="bg-slate-50 min-h-screen pb-2.5 sm:pb-3">
       {/* 1. HERO HEADER SECTION */}
-      <section className="bg-gradient-to-b from-[#0E7A4C] via-[#095736] to-[#042818] text-white py-3.5 sm:py-5 px-3 sm:px-4 relative overflow-hidden">
+      <section className="bg-gradient-to-b from-[#0E7A4C] via-[#095736] to-[#042818] text-white py-2.5 sm:py-3.5 px-3 sm:px-4 relative overflow-hidden">
         {/* Ambient Lights */}
         <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#C8A951]/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute top-1/2 -right-24 w-80 h-80 bg-emerald-400/15 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="max-w-6xl mx-auto relative z-10 space-y-1.5 text-center">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#C8A951] text-[10.5px] font-bold uppercase tracking-widest shadow-2xs">
+        <div className="max-w-6xl mx-auto relative z-10 space-y-1 text-center">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#C8A951] text-[10px] font-bold uppercase tracking-widest shadow-2xs">
             <Crown className="w-3 h-3 text-[#C8A951]" />
             <span>Portal Resmi Organisasi Siswa Intra Sekolah</span>
           </div>
 
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white drop-shadow-2xs">
+          <h1 className="text-lg sm:text-2xl md:text-3xl font-black tracking-tight text-white drop-shadow-2xs">
             OSIS SMP Plus Jauharul Maknuun
           </h1>
 
-          <p className="max-w-2xl mx-auto text-xs sm:text-sm text-emerald-100/90 leading-relaxed font-normal">
+          <p className="max-w-2xl mx-auto text-[11.5px] sm:text-xs text-emerald-100/90 leading-relaxed font-normal">
             Kawah candradimuka kepemimpinan santri muda: mengasah integritas kepribadian, tanggung jawab sosial, kecakapan diplomasi bahasa internasional, serta penegakan kedisiplinan dan keasrian pesantren.
           </p>
         </div>
@@ -210,8 +210,8 @@ export const OsisHub: React.FC<OsisHubProps> = ({ defaultTab = 'struktur' }) => 
         </nav>
       </section>
 
-      {/* 3. TAB CONTENT SECTIONS */}
-      <main className="max-w-6xl mx-auto px-2.5 sm:px-4 pt-2.5 sm:pt-3 min-h-[500px]">
+      {/* 3. TAB CONTENT SECTIONS - COMPACT VERTICAL SPACING */}
+      <main className="max-w-6xl mx-auto px-2 sm:px-3 lg:px-4 pt-1.5 sm:pt-2 min-h-[400px]">
         <AnimatePresence mode="wait">
           {activeTab === 'struktur' && (
             <motion.div
