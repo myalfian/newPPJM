@@ -253,7 +253,7 @@ export const MadinFlyerSection: React.FC = () => {
         <div className="flex flex-wrap items-center justify-between gap-2.5 bg-zinc-50 dark:bg-zinc-900/60 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border border-zinc-200/60 dark:border-zinc-800/60">
           {/* Main Category Filter (Liquid Mercury) */}
           <div className="shrink-0 max-w-full overflow-x-auto no-scrollbar">
-            <LiquidMercuryControl<FlyerCategory>
+            <LiquidMercuryControl<'all' | FlyerCategory>
               size="sm"
               options={[
                 { id: 'all', label: 'Semua Poster' },
@@ -275,7 +275,7 @@ export const MadinFlyerSection: React.FC = () => {
               <span className="text-[11px] text-zinc-400 dark:text-zinc-500 font-medium mr-1 hidden sm:inline">
                 Jenjang:
               </span>
-              <LiquidMercuryControl<FlyerLevel>
+              <LiquidMercuryControl<string>
                 size="sm"
                 options={[
                   { id: 'all', label: 'Semua Jenjang' },
