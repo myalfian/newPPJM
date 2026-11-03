@@ -41,26 +41,13 @@ const fetchPublicNews = async (): Promise<NewsItem[]> => {
     return INITIAL_NEWS;
   }
   try {
-    const { data: bData, error } = await supabase
-      .from('berita')
+    const { data: bData, error } = await (supabase.from('berita' as any) as any)
       .select('*')
       .eq('is_published', true)
       .order('is_pinned', { ascending: false })
       .order('created_at', { ascending: false });
 
-    let rows: any[] = bData || [];
-
-    if (!error && rows.length === 0) {
-      const res = await supabase
-        .from('news')
-        .select('*')
-        .eq('is_published', true)
-        .order('is_pinned', { ascending: false })
-        .order('created_at', { ascending: false });
-      if (!res.error && res.data && res.data.length > 0) {
-        rows = res.data;
-      }
-    }
+    const rows: any[] = (!error && Array.isArray(bData)) ? bData : [];
 
     if (rows.length === 0) {
       return INITIAL_NEWS;
@@ -121,14 +108,6 @@ export const Berita: React.FC = () => {
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'berita' },
-        () => {
-          invalidateCache('public-news-list');
-          refetch();
-        }
-      )
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'news' },
         () => {
           invalidateCache('public-news-list');
           refetch();

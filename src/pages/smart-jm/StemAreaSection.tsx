@@ -21,6 +21,7 @@ import {
   Compass
 } from 'lucide-react';
 import { LiquidMercuryControl } from '../../components/common/LiquidMercuryControl';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import {
   StemWorksheetItem,
   StemPortfolioItem
@@ -455,14 +456,87 @@ export const STEM_PORTFOLIO: StemPortfolioItem[] = [
 
 export const StemAreaSection: React.FC = () => {
   const location = useLocation();
-  const [worksheets] = useState<StemWorksheetItem[]>(STEM_WORKSHEETS);
-  const [portfolios] = useState<StemPortfolioItem[]>(STEM_PORTFOLIO);
+  const [worksheets, setWorksheets] = useState<StemWorksheetItem[]>(STEM_WORKSHEETS);
+  const [portfolios, setPortfolios] = useState<StemPortfolioItem[]>(STEM_PORTFOLIO);
   const [activeSubTab, setActiveSubTab] = useState<'worksheet' | 'portfolio'>(() =>
     location.pathname.includes('/portofolio') ? 'portfolio' : 'worksheet'
   );
   const [selectedWorksheet, setSelectedWorksheet] = useState<StemWorksheetItem>(STEM_WORKSHEETS[0]);
   const [selectedPortfolio, setSelectedPortfolio] = useState<StemPortfolioItem | null>(null);
   const [lightboxImage, setLightboxImage] = useState<{ url: string; caption?: string } | null>(null);
+
+  // Fetch custom worksheets & portfolio projects from Supabase if added via Admin
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+    let mounted = true;
+
+    const loadStemFromDb = async () => {
+      try {
+        const [{ data: wsData }, { data: projData }] = await Promise.all([
+          supabase.from('stem_worksheets').select('*').order('created_at', { ascending: false }),
+          supabase.from('stem_projects').select('*').order('created_at', { ascending: false }),
+        ]);
+
+        if (!mounted) return;
+
+        if (wsData && wsData.length > 0) {
+          const customWs: StemWorksheetItem[] = wsData.map((w: any) => ({
+            id: `db-ws-${w.id}`,
+            title: w.title,
+            category: w.category || 'Sains & Rekayasa STEM',
+            targetLevel: w.level || 'SMP Plus JM',
+            teacherMentor: 'Ustadzah Ria & Ustadzah Anggun',
+            learningModel: 'Project-Based Learning (PjBL)',
+            duration: '2 Pertemuan',
+            downloadDocUrl: w.pdf_url || undefined,
+            objective: Array.isArray(w.goals) ? w.goals.join(' ') : w.description || '',
+            context: w.description || '',
+            setupPhoto: w.image_url || '/images/stem/hydrolift_foto_display_topik.jpg',
+            toolsAndMaterials: Array.isArray(w.tools) ? w.tools.map(String) : ['Alat & bahan sesuai panduan LKPD'],
+            edpSteps: Array.isArray(w.steps)
+              ? w.steps.map((s: any, idx: number) =>
+                  typeof s === 'string'
+                    ? { step: `Tahap ${idx + 1}`, title: `Langkah ${idx + 1}`, desc: s }
+                    : { step: s.step || `Tahap ${idx + 1}`, title: s.title || '', desc: s.desc || '' }
+                )
+              : [],
+            rubric: STEM_WORKSHEETS[0].rubric,
+          }));
+          setWorksheets([...STEM_WORKSHEETS, ...customWs]);
+        }
+
+        if (projData && projData.length > 0) {
+          const customPortfolios: StemPortfolioItem[] = projData.map((p: any) => ({
+            id: `db-proj-${p.id}`,
+            title: p.title,
+            category: p.category || 'Proyek Rekayasa STEM',
+            studentName: p.author_santri || 'Tim Riset Santri SMP Plus JM',
+            studentClass: 'SMP Plus Jauharul Maknuun',
+            teacherMentor: 'Ustadzah Ria & Ustadzah Anggun',
+            photoUrl: p.cover_image || '/images/stem/hydrolift_dokumentasi_pelaksanaan2.jpg',
+            downloadDocUrl: p.assignment_doc_url || p.syllabus_url || undefined,
+            description: p.description || '',
+            procedure: Array.isArray(p.specs?.procedure) ? p.specs.procedure : ['Perancangan, perakitan, dan pengujian prototipe.'],
+            results: p.specs?.results || p.description || 'Prototipe berfungsi sesuai target rekayasa.',
+            stats: [
+              { label: 'Kategori', value: p.category || 'STEM' },
+              { label: 'Status', value: 'Tuntas Diuji' },
+            ],
+            completionDate: 'Tahun Ajaran Aktif',
+          }));
+          setPortfolios([...STEM_PORTFOLIO, ...customPortfolios]);
+        }
+      } catch (err) {
+        console.warn('[StemAreaSection] Non-critical DB fetch notice:', err);
+      }
+    };
+
+    loadStemFromDb();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   // Sync sub-tab when route changes between /smart-jm/stem/materi and /smart-jm/stem/portofolio
   useEffect(() => {

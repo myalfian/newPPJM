@@ -259,8 +259,8 @@ const fetchMandarinQuizzes = async (): Promise<QuizTopic[]> => {
       topicsMap.set(t.title.toLowerCase(), { ...t, questions: [...t.questions] });
     });
 
-    data.forEach((row) => {
-      const topicName = row.topic_name || 'Salam & Sapaan Santri';
+    data.forEach((row: any) => {
+      const topicName = row.topic_name || row.question_type || 'Salam & Sapaan Santri';
       const key = topicName.toLowerCase();
       const questionItem: QuizQuestion = {
         id: row.id,

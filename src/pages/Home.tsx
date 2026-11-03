@@ -46,8 +46,7 @@ const fetchHomeNews = async (): Promise<HomeNewsItem[]> => {
     }));
   }
   try {
-    const { data, error } = await supabase
-      .from('news')
+    const { data, error } = await (supabase.from('berita' as any) as any)
       .select('*')
       .eq('is_published', true)
       .order('is_pinned', { ascending: false })
@@ -66,7 +65,7 @@ const fetchHomeNews = async (): Promise<HomeNewsItem[]> => {
       }));
     }
 
-    return data.map((row) => ({
+    return data.map((row: any) => ({
       id: row.id,
       title: row.title,
       date: row.created_at
@@ -77,8 +76,8 @@ const fetchHomeNews = async (): Promise<HomeNewsItem[]> => {
           })
         : 'Terbaru',
       category: row.category || 'Warta Pondok',
-      excerpt: stripHtmlToPlainText(row.summary || row.content || '', 150),
-      image: row.thumbnail || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
+      excerpt: stripHtmlToPlainText(row.summary || row.excerpt || row.content || '', 150),
+      image: row.thumbnail || row.image_url || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
       link: `/berita/${row.slug}`
     }));
   } catch {

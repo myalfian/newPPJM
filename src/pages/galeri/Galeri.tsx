@@ -257,39 +257,41 @@ const SAMPLE_VIDEO_ACTIVITIES: VideoActivity[] = [
 const fetchPhotoActivitiesFromDb = async (): Promise<PhotoActivity[]> => {
   try {
     const { data, error } = await supabase
-      .from('galleries')
-      .select('*, gallery_photos(*)')
-      .eq('category', 'foto')
-      .order('event_date', { ascending: false });
+      .from('galeri_foto')
+      .select('*')
+      .order('order_index', { ascending: true })
+      .order('created_at', { ascending: false });
 
     if (error || !data || data.length === 0) {
       return SAMPLE_PHOTO_ACTIVITIES;
     }
 
-    return data.map((item: any, idx: number) => {
-      let photos: PhotoItem[] = [];
-      if (Array.isArray(item.gallery_photos) && item.gallery_photos.length > 0) {
-        photos = item.gallery_photos.map((p: any) => ({
-          photo_url: p.photo_url,
-          caption: p.caption || item.title,
-        }));
-      } else if (item.cover_image) {
-        photos = [{ photo_url: item.cover_image, caption: item.title }];
-      }
+    const activeRows = data.filter((item: any) => item.is_active !== false);
+    if (activeRows.length === 0) {
+      return SAMPLE_PHOTO_ACTIVITIES;
+    }
 
-      // If less than 3 photos, pad with fallback aesthetic photos
+    return activeRows.map((item: any, idx: number) => {
+      const primaryUrl = item.image_url || SAMPLE_PHOTO_ACTIVITIES[0].photos[0].photo_url;
+      const photos: PhotoItem[] = [{ photo_url: primaryUrl, caption: item.description || item.title }];
+
+      // Pad with fallback aesthetic photos so 3-photo card layout stays rich
       while (photos.length < 3) {
         const fallback = SAMPLE_PHOTO_ACTIVITIES[idx % SAMPLE_PHOTO_ACTIVITIES.length].photos[photos.length];
-        photos.push(fallback || { photo_url: item.cover_image || SAMPLE_PHOTO_ACTIVITIES[0].photos[0].photo_url, caption: item.title });
+        photos.push(fallback || { photo_url: primaryUrl, caption: item.title });
       }
+
+      const formattedDate = item.created_at
+        ? new Date(item.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
+        : 'Terbaru';
 
       return {
         id: item.id || `f-${idx}`,
         title: item.title,
-        categoryTag: item.tag || 'Kegiatan Pondok',
-        event_date: item.event_date || 'Terbaru',
+        categoryTag: item.category || 'Kegiatan Pondok',
+        event_date: formattedDate,
         description: item.description || '',
-        photos: photos.slice(0, 3), // Ensure consistent 3 photos
+        photos: photos.slice(0, 3),
       };
     });
   } catch {
@@ -300,25 +302,36 @@ const fetchPhotoActivitiesFromDb = async (): Promise<PhotoActivity[]> => {
 const fetchVideoActivitiesFromDb = async (): Promise<VideoActivity[]> => {
   try {
     const { data, error } = await supabase
-      .from('galleries')
+      .from('galeri_videos')
       .select('*')
-      .eq('category', 'video')
-      .order('event_date', { ascending: false });
+      .order('order_index', { ascending: true })
+      .order('created_at', { ascending: false });
 
     if (error || !data || data.length === 0) {
       return SAMPLE_VIDEO_ACTIVITIES;
     }
 
-    return data.map((item: any, idx: number) => ({
-      id: item.id || `v-${idx}`,
-      title: item.title,
-      categoryTag: item.tag || 'Video Resmi',
-      event_date: item.event_date || 'Terbaru',
-      duration: '07:30',
-      flyer: item.cover_image || SAMPLE_VIDEO_ACTIVITIES[idx % SAMPLE_VIDEO_ACTIVITIES.length].flyer,
-      youtubeUrl: item.video_url || 'https://youtube.com/@ppjauharulmaknuunlasem?si=OHYeRczBA-kLl3Kl',
-      description: item.description || '',
-    }));
+    const activeRows = data.filter((item: any) => item.is_active !== false);
+    if (activeRows.length === 0) {
+      return SAMPLE_VIDEO_ACTIVITIES;
+    }
+
+    return activeRows.map((item: any, idx: number) => {
+      const formattedDate = item.created_at
+        ? new Date(item.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
+        : 'Terbaru';
+
+      return {
+        id: item.id || `v-${idx}`,
+        title: item.title,
+        categoryTag: item.category || 'Video Resmi',
+        event_date: formattedDate,
+        duration: '07:30',
+        flyer: item.thumbnail_url || SAMPLE_VIDEO_ACTIVITIES[idx % SAMPLE_VIDEO_ACTIVITIES.length].flyer,
+        youtubeUrl: item.youtube_url || 'https://youtube.com/@ppjauharulmaknuunlasem?si=OHYeRczBA-kLl3Kl',
+        description: item.description || '',
+      };
+    });
   } catch {
     return SAMPLE_VIDEO_ACTIVITIES;
   }
@@ -378,15 +391,9 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
   );
 
   useEffect(() => {
-    if (!isSupabaseConfigured) return;
+    if (!isSupabaseConfigured()) return;
     const channel = supabase
       .channel('public-galeri-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'galleries' }, () => {
-        invalidateCache('gallery_photo_activities_v2');
-        invalidateCache('gallery_video_activities_v2');
-        refetchPhotos();
-        refetchVideos();
-      })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'galeri_foto' }, () => {
         invalidateCache('gallery_photo_activities_v2');
         refetchPhotos();

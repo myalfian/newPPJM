@@ -30,8 +30,7 @@ const fetchNewsBySlug = async (slug?: string): Promise<{ article: NewsItem | nul
   }
 
   try {
-    const { data, error } = await supabase
-      .from('news')
+    const { data, error } = await (supabase.from('berita' as any) as any)
       .select('*')
       .eq('slug', slug)
       .maybeSingle();
@@ -43,9 +42,9 @@ const fetchNewsBySlug = async (slug?: string): Promise<{ article: NewsItem | nul
         title: data.title,
         slug: data.slug,
         category: data.category || 'Warta Pondok',
-        summary: data.summary || '',
+        summary: data.summary || data.excerpt || '',
         content: data.content,
-        thumbnail: data.thumbnail || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
+        thumbnail: data.thumbnail || data.image_url || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
         is_pinned: !!data.is_pinned,
         is_published: !!data.is_published,
         author: data.author || 'Humas PPJM',
@@ -63,8 +62,7 @@ const fetchNewsBySlug = async (slug?: string): Promise<{ article: NewsItem | nul
     }
 
     // Fetch related
-    const { data: relatedData } = await supabase
-      .from('news')
+    const { data: relatedData } = await (supabase.from('berita' as any) as any)
       .select('*')
       .neq('slug', slug)
       .eq('is_published', true)
@@ -73,14 +71,14 @@ const fetchNewsBySlug = async (slug?: string): Promise<{ article: NewsItem | nul
 
     let related: NewsItem[] = [];
     if (relatedData && relatedData.length > 0) {
-      related = relatedData.map((row) => ({
+      related = relatedData.map((row: any) => ({
         id: row.id,
         title: row.title,
         slug: row.slug,
-        category: row.category,
-        summary: row.summary || '',
+        category: row.category || 'Warta Pondok',
+        summary: row.summary || row.excerpt || '',
         content: row.content,
-        thumbnail: row.thumbnail || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
+        thumbnail: row.thumbnail || row.image_url || 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&fit=crop&w=800&q=80',
         date_display: row.created_at
           ? new Date(row.created_at).toLocaleDateString('id-ID', {
               day: 'numeric',

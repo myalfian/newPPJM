@@ -33,50 +33,55 @@ const EKSKUL_TABS: {
 
 const fetchEkskulsData = async (): Promise<DetailedEkskulItem[]> => {
   try {
-    const { data, error } = await supabase
-      .from('extracurriculars')
+    const { data, error } = await (supabase.from('ekskul' as any) as any)
       .select('*')
+      .order('order_index', { ascending: true })
       .order('created_at', { ascending: true });
 
     if (error || !data) {
-      console.warn('Error fetching extracurriculars:', error);
+      console.warn('Error fetching ekskul:', error);
       return [];
     }
 
-    return data.map((rawItem: any) => {
-      const item = rawItem;
-      let category: EkskulCategory = 'Sains & Teknologi';
-      const catLower = (item.category || '').toLowerCase();
-      const nameLower = (item.name || '').toLowerCase();
+    return data
+      .filter((item: any) => item.is_active !== false)
+      .map((rawItem: any) => {
+        const item = rawItem;
+        let category: EkskulCategory = 'Sains & Teknologi';
+        const catLower = (item.category || '').toLowerCase();
+        const nameLower = (item.name || '').toLowerCase();
 
-      if (catLower.includes('olahraga') || nameLower.includes('silat') || nameLower.includes('olahraga') || nameLower.includes('futsal')) {
-        category = 'Olahraga & Bela Diri';
-      } else if (catLower.includes('seni') || nameLower.includes('hadrah') || nameLower.includes('banjari') || nameLower.includes('bahasa') || nameLower.includes('mandarin') || nameLower.includes('arab')) {
-        category = 'Seni & Bahasa';
-      } else if (catLower.includes('agama') || nameLower.includes('quran') || nameLower.includes('tahfidz')) {
-        category = 'Agama';
-      } else if (catLower.includes('pramuka') || nameLower.includes('pramuka') || nameLower.includes('pmr') || nameLower.includes('palang merah')) {
-        category = 'Pramuka';
-      } else if (catLower.includes('sains') || nameLower.includes('stem') || nameLower.includes('robot')) {
-        category = 'Sains & Teknologi';
-      }
+        if (catLower.includes('olahraga') || nameLower.includes('silat') || nameLower.includes('olahraga') || nameLower.includes('futsal') || nameLower.includes('tenis') || nameLower.includes('renang')) {
+          category = 'Olahraga & Bela Diri';
+        } else if (catLower.includes('seni') || nameLower.includes('hadrah') || nameLower.includes('banjari') || nameLower.includes('bahasa') || nameLower.includes('mandarin') || nameLower.includes('arab') || nameLower.includes('english') || nameLower.includes('kaligrafi') || nameLower.includes('desain')) {
+          category = 'Seni & Bahasa';
+        } else if (catLower.includes('agama') || nameLower.includes('quran') || nameLower.includes('tahfidz') || nameLower.includes('tilawah')) {
+          category = 'Agama';
+        } else if (catLower.includes('pramuka') || nameLower.includes('pramuka') || nameLower.includes('pmr') || nameLower.includes('palang merah')) {
+          category = 'Pramuka';
+        } else if (catLower.includes('sains') || nameLower.includes('stem') || nameLower.includes('robot') || nameLower.includes('math') || nameLower.includes('ilmiah')) {
+          category = 'Sains & Teknologi';
+        }
 
-      return {
-        id: item.id,
-        name: item.name,
-        category,
-        schedule: item.schedule || 'Jadwal Mingguan',
-        coach: item.coach || item.mentor_name || 'Pembina PPJM',
-        description: item.description || '',
-        featuredPhoto: item.cover_image || item.photo_url || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80',
-        gallery: [],
-        highlights: ['Pembinaan rutin terstruktur', 'Karakter santri mandiri & berprestasi'],
-        targetCapaian: 'Penguasaan keterampilan & partisipasi lomba resmi',
-        tempatLatihan: item.location || 'Area Kampus PPJM'
-      };
-    });
+        const imgs = Array.isArray(item.images) ? item.images.filter(Boolean) : [];
+        const firstImg = imgs[0] || item.photo_url || item.cover_image || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1200&q=80';
+
+        return {
+          id: item.id,
+          name: item.name,
+          category,
+          schedule: item.schedule || 'Jadwal Mingguan',
+          coach: item.instructor_name || item.coach || item.mentor_name || 'Pembina PPJM',
+          description: item.description || '',
+          featuredPhoto: firstImg,
+          gallery: imgs,
+          highlights: ['Pembinaan rutin terstruktur', 'Karakter santri mandiri & berprestasi'],
+          targetCapaian: item.target || 'Penguasaan keterampilan & partisipasi lomba resmi',
+          tempatLatihan: item.location || 'Area Kampus PPJM'
+        };
+      });
   } catch (err) {
-    console.warn('Failed to fetch extracurriculars:', err);
+    console.warn('Failed to fetch ekskul:', err);
     return [];
   }
 };
@@ -102,9 +107,6 @@ export const EkskulPage: React.FC = () => {
 
     const channel = supabase
       .channel('public-ekskul-realtime-channel')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'extracurriculars' }, () => {
-        refetch();
-      })
       .on('postgres_changes', { event: '*', schema: 'public', table: 'ekskul' }, () => {
         refetch();
       })

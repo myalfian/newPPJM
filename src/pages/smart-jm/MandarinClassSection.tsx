@@ -24,6 +24,7 @@ import {
   EyeOff
 } from 'lucide-react';
 import { LiquidMercuryControl } from '../../components/common/LiquidMercuryControl';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import {
   MandarinTopicItem,
   MandarinQuizTopic
@@ -1049,7 +1050,8 @@ export const MANDARIN_QUIZZES: MandarinQuizTopic[] = [
 
 export const MandarinClassSection: React.FC = () => {
   const location = useLocation();
-  const [topics] = useState<MandarinTopicItem[]>(MANDARIN_TOPICS);
+  const [topics, setTopics] = useState<MandarinTopicItem[]>(MANDARIN_TOPICS);
+  const [quizTopics, setQuizTopics] = useState<MandarinQuizTopic[]>(MANDARIN_QUIZZES);
   const [activeSubTab, setActiveSubTab] = useState<'materi' | 'quiz'>(() =>
     location.pathname.includes('/quiz') ? 'quiz' : 'materi'
   );
@@ -1067,6 +1069,82 @@ export const MandarinClassSection: React.FC = () => {
   const [score, setScore] = useState<number>(0);
   const [isQuizCompleted, setIsQuizCompleted] = useState<boolean>(false);
   const [answeredState, setAnsweredState] = useState<boolean>(false);
+
+  // Fetch custom lessons, vocabularies & quizzes from Supabase if added via Admin
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+    let mounted = true;
+
+    const loadMandarinFromDb = async () => {
+      try {
+        const [{ data: lessonsData }, { data: vocabData }, { data: quizData }] = await Promise.all([
+          supabase.from('mandarin_lessons').select('*').order('order_index', { ascending: true }),
+          supabase.from('mandarin_vocabularies').select('*').order('created_at', { ascending: true }),
+          supabase.from('mandarin_quizzes').select('*').order('created_at', { ascending: true }),
+        ]);
+
+        if (!mounted) return;
+
+        if (lessonsData && lessonsData.length > 0) {
+          const customTopics: MandarinTopicItem[] = lessonsData.map((l: any, idx: number) => {
+            const matchingVocab = (vocabData || []).filter(
+              (v: any) => !v.category || v.category.toLowerCase() === (l.topic || '').toLowerCase()
+            );
+            return {
+              id: `db-lesson-${l.id}`,
+              topicKey: 'salam',
+              topicName: l.topic || `Materi Tambahan ${idx + 1}`,
+              chineseName: `${l.hanzi || ''} ${l.pinyin ? `(${l.pinyin})` : ''}`.trim() || l.topic,
+              level: l.level || 'Materi Tambahan',
+              teacherMentor: 'Ustadzah Nuriyah & Ustadzah Rizza',
+              posterFlyer: l.cover_image || '/images/mandarin/flyer_salam_dan_sapaan.png',
+              summary: l.meaning_id || `Materi Bahasa Mandarin: ${l.topic}`,
+              narrative: l.meaning_id || '',
+              tableTitle: `Kosakata ${l.topic}`,
+              vocabularies: matchingVocab.map((v: any, vIdx: number) => ({
+                numberLabel: String(vIdx + 1),
+                hanzi: v.hanzi,
+                pinyin: v.pinyin,
+                indonesian: v.arti,
+              })),
+              dialogues: Array.isArray(l.dialog_script) ? l.dialog_script : [],
+            };
+          });
+          setTopics([...MANDARIN_TOPICS, ...customTopics]);
+        }
+
+        if (quizData && quizData.length > 0) {
+          const customQuestions = quizData.map((q: any, idx: number) => ({
+            id: `db-quiz-${q.id}`,
+            topicId: 'quiz-db-custom',
+            hanzi: q.question_type || '练习',
+            pinyin: '',
+            question: q.question,
+            options: Array.isArray(q.options) ? q.options.map(String) : ['A', 'B', 'C', 'D'],
+            correctIndex: typeof q.correct_index === 'number' ? q.correct_index : 0,
+            explanation: q.explanation || '',
+          }));
+          const customQuizTopic: MandarinQuizTopic = {
+            id: 'quiz-db-custom',
+            title: 'Latihan Tambahan',
+            chineseTitle: '补充练习 (Bǔchōng liànxí)',
+            level: `${customQuestions.length} Soal`,
+            description: 'Soal latihan tambahan dari pengampu Kelas Bahasa Mandarin.',
+            questions: customQuestions,
+          };
+          setQuizTopics([...MANDARIN_QUIZZES, customQuizTopic]);
+        }
+      } catch (err) {
+        console.warn('[MandarinClassSection] Non-critical DB fetch notice:', err);
+      }
+    };
+
+    loadMandarinFromDb();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   // Sync sub-tab with URL route (/smart-jm/mandarin/materi vs /smart-jm/mandarin/quiz)
   useEffect(() => {
@@ -1127,7 +1205,7 @@ export const MandarinClassSection: React.FC = () => {
   };
 
   const handleSwitchQuizTopic = (quizId: string) => {
-    const found = MANDARIN_QUIZZES.find((q) => q.id === quizId);
+    const found = quizTopics.find((q) => q.id === quizId);
     if (!found) return;
     setActiveQuizTopic(found);
     setCurrentQuestionIndex(0);
@@ -1736,7 +1814,7 @@ export const MandarinClassSection: React.FC = () => {
             <div className="shrink-0 max-w-full overflow-x-auto no-scrollbar">
               <LiquidMercuryControl
                 size="sm"
-                options={MANDARIN_QUIZZES.map((qz) => ({
+                options={quizTopics.map((qz) => ({
                   id: qz.id,
                   label: qz.title,
                   icon: HelpCircle

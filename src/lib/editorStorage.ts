@@ -173,26 +173,7 @@ export const publishEditorState = async (
         return { success: false, timestamp: publishedAt, error: `${siteErr.message} (${siteErr.code})` };
       }
 
-      // 4. Synchronize individual sections to cms_sections table
-      try {
-        const sectionEntries = Object.entries(updatedState.sections);
-        const sectionRows = sectionEntries.map(([secKey, sec]) => ({
-          id: sec.id || secKey,
-          type: sec.id || secKey,
-          data: sec.data || {},
-          visible: sec.isVisible !== false,
-          order_index: sec.order || 0,
-          updated_at: publishedAt
-        }));
-
-        await supabase
-          .from('cms_sections')
-          .upsert(sectionRows, { onConflict: 'id' });
-      } catch (secSyncErr) {
-        console.warn('[EditorStorage] Non-critical: cms_sections batch sync notice:', secSyncErr);
-      }
-
-      // 5. Synchronize sambutan to sambutan_persons table if modified in visual editor
+      // 4. Synchronize sambutan to sambutan_persons table if modified in visual editor
       try {
         const sambutanSec = updatedState.sections.sambutan;
         if (sambutanSec && sambutanSec.data && (sambutanSec.data.pengasuhName || sambutanSec.data.kalam)) {

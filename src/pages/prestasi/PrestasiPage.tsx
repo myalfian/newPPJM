@@ -33,50 +33,52 @@ const PRESTASI_TABS: {
 
 const fetchAchievementsFromDb = async (): Promise<PrestasiItem[]> => {
   try {
-    const { data, error } = await supabase
-      .from('achievements')
+    const { data, error } = await (supabase.from('prestasi' as any) as any)
       .select('*')
+      .order('order_index', { ascending: true })
       .order('year', { ascending: false });
 
     if (error || !data || data.length === 0) {
-      if (error) console.warn('Error fetching achievements, fallback to local dataset:', error);
+      if (error) console.warn('Error fetching prestasi, fallback to local dataset:', error);
       return PRESTASI_DATASET;
     }
 
-    return data.map((item) => {
-      let category: PrestasiCategory = 'Umum';
-      const catLower = (item.category || '').toLowerCase();
-      if (catLower.includes('olimpiade') || catLower.includes('stem') || catLower.includes('robotika') || catLower.includes('sains')) category = 'Olimpiade';
-      else if (catLower.includes('olahraga') || catLower.includes('silat') || catLower.includes('futsal')) category = 'Olahraga';
-      else if (catLower.includes('seni') || catLower.includes('kaligrafi') || catLower.includes('hadrah') || catLower.includes('banjari') || catLower.includes('singing') || catLower.includes('bahasa')) category = 'Seni';
-      else if (catLower.includes('kitab') || catLower.includes('mqk') || catLower.includes('tahfidz') || catLower.includes('quran') || catLower.includes('agama') || catLower.includes('dakwah') || catLower.includes("da'i") || catLower.includes('ceramah')) category = 'Keagamaan';
+    return data
+      .filter((item: any) => item.is_active !== false && item.is_published !== false)
+      .map((item: any) => {
+        let category: PrestasiCategory = 'Umum';
+        const catLower = (item.category || '').toLowerCase();
+        if (catLower.includes('olimpiade') || catLower.includes('stem') || catLower.includes('robotika') || catLower.includes('sains')) category = 'Olimpiade';
+        else if (catLower.includes('olahraga') || catLower.includes('silat') || catLower.includes('futsal')) category = 'Olahraga';
+        else if (catLower.includes('seni') || catLower.includes('kaligrafi') || catLower.includes('hadrah') || catLower.includes('banjari') || catLower.includes('singing') || catLower.includes('bahasa')) category = 'Seni';
+        else if (catLower.includes('kitab') || catLower.includes('mqk') || catLower.includes('tahfidz') || catLower.includes('quran') || catLower.includes('agama') || catLower.includes('dakwah') || catLower.includes("da'i") || catLower.includes('ceramah')) category = 'Keagamaan';
 
-      let tingkat: 'Internasional' | 'Nasional' | 'Provinsi' | 'Kabupaten' = 'Provinsi';
-      const titleLower = item.title.toLowerCase();
-      if (titleLower.includes('internasional')) tingkat = 'Internasional';
-      else if (titleLower.includes('nasional') || titleLower.includes('nusantara')) tingkat = 'Nasional';
-      else if (titleLower.includes('provinsi') || titleLower.includes('jawa timur') || titleLower.includes('jatim')) tingkat = 'Provinsi';
-      else if (titleLower.includes('kabupaten') || titleLower.includes('gresik') || titleLower.includes('surabaya')) tingkat = 'Kabupaten';
+        let tingkat: 'Internasional' | 'Nasional' | 'Provinsi' | 'Kabupaten' = 'Provinsi';
+        const levelLower = `${item.level || ''} ${item.title || ''}`.toLowerCase();
+        if (levelLower.includes('internasional')) tingkat = 'Internasional';
+        else if (levelLower.includes('nasional') || levelLower.includes('nusantara')) tingkat = 'Nasional';
+        else if (levelLower.includes('provinsi') || levelLower.includes('jawa timur') || levelLower.includes('jatim')) tingkat = 'Provinsi';
+        else if (levelLower.includes('kabupaten') || levelLower.includes('gresik') || levelLower.includes('surabaya')) tingkat = 'Kabupaten';
 
-      return {
-        id: item.id,
-        title: item.title,
-        category,
-        tingkat,
-        year: item.year || new Date().getFullYear(),
-        winner_name: item.winner_name || 'Santri Berprestasi',
-        winner_class: 'SMP Plus JM',
-        medal_type: item.medal_type || 'Juara 1',
-        event_name: 'Kompetisi Resmi Santri',
-        organizer: 'Kemenag / Puspresnas / Panitia Resmi',
-        certificate_url: item.certificate_url || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80',
-        photo_url: item.certificate_url || undefined,
-        description: item.description || '',
-        tags: [category, tingkat],
-      };
-    });
+        return {
+          id: item.id,
+          title: item.title,
+          category,
+          tingkat,
+          year: Number(item.year) || new Date().getFullYear(),
+          winner_name: item.santri_name || item.winner_name || 'Santri Berprestasi',
+          winner_class: item.pembina_name ? `Pembina: ${item.pembina_name}` : 'SMP Plus JM',
+          medal_type: item.level ? `Tingkat ${item.level}` : 'Prestasi Santri',
+          event_name: item.organizer || 'Kompetisi Resmi Santri',
+          organizer: item.organizer || 'Kemenag / Puspresnas / Panitia Resmi',
+          certificate_url: item.certificate_url || item.photo_url || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80',
+          photo_url: item.photo_url || item.certificate_url || undefined,
+          description: item.description || '',
+          tags: [category, tingkat],
+        };
+      });
   } catch (err) {
-    console.warn('Failed to fetch achievements, fallback to local dataset:', err);
+    console.warn('Failed to fetch prestasi, fallback to local dataset:', err);
     return PRESTASI_DATASET;
   }
 };
@@ -102,11 +104,7 @@ export const PrestasiPage: React.FC = () => {
     window.addEventListener('ppjm-content-updated', handleUpdate);
 
     const channel = supabase
-      .channel('public-achievements-realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'achievements' }, () => {
-        invalidateCache('prestasi_modular_dataset');
-        refetch();
-      })
+      .channel('public-prestasi-realtime')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'prestasi' }, () => {
         invalidateCache('prestasi_modular_dataset');
         refetch();

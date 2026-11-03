@@ -2,7 +2,7 @@ import type { ElementType } from 'react';
 import {
   Images, Zap, Share2, MessageSquareQuote, Newspaper, CalendarDays, Camera, Video, Trophy,
   BookOpen, GraduationCap, FileText, Users, Building, Languages, Type, FlaskConical, Rocket,
-  ClipboardList, PartyPopper, Target, Network,
+  ClipboardList, PartyPopper, Target, Network, Layers, HelpCircle,
 } from 'lucide-react';
 
 export type FieldKind =
@@ -99,6 +99,20 @@ export const CRUD_SECTIONS: CrudSection[] = [
       { key: 'is_featured', label: 'Tampilkan sebagai utama', kind: 'bool' },
     ],
   },
+  {
+    key: 'sub_items', table: 'sub_items', label: 'Pilar Keunggulan & Kategori', group: 'Content', icon: Layers,
+    titleField: 'title', subtitleField: 'description', imageField: 'image_url', badgeField: 'parent_module',
+    orderField: 'order_index', activeField: 'is_active', sort: { col: 'order_index', asc: true },
+    fields: [
+      { key: 'title', label: 'Judul item / keunggulan', kind: 'text', required: true },
+      { key: 'parent_module', label: 'Modul induk', kind: 'select', options: ['keunggulan_items', 'facilities_categories'], required: true, help: 'Pilih keunggulan_items untuk 8 Pilar Keunggulan Beranda, atau facilities_categories untuk Kategori Fasilitas' },
+      { key: 'description', label: 'Deskripsi', kind: 'textarea' },
+      { key: 'icon', label: 'Nama ikon', kind: 'text', placeholder: 'BookOpen, Cpu, Globe, HeartHandshake…' },
+      { key: 'color', label: 'Tema warna', kind: 'text', placeholder: 'emerald, gold, teal, blue…' },
+      { key: 'image_url', label: 'Gambar (opsional)', kind: 'image' },
+      { key: 'data', label: 'Data tambahan (JSON)', kind: 'json', advanced: true },
+    ],
+  },
   // ───────── PUBLIKASI
   {
     key: 'berita', table: 'berita', label: 'Berita', group: 'Publikasi', icon: Newspaper,
@@ -138,24 +152,27 @@ export const CRUD_SECTIONS: CrudSection[] = [
   {
     key: 'galeri_foto', table: 'galeri_foto', label: 'Galeri Foto', group: 'Publikasi', icon: Camera,
     titleField: 'title', subtitleField: 'description', imageField: 'image_url', badgeField: 'category',
-    sort: { col: 'created_at', asc: false },
+    orderField: 'order_index', activeField: 'is_active', sort: { col: 'order_index', asc: true },
     fields: [
       { key: 'title', label: 'Judul', kind: 'text', required: true },
       { key: 'category', label: 'Kategori', kind: 'text' },
+      { key: 'location', label: 'Lokasi', kind: 'text' },
       { key: 'description', label: 'Keterangan', kind: 'textarea' },
       { key: 'image_url', label: 'Foto', kind: 'image', required: true },
+      { key: 'is_featured', label: 'Tampilkan unggulan', kind: 'bool' },
     ],
   },
   {
     key: 'galeri_videos', table: 'galeri_videos', label: 'Galeri Video', group: 'Publikasi', icon: Video,
     titleField: 'title', subtitleField: 'youtube_url', imageField: 'thumbnail_url', badgeField: 'category',
-    sort: { col: 'created_at', asc: false },
+    orderField: 'order_index', activeField: 'is_active', sort: { col: 'order_index', asc: true },
     fields: [
       { key: 'title', label: 'Judul', kind: 'text', required: true },
       { key: 'category', label: 'Kategori', kind: 'text' },
       { key: 'description', label: 'Keterangan', kind: 'textarea' },
       { key: 'youtube_url', label: 'Tautan YouTube', kind: 'url', required: true },
       { key: 'thumbnail_url', label: 'Gambar sampul', kind: 'image' },
+      { key: 'is_featured', label: 'Tampilkan unggulan', kind: 'bool' },
     ],
   },
   {
@@ -263,6 +280,17 @@ export const CRUD_SECTIONS: CrudSection[] = [
     ],
   },
   {
+    key: 'mandarin_quizzes', table: 'mandarin_quizzes', label: 'Kuis Mandarin', group: 'Akademik', icon: HelpCircle,
+    titleField: 'question', subtitleField: 'explanation', badgeField: 'question_type', sort: { col: 'created_at', asc: false },
+    fields: [
+      { key: 'question', label: 'Pertanyaan kuis', kind: 'textarea', required: true },
+      { key: 'question_type', label: 'Tipe / Topik', kind: 'text', placeholder: 'Salam, Perkenalan, Angka…' },
+      { key: 'options', label: 'Pilihan jawaban (JSON array)', kind: 'json', required: true, help: 'Contoh: ["A. Nǐ hǎo", "B. Zàijiàn", "C. Xièxie", "D. Duìbuqǐ"]' },
+      { key: 'correct_index', label: 'Indeks jawaban benar (0-3)', kind: 'number', required: true },
+      { key: 'explanation', label: 'Pembahasan jawaban', kind: 'textarea' },
+    ],
+  },
+  {
     key: 'stem_worksheets', table: 'stem_worksheets', label: 'LKPD STEM', group: 'Akademik', icon: FlaskConical,
     titleField: 'title', subtitleField: 'level', imageField: 'image_url', badgeField: 'category',
     sort: { col: 'created_at', asc: false },
@@ -335,12 +363,12 @@ export const CRUD_SECTIONS: CrudSection[] = [
   {
     key: 'osis_structure', table: 'osis_structure', label: 'Struktur OSIS', group: 'Manajemen', icon: Network,
     titleField: 'name', subtitleField: 'position', imageField: 'photo_url', badgeField: 'period',
-    sort: { col: 'created_at', asc: true },
+    orderField: 'order_index', activeField: 'is_active', sort: { col: 'order_index', asc: true },
     fields: [
       { key: 'name', label: 'Nama', kind: 'text', required: true },
       { key: 'position', label: 'Jabatan', kind: 'text', required: true },
       { key: 'class', label: 'Kelas', kind: 'text' },
-      { key: 'level', label: 'Tingkat', kind: 'text' },
+      { key: 'level', label: 'Tingkat (angka)', kind: 'number' },
       { key: 'period', label: 'Periode', kind: 'text', placeholder: '2026-2027' },
       { key: 'motto', label: 'Motto', kind: 'text' },
       { key: 'photo_url', label: 'Foto', kind: 'image' },

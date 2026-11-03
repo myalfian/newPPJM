@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -21,7 +21,10 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          is_active: boolean | null
           medal_type: string
+          organizer: string | null
+          photo_url: string | null
           title: string
           winner_name: string
           year: number
@@ -32,7 +35,10 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_active?: boolean | null
           medal_type: string
+          organizer?: string | null
+          photo_url?: string | null
           title: string
           winner_name: string
           year: number
@@ -43,7 +49,10 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          is_active?: boolean | null
           medal_type?: string
+          organizer?: string | null
+          photo_url?: string | null
           title?: string
           winner_name?: string
           year?: number
@@ -52,14 +61,22 @@ export type Database = {
       }
       admin_profiles: {
         Row: {
+          address: string | null
           avatar_url: string | null
           bio: string | null
+          class: string | null
           created_at: string
+          created_by: string | null
           department: string | null
+          email: string | null
           full_name: string
           id: string
+          is_active: boolean | null
+          last_login_at: string | null
           last_password_change: string | null
+          motto: string | null
           must_change_password: boolean | null
+          nip: string | null
           nis_or_nip: string | null
           phone: string | null
           role: Database["public"]["Enums"]["user_role"]
@@ -67,14 +84,22 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          address?: string | null
           avatar_url?: string | null
           bio?: string | null
+          class?: string | null
           created_at?: string
+          created_by?: string | null
           department?: string | null
+          email?: string | null
           full_name: string
           id: string
+          is_active?: boolean | null
+          last_login_at?: string | null
           last_password_change?: string | null
+          motto?: string | null
           must_change_password?: boolean | null
+          nip?: string | null
           nis_or_nip?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
@@ -82,14 +107,22 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          address?: string | null
           avatar_url?: string | null
           bio?: string | null
+          class?: string | null
           created_at?: string
+          created_by?: string | null
           department?: string | null
+          email?: string | null
           full_name?: string
           id?: string
+          is_active?: boolean | null
+          last_login_at?: string | null
           last_password_change?: string | null
+          motto?: string | null
           must_change_password?: boolean | null
+          nip?: string | null
           nis_or_nip?: string | null
           phone?: string | null
           role?: Database["public"]["Enums"]["user_role"]
@@ -108,8 +141,11 @@ export type Database = {
           description: string
           id: string
           image: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
           location: string
           month: string
+          order_index: number | null
           rundown: Json | null
           target_audience: string
           time_display: string
@@ -127,8 +163,11 @@ export type Database = {
           description: string
           id?: string
           image?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
           location: string
           month: string
+          order_index?: number | null
           rundown?: Json | null
           target_audience: string
           time_display: string
@@ -146,8 +185,11 @@ export type Database = {
           description?: string
           id?: string
           image?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
           location?: string
           month?: string
+          order_index?: number | null
           rundown?: Json | null
           target_audience?: string
           time_display?: string
@@ -205,6 +247,7 @@ export type Database = {
       }
       berita: {
         Row: {
+          author: string | null
           author_id: string | null
           category: string
           content: string
@@ -212,13 +255,21 @@ export type Database = {
           excerpt: string | null
           id: string
           image_url: string | null
+          is_featured: boolean | null
+          is_pinned: boolean | null
           is_published: boolean
+          location: string[] | null
+          order_index: number | null
           published_at: string
           slug: string
+          summary: string | null
+          thumbnail: string | null
           title: string
+          updated_at: string | null
           views: number
         }
         Insert: {
+          author?: string | null
           author_id?: string | null
           category?: string
           content: string
@@ -226,13 +277,21 @@ export type Database = {
           excerpt?: string | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean | null
+          is_pinned?: boolean | null
           is_published?: boolean
+          location?: string[] | null
+          order_index?: number | null
           published_at?: string
           slug: string
+          summary?: string | null
+          thumbnail?: string | null
           title: string
+          updated_at?: string | null
           views?: number
         }
         Update: {
+          author?: string | null
           author_id?: string | null
           category?: string
           content?: string
@@ -240,10 +299,17 @@ export type Database = {
           excerpt?: string | null
           id?: string
           image_url?: string | null
+          is_featured?: boolean | null
+          is_pinned?: boolean | null
           is_published?: boolean
+          location?: string[] | null
+          order_index?: number | null
           published_at?: string
           slug?: string
+          summary?: string | null
+          thumbnail?: string | null
           title?: string
+          updated_at?: string | null
           views?: number
         }
         Relationships: []
@@ -311,108 +377,153 @@ export type Database = {
       ekskul: {
         Row: {
           category: string
+          coach: string | null
           created_at: string
           description: string | null
           id: string
           images: Json | null
           instructor_name: string | null
           is_active: boolean
+          is_featured: boolean | null
           location: string | null
           name: string
+          order_index: number | null
+          photo_url: string | null
           schedule: string | null
           syllabus: string | null
           target: string | null
+          updated_at: string | null
         }
         Insert: {
           category?: string
+          coach?: string | null
           created_at?: string
           description?: string | null
           id?: string
           images?: Json | null
           instructor_name?: string | null
           is_active?: boolean
+          is_featured?: boolean | null
           location?: string | null
           name: string
+          order_index?: number | null
+          photo_url?: string | null
           schedule?: string | null
           syllabus?: string | null
           target?: string | null
+          updated_at?: string | null
         }
         Update: {
           category?: string
+          coach?: string | null
           created_at?: string
           description?: string | null
           id?: string
           images?: Json | null
           instructor_name?: string | null
           is_active?: boolean
+          is_featured?: boolean | null
           location?: string | null
           name?: string
+          order_index?: number | null
+          photo_url?: string | null
           schedule?: string | null
           syllabus?: string | null
           target?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
       extracurriculars: {
         Row: {
+          category: string | null
           cover_image: string | null
           created_at: string
           description: string
           icon_name: string | null
           id: string
+          is_active: boolean | null
+          location: string | null
           mentor_name: string | null
           name: string
           schedule: string
+          updated_at: string | null
         }
         Insert: {
+          category?: string | null
           cover_image?: string | null
           created_at?: string
           description: string
           icon_name?: string | null
           id?: string
+          is_active?: boolean | null
+          location?: string | null
           mentor_name?: string | null
           name: string
           schedule: string
+          updated_at?: string | null
         }
         Update: {
+          category?: string | null
           cover_image?: string | null
           created_at?: string
           description?: string
           icon_name?: string | null
           id?: string
+          is_active?: boolean | null
+          location?: string | null
           mentor_name?: string | null
           name?: string
           schedule?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
       facilities: {
         Row: {
+          capacity: string | null
           category: string
           created_at: string
           description: string | null
+          features: Json
           id: string
           image_url: string
           is_active: boolean
+          is_featured: boolean | null
+          location: string[] | null
           name: string
+          order_index: number | null
+          updated_at: string | null
         }
         Insert: {
+          capacity?: string | null
           category?: string
           created_at?: string
           description?: string | null
+          features?: Json
           id?: string
           image_url: string
           is_active?: boolean
+          is_featured?: boolean | null
+          location?: string[] | null
           name: string
+          order_index?: number | null
+          updated_at?: string | null
         }
         Update: {
+          capacity?: string | null
           category?: string
           created_at?: string
           description?: string | null
+          features?: Json
           id?: string
           image_url?: string
           is_active?: boolean
+          is_featured?: boolean | null
+          location?: string[] | null
           name?: string
+          order_index?: number | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -424,7 +535,12 @@ export type Database = {
           description: string | null
           id: string
           image_url: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          location: string[] | null
+          order_index: number | null
           title: string
+          updated_at: string | null
         }
         Insert: {
           album_id?: string | null
@@ -433,7 +549,12 @@ export type Database = {
           description?: string | null
           id?: string
           image_url: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          location?: string[] | null
+          order_index?: number | null
           title: string
+          updated_at?: string | null
         }
         Update: {
           album_id?: string | null
@@ -442,36 +563,56 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          location?: string[] | null
+          order_index?: number | null
           title?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
       galeri_videos: {
         Row: {
+          album_id: string | null
           category: string
           created_at: string
           description: string | null
           id: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          order_index: number | null
           thumbnail_url: string | null
           title: string
+          updated_at: string | null
           youtube_url: string
         }
         Insert: {
+          album_id?: string | null
           category?: string
           created_at?: string
           description?: string | null
           id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          order_index?: number | null
           thumbnail_url?: string | null
           title: string
+          updated_at?: string | null
           youtube_url: string
         }
         Update: {
+          album_id?: string | null
           category?: string
           created_at?: string
           description?: string | null
           id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          order_index?: number | null
           thumbnail_url?: string | null
           title?: string
+          updated_at?: string | null
           youtube_url?: string
         }
         Relationships: []
@@ -765,8 +906,12 @@ export type Database = {
           description: string | null
           id: string
           image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
           name: string
+          order_index: number | null
           type: string
+          updated_at: string | null
         }
         Insert: {
           created_at?: string
@@ -774,8 +919,12 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
           name: string
+          order_index?: number | null
           type: string
+          updated_at?: string | null
         }
         Update: {
           created_at?: string
@@ -783,8 +932,12 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
           name?: string
+          order_index?: number | null
           type?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -837,6 +990,7 @@ export type Database = {
           label: string
           order_index: number
           type: string
+          updated_at: string | null
           url: string
         }
         Insert: {
@@ -848,6 +1002,7 @@ export type Database = {
           label: string
           order_index?: number
           type: string
+          updated_at?: string | null
           url: string
         }
         Update: {
@@ -859,6 +1014,7 @@ export type Database = {
           label?: string
           order_index?: number
           type?: string
+          updated_at?: string | null
           url?: string
         }
         Relationships: []
@@ -948,9 +1104,6 @@ export type Database = {
           options: Json
           question: string
           question_type: string | null
-          topic_name?: string | null
-          hanzi?: string | null
-          pinyin?: string | null
         }
         Insert: {
           correct_index: number
@@ -1070,7 +1223,11 @@ export type Database = {
           description: string | null
           id: string
           image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          order_index: number | null
           title: string
+          updated_at: string | null
         }
         Insert: {
           category?: string | null
@@ -1079,7 +1236,11 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          order_index?: number | null
           title: string
+          updated_at?: string | null
         }
         Update: {
           category?: string | null
@@ -1088,7 +1249,11 @@ export type Database = {
           description?: string | null
           id?: string
           image_url?: string | null
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          order_index?: number | null
           title?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1099,9 +1264,13 @@ export type Database = {
           description: string | null
           frequency: string | null
           id: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          order_index: number | null
           output: string | null
           target: string | null
           title: string
+          updated_at: string | null
         }
         Insert: {
           created_at?: string
@@ -1109,9 +1278,13 @@ export type Database = {
           description?: string | null
           frequency?: string | null
           id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          order_index?: number | null
           output?: string | null
           target?: string | null
           title: string
+          updated_at?: string | null
         }
         Update: {
           created_at?: string
@@ -1119,9 +1292,13 @@ export type Database = {
           description?: string | null
           frequency?: string | null
           id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          order_index?: number | null
           output?: string | null
           target?: string | null
           title?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1130,34 +1307,46 @@ export type Database = {
           class: string | null
           created_at: string
           id: string
+          is_active: boolean | null
+          is_featured: boolean | null
           level: number
           motto: string | null
           name: string
+          order_index: number | null
           period: string | null
           photo_url: string | null
           position: string
+          updated_at: string | null
         }
         Insert: {
           class?: string | null
           created_at?: string
           id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
           level?: number
           motto?: string | null
           name: string
+          order_index?: number | null
           period?: string | null
           photo_url?: string | null
           position: string
+          updated_at?: string | null
         }
         Update: {
           class?: string | null
           created_at?: string
           id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
           level?: number
           motto?: string | null
           name?: string
+          order_index?: number | null
           period?: string | null
           photo_url?: string | null
           position?: string
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1166,39 +1355,60 @@ export type Database = {
           category: string
           certificate_url: string | null
           created_at: string
+          description: string | null
           id: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          is_published: boolean | null
           level: string
+          location: string[] | null
+          order_index: number | null
           organizer: string | null
           pembina_name: string | null
           photo_url: string | null
           santri_name: string
           title: string
+          updated_at: string | null
           year: number
         }
         Insert: {
           category?: string
           certificate_url?: string | null
           created_at?: string
+          description?: string | null
           id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          is_published?: boolean | null
           level?: string
+          location?: string[] | null
+          order_index?: number | null
           organizer?: string | null
           pembina_name?: string | null
           photo_url?: string | null
           santri_name: string
           title: string
+          updated_at?: string | null
           year?: number
         }
         Update: {
           category?: string
           certificate_url?: string | null
           created_at?: string
+          description?: string | null
           id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          is_published?: boolean | null
           level?: string
+          location?: string[] | null
+          order_index?: number | null
           organizer?: string | null
           pembina_name?: string | null
           photo_url?: string | null
           santri_name?: string
           title?: string
+          updated_at?: string | null
           year?: number
         }
         Relationships: []
@@ -1236,60 +1446,6 @@ export type Database = {
           title?: string
           type?: string
           updated_at?: string
-        }
-        Relationships: []
-      }
-      sambutan_persons: {
-        Row: {
-          created_at: string
-          created_by: string | null
-          id: string
-          is_active: boolean
-          is_featured: boolean
-          location: string[] | null
-          message_full: string | null
-          message_short: string | null
-          name: string
-          order_index: number
-          photo_url: string | null
-          role_type: string
-          title: string
-          updated_at: string
-          updated_by: string | null
-        }
-        Insert: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          is_active?: boolean
-          is_featured?: boolean
-          location?: string[] | null
-          message_full?: string | null
-          message_short?: string | null
-          name: string
-          order_index?: number
-          photo_url?: string | null
-          role_type?: string
-          title: string
-          updated_at?: string
-          updated_by?: string | null
-        }
-        Update: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          is_active?: boolean
-          is_featured?: boolean
-          location?: string[] | null
-          message_full?: string | null
-          message_short?: string | null
-          name?: string
-          order_index?: number
-          photo_url?: string | null
-          role_type?: string
-          title?: string
-          updated_at?: string
-          updated_by?: string | null
         }
         Relationships: []
       }
@@ -1419,48 +1575,114 @@ export type Database = {
         }
         Relationships: []
       }
-            news: {
+      role_permissions: {
         Row: {
-          author: string | null
-          category: string
-          content: string
-          created_at: string
-          id: string
-          is_pinned: boolean | null
-          is_published: boolean | null
-          slug: string
-          summary: string | null
-          thumbnail: string | null
-          title: string
+          can_create: boolean
+          can_delete: boolean
+          can_edit: boolean
+          can_publish: boolean
+          can_view: boolean
+          role: string
+          section: string
           updated_at: string
         }
         Insert: {
-          author?: string | null
-          category?: string
-          content: string
-          created_at?: string
-          id?: string
-          is_pinned?: boolean | null
-          is_published?: boolean | null
-          slug: string
-          summary?: string | null
-          thumbnail?: string | null
-          title: string
+          can_create?: boolean
+          can_delete?: boolean
+          can_edit?: boolean
+          can_publish?: boolean
+          can_view?: boolean
+          role: string
+          section: string
           updated_at?: string
         }
         Update: {
-          author?: string | null
-          category?: string
-          content?: string
-          created_at?: string
-          id?: string
-          is_pinned?: boolean | null
-          is_published?: boolean | null
-          slug?: string
-          summary?: string | null
-          thumbnail?: string | null
-          title?: string
+          can_create?: boolean
+          can_delete?: boolean
+          can_edit?: boolean
+          can_publish?: boolean
+          can_view?: boolean
+          role?: string
+          section?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      sambutan_persons: {
+        Row: {
+          achievements: string[] | null
+          created_at: string | null
+          created_by: string | null
+          credentials: string[] | null
+          end_date: string | null
+          id: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          location: string[] | null
+          message_full: string | null
+          message_short: string | null
+          name: string
+          order_index: number | null
+          photo_url: string | null
+          quote: string | null
+          role_type: string
+          social_links: Json | null
+          start_date: string | null
+          title: string
+          type: string | null
+          updated_at: string | null
+          updated_by: string | null
+          video_url: string | null
+        }
+        Insert: {
+          achievements?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          credentials?: string[] | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          location?: string[] | null
+          message_full?: string | null
+          message_short?: string | null
+          name: string
+          order_index?: number | null
+          photo_url?: string | null
+          quote?: string | null
+          role_type?: string
+          social_links?: Json | null
+          start_date?: string | null
+          title: string
+          type?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          video_url?: string | null
+        }
+        Update: {
+          achievements?: string[] | null
+          created_at?: string | null
+          created_by?: string | null
+          credentials?: string[] | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          location?: string[] | null
+          message_full?: string | null
+          message_short?: string | null
+          name?: string
+          order_index?: number | null
+          photo_url?: string | null
+          quote?: string | null
+          role_type?: string
+          social_links?: Json | null
+          start_date?: string | null
+          title?: string
+          type?: string | null
+          updated_at?: string | null
+          updated_by?: string | null
+          video_url?: string | null
         }
         Relationships: []
       }
@@ -1535,7 +1757,9 @@ export type Database = {
           gelombang: string
           id: string
           is_active: boolean
+          is_featured: boolean | null
           kontak_wa: string | null
+          order_index: number | null
           persyaratan: Json | null
           tahun_ajaran: string
         }
@@ -1546,7 +1770,9 @@ export type Database = {
           gelombang?: string
           id?: string
           is_active?: boolean
+          is_featured?: boolean | null
           kontak_wa?: string | null
+          order_index?: number | null
           persyaratan?: Json | null
           tahun_ajaran?: string
         }
@@ -1557,7 +1783,9 @@ export type Database = {
           gelombang?: string
           id?: string
           is_active?: boolean
+          is_featured?: boolean | null
           kontak_wa?: string | null
+          order_index?: number | null
           persyaratan?: Json | null
           tahun_ajaran?: string
         }
@@ -1738,11 +1966,142 @@ export type Database = {
         }
         Relationships: []
       }
+      sub_items: {
+        Row: {
+          color: string | null
+          created_at: string | null
+          data: Json | null
+          description: string | null
+          icon: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          order_index: number | null
+          parent_module: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string | null
+          data?: Json | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          order_index?: number | null
+          parent_module: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          color?: string | null
+          created_at?: string | null
+          data?: Json | null
+          description?: string | null
+          icon?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          order_index?: number | null
+          parent_module?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      news: {
+        Row: {
+          author: string | null
+          category: string | null
+          content: string | null
+          created_at: string | null
+          id: string | null
+          is_pinned: boolean | null
+          is_published: boolean | null
+          slug: string | null
+          summary: string | null
+          thumbnail: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          author?: string | null
+          category?: string | null
+          content?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_pinned?: never
+          is_published?: boolean | null
+          slug?: string | null
+          summary?: never
+          thumbnail?: never
+          title?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          author?: string | null
+          category?: string | null
+          content?: string | null
+          created_at?: string | null
+          id?: string | null
+          is_pinned?: never
+          is_published?: boolean | null
+          slug?: string | null
+          summary?: never
+          thumbnail?: never
+          title?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      admin_create_user: {
+        Args: {
+          p_avatar_url?: string
+          p_bio?: string
+          p_class?: string
+          p_email: string
+          p_full_name: string
+          p_motto?: string
+          p_nip?: string
+          p_password: string
+          p_phone?: string
+          p_role: string
+        }
+        Returns: Json
+      }
+      admin_delete_user: {
+        Args: { p_confirm_email: string; p_user_id: string }
+        Returns: Json
+      }
+      admin_reset_user_password: {
+        Args: { p_new_password: string; p_user_id: string }
+        Returns: Json
+      }
+      admin_toggle_user_status: {
+        Args: { p_is_active: boolean; p_user_id: string }
+        Returns: Json
+      }
+      admin_update_user: {
+        Args: {
+          p_avatar_url?: string
+          p_bio?: string
+          p_class?: string
+          p_full_name: string
+          p_is_active?: boolean
+          p_motto?: string
+          p_nip?: string
+          p_phone?: string
+          p_role: string
+          p_user_id: string
+        }
+        Returns: Json
+      }
       check_user_role: {
         Args: { required_role: Database["public"]["Enums"]["user_role"] }
         Returns: boolean
@@ -1751,6 +2110,10 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      has_perm: {
+        Args: { p_action: string; p_section: string }
+        Returns: boolean
+      }
       has_role: {
         Args: { allowed_roles: Database["public"]["Enums"]["user_role"][] }
         Returns: boolean
@@ -1758,7 +2121,21 @@ export type Database = {
       is_admin: { Args: never; Returns: boolean }
     }
     Enums: {
-      user_role: "super_admin" | "pengurus_konten" | "guru_akademik" | "user"
+      user_role:
+        | "super_admin"
+        | "pengurus_konten"
+        | "guru_akademik"
+        | "user"
+        | "santri"
+        | "wali_santri"
+        | "alumni"
+        | "admin_yayasan"
+        | "kepala_sekolah"
+        | "guru"
+        | "musyrif"
+        | "staff_ppdb"
+        | "keuangan"
+        | "humas"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1886,7 +2263,23 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      user_role: ["super_admin", "pengurus_konten", "guru_akademik", "user"],
+      user_role: [
+        "super_admin",
+        "pengurus_konten",
+        "guru_akademik",
+        "user",
+        "santri",
+        "wali_santri",
+        "alumni",
+        "admin_yayasan",
+        "kepala_sekolah",
+        "guru",
+        "musyrif",
+        "staff_ppdb",
+        "keuangan",
+        "humas",
+      ],
     },
   },
 } as const
+
