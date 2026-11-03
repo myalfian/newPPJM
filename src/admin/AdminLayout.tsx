@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, Link, useLocation, Navigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Landmark, History, Building2, ShieldCheck, ChevronsLeft, ChevronsRight,
+  LayoutDashboard, Landmark, History, Building2, ShieldCheck, Users, UserCircle2, ChevronsLeft, ChevronsRight,
   ExternalLink, LogOut, Menu, X, ChevronRight,
 } from 'lucide-react';
 import { useAdminSession, type AdminSession } from './useAdminSession';
@@ -44,7 +44,11 @@ const GROUPS: NavGroup[] = [
   },
   {
     title: 'Pengaturan',
-    items: [{ to: '/admin/roles', label: 'Role & Credential', icon: ShieldCheck, section: 'roles' }],
+    items: [
+      { to: '/admin/users', label: 'Manajemen User', icon: Users, section: 'users' },
+      { to: '/admin/roles', label: 'Role & Permission', icon: ShieldCheck, section: 'roles' },
+      { to: '/profile', label: 'Profil Saya', icon: UserCircle2 },
+    ],
   },
 ];
 
@@ -53,7 +57,8 @@ const CRUMBS: Record<string, string> = {
   '/admin/visi-misi': 'Content / Visi, Misi & Tujuan',
   '/admin/sejarah': 'Content / Sejarah',
   '/admin/fasilitas': 'Content / Fasilitas',
-  '/admin/roles': 'Pengaturan / Role & Credential',
+  '/admin/users': 'Pengaturan / Manajemen User',
+  '/admin/roles': 'Pengaturan / Role & Permission',
   ...Object.fromEntries(CRUD_SECTIONS.map((s) => [`/admin/s/${s.key}`, `${s.group} / ${s.label}`])),
 };
 

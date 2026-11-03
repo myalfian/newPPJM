@@ -1042,7 +1042,9 @@ export type Database = {
       }
       profiles: {
         Row: {
+          alamat_lengkap: string | null
           angkatan: string | null
+          asrama_kamar: string | null
           bio: Json | null
           created_at: string
           email: string | null
@@ -1050,9 +1052,13 @@ export type Database = {
           full_name: string
           hafalan_juz: number
           id: string
+          jabatan: string | null
           jadwal_mengajar: Json
           kamar_asrama: string | null
           kelas: string | null
+          kelas_ampu: string[] | null
+          last_login: string | null
+          mapel_ampu: string[] | null
           mapel_diampu: string[]
           nip: string | null
           nis: string | null
@@ -1060,11 +1066,17 @@ export type Database = {
           pendidikan: string | null
           phone: string | null
           role: string
+          status_aktif: boolean | null
           updated_at: string
+          username: string | null
+          wa_number: string | null
+          wali_info: Json | null
           wali_santri: string | null
         }
         Insert: {
+          alamat_lengkap?: string | null
           angkatan?: string | null
+          asrama_kamar?: string | null
           bio?: Json | null
           created_at?: string
           email?: string | null
@@ -1072,9 +1084,13 @@ export type Database = {
           full_name?: string
           hafalan_juz?: number
           id: string
+          jabatan?: string | null
           jadwal_mengajar?: Json
           kamar_asrama?: string | null
           kelas?: string | null
+          kelas_ampu?: string[] | null
+          last_login?: string | null
+          mapel_ampu?: string[] | null
           mapel_diampu?: string[]
           nip?: string | null
           nis?: string | null
@@ -1082,11 +1098,17 @@ export type Database = {
           pendidikan?: string | null
           phone?: string | null
           role?: string
+          status_aktif?: boolean | null
           updated_at?: string
+          username?: string | null
+          wa_number?: string | null
+          wali_info?: Json | null
           wali_santri?: string | null
         }
         Update: {
+          alamat_lengkap?: string | null
           angkatan?: string | null
+          asrama_kamar?: string | null
           bio?: Json | null
           created_at?: string
           email?: string | null
@@ -1094,9 +1116,13 @@ export type Database = {
           full_name?: string
           hafalan_juz?: number
           id?: string
+          jabatan?: string | null
           jadwal_mengajar?: Json
           kamar_asrama?: string | null
           kelas?: string | null
+          kelas_ampu?: string[] | null
+          last_login?: string | null
+          mapel_ampu?: string[] | null
           mapel_diampu?: string[]
           nip?: string | null
           nis?: string | null
@@ -1104,7 +1130,11 @@ export type Database = {
           pendidikan?: string | null
           phone?: string | null
           role?: string
+          status_aktif?: boolean | null
           updated_at?: string
+          username?: string | null
+          wa_number?: string | null
+          wali_info?: Json | null
           wali_santri?: string | null
         }
         Relationships: []
@@ -1751,14 +1781,43 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_upsert_user_account: {
+        Args: {
+          p_alamat_lengkap?: string
+          p_angkatan?: string
+          p_asrama_kamar?: string
+          p_bio?: Json
+          p_email?: string
+          p_foto_url?: string
+          p_full_name?: string
+          p_hafalan_juz?: number
+          p_id?: string
+          p_jabatan?: string
+          p_kelas?: string
+          p_kelas_ampu?: string[]
+          p_mapel_ampu?: string[]
+          p_nip?: string
+          p_nis?: string
+          p_password?: string
+          p_role?: string
+          p_status_aktif?: boolean
+          p_username?: string
+          p_wa_number?: string
+          p_wali_info?: Json
+        }
+        Returns: string
+      }
       check_user_role: {
         Args: { required_role: Database["public"]["Enums"]["user_role"] }
         Returns: boolean
       }
+      current_user_role: { Args: never; Returns: string }
       ensure_santri_profile: {
         Args: { p_email?: string; p_full_name?: string }
         Returns: {
+          alamat_lengkap: string | null
           angkatan: string | null
+          asrama_kamar: string | null
           bio: Json | null
           created_at: string
           email: string | null
@@ -1766,9 +1825,13 @@ export type Database = {
           full_name: string
           hafalan_juz: number
           id: string
+          jabatan: string | null
           jadwal_mengajar: Json
           kamar_asrama: string | null
           kelas: string | null
+          kelas_ampu: string[] | null
+          last_login: string | null
+          mapel_ampu: string[] | null
           mapel_diampu: string[]
           nip: string | null
           nis: string | null
@@ -1776,7 +1839,11 @@ export type Database = {
           pendidikan: string | null
           phone: string | null
           role: string
+          status_aktif: boolean | null
           updated_at: string
+          username: string | null
+          wa_number: string | null
+          wali_info: Json | null
           wali_santri: string | null
         }
         SetofOptions: {
@@ -1799,6 +1866,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      is_role: { Args: { target_role: string }; Returns: boolean }
       is_staff_or_guru: { Args: never; Returns: boolean }
     }
     Enums: {
@@ -1817,6 +1885,9 @@ export type Database = {
         | "staff_ppdb"
         | "keuangan"
         | "humas"
+        | "yayasan"
+        | "kepsek"
+        | "ppdb"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1959,6 +2030,9 @@ export const Constants = {
         "staff_ppdb",
         "keuangan",
         "humas",
+        "yayasan",
+        "kepsek",
+        "ppdb",
       ],
     },
   },

@@ -130,6 +130,7 @@ const SejarahEditor = lazy(() => import('./admin/SejarahEditor').then(m => ({ de
 const FasilitasEditor = lazy(() => import('./admin/FasilitasEditor').then(m => ({ default: m.FasilitasEditor })));
 const CrudRoute = lazy(() => import('./admin/CrudEditor').then(m => ({ default: m.CrudRoute })));
 const RolesPage = lazy(() => import('./admin/RolesPage').then(m => ({ default: m.RolesPage })));
+const UsersPage = lazy(() => import('./admin/UsersPage').then(m => ({ default: m.UsersPage })));
 const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
 const JmCenter = lazy(() => import('./pages/jm-center/JmCenter').then(m => ({ default: m.JmCenter })));
 const Profil = lazy(() => import('./pages/jm-center/Profil').then(m => ({ default: m.Profil })));
@@ -160,6 +161,7 @@ const Berita = lazy(() => import('./pages/Berita').then(m => ({ default: m.Berit
 const DetailBerita = lazy(() => import('./pages/DetailBerita').then(m => ({ default: m.DetailBerita })));
 const Spmb = lazy(() => import('./pages/Spmb').then(m => ({ default: m.Spmb })));
 const UserProfilePage = lazy(() => import('./pages/profile/UserProfilePage').then(m => ({ default: m.UserProfilePage })));
+const PublicProfileViewPage = lazy(() => import('./pages/profile/PublicProfileViewPage').then(m => ({ default: m.PublicProfileViewPage })));
 const SantriLayout = lazy(() => import('./santri/SantriLayout').then(m => ({ default: m.SantriLayout })));
 const SantriDashboard = lazy(() => import('./santri/SantriDashboard').then(m => ({ default: m.SantriDashboard })));
 const SantriProfilePage = lazy(() => import('./santri/SantriProfilePage').then(m => ({ default: m.SantriProfilePage })));
@@ -257,9 +259,10 @@ export const App: React.FC = () => {
             <Route path="spmb" element={<Spmb />} />
             <Route path="ppdb" element={<Navigate to="/spmb" replace />} />
 
-            {/* Profile Akun Pengguna / Santri */}
+            {/* Profile Dinamis Semua Role (/profile & /profile/:role/:id) */}
+            <Route path="profile" element={<UserProfilePage />} />
+            <Route path="profile/:role/:id" element={<PublicProfileViewPage />} />
             <Route path="profil" element={<UserProfilePage />} />
-            <Route path="profile" element={<Navigate to="/profil" replace />} />
           </Route>
 
           {/* Portal Santri (/santri) */}
@@ -292,6 +295,7 @@ export const App: React.FC = () => {
             <Route path="sejarah" element={<SejarahEditor />} />
             <Route path="fasilitas" element={<FasilitasEditor />} />
             <Route path="s/:key" element={<CrudRoute />} />
+            <Route path="users" element={<UsersPage />} />
             <Route path="roles" element={<RolesPage />} />
           </Route>
           <Route path="/login" element={<Navigate to="/admin/login" replace />} />
