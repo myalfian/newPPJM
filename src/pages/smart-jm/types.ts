@@ -81,17 +81,34 @@ export interface VocabularyItem {
   exampleSentence?: string;
 }
 
+export interface MandarinDialogueLine {
+  speaker: string;
+  hanzi: string;
+  pinyin: string;
+  meaning: string;
+}
+
+export interface MandarinActivityItem {
+  title: string;
+  desc: string;
+}
+
 export interface MandarinTopicItem {
   id: string;
   topicKey: string;
   topicName: string;
   chineseName: string;
   level: string;
+  teacherMentor?: string;
+  downloadDocUrl?: string;
   posterFlyer: string;
   summary: string;
   narrative: string;
   vocabularies: VocabularyItem[];
   culturalNote?: string;
+  importantNotes?: string[];
+  dialogues?: MandarinDialogueLine[];
+  classActivities?: MandarinActivityItem[];
 }
 
 export interface MandarinQuizQuestion {
