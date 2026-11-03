@@ -122,6 +122,35 @@ const SkeletonLoader: React.FC = () => (
   </div>
 );
 
+const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
+const JmCenter = lazy(() => import('./pages/jm-center/JmCenter').then(m => ({ default: m.JmCenter })));
+const Profil = lazy(() => import('./pages/jm-center/Profil').then(m => ({ default: m.Profil })));
+const Sambutan = lazy(() => import('./pages/jm-center/Sambutan').then(m => ({ default: m.Sambutan })));
+const Sejarah = lazy(() => import('./pages/jm-center/Sejarah').then(m => ({ default: m.Sejarah })));
+const VisiMisi = lazy(() => import('./pages/jm-center/VisiMisi').then(m => ({ default: m.VisiMisi })));
+const Fasilitas = lazy(() => import('./pages/jm-center/Fasilitas').then(m => ({ default: m.Fasilitas })));
+const Lembaga = lazy(() => import('./pages/jm-center/Lembaga').then(m => ({ default: m.Lembaga })));
+const ProgramHub = lazy(() => import('./pages/program/ProgramHub').then(m => ({ default: m.ProgramHub })));
+const AmaliyahPondok = lazy(() => import('./pages/program-unggulan/AmaliyahPondok').then(m => ({ default: m.AmaliyahPondok })));
+const ProgramSekolah = lazy(() => import('./pages/program-unggulan/ProgramSekolah').then(m => ({ default: m.ProgramSekolah })));
+const ProgramMadin = lazy(() => import('./pages/program-unggulan/ProgramMadin').then(m => ({ default: m.ProgramMadin })));
+const SmartJmHub = lazy(() => import('./pages/smart-jm/SmartJmHub').then(m => ({ default: m.SmartJmHub })));
+const QuranReadPage = lazy(() => import('./pages/smart-jm/hafidz/QuranReadPage').then(m => ({ default: m.QuranReadPage })));
+const MurojaahPage = lazy(() => import('./pages/smart-jm/hafidz/MurojaahPage').then(m => ({ default: m.MurojaahPage })));
+const StemMateri = lazy(() => import('./pages/smart-jm/stem/StemMateri').then(m => ({ default: m.StemMateri })));
+const StemPortofolio = lazy(() => import('./pages/smart-jm/stem/StemPortofolio').then(m => ({ default: m.StemPortofolio })));
+const MandarinMateri = lazy(() => import('./pages/smart-jm/mandarin/MandarinMateri').then(m => ({ default: m.MandarinMateri })));
+const MandarinQuizPage = lazy(() => import('./pages/smart-jm/mandarin/MandarinQuizPage').then(m => ({ default: m.MandarinQuizPage })));
+const Prestasi = lazy(() => import('./pages/Prestasi').then(m => ({ default: m.Prestasi })));
+const Ekskul = lazy(() => import('./pages/Ekskul').then(m => ({ default: m.Ekskul })));
+const Agenda = lazy(() => import('./pages/Agenda').then(m => ({ default: m.Agenda })));
+const KaryaSiswa = lazy(() => import('./pages/KaryaSiswa').then(m => ({ default: m.KaryaSiswa })));
+const Osis = lazy(() => import('./pages/Osis').then(m => ({ default: m.Osis })));
+const GaleriFoto = lazy(() => import('./pages/galeri/GaleriFoto').then(m => ({ default: m.GaleriFoto })));
+const GaleriVideo = lazy(() => import('./pages/galeri/GaleriVideo').then(m => ({ default: m.GaleriVideo })));
+const Berita = lazy(() => import('./pages/Berita').then(m => ({ default: m.Berita })));
+const DetailBerita = lazy(() => import('./pages/DetailBerita').then(m => ({ default: m.DetailBerita })));
+const Spmb = lazy(() => import('./pages/Spmb').then(m => ({ default: m.Spmb })));
 const UserProfilePage = lazy(() => import('./pages/profile/UserProfilePage').then(m => ({ default: m.UserProfilePage })));
 
 import { clearOldSeedCache } from './utils/clearOldCache';
