@@ -6,20 +6,41 @@ import {
 } from 'lucide-react';
 import { useAdminSession, type AdminSession } from './useAdminSession';
 import { STAFF_ROLES } from './permissions';
+import { CRUD_SECTIONS, type NavGroupKey } from './sections';
 
 type NavItem = { to: string; label: string; icon: React.ElementType; section?: string };
 type NavGroup = { title: string; items: NavItem[] };
 
-// Grup lain (AKADEMIK, PUBLIKASI, MANAJEMEN) menyusul saat section-nya dimigrasi.
+const crudGroup = (group: NavGroupKey): NavItem[] =>
+  CRUD_SECTIONS.filter((s) => s.group === group).map((s) => ({
+    to: `/admin/s/${s.key}`,
+    label: s.label,
+    icon: s.icon,
+    section: s.key,
+  }));
+
 const GROUPS: NavGroup[] = [
-  { title: 'Content', items: [{ to: '/admin', label: 'Ringkasan', icon: LayoutDashboard }] },
   {
-    title: 'Profil',
+    title: 'Content',
     items: [
+      { to: '/admin', label: 'Ringkasan', icon: LayoutDashboard },
       { to: '/admin/visi-misi', label: 'Visi, Misi & Tujuan', icon: Landmark, section: 'visi_misi' },
       { to: '/admin/sejarah', label: 'Sejarah', icon: History, section: 'sejarah' },
       { to: '/admin/fasilitas', label: 'Fasilitas', icon: Building2, section: 'fasilitas' },
+      ...crudGroup('Content'),
     ],
+  },
+  {
+    title: 'Akademik',
+    items: crudGroup('Akademik'),
+  },
+  {
+    title: 'Publikasi',
+    items: crudGroup('Publikasi'),
+  },
+  {
+    title: 'Manajemen',
+    items: crudGroup('Manajemen'),
   },
   {
     title: 'Pengaturan',
@@ -29,10 +50,11 @@ const GROUPS: NavGroup[] = [
 
 const CRUMBS: Record<string, string> = {
   '/admin': 'Ringkasan',
-  '/admin/visi-misi': 'Profil / Visi, Misi & Tujuan',
-  '/admin/sejarah': 'Profil / Sejarah',
-  '/admin/fasilitas': 'Profil / Fasilitas',
+  '/admin/visi-misi': 'Content / Visi, Misi & Tujuan',
+  '/admin/sejarah': 'Content / Sejarah',
+  '/admin/fasilitas': 'Content / Fasilitas',
   '/admin/roles': 'Pengaturan / Role & Credential',
+  ...Object.fromEntries(CRUD_SECTIONS.map((s) => [`/admin/s/${s.key}`, `${s.group} / ${s.label}`])),
 };
 
 export type AdminOutletContext = AdminSession;
@@ -170,7 +192,7 @@ export const AdminLayout: React.FC = () => {
       </div>
 
       <nav className="lg:hidden fixed inset-x-0 bottom-0 z-30 flex border-t border-teal-900/10 bg-white pb-[env(safe-area-inset-bottom)]">
-        {visible.flatMap((g) => g.items).map((i) => (
+        {visible.flatMap((g) => g.items).slice(0, 4).map((i) => (
           <NavLink
             key={i.to}
             to={i.to}
@@ -185,6 +207,13 @@ export const AdminLayout: React.FC = () => {
             <span className="truncate max-w-[72px]">{i.label.split(' ')[0]}</span>
           </NavLink>
         ))}
+        <button
+          onClick={() => setDrawer(true)}
+          className="flex flex-1 flex-col items-center gap-0.5 py-2 text-[10.5px] font-medium text-zinc-500"
+        >
+          <Menu size={20} />
+          <span>Menu</span>
+        </button>
       </nav>
     </div>
   );

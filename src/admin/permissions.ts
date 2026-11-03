@@ -30,11 +30,14 @@ export const PERM_ACTIONS: { key: PermAction; label: string }[] = [
   { key: 'publish', label: 'Terbitkan' },
 ];
 
+import { CRUD_SECTIONS } from './sections';
+
 /** Section yang sudah punya editor. Tambah entri baru di sini saat section lain dimigrasi. */
 export const ADMIN_SECTIONS: { key: string; label: string }[] = [
   { key: 'visi_misi', label: 'Profil: Visi, Misi & Tujuan' },
   { key: 'sejarah', label: 'Profil: Sejarah' },
   { key: 'fasilitas', label: 'JM Center: Fasilitas' },
+  ...CRUD_SECTIONS.map((s) => ({ key: s.key, label: `${s.group}: ${s.label}` })),
   { key: 'roles', label: 'Pengaturan: Role & Credential' },
 ];
 

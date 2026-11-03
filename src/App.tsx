@@ -128,6 +128,7 @@ const AdminDashboard = lazy(() => import('./admin/AdminDashboard').then(m => ({ 
 const VisiMisiEditor = lazy(() => import('./admin/VisiMisiEditor').then(m => ({ default: m.VisiMisiEditor })));
 const SejarahEditor = lazy(() => import('./admin/SejarahEditor').then(m => ({ default: m.SejarahEditor })));
 const FasilitasEditor = lazy(() => import('./admin/FasilitasEditor').then(m => ({ default: m.FasilitasEditor })));
+const CrudRoute = lazy(() => import('./admin/CrudEditor').then(m => ({ default: m.CrudRoute })));
 const RolesPage = lazy(() => import('./admin/RolesPage').then(m => ({ default: m.RolesPage })));
 const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
 const JmCenter = lazy(() => import('./pages/jm-center/JmCenter').then(m => ({ default: m.JmCenter })));
@@ -253,6 +254,7 @@ export const App: React.FC = () => {
             <Route path="visi-misi" element={<VisiMisiEditor />} />
             <Route path="sejarah" element={<SejarahEditor />} />
             <Route path="fasilitas" element={<FasilitasEditor />} />
+            <Route path="s/:key" element={<CrudRoute />} />
             <Route path="roles" element={<RolesPage />} />
           </Route>
           <Route path="/login" element={<Navigate to="/admin/login" replace />} />
