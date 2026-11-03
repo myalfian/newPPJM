@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { Landmark, ShieldCheck } from 'lucide-react';
+import { Landmark, History, ShieldCheck } from 'lucide-react';
 import type { AdminOutletContext } from './AdminLayout';
 
 export const AdminDashboard: React.FC = () => {
   const admin = useOutletContext<AdminOutletContext>();
   const cards = [
     { to: '/admin/visi-misi', title: 'Visi, Misi & Tujuan', desc: 'Edit teks dan lihat hasilnya langsung.', icon: Landmark, section: 'visi_misi' },
+    { to: '/admin/sejarah', title: 'Sejarah', desc: 'Atur pengantar dan linimasa pesantren.', icon: History, section: 'sejarah' },
     { to: '/admin/roles', title: 'Role & Credential', desc: 'Atur hak akses dan bagikan akun.', icon: ShieldCheck, section: 'roles' },
   ].filter((c) => admin.can(c.section, 'view'));
 

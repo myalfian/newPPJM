@@ -45,6 +45,16 @@ export const SejarahSection: React.FC = () => {
     };
   }, []);
 
+  return <SejarahView history={history} content={content} loading={loading} />;
+};
+
+export interface SejarahViewProps {
+  history: HistoryMilestone[];
+  content: string;
+  loading?: boolean;
+}
+
+export const SejarahView: React.FC<SejarahViewProps> = ({ history, content, loading = false }) => {
   return (
     <div className="space-y-2 sm:space-y-2.5">
       {/* Seksi Sejarah Kronologis (Timeline Modern Lux) */}

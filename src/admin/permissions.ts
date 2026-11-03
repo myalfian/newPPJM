@@ -33,6 +33,7 @@ export const PERM_ACTIONS: { key: PermAction; label: string }[] = [
 /** Section yang sudah punya editor. Tambah entri baru di sini saat section lain dimigrasi. */
 export const ADMIN_SECTIONS: { key: string; label: string }[] = [
   { key: 'visi_misi', label: 'Profil: Visi, Misi & Tujuan' },
+  { key: 'sejarah', label: 'Profil: Sejarah' },
   { key: 'roles', label: 'Pengaturan: Role & Credential' },
 ];
 
