@@ -7,6 +7,7 @@ import {
   Calendar,
   Sparkles,
   Play,
+  Pause,
   X,
   ChevronLeft,
   ChevronRight,
@@ -273,17 +274,32 @@ const fetchPhotoActivitiesFromDb = async (): Promise<PhotoActivity[]> => {
 
     return activeRows.map((item: any, idx: number) => {
       const primaryUrl = item.image_url || SAMPLE_PHOTO_ACTIVITIES[0].photos[0].photo_url;
-      const photos: PhotoItem[] = [{ photo_url: primaryUrl, caption: item.description || item.title }];
+      let photos: PhotoItem[] = [];
 
-      // Pad with fallback aesthetic photos so 3-photo card layout stays rich
+      if (Array.isArray(item.photos) && item.photos.length > 0) {
+        photos = item.photos
+          .filter((p: any) => p && typeof p.photo_url === 'string' && p.photo_url.trim())
+          .map((p: any) => ({
+            photo_url: p.photo_url,
+            caption: p.caption || item.description || item.title,
+          }));
+      }
+
+      if (photos.length === 0) {
+        photos.push({ photo_url: primaryUrl, caption: item.description || item.title });
+      }
+
+      // Pad with fallback aesthetic photos so 3-photo slider layout always has 3 slides
       while (photos.length < 3) {
         const fallback = SAMPLE_PHOTO_ACTIVITIES[idx % SAMPLE_PHOTO_ACTIVITIES.length].photos[photos.length];
         photos.push(fallback || { photo_url: primaryUrl, caption: item.title });
       }
 
-      const formattedDate = item.created_at
-        ? new Date(item.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
-        : 'Terbaru';
+      const formattedDate =
+        item.event_date ||
+        (item.created_at
+          ? new Date(item.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
+          : 'Terbaru');
 
       return {
         id: item.id || `f-${idx}`,
@@ -340,6 +356,253 @@ const fetchVideoActivitiesFromDb = async (): Promise<VideoActivity[]> => {
 export interface GaleriProps {
   defaultTab?: 'foto' | 'video';
 }
+
+const SLIDE_VARIANTS = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? '42%' : '-42%',
+    opacity: 0,
+    scale: 1.04,
+  }),
+  center: {
+    x: '0%',
+    opacity: 1,
+    scale: 1,
+  },
+  exit: (direction: number) => ({
+    x: direction > 0 ? '-42%' : '42%',
+    opacity: 0,
+    scale: 0.96,
+  }),
+};
+
+interface PhotoCardSliderProps {
+  item: PhotoActivity;
+  cardIndex: number;
+  onOpenLightbox: (item: PhotoActivity, photoIndex: number) => void;
+}
+
+const PhotoCardSlider: React.FC<PhotoCardSliderProps> = ({ item, cardIndex, onOpenLightbox }) => {
+  const photos = item.photos;
+  const total = photos.length;
+  const [[activeIndex, direction], setSlide] = useState<[number, number]>([0, 1]);
+  const [isPaused, setIsPaused] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+
+  const paginate = useCallback(
+    (newDirection: number) => {
+      if (total <= 1) return;
+      setSlide(([prevIdx]) => [((prevIdx + newDirection) % total + total) % total, newDirection]);
+    },
+    [total],
+  );
+
+  const jumpTo = (targetIdx: number) => {
+    setSlide(([prevIdx]) => {
+      if (targetIdx === prevIdx) return [prevIdx, 1];
+      return [targetIdx, targetIdx > prevIdx ? 1 : -1];
+    });
+  };
+
+  // Smooth staggered auto-play across the 3 photos, pausing on hover/touch
+  useEffect(() => {
+    if (isPaused || total <= 1) return;
+    const intervalMs = 4200 + (cardIndex % 3) * 550;
+    const timer = window.setInterval(() => paginate(1), intervalMs);
+    return () => window.clearInterval(timer);
+  }, [isPaused, total, cardIndex, paginate]);
+
+  const activePhoto = photos[activeIndex] || photos[0];
+
+  return (
+    <div
+      className="flex flex-col justify-between h-full"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <div>
+        {/* SMOOTH 3-PHOTO ANIMATED SLIDER CAROUSEL + THUMBNAIL STRIP */}
+        <div className="p-2 sm:p-2.5 pb-0 space-y-1.5">
+          {/* Primary Animated Viewport (Aspect 16/10) */}
+          <div
+            onClick={() => onOpenLightbox(item, activeIndex)}
+            onTouchStart={(e) => {
+              setIsPaused(true);
+              setTouchStart(e.touches[0].clientX);
+            }}
+            onTouchEnd={(e) => {
+              if (touchStart !== null) {
+                const diff = touchStart - e.changedTouches[0].clientX;
+                if (diff > 40) paginate(1);
+                else if (diff < -40) paginate(-1);
+              }
+              setTouchStart(null);
+              setIsPaused(false);
+            }}
+            className="relative aspect-[16/10] rounded-xl sm:rounded-2xl overflow-hidden bg-zinc-900 cursor-pointer select-none group/slider shadow-inner"
+            title={`Klik untuk membuka Lightbox (Foto ${activeIndex + 1} dari ${total})`}
+          >
+            <AnimatePresence initial={false} custom={direction} mode="popLayout">
+              <motion.img
+                key={`${item.id}-${activeIndex}`}
+                custom={direction}
+                variants={SLIDE_VARIANTS}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  x: { type: 'spring', stiffness: 310, damping: 32, mass: 0.75 },
+                  opacity: { duration: 0.28, ease: 'easeOut' },
+                  scale: { duration: 0.38, ease: 'easeOut' },
+                }}
+                src={activePhoto.photo_url}
+                alt={activePhoto.caption || `${item.title} - Foto ${activeIndex + 1}`}
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+            </AnimatePresence>
+
+            {/* Bottom Gradient & Live Caption Preview */}
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent pt-8 pb-2 px-2.5 pointer-events-none">
+              <div className="flex items-end justify-between gap-2">
+                <p className="text-[11px] font-medium text-white/95 line-clamp-1 drop-shadow-xs">
+                  {activePhoto.caption || item.title}
+                </p>
+                <span className="shrink-0 px-2 py-0.5 rounded-full bg-black/65 backdrop-blur-md border border-white/20 text-[10px] font-extrabold text-amber-300">
+                  {activeIndex + 1} / {total}
+                </span>
+              </div>
+            </div>
+
+            {/* Hover Zoom Indicator Top-Right */}
+            <div className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/55 backdrop-blur-md border border-white/20 text-white flex items-center justify-center opacity-80 group-hover/slider:opacity-100 group-hover/slider:scale-105 transition-all pointer-events-none">
+              <ZoomIn className="w-3.5 h-3.5" />
+            </div>
+
+            {/* Prev / Next Navigation Buttons */}
+            {total > 1 && (
+              <>
+                <button
+                  type="button"
+                  aria-label="Slide Foto Sebelumnya"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    paginate(-1);
+                  }}
+                  className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/55 hover:bg-emerald-700/90 text-white border border-white/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover/slider:opacity-100 focus:opacity-100 transition-all duration-200 cursor-pointer z-10"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Slide Foto Selanjutnya"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    paginate(1);
+                  }}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/55 hover:bg-emerald-700/90 text-white border border-white/20 backdrop-blur-md flex items-center justify-center opacity-0 group-hover/slider:opacity-100 focus:opacity-100 transition-all duration-200 cursor-pointer z-10"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </>
+            )}
+          </div>
+
+          {/* 3-Photo Interactive Mini Thumbnail Strip with Smooth Active Highlight */}
+          <div className="grid grid-cols-3 gap-1.5" role="tablist" aria-label={`Pilih foto untuk ${item.title}`}>
+            {photos.map((photo, idx) => {
+              const isCurrent = idx === activeIndex;
+              return (
+                <button
+                  key={idx}
+                  type="button"
+                  role="tab"
+                  aria-selected={isCurrent}
+                  onClick={() => jumpTo(idx)}
+                  onDoubleClick={() => onOpenLightbox(item, idx)}
+                  title={`Slide #${idx + 1}: ${photo.caption || item.title} (Klik untuk slide, klik 2x untuk Lightbox)`}
+                  className={`relative aspect-[16/9] rounded-lg overflow-hidden cursor-pointer transition-all duration-300 border ${
+                    isCurrent
+                      ? 'border-emerald-600 ring-2 ring-emerald-500/35 opacity-100 scale-[1.01]'
+                      : 'border-slate-200/80 opacity-65 hover:opacity-95'
+                  }`}
+                >
+                  <img
+                    src={photo.photo_url}
+                    alt={photo.caption || `${item.title} - Thumbnail ${idx + 1}`}
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                  />
+                  <span
+                    className={`absolute bottom-0.5 right-0.5 px-1 py-0.2 rounded text-[8.5px] font-extrabold leading-tight ${
+                      isCurrent ? 'bg-emerald-700 text-white' : 'bg-black/60 text-white/90'
+                    }`}
+                  >
+                    #{idx + 1}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Header Tags & Metadata */}
+        <div className="p-3.5 sm:p-4 space-y-2">
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-800/50">
+              <Tag className="w-3 h-3" />
+              <span>{item.categoryTag}</span>
+            </span>
+
+            <span className="inline-flex items-center gap-1 text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
+              <Calendar className="w-3 h-3 text-zinc-400" />
+              <span>{item.event_date}</span>
+            </span>
+          </div>
+
+          {/* Title */}
+          <h3
+            onClick={() => onOpenLightbox(item, activeIndex)}
+            className="font-extrabold text-sm sm:text-base text-zinc-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors cursor-pointer line-clamp-2 leading-snug"
+          >
+            {item.title}
+          </h3>
+
+          {/* Description (Clamped 2-3 lines) */}
+          <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 sm:line-clamp-3 leading-relaxed">
+            {item.description}
+          </p>
+        </div>
+      </div>
+
+      {/* Bottom Action Bar */}
+      <div className="px-3.5 sm:px-4 py-2.5 bg-zinc-50/80 dark:bg-zinc-800/40 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
+        <button
+          type="button"
+          onClick={() => onOpenLightbox(item, activeIndex)}
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-900 transition-colors cursor-pointer"
+        >
+          <Maximize2 className="w-3.5 h-3.5" />
+          <span>Buka Lightbox (3 Foto)</span>
+        </button>
+
+        {/* Animated 3-dot indicator */}
+        <div className="flex items-center gap-1">
+          {photos.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              aria-label={`Pilih foto ${idx + 1}`}
+              onClick={() => jumpTo(idx)}
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                idx === activeIndex ? 'w-5 bg-emerald-600' : 'w-1.5 bg-slate-300 hover:bg-slate-400'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const GALLERY_TABS: {
   id: 'foto' | 'video';
@@ -435,10 +698,13 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
   const [lightboxData, setLightboxData] = useState<{
     activity: PhotoActivity;
     currentIndex: number;
+    direction: number;
   } | null>(null);
+  const [lightboxAutoPlay, setLightboxAutoPlay] = useState<boolean>(true);
 
   const openLightbox = (activity: PhotoActivity, photoIndex = 0) => {
-    setLightboxData({ activity, currentIndex: photoIndex });
+    setLightboxData({ activity, currentIndex: photoIndex, direction: 1 });
+    setLightboxAutoPlay(true);
   };
 
   const closeLightbox = () => {
@@ -446,16 +712,40 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
   };
 
   const nextLightboxPhoto = useCallback(() => {
-    if (!lightboxData) return;
-    const len = lightboxData.activity.photos.length;
-    setLightboxData((prev) => (prev ? { ...prev, currentIndex: (prev.currentIndex + 1) % len } : null));
-  }, [lightboxData]);
+    setLightboxData((prev) => {
+      if (!prev) return null;
+      const len = prev.activity.photos.length;
+      return { ...prev, currentIndex: (prev.currentIndex + 1) % len, direction: 1 };
+    });
+  }, []);
 
   const prevLightboxPhoto = useCallback(() => {
-    if (!lightboxData) return;
-    const len = lightboxData.activity.photos.length;
-    setLightboxData((prev) => (prev ? { ...prev, currentIndex: (prev.currentIndex - 1 + len) % len } : null));
-  }, [lightboxData]);
+    setLightboxData((prev) => {
+      if (!prev) return null;
+      const len = prev.activity.photos.length;
+      return { ...prev, currentIndex: (prev.currentIndex - 1 + len) % len, direction: -1 };
+    });
+  }, []);
+
+  const jumpLightboxPhoto = useCallback((targetIdx: number) => {
+    setLightboxData((prev) => {
+      if (!prev || targetIdx === prev.currentIndex) return prev;
+      return {
+        ...prev,
+        currentIndex: targetIdx,
+        direction: targetIdx > prev.currentIndex ? 1 : -1,
+      };
+    });
+  }, []);
+
+  // Auto-play inside Lightbox when enabled
+  useEffect(() => {
+    if (!lightboxData || !lightboxAutoPlay || lightboxData.activity.photos.length <= 1) return;
+    const timer = window.setInterval(() => {
+      nextLightboxPhoto();
+    }, 3800);
+    return () => window.clearInterval(timer);
+  }, [lightboxData, lightboxAutoPlay, nextLightboxPhoto]);
 
   // Touch Swipe Gesture for Lightbox on Mobile
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
@@ -676,85 +966,12 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
-                {filteredPhotos.map((item) => (
+                {filteredPhotos.map((item, cardIdx) => (
                   <article
                     key={item.id}
                     className="bg-white rounded-xl sm:rounded-2xl overflow-hidden border border-slate-200 shadow-xs hover:shadow-md card-hover-smooth flex flex-col justify-between group"
                   >
-                    <div>
-                      {/* MINI 3-PHOTO STRIP GRID (Aspect 4/3) */}
-                      <div className="p-2 sm:p-2.5 pb-0">
-                        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl overflow-hidden bg-zinc-100 dark:bg-zinc-800">
-                          {item.photos.map((photo, idx) => (
-                            <div
-                              key={idx}
-                              onClick={() => openLightbox(item, idx)}
-                              className="relative aspect-[4/3] overflow-hidden bg-zinc-200 dark:bg-zinc-800 cursor-pointer group/photo"
-                              title={`Perbesar foto ${idx + 1}`}
-                            >
-                              <img
-                                src={photo.photo_url}
-                                alt={photo.caption || `${item.title} - Foto ${idx + 1}`}
-                                loading="lazy"
-                                className="w-full h-full object-cover transition-transform duration-500 group-hover/photo:scale-110"
-                              />
-                              {/* Hover Zoom Overlay */}
-                              <div className="absolute inset-0 bg-emerald-950/40 opacity-0 group-hover/photo:opacity-100 flex items-center justify-center transition-opacity duration-200">
-                                <ZoomIn className="w-4 h-4 text-white drop-shadow-md" />
-                              </div>
-                              {/* Badge Foto 1, 2, 3 */}
-                              <span className="absolute bottom-1 right-1 px-1.5 py-0.2 rounded-md bg-black/60 backdrop-blur-xs text-[9px] font-bold text-white">
-                                #{idx + 1}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Header Tags & Metadata */}
-                      <div className="p-3.5 sm:p-4 space-y-2">
-                        <div className="flex items-center justify-between gap-2 flex-wrap">
-                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-800/50">
-                            <Tag className="w-3 h-3" />
-                            <span>{item.categoryTag}</span>
-                          </span>
-
-                          <span className="inline-flex items-center gap-1 text-[11px] text-zinc-500 dark:text-zinc-400 font-medium">
-                            <Calendar className="w-3 h-3 text-zinc-400" />
-                            <span>{item.event_date}</span>
-                          </span>
-                        </div>
-
-                        {/* Title */}
-                        <h3
-                          onClick={() => openLightbox(item, 0)}
-                          className="font-extrabold text-sm sm:text-base text-zinc-900 dark:text-white group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors cursor-pointer line-clamp-2 leading-snug"
-                        >
-                          {item.title}
-                        </h3>
-
-                        {/* Description (Clamped 2-3 lines) */}
-                        <p className="text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 sm:line-clamp-3 leading-relaxed">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Bottom Action Bar */}
-                    <div className="px-3.5 sm:px-4 py-2.5 bg-zinc-50/80 dark:bg-zinc-800/40 border-t border-zinc-100 dark:border-zinc-800/80 flex items-center justify-between">
-                      <button
-                        type="button"
-                        onClick={() => openLightbox(item, 0)}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-900 transition-colors cursor-pointer"
-                      >
-                        <Maximize2 className="w-3.5 h-3.5" />
-                        <span>Buka Lightbox (3 Foto)</span>
-                      </button>
-
-                      <span className="text-[11px] font-semibold text-zinc-400">
-                        {item.photos.length} Foto
-                      </span>
-                    </div>
+                    <PhotoCardSlider item={item} cardIndex={cardIdx} onOpenLightbox={openLightbox} />
                   </article>
                 ))}
               </div>
@@ -915,6 +1132,20 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
                 </div>
 
                 <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setLightboxAutoPlay((v) => !v)}
+                    aria-label={lightboxAutoPlay ? 'Jeda Slideshow Otomatis' : 'Putar Slideshow Otomatis'}
+                    title={lightboxAutoPlay ? 'Jeda Slideshow' : 'Putar Slideshow'}
+                    className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full border transition-all cursor-pointer ${
+                      lightboxAutoPlay
+                        ? 'bg-emerald-900/70 text-emerald-200 border-emerald-600/60'
+                        : 'bg-zinc-800 text-zinc-300 border-zinc-700 hover:bg-zinc-700'
+                    }`}
+                  >
+                    {lightboxAutoPlay ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+                    <span className="hidden xs:inline">{lightboxAutoPlay ? 'Auto Slide' : 'Dijeda'}</span>
+                  </button>
                   <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-zinc-800 text-zinc-300">
                     {lightboxData.currentIndex + 1} / {lightboxData.activity.photos.length}
                   </span>
@@ -929,18 +1160,30 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
                 </div>
               </div>
 
-              {/* Main Photo Area (Touch Swipeable on Mobile) */}
+              {/* Main Photo Area (Smooth Directional Spring Slider + Touch Swipeable) */}
               <div
                 onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
                 className="relative flex-1 bg-black min-h-[280px] sm:min-h-[460px] flex items-center justify-center overflow-hidden select-none"
               >
-                <img
-                  key={lightboxData.currentIndex}
-                  src={lightboxData.activity.photos[lightboxData.currentIndex].photo_url}
-                  alt={lightboxData.activity.photos[lightboxData.currentIndex].caption || lightboxData.activity.title}
-                  className="max-h-[65vh] sm:max-h-[70vh] w-full object-contain"
-                />
+                <AnimatePresence initial={false} custom={lightboxData.direction} mode="popLayout">
+                  <motion.img
+                    key={`${lightboxData.activity.id}-lb-${lightboxData.currentIndex}`}
+                    custom={lightboxData.direction}
+                    variants={SLIDE_VARIANTS}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{
+                      x: { type: 'spring', stiffness: 320, damping: 32, mass: 0.78 },
+                      opacity: { duration: 0.28, ease: 'easeOut' },
+                      scale: { duration: 0.36, ease: 'easeOut' },
+                    }}
+                    src={lightboxData.activity.photos[lightboxData.currentIndex].photo_url}
+                    alt={lightboxData.activity.photos[lightboxData.currentIndex].caption || lightboxData.activity.title}
+                    className="max-h-[65vh] sm:max-h-[70vh] w-full object-contain"
+                  />
+                </AnimatePresence>
 
                 {/* Left & Right Controls */}
                 {lightboxData.activity.photos.length > 1 && (
@@ -949,7 +1192,7 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
                       type="button"
                       onClick={prevLightboxPhoto}
                       aria-label="Foto Sebelumnya"
-                      className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md transition-all cursor-pointer"
+                      className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-black/60 hover:bg-emerald-700/90 text-white border border-white/15 backdrop-blur-md transition-all cursor-pointer z-10"
                     >
                       <ChevronLeft className="w-6 h-6" />
                     </button>
@@ -957,7 +1200,7 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
                       type="button"
                       onClick={nextLightboxPhoto}
                       aria-label="Foto Selanjutnya"
-                      className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md transition-all cursor-pointer"
+                      className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-black/60 hover:bg-emerald-700/90 text-white border border-white/15 backdrop-blur-md transition-all cursor-pointer z-10"
                     >
                       <ChevronRight className="w-6 h-6" />
                     </button>
@@ -967,25 +1210,37 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
 
               {/* Thumbnail Strip & Caption */}
               <div className="p-4 bg-zinc-900 border-t border-zinc-800 space-y-3 shrink-0">
-                {/* Caption */}
-                <p className="text-xs sm:text-sm font-semibold text-emerald-300">
-                  {lightboxData.activity.photos[lightboxData.currentIndex].caption || lightboxData.activity.title}
-                </p>
+                {/* Animated Caption */}
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={`caption-${lightboxData.currentIndex}`}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-xs sm:text-sm font-semibold text-emerald-300"
+                  >
+                    {lightboxData.activity.photos[lightboxData.currentIndex].caption || lightboxData.activity.title}
+                  </motion.p>
+                </AnimatePresence>
 
                 {/* Mini Thumbnails */}
-                <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                <div className="flex items-center gap-2.5 overflow-x-auto pb-1">
                   {lightboxData.activity.photos.map((p, idx) => (
                     <button
                       key={idx}
                       type="button"
-                      onClick={() => setLightboxData((prev) => (prev ? { ...prev, currentIndex: idx } : null))}
-                      className={`relative w-16 h-12 rounded-lg overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
+                      onClick={() => jumpLightboxPhoto(idx)}
+                      className={`relative w-20 h-14 rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-300 cursor-pointer ${
                         idx === lightboxData.currentIndex
-                          ? 'border-amber-400 ring-2 ring-amber-400/40 scale-105'
-                          : 'border-transparent opacity-60 hover:opacity-100'
+                          ? 'border-amber-400 ring-2 ring-amber-400/40 scale-105 opacity-100'
+                          : 'border-transparent opacity-55 hover:opacity-95'
                       }`}
                     >
                       <img src={p.photo_url} alt="" className="w-full h-full object-cover" />
+                      <span className="absolute bottom-1 right-1 px-1.5 py-0.2 rounded bg-black/70 text-[9px] font-bold text-white">
+                        #{idx + 1}
+                      </span>
                     </button>
                   ))}
                 </div>
