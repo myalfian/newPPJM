@@ -1,5 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { convertImageToWebP } from '../lib/webpConverter';
+import { invalidateCache } from '../lib/queryCache';
 import {
   SantriProfile,
   TugasItem,
@@ -978,6 +980,8 @@ export const GuruProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
       }
 
+      invalidateCache('public-news-list');
+
       showToast(
         payload.is_published ? 'Dipublish ke Website Publik!' : 'Draft Konten Tersimpan',
         `Artikel "${payload.title}" telah tersimpan di tabel berita.`
@@ -989,16 +993,25 @@ export const GuruProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const uploadGuruFile = useCallback(
     async (
-      file: File,
+      rawFile: File,
       bucket: 'tugas' | 'berita-images' = 'tugas'
     ): Promise<{ url: string | null; error?: string }> => {
+      let file = rawFile;
+      if (rawFile.type.startsWith('image/')) {
+        try {
+          const converted = await convertImageToWebP(rawFile, { maxWidth: 1600, maxHeight: 1600, quality: 0.8 });
+          file = converted.file;
+        } catch {
+          // keep original if conversion fails
+        }
+      }
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
       const path = `${userId || 'guru'}/${Date.now()}-${safeName}`;
 
       try {
         const { error: upErr } = await supabase.storage
           .from(bucket)
-          .upload(path, file, { upsert: true });
+          .upload(path, file, { upsert: true, contentType: file.type || undefined });
 
         if (!upErr) {
           const { data } = supabase.storage.from(bucket).getPublicUrl(path);

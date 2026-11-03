@@ -23,6 +23,7 @@ import {
   Eye,
 } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
+import { convertImageToWebP, formatBytes } from '../../lib/webpConverter';
 import {
   NINE_ROLES,
   getRoleMeta,
@@ -263,21 +264,36 @@ export const UserProfilePage: React.FC = () => {
   };
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !currentProfile) return;
-    const ext = file.name.split('.').pop() || 'jpg';
+    const rawFile = e.target.files?.[0];
+    if (!rawFile || !currentProfile) return;
+    let fileToUpload = rawFile;
+    let savedInfo = '';
+    if (rawFile.type.startsWith('image/')) {
+      try {
+        const converted = await convertImageToWebP(rawFile, { maxWidth: 800, maxHeight: 800, quality: 0.82 });
+        fileToUpload = converted.file;
+        savedInfo = ` (WebP ${formatBytes(converted.compressedSize)}, hemat ${converted.savedPercent}%)`;
+      } catch {
+        // fallback to rawFile
+      }
+    }
+    const ext = fileToUpload.name.split('.').pop() || 'webp';
     const path = `avatars/${currentProfile.id}-${Date.now()}.${ext}`;
-    const { error } = await db.storage.from('berita-images').upload(path, file, { upsert: true });
+    const { error } = await db.storage.from('berita-images').upload(path, fileToUpload, {
+      upsert: true,
+      contentType: fileToUpload.type || 'image/webp',
+    });
     if (!error) {
       const { data } = db.storage.from('berita-images').getPublicUrl(path);
       if (data?.publicUrl) {
         setFotoUrl(data.publicUrl);
-        showToast('Foto profil berhasil diunggah. Klik Simpan untuk menerapkan.');
+        showToast(`Foto profil berhasil diunggah${savedInfo}. Klik Simpan untuk menerapkan.`);
         return;
       }
     }
-    const localUrl = URL.createObjectURL(file);
+    const localUrl = URL.createObjectURL(fileToUpload);
     setFotoUrl(localUrl);
+    showToast(`Pratinjau foto profil diterapkan${savedInfo}. Klik Simpan untuk menerapkan.`);
   };
 
   // Filtered academic data for Santri

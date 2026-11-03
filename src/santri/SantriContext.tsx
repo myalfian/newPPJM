@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { convertImageToWebP } from '../lib/webpConverter';
 
 export interface SantriProfile {
   id: string;
@@ -604,16 +605,26 @@ export const SantriProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const uploadSantriFile = useCallback(
     async (
-      file: File,
+      rawFile: File,
       folder: 'avatars' | 'tugas' = 'tugas'
     ): Promise<{ url: string | null; error?: string }> => {
+      let file = rawFile;
+      if (rawFile.type.startsWith('image/')) {
+        try {
+          const maxDim = folder === 'avatars' ? 800 : 1600;
+          const converted = await convertImageToWebP(rawFile, { maxWidth: maxDim, maxHeight: maxDim, quality: 0.8 });
+          file = converted.file;
+        } catch {
+          // keep original if conversion fails
+        }
+      }
       const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
       const path = `${userId || 'santri'}/${folder}/${Date.now()}-${safeName}`;
 
       try {
         const { error: uploadErr } = await supabase.storage
           .from('santri-uploads')
-          .upload(path, file, { upsert: true });
+          .upload(path, file, { upsert: true, contentType: file.type || undefined });
 
         if (!uploadErr) {
           const { data } = supabase.storage.from('santri-uploads').getPublicUrl(path);
