@@ -1050,10 +1050,15 @@ export type Database = {
           full_name: string
           hafalan_juz: number
           id: string
+          jadwal_mengajar: Json
           kamar_asrama: string | null
           kelas: string | null
+          mapel_diampu: string[]
+          nip: string | null
           nis: string | null
           no_wa_wali: string | null
+          pendidikan: string | null
+          phone: string | null
           role: string
           updated_at: string
           wali_santri: string | null
@@ -1067,10 +1072,15 @@ export type Database = {
           full_name?: string
           hafalan_juz?: number
           id: string
+          jadwal_mengajar?: Json
           kamar_asrama?: string | null
           kelas?: string | null
+          mapel_diampu?: string[]
+          nip?: string | null
           nis?: string | null
           no_wa_wali?: string | null
+          pendidikan?: string | null
+          phone?: string | null
           role?: string
           updated_at?: string
           wali_santri?: string | null
@@ -1084,10 +1094,15 @@ export type Database = {
           full_name?: string
           hafalan_juz?: number
           id?: string
+          jadwal_mengajar?: Json
           kamar_asrama?: string | null
           kelas?: string | null
+          mapel_diampu?: string[]
+          nip?: string | null
           nis?: string | null
           no_wa_wali?: string | null
+          pendidikan?: string | null
+          phone?: string | null
           role?: string
           updated_at?: string
           wali_santri?: string | null
@@ -1543,8 +1558,11 @@ export type Database = {
           id: string
           judul: string
           kelas_target: string
+          kelas_targets: string[]
           mapel: string
+          status_publish: string
           tipe: string
+          updated_at: string
         }
         Insert: {
           attachment_url?: string[]
@@ -1556,8 +1574,11 @@ export type Database = {
           id?: string
           judul: string
           kelas_target?: string
+          kelas_targets?: string[]
           mapel: string
+          status_publish?: string
           tipe?: string
+          updated_at?: string
         }
         Update: {
           attachment_url?: string[]
@@ -1569,8 +1590,11 @@ export type Database = {
           id?: string
           judul?: string
           kelas_target?: string
+          kelas_targets?: string[]
           mapel?: string
+          status_publish?: string
           tipe?: string
+          updated_at?: string
         }
         Relationships: [
           {
@@ -1742,10 +1766,15 @@ export type Database = {
           full_name: string
           hafalan_juz: number
           id: string
+          jadwal_mengajar: Json
           kamar_asrama: string | null
           kelas: string | null
+          mapel_diampu: string[]
+          nip: string | null
           nis: string | null
           no_wa_wali: string | null
+          pendidikan: string | null
+          phone: string | null
           role: string
           updated_at: string
           wali_santri: string | null

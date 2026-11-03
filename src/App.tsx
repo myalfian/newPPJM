@@ -167,6 +167,15 @@ const SantriTugasListPage = lazy(() => import('./santri/SantriTugasListPage').th
 const SantriTugasDetailPage = lazy(() => import('./santri/SantriTugasDetailPage').then(m => ({ default: m.SantriTugasDetailPage })));
 const SantriPerformancePage = lazy(() => import('./santri/SantriPerformancePage').then(m => ({ default: m.SantriPerformancePage })));
 
+const GuruLayout = lazy(() => import('./guru/GuruLayout').then(m => ({ default: m.GuruLayout })));
+const GuruDashboard = lazy(() => import('./guru/GuruDashboard').then(m => ({ default: m.GuruDashboard })));
+const GuruProfilePage = lazy(() => import('./guru/GuruProfilePage').then(m => ({ default: m.GuruProfilePage })));
+const GuruTugasListPage = lazy(() => import('./guru/GuruTugasListPage').then(m => ({ default: m.GuruTugasListPage })));
+const GuruTugasFormPage = lazy(() => import('./guru/GuruTugasFormPage').then(m => ({ default: m.GuruTugasFormPage })));
+const GuruSubmissionsPage = lazy(() => import('./guru/GuruSubmissionsPage').then(m => ({ default: m.GuruSubmissionsPage })));
+const GuruPerformancePage = lazy(() => import('./guru/GuruPerformancePage').then(m => ({ default: m.GuruPerformancePage })));
+const GuruContentPage = lazy(() => import('./guru/GuruContentPage').then(m => ({ default: m.GuruContentPage })));
+
 import { clearOldSeedCache } from './utils/clearOldCache';
 
 export const App: React.FC = () => {
@@ -260,6 +269,19 @@ export const App: React.FC = () => {
             <Route path="tugas" element={<SantriTugasListPage />} />
             <Route path="tugas/:id" element={<SantriTugasDetailPage />} />
             <Route path="performance" element={<SantriPerformancePage />} />
+          </Route>
+
+          {/* Portal Guru & Musyrif (/guru) */}
+          <Route path="/guru" element={<GuruLayout />}>
+            <Route index element={<GuruDashboard />} />
+            <Route path="profile" element={<GuruProfilePage />} />
+            <Route path="tugas" element={<GuruTugasListPage />} />
+            <Route path="tugas/create" element={<GuruTugasFormPage />} />
+            <Route path="tugas/:id/edit" element={<GuruTugasFormPage />} />
+            <Route path="tugas/:id/submissions" element={<GuruSubmissionsPage />} />
+            <Route path="performance" element={<Navigate to="/guru/performance/VIII-A%20Tahfidz" replace />} />
+            <Route path="performance/:kelas" element={<GuruPerformancePage />} />
+            <Route path="content" element={<GuruContentPage />} />
           </Route>
 
           {/* Admin v2 */}
