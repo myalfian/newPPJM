@@ -130,6 +130,7 @@ const VisiMisiEditor = lazy(() => import('./admin/VisiMisiEditor').then(m => ({ 
 const SejarahEditor = lazy(() => import('./admin/SejarahEditor').then(m => ({ default: m.SejarahEditor })));
 const FasilitasEditor = lazy(() => import('./admin/FasilitasEditor').then(m => ({ default: m.FasilitasEditor })));
 const CrudRoute = lazy(() => import('./admin/CrudEditor').then(m => ({ default: m.CrudRoute })));
+const BulkContentPage = lazy(() => import('./admin/BulkContentPage').then(m => ({ default: m.BulkContentPage })));
 const RolesPage = lazy(() => import('./admin/RolesPage').then(m => ({ default: m.RolesPage })));
 const UsersPage = lazy(() => import('./admin/UsersPage').then(m => ({ default: m.UsersPage })));
 const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
@@ -296,6 +297,7 @@ export const App: React.FC = () => {
           {/* Admin v2 */}
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
+            <Route path="bulk" element={<BulkContentPage />} />
             <Route path="visi-misi" element={<VisiMisiEditor />} />
             <Route path="sejarah" element={<SejarahEditor />} />
             <Route path="fasilitas" element={<FasilitasEditor />} />

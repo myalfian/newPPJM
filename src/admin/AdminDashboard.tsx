@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
-import { Landmark, History, Building2, ShieldCheck } from 'lucide-react';
+import { Landmark, History, Building2, ShieldCheck, Layers, Sparkles, ImagePlus, Newspaper } from 'lucide-react';
 import type { AdminOutletContext } from './AdminLayout';
 import { CRUD_SECTIONS, type NavGroupKey } from './sections';
 
@@ -17,6 +17,7 @@ const crudCards = (group: NavGroupKey, descPrefix: string): CardItem[] =>
   }));
 
 const ALL_CARDS: CardItem[] = [
+  { to: '/admin/bulk', title: 'Bulk Upload & Konten Massal', desc: 'Upload banyak foto (Auto WebP), artikel berita, & data CMS sekaligus.', icon: Layers, section: 'galeri_foto', group: 'Content' },
   { to: '/admin/visi-misi', title: 'Visi, Misi & Tujuan', desc: 'Edit teks dan lihat hasilnya langsung.', icon: Landmark, section: 'visi_misi', group: 'Content' },
   { to: '/admin/sejarah', title: 'Sejarah', desc: 'Atur pengantar dan linimasa pesantren.', icon: History, section: 'sejarah', group: 'Content' },
   { to: '/admin/fasilitas', title: 'Fasilitas', desc: 'Kelola kartu fasilitas, foto, dan urutannya.', icon: Building2, section: 'fasilitas', group: 'Content' },

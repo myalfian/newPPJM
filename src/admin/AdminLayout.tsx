@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, Outlet, Link, useLocation, Navigate } from 'react-router-dom';
 import {
   LayoutDashboard, Landmark, History, Building2, ShieldCheck, Users, UserCircle2, ChevronsLeft, ChevronsRight,
-  ExternalLink, LogOut, Menu, X, ChevronRight,
+  ExternalLink, LogOut, Menu, X, ChevronRight, Layers,
 } from 'lucide-react';
 import { useAdminSession, type AdminSession } from './useAdminSession';
 import { STAFF_ROLES } from './permissions';
@@ -24,6 +24,7 @@ const GROUPS: NavGroup[] = [
     title: 'Content',
     items: [
       { to: '/admin', label: 'Ringkasan', icon: LayoutDashboard },
+      { to: '/admin/bulk', label: 'Bulk Upload & Konten', icon: Layers, section: 'galeri_foto' },
       { to: '/admin/visi-misi', label: 'Visi, Misi & Tujuan', icon: Landmark, section: 'visi_misi' },
       { to: '/admin/sejarah', label: 'Sejarah', icon: History, section: 'sejarah' },
       { to: '/admin/fasilitas', label: 'Fasilitas', icon: Building2, section: 'fasilitas' },
@@ -54,6 +55,7 @@ const GROUPS: NavGroup[] = [
 
 const CRUMBS: Record<string, string> = {
   '/admin': 'Ringkasan',
+  '/admin/bulk': 'Super Admin / Bulk Upload & Konten',
   '/admin/visi-misi': 'Content / Visi, Misi & Tujuan',
   '/admin/sejarah': 'Content / Sejarah',
   '/admin/fasilitas': 'Content / Fasilitas',

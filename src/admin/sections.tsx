@@ -6,7 +6,19 @@ import {
 } from 'lucide-react';
 
 export type FieldKind =
-  | 'text' | 'textarea' | 'select' | 'image' | 'url' | 'number' | 'bool' | 'date' | 'lines' | 'json' | 'rich';
+  | 'text'
+  | 'textarea'
+  | 'select'
+  | 'select_array'
+  | 'image'
+  | 'gallery_photos'
+  | 'url'
+  | 'number'
+  | 'bool'
+  | 'date'
+  | 'lines'
+  | 'json'
+  | 'rich';
 
 export interface Field {
   key: string;
@@ -18,6 +30,7 @@ export interface Field {
   advanced?: boolean;
   help?: string;
   placeholder?: string;
+  defaultValue?: unknown;
 }
 
 export type NavGroupKey = 'Content' | 'Akademik' | 'Publikasi' | 'Manajemen';
@@ -47,6 +60,46 @@ export interface CrudSection {
   publishedAtField?: string;
 }
 
+export const GALERI_CATEGORY_OPTIONS = [
+  'Tahfidz & Wisuda',
+  'Kajian Turats',
+  'Inovasi STEM',
+  'Peringatan Hari Besar',
+  'Pengembangan Diri',
+  'Akademik Salaf',
+  'Kegiatan Pondok',
+  'Fasilitas & Asrama',
+  'Prestasi & Lomba',
+  'Ekstrakurikuler',
+  'Kunjungan & Tamu',
+  'Umum',
+];
+
+export const GALERI_LOCATION_OPTIONS = [
+  'Aula Utama PP. Jauharul Maknuun',
+  'Masjid Jami\' Jauharul Maknuun',
+  'Gedung SMP Plus Jauharul Maknuun',
+  'Laboratorium Sains & Robotika STEM',
+  'Asrama Putra & Putri PPJM',
+  'Perpustakaan & Ruang Turats',
+  'Lapangan Utama Pondok Pesantren',
+  'Lingkungan Pondok Pesantren Lasem',
+  'Beranda & Galeri (Utama)',
+  'Halaman Galeri Foto',
+  'Halaman Beranda (Home)',
+];
+
+export const BERITA_CATEGORY_OPTIONS = [
+  'Berita Pondok',
+  'Prestasi Santri',
+  'Akademik & Kurikulum',
+  'Tahfidz & Diniyah',
+  'Inovasi STEM',
+  'Pengumuman Resmi',
+  'Kunjungan & Kerjasama',
+  'Opini & Kajian',
+];
+
 export const CRUD_SECTIONS: CrudSection[] = [
   // ───────── CONTENT
   {
@@ -57,7 +110,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
       { key: 'title', label: 'Judul', kind: 'text', required: true },
       { key: 'badge_tag', label: 'Label kecil', kind: 'text' },
       { key: 'description', label: 'Deskripsi', kind: 'textarea' },
-      { key: 'image_url', label: 'Gambar', kind: 'image', required: true },
+      { key: 'image_url', label: 'Gambar (Otomatis WebP)', kind: 'image', required: true },
       { key: 'cta_text', label: 'Teks tombol', kind: 'text' },
       { key: 'cta_link', label: 'Tautan tombol', kind: 'url' },
     ],
@@ -68,8 +121,8 @@ export const CRUD_SECTIONS: CrudSection[] = [
     sort: { col: 'order_index', asc: true },
     fields: [
       { key: 'label', label: 'Nama menu', kind: 'text', required: true },
-      { key: 'icon', label: 'Nama ikon', kind: 'text', help: 'Nama ikon yang sudah dipakai website, mis. BookOpen' },
-      { key: 'link', label: 'Tautan', kind: 'url', required: true },
+      { key: 'icon', label: 'Nama ikon', kind: 'text', help: 'Nama ikon yang sudah dipakai website, mis. BookOpen', defaultValue: 'BookOpen' },
+      { key: 'link', label: 'Tautan', kind: 'url', required: true, defaultValue: '/' },
     ],
   },
   {
@@ -78,7 +131,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
     orderField: 'order_index', activeField: 'is_active', sort: { col: 'order_index', asc: true },
     fields: [
       { key: 'label', label: 'Nama', kind: 'text', required: true },
-      { key: 'type', label: 'Jenis', kind: 'text', placeholder: 'whatsapp, instagram, email…' },
+      { key: 'type', label: 'Jenis', kind: 'select', options: ['whatsapp', 'instagram', 'youtube', 'facebook', 'tiktok', 'email', 'maps', 'website'], defaultValue: 'whatsapp' },
       { key: 'url', label: 'Tautan', kind: 'url', required: true },
       { key: 'icon_url', label: 'Ikon (opsional)', kind: 'image' },
       { key: 'bg_color', label: 'Warna latar', kind: 'text', placeholder: '#115E59', advanced: true },
@@ -91,9 +144,9 @@ export const CRUD_SECTIONS: CrudSection[] = [
     fields: [
       { key: 'name', label: 'Nama', kind: 'text', required: true },
       { key: 'title', label: 'Jabatan', kind: 'text', required: true },
-      { key: 'role_type', label: 'Jenis', kind: 'text', help: 'Sama seperti data yang sudah ada, mis. pengasuh atau kepala_sekolah' },
-      { key: 'location', label: 'Lokasi', kind: 'text' },
-      { key: 'photo_url', label: 'Foto', kind: 'image' },
+      { key: 'role_type', label: 'Jenis Jabatan', kind: 'select', options: ['pengasuh', 'kepala_sekolah', 'ketua_yayasan', 'mudir_madin'], defaultValue: 'pengasuh' },
+      { key: 'location', label: 'Lokasi Tampil', kind: 'select_array', options: ['Beranda & JM Center', 'Halaman Beranda (Home)', 'Halaman Profil (JM Center)'] },
+      { key: 'photo_url', label: 'Foto Pimpinan (Otomatis WebP)', kind: 'image' },
       { key: 'message_short', label: 'Sambutan singkat', kind: 'textarea' },
       { key: 'message_full', label: 'Sambutan lengkap', kind: 'rich' },
       { key: 'is_featured', label: 'Tampilkan sebagai utama', kind: 'bool' },
@@ -108,7 +161,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
       { key: 'parent_module', label: 'Modul induk', kind: 'select', options: ['keunggulan_items', 'facilities_categories'], required: true, help: 'Pilih keunggulan_items untuk 8 Pilar Keunggulan Beranda, atau facilities_categories untuk Kategori Fasilitas' },
       { key: 'description', label: 'Deskripsi', kind: 'textarea' },
       { key: 'icon', label: 'Nama ikon', kind: 'text', placeholder: 'BookOpen, Cpu, Globe, HeartHandshake…' },
-      { key: 'color', label: 'Tema warna', kind: 'text', placeholder: 'emerald, gold, teal, blue…' },
+      { key: 'color', label: 'Tema warna', kind: 'select', options: ['emerald', 'gold', 'teal', 'blue', 'amber', 'purple'], defaultValue: 'emerald' },
       { key: 'image_url', label: 'Gambar (opsional)', kind: 'image' },
       { key: 'data', label: 'Data tambahan (JSON)', kind: 'json', advanced: true },
     ],
@@ -121,9 +174,10 @@ export const CRUD_SECTIONS: CrudSection[] = [
     slugFrom: 'title', authorField: 'author_id', publishedAtField: 'published_at',
     fields: [
       { key: 'title', label: 'Judul', kind: 'text', required: true },
-      { key: 'category', label: 'Kategori', kind: 'text', placeholder: 'Berita, Pengumuman…' },
+      { key: 'category', label: 'Kategori', kind: 'select', options: BERITA_CATEGORY_OPTIONS, defaultValue: 'Berita Pondok' },
+      { key: 'location', label: 'Lokasi Penayangan', kind: 'select_array', options: ['Beranda & Berita (Utama)', 'Halaman Berita', 'Siaran Pers (Press Release)'] },
       { key: 'excerpt', label: 'Ringkasan', kind: 'textarea' },
-      { key: 'image_url', label: 'Gambar utama', kind: 'image' },
+      { key: 'image_url', label: 'Gambar utama (Otomatis WebP)', kind: 'image' },
       { key: 'content', label: 'Isi berita', kind: 'rich', required: true },
       { key: 'slug', label: 'Alamat (slug)', kind: 'text', advanced: true, help: 'Kosongkan agar dibuat otomatis dari judul' },
     ],
@@ -134,18 +188,18 @@ export const CRUD_SECTIONS: CrudSection[] = [
     sort: { col: 'created_at', asc: false },
     fields: [
       { key: 'title', label: 'Nama kegiatan', kind: 'text', required: true },
-      { key: 'category', label: 'Kategori', kind: 'text' },
-      { key: 'badge', label: 'Label', kind: 'text' },
-      { key: 'date_display', label: 'Tanggal (teks tampilan)', kind: 'text', placeholder: '12 Januari 2026' },
-      { key: 'time_display', label: 'Waktu', kind: 'text' },
-      { key: 'location', label: 'Lokasi', kind: 'text' },
-      { key: 'coordinator', label: 'Penanggung jawab', kind: 'text' },
-      { key: 'target_audience', label: 'Sasaran', kind: 'text' },
+      { key: 'category', label: 'Kategori', kind: 'select', options: ['Kegiatan Akbar', 'Akademik & Ujian', 'Tahfidz & Haflah', 'Kajian Rutin', 'Peringatan Hari Besar', 'Lomba & Ekspo', 'Rapat & Wali Santri'], defaultValue: 'Kegiatan Akbar' },
+      { key: 'badge', label: 'Label', kind: 'text', defaultValue: 'Agenda Resmi' },
+      { key: 'date_display', label: 'Tanggal (teks tampilan)', kind: 'text', placeholder: '12 Januari 2026', defaultValue: '20 Juni 2026' },
+      { key: 'time_display', label: 'Waktu', kind: 'text', defaultValue: '08.00 - 11.30 WIB' },
+      { key: 'location', label: 'Lokasi Kegiatan', kind: 'select', options: GALERI_LOCATION_OPTIONS.slice(0, 8), defaultValue: 'Aula Utama PP. Jauharul Maknuun' },
+      { key: 'coordinator', label: 'Penanggung jawab', kind: 'text', defaultValue: 'Panitia Pondok Pesantren' },
+      { key: 'target_audience', label: 'Sasaran', kind: 'select', options: ['Seluruh Santri & Wali Santri', 'Santri Putra & Putri', 'Dewan Asatidz & Guru', 'Umum & Masyarakat'], defaultValue: 'Seluruh Santri & Wali Santri' },
       { key: 'description', label: 'Deskripsi', kind: 'textarea' },
-      { key: 'image', label: 'Gambar', kind: 'image' },
-      { key: 'month', label: 'Bulan', kind: 'text', advanced: true },
-      { key: 'year', label: 'Tahun', kind: 'text', advanced: true },
-      { key: 'timeline_status', label: 'Status', kind: 'text', advanced: true },
+      { key: 'image', label: 'Gambar (Otomatis WebP)', kind: 'image' },
+      { key: 'month', label: 'Bulan', kind: 'text', advanced: true, defaultValue: 'Juni' },
+      { key: 'year', label: 'Tahun', kind: 'text', advanced: true, defaultValue: '2026' },
+      { key: 'timeline_status', label: 'Status', kind: 'select', options: ['upcoming', 'ongoing', 'completed'], advanced: true, defaultValue: 'upcoming' },
       { key: 'rundown', label: 'Rundown (JSON)', kind: 'json', advanced: true },
     ],
   },
@@ -154,12 +208,41 @@ export const CRUD_SECTIONS: CrudSection[] = [
     titleField: 'title', subtitleField: 'description', imageField: 'image_url', badgeField: 'category',
     orderField: 'order_index', activeField: 'is_active', sort: { col: 'order_index', asc: true },
     fields: [
-      { key: 'title', label: 'Judul', kind: 'text', required: true },
-      { key: 'category', label: 'Kategori', kind: 'text' },
-      { key: 'location', label: 'Lokasi', kind: 'text' },
-      { key: 'description', label: 'Keterangan', kind: 'textarea' },
-      { key: 'image_url', label: 'Foto', kind: 'image', required: true },
-      { key: 'is_featured', label: 'Tampilkan unggulan', kind: 'bool' },
+      { key: 'title', label: 'Judul Kegiatan / Album', kind: 'text', required: true, placeholder: 'Mis: Haflah Akhirussanah & Wisuda Tahfidz 30 Juz' },
+      {
+        key: 'category',
+        label: 'Kategori Kegiatan',
+        kind: 'select',
+        options: GALERI_CATEGORY_OPTIONS,
+        required: true,
+        defaultValue: 'Tahfidz & Wisuda',
+        help: 'Pilih kategori dokumentasi untuk filter otomatis di halaman Galeri Foto',
+      },
+      {
+        key: 'location',
+        label: 'Lokasi Kegiatan & Penayangan',
+        kind: 'select_array',
+        options: GALERI_LOCATION_OPTIONS,
+        required: true,
+        defaultValue: ['Aula Utama PP. Jauharul Maknuun', 'home', 'galeri'],
+        help: 'Pilih lokasi tempat kegiatan berlangsung / penayangan halaman',
+      },
+      { key: 'event_date', label: 'Tanggal Kegiatan', kind: 'text', placeholder: 'Mis: 20 Juni 2026' },
+      { key: 'description', label: 'Keterangan / Deskripsi Dokumentasi', kind: 'textarea', placeholder: 'Tuliskan ringkasan suasana atau momen kegiatan…' },
+      {
+        key: 'image_url',
+        label: 'Foto Utama / Sampul (Otomatis Convert WebP Light)',
+        kind: 'image',
+        required: true,
+        help: 'Foto yang diunggah otomatis dikonversi ke format WebP ringan (hemat hingga 85% ukuran file).',
+      },
+      {
+        key: 'photos',
+        label: '3 Foto Slider Kegiatan (Slide 1, 2 & 3 - Otomatis WebP)',
+        kind: 'gallery_photos',
+        help: 'Unggah hingga 3 foto untuk animasi slider di halaman Galeri & Lightbox. Semua foto otomatis dioptimasi ke WebP.',
+      },
+      { key: 'is_featured', label: 'Tampilkan sebagai unggulan', kind: 'bool' },
     ],
   },
   {
@@ -168,10 +251,10 @@ export const CRUD_SECTIONS: CrudSection[] = [
     orderField: 'order_index', activeField: 'is_active', sort: { col: 'order_index', asc: true },
     fields: [
       { key: 'title', label: 'Judul', kind: 'text', required: true },
-      { key: 'category', label: 'Kategori', kind: 'text' },
+      { key: 'category', label: 'Kategori', kind: 'select', options: ['Profil Resmi', 'Tahfidz & Haflah', 'Kajian Kitab', 'Inovasi STEM', 'Kegiatan Santri', 'Dokumentasi'], defaultValue: 'Dokumentasi' },
       { key: 'description', label: 'Keterangan', kind: 'textarea' },
       { key: 'youtube_url', label: 'Tautan YouTube', kind: 'url', required: true },
-      { key: 'thumbnail_url', label: 'Gambar sampul', kind: 'image' },
+      { key: 'thumbnail_url', label: 'Gambar sampul (Otomatis WebP)', kind: 'image' },
       { key: 'is_featured', label: 'Tampilkan unggulan', kind: 'bool' },
     ],
   },
@@ -182,23 +265,24 @@ export const CRUD_SECTIONS: CrudSection[] = [
     fields: [
       { key: 'title', label: 'Nama prestasi', kind: 'text', required: true },
       { key: 'santri_name', label: 'Nama santri', kind: 'text', required: true },
-      { key: 'category', label: 'Bidang', kind: 'text' },
-      { key: 'level', label: 'Tingkat', kind: 'text', placeholder: 'Kabupaten, Provinsi, Nasional…' },
+      { key: 'category', label: 'Bidang', kind: 'select', options: ['Tahfidz & Tilawah', 'Kitab Kuning (MQK)', 'Sains & Robotik', 'Bahasa Arab & Inggris', 'Bahasa Mandarin', 'Olahraga & Seni'], defaultValue: 'Sains & Robotik' },
+      { key: 'level', label: 'Tingkat', kind: 'select', options: ['Kabupaten', 'Karesidenan', 'Provinsi', 'Nasional', 'Internasional'], defaultValue: 'Nasional' },
+      { key: 'location', label: 'Lokasi Penyelenggaraan', kind: 'select_array', options: ['Tingkat Nasional & Beranda', 'Tingkat Provinsi Jawa Tengah', 'Kabupaten Rembang - Lasem', 'Beranda & Halaman Prestasi'] },
       { key: 'organizer', label: 'Penyelenggara', kind: 'text' },
       { key: 'pembina_name', label: 'Pembina', kind: 'text' },
-      { key: 'year', label: 'Tahun', kind: 'text' },
-      { key: 'photo_url', label: 'Foto', kind: 'image' },
-      { key: 'certificate_url', label: 'Sertifikat', kind: 'image' },
+      { key: 'year', label: 'Tahun', kind: 'number', defaultValue: 2026 },
+      { key: 'photo_url', label: 'Foto (Otomatis WebP)', kind: 'image' },
+      { key: 'certificate_url', label: 'Sertifikat (Otomatis WebP)', kind: 'image' },
     ],
   },
   // ───────── AKADEMIK
   {
     key: 'programs_pondok', table: 'programs_pondok', label: 'Program Pondok', group: 'Akademik', icon: BookOpen,
-    titleField: 'title', subtitleField: 'schedule', activeField: 'is_active', sort: { col: 'created_at', asc: true },
+    titleField: 'title', subtitleField: 'description', activeField: 'is_active', sort: { col: 'created_at', asc: true },
     fields: [
       { key: 'title', label: 'Nama program', kind: 'text', required: true },
       { key: 'description', label: 'Deskripsi', kind: 'textarea' },
-      { key: 'schedule', label: 'Jadwal', kind: 'text' },
+      { key: 'schedule', label: 'Jadwal (JSON Array)', kind: 'json', defaultValue: [] },
       { key: 'images', label: 'Foto (satu tautan per baris)', kind: 'lines' },
     ],
   },
@@ -217,8 +301,8 @@ export const CRUD_SECTIONS: CrudSection[] = [
     sort: { col: 'order_index', asc: true },
     fields: [
       { key: 'title', label: 'Judul', kind: 'text', required: true },
-      { key: 'category', label: 'Kategori', kind: 'text' },
-      { key: 'image_url', label: 'Gambar flyer', kind: 'image', required: true },
+      { key: 'category', label: 'Kategori', kind: 'select', options: ['kitab', 'tahfidz', 'kurikulum', 'jadwal', 'brosur'], defaultValue: 'kitab' },
+      { key: 'image_url', label: 'Gambar flyer (Otomatis WebP)', kind: 'image', required: true },
       { key: 'pdf_url', label: 'Tautan PDF', kind: 'url' },
     ],
   },
@@ -228,10 +312,10 @@ export const CRUD_SECTIONS: CrudSection[] = [
     sort: { col: 'created_at', asc: true },
     fields: [
       { key: 'name', label: 'Nama ekskul', kind: 'text', required: true },
-      { key: 'category', label: 'Kategori', kind: 'text' },
+      { key: 'category', label: 'Kategori', kind: 'select', options: ['Sains & Teknologi', 'Seni Islami & Hadrah', 'Bahasa & Literasi', 'Olahraga & Bela Diri', 'Kewirausahaan & Media'], defaultValue: 'Sains & Teknologi' },
       { key: 'description', label: 'Deskripsi', kind: 'textarea' },
       { key: 'instructor_name', label: 'Pembina', kind: 'text' },
-      { key: 'location', label: 'Lokasi', kind: 'text' },
+      { key: 'location', label: 'Lokasi Latihan', kind: 'select', options: GALERI_LOCATION_OPTIONS.slice(0, 8), defaultValue: 'Aula Utama PP. Jauharul Maknuun' },
       { key: 'schedule', label: 'Jadwal', kind: 'text' },
       { key: 'target', label: 'Sasaran', kind: 'text' },
       { key: 'images', label: 'Foto (satu tautan per baris)', kind: 'lines' },
@@ -243,10 +327,10 @@ export const CRUD_SECTIONS: CrudSection[] = [
     titleField: 'name', subtitleField: 'type', imageField: 'image_url', sort: { col: 'created_at', asc: true },
     fields: [
       { key: 'name', label: 'Nama lembaga', kind: 'text', required: true },
-      { key: 'type', label: 'Jenis', kind: 'text', placeholder: 'pondok, sekolah, madin…' },
+      { key: 'type', label: 'Jenis', kind: 'select', options: ['pondok', 'sekolah', 'madin', 'tahfidz'], defaultValue: 'pondok' },
       { key: 'description', label: 'Deskripsi', kind: 'textarea' },
       { key: 'curriculum', label: 'Kurikulum', kind: 'text' },
-      { key: 'image_url', label: 'Gambar', kind: 'image' },
+      { key: 'image_url', label: 'Gambar (Otomatis WebP)', kind: 'image' },
     ],
   },
   {
@@ -255,11 +339,11 @@ export const CRUD_SECTIONS: CrudSection[] = [
     orderField: 'order_index', sort: { col: 'order_index', asc: true },
     fields: [
       { key: 'topic', label: 'Topik', kind: 'text', required: true },
-      { key: 'level', label: 'Level', kind: 'text' },
+      { key: 'level', label: 'Level', kind: 'select', options: ['Dasar', 'Menengah', 'Lanjutan', 'HSK 1', 'HSK 2'], defaultValue: 'Dasar' },
       { key: 'hanzi', label: 'Hanzi', kind: 'text' },
-      { key: 'pinyin', label: 'Pinyin', kind: 'text' },
-      { key: 'meaning_id', label: 'Arti (Indonesia)', kind: 'text' },
-      { key: 'cover_image', label: 'Gambar sampul', kind: 'image' },
+      { key: 'pinyin', label: 'Pinyin', kind: 'text', defaultValue: '-' },
+      { key: 'meaning_id', label: 'Arti (Indonesia)', kind: 'text', defaultValue: '-' },
+      { key: 'cover_image', label: 'Gambar sampul (Otomatis WebP)', kind: 'image' },
       { key: 'audio_url', label: 'Tautan audio', kind: 'url' },
       { key: 'dialog_script', label: 'Dialog (JSON)', kind: 'json', advanced: true },
     ],
@@ -271,8 +355,8 @@ export const CRUD_SECTIONS: CrudSection[] = [
       { key: 'hanzi', label: 'Hanzi', kind: 'text', required: true },
       { key: 'pinyin', label: 'Pinyin', kind: 'text', required: true },
       { key: 'arti', label: 'Arti', kind: 'text', required: true },
-      { key: 'category', label: 'Kategori', kind: 'text' },
-      { key: 'hsk_level', label: 'Level HSK', kind: 'number' },
+      { key: 'category', label: 'Kategori', kind: 'select', options: ['Salam & Sapaan', 'Kehidupan Asrama', 'Sekolah & Kelas', 'Angka & Waktu', 'Keluarga & Tokoh', 'Percakapan Harian'], defaultValue: 'Percakapan Harian' },
+      { key: 'hsk_level', label: 'Level HSK', kind: 'select', options: ['HSK 1', 'HSK 2', 'HSK 3', 'HSK 4'], defaultValue: 'HSK 1' },
       { key: 'example_hanzi', label: 'Contoh kalimat (Hanzi)', kind: 'text' },
       { key: 'example_pinyin', label: 'Contoh kalimat (Pinyin)', kind: 'text' },
       { key: 'example_arti', label: 'Contoh kalimat (Arti)', kind: 'text' },
@@ -284,9 +368,9 @@ export const CRUD_SECTIONS: CrudSection[] = [
     titleField: 'question', subtitleField: 'explanation', badgeField: 'question_type', sort: { col: 'created_at', asc: false },
     fields: [
       { key: 'question', label: 'Pertanyaan kuis', kind: 'textarea', required: true },
-      { key: 'question_type', label: 'Tipe / Topik', kind: 'text', placeholder: 'Salam, Perkenalan, Angka…' },
-      { key: 'options', label: 'Pilihan jawaban (JSON array)', kind: 'json', required: true, help: 'Contoh: ["A. Nǐ hǎo", "B. Zàijiàn", "C. Xièxie", "D. Duìbuqǐ"]' },
-      { key: 'correct_index', label: 'Indeks jawaban benar (0-3)', kind: 'number', required: true },
+      { key: 'question_type', label: 'Tipe / Topik', kind: 'select', options: ['Salam & Perkenalan', 'Kosakata HSK 1', 'Tata Bahasa Dasar', 'Percakapan Pesantren', 'Angka & Waktu'], defaultValue: 'Salam & Perkenalan' },
+      { key: 'options', label: 'Pilihan jawaban (JSON array)', kind: 'json', required: true, defaultValue: ['A. Nǐ hǎo', 'B. Zàijiàn', 'C. Xièxie', 'D. Duìbuqǐ'], help: 'Contoh: ["A. Nǐ hǎo", "B. Zàijiàn", "C. Xièxie", "D. Duìbuqǐ"]' },
+      { key: 'correct_index', label: 'Indeks jawaban benar (0-3)', kind: 'number', required: true, defaultValue: 0 },
       { key: 'explanation', label: 'Pembahasan jawaban', kind: 'textarea' },
     ],
   },
@@ -296,10 +380,10 @@ export const CRUD_SECTIONS: CrudSection[] = [
     sort: { col: 'created_at', asc: false },
     fields: [
       { key: 'title', label: 'Judul', kind: 'text', required: true },
-      { key: 'category', label: 'Kategori', kind: 'text' },
-      { key: 'level', label: 'Kelas/Level', kind: 'text' },
+      { key: 'category', label: 'Kategori', kind: 'select', options: ['Robotika & IoT', 'Energi Terbarukan', 'Sains Terapan & Kimia', 'Pemrograman & AI', 'Biologi & Lingkungan'], defaultValue: 'Robotika & IoT' },
+      { key: 'level', label: 'Kelas/Level', kind: 'select', options: ['Kelas 7 SMP', 'Kelas 8 SMP', 'Kelas 9 SMP', 'Semua Kelas SMP'], defaultValue: 'Semua Kelas SMP' },
       { key: 'description', label: 'Deskripsi', kind: 'textarea' },
-      { key: 'image_url', label: 'Gambar', kind: 'image' },
+      { key: 'image_url', label: 'Gambar (Otomatis WebP)', kind: 'image' },
       { key: 'pdf_url', label: 'Tautan PDF', kind: 'url' },
       { key: 'goals', label: 'Tujuan (JSON)', kind: 'json', advanced: true },
       { key: 'tools', label: 'Alat & bahan (JSON)', kind: 'json', advanced: true },
@@ -312,10 +396,10 @@ export const CRUD_SECTIONS: CrudSection[] = [
     sort: { col: 'created_at', asc: false }, slugFrom: 'title',
     fields: [
       { key: 'title', label: 'Judul proyek', kind: 'text', required: true },
-      { key: 'category', label: 'Kategori', kind: 'text' },
+      { key: 'category', label: 'Kategori', kind: 'select', options: ['IoT & Mikrokontroler', 'Energi Surya & Lingkungan', 'Robotika Otomasi', 'Aplikasi & Sains Data'], defaultValue: 'IoT & Mikrokontroler' },
       { key: 'author_santri', label: 'Nama santri', kind: 'text' },
       { key: 'description', label: 'Deskripsi', kind: 'textarea' },
-      { key: 'cover_image', label: 'Gambar sampul', kind: 'image' },
+      { key: 'cover_image', label: 'Gambar sampul (Otomatis WebP)', kind: 'image' },
       { key: 'is_portfolio', label: 'Masuk portofolio', kind: 'bool' },
       { key: 'assignment_doc_url', label: 'Tautan dokumen tugas', kind: 'url' },
       { key: 'syllabus_url', label: 'Tautan silabus', kind: 'url' },
@@ -328,8 +412,8 @@ export const CRUD_SECTIONS: CrudSection[] = [
     key: 'spmb_info', table: 'spmb_info', label: 'Info SPMB/PPDB', group: 'Manajemen', icon: ClipboardList,
     titleField: 'tahun_ajaran', subtitleField: 'gelombang', activeField: 'is_active', sort: { col: 'created_at', asc: false },
     fields: [
-      { key: 'tahun_ajaran', label: 'Tahun ajaran', kind: 'text', required: true },
-      { key: 'gelombang', label: 'Gelombang', kind: 'text' },
+      { key: 'tahun_ajaran', label: 'Tahun ajaran', kind: 'text', required: true, defaultValue: '2026/2027' },
+      { key: 'gelombang', label: 'Gelombang', kind: 'select', options: ['Gelombang Inden', 'Gelombang 1', 'Gelombang 2', 'Gelombang 3'], defaultValue: 'Gelombang 1' },
       { key: 'kontak_wa', label: 'WhatsApp PPDB', kind: 'text', placeholder: '0821-3160-6535' },
       { key: 'biaya', label: 'Biaya (JSON)', kind: 'json', advanced: true },
       { key: 'persyaratan', label: 'Persyaratan (JSON)', kind: 'json', advanced: true },
@@ -342,10 +426,10 @@ export const CRUD_SECTIONS: CrudSection[] = [
     sort: { col: 'date', asc: false },
     fields: [
       { key: 'title', label: 'Nama kegiatan', kind: 'text', required: true },
-      { key: 'category', label: 'Kategori', kind: 'text' },
+      { key: 'category', label: 'Kategori', kind: 'select', options: ['Kepemimpinan & LDKS', 'Bakti Sosial', 'Lomba Classmeeting', 'Kajian & Rohis', 'Peringatan Hari Besar'], defaultValue: 'Kepemimpinan & LDKS' },
       { key: 'date', label: 'Tanggal', kind: 'date' },
       { key: 'description', label: 'Deskripsi', kind: 'textarea' },
-      { key: 'image_url', label: 'Gambar', kind: 'image' },
+      { key: 'image_url', label: 'Gambar (Otomatis WebP)', kind: 'image' },
     ],
   },
   {
@@ -353,8 +437,8 @@ export const CRUD_SECTIONS: CrudSection[] = [
     titleField: 'title', subtitleField: 'department', badgeField: 'frequency', sort: { col: 'created_at', asc: true },
     fields: [
       { key: 'title', label: 'Nama program', kind: 'text', required: true },
-      { key: 'department', label: 'Bidang', kind: 'text' },
-      { key: 'frequency', label: 'Frekuensi', kind: 'text' },
+      { key: 'department', label: 'Bidang', kind: 'select', options: ['Departemen Keagamaan & Ubudiyah', 'Departemen Bahasa & Literasi', 'Departemen Sains & IPTEK', 'Departemen Olahraga & Kesehatan', 'Departemen Kebersihan & Lingkungan'], defaultValue: 'Departemen Keagamaan & Ubudiyah' },
+      { key: 'frequency', label: 'Frekuensi', kind: 'select', options: ['Harian', 'Mingguan', 'Bulanan', 'Semesteran', 'Tahunan'], defaultValue: 'Mingguan' },
       { key: 'target', label: 'Sasaran', kind: 'text' },
       { key: 'output', label: 'Target hasil', kind: 'text' },
       { key: 'description', label: 'Deskripsi', kind: 'textarea' },
@@ -367,14 +451,13 @@ export const CRUD_SECTIONS: CrudSection[] = [
     fields: [
       { key: 'name', label: 'Nama', kind: 'text', required: true },
       { key: 'position', label: 'Jabatan', kind: 'text', required: true },
-      { key: 'class', label: 'Kelas', kind: 'text' },
-      { key: 'level', label: 'Tingkat (angka)', kind: 'number' },
-      { key: 'period', label: 'Periode', kind: 'text', placeholder: '2026-2027' },
+      { key: 'class', label: 'Kelas', kind: 'select', options: ['Kelas 7A', 'Kelas 7B', 'Kelas 8A', 'Kelas 8B', 'Kelas 9A', 'Kelas 9B'], defaultValue: 'Kelas 8A' },
+      { key: 'level', label: 'Tingkat (angka)', kind: 'number', defaultValue: 1 },
+      { key: 'period', label: 'Periode', kind: 'text', placeholder: '2026-2027', defaultValue: '2026-2027' },
       { key: 'motto', label: 'Motto', kind: 'text' },
-      { key: 'photo_url', label: 'Foto', kind: 'image' },
+      { key: 'photo_url', label: 'Foto (Otomatis WebP)', kind: 'image' },
     ],
   },
 ];
 
 export const crudByKey = (key: string | undefined) => CRUD_SECTIONS.find((s) => s.key === key);
-

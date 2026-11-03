@@ -10,6 +10,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { db } from './useAdminSession';
 import type { AdminOutletContext } from './AdminLayout';
+import { convertImageToWebP, formatBytes } from '../lib/webpConverter';
 
 type Fac = {
   id: string;
@@ -118,14 +119,17 @@ export const FasilitasEditor: React.FC = () => {
 
   const patch = (id: string, p: Partial<Fac>) => setItems((l) => l.map((x) => (x.id === id ? { ...x, ...p } : x)));
 
-  const upload = async (id: string, file: File) => {
-    if (file.size > MAX_IMAGE) { setStatus('error'); setMsg('Ukuran foto maksimal 5 MB.'); return; }
-    const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
+  const upload = async (id: string, rawFile: File) => {
+    if (rawFile.size > 20 * 1024 * 1024) { setStatus('error'); setMsg('Ukuran foto maksimal 20 MB.'); return; }
+    const converted = await convertImageToWebP(rawFile, { maxWidth: 1600, maxHeight: 1600, quality: 0.82 });
+    const file = converted.file;
+    const ext = file.type === 'image/webp' ? 'webp' : file.type === 'image/png' ? 'png' : 'jpg';
     const path = `facilities/${crypto.randomUUID()}.${ext}`;
-    const { error } = await db.storage.from('cms-images').upload(path, file, { contentType: file.type });
-    if (error) { setStatus('error'); setMsg('Gagal mengunggah foto. Periksa izin atau format file.'); return; }
+    const { error } = await db.storage.from('cms-images').upload(path, file, { contentType: file.type, cacheControl: '31536000' });
+    if (error) { setStatus('error'); setMsg(`Gagal mengunggah foto: ${error.message}`); return; }
     patch(id, { image_url: db.storage.from('cms-images').getPublicUrl(path).data.publicUrl });
-    setStatus('idle'); setMsg('');
+    setStatus('saved');
+    setMsg(`Foto fasilitas otomatis dikonversi ke WebP (${formatBytes(converted.originalSize)} → ${formatBytes(converted.compressedSize)}).`);
   };
 
   const save = async () => {
