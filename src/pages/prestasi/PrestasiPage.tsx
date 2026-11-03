@@ -23,7 +23,6 @@ const PRESTASI_TABS: {
   shortLabel?: string;
   icon: React.ComponentType<{ className?: string }>;
 }[] = [
-  { id: 'Semua', label: 'Semua Juara', shortLabel: 'Semua', icon: Trophy },
   { id: 'Olimpiade', label: 'Sains & Olimpiade', shortLabel: 'Sains', icon: Award },
   { id: 'Olahraga', label: 'Olahraga & Silat', shortLabel: 'Olahraga', icon: Activity },
   { id: 'Seni', label: 'Seni & Kaligrafi', shortLabel: 'Seni', icon: Palette },
@@ -118,14 +117,14 @@ export const PrestasiPage: React.FC = () => {
   }, [refetch]);
 
   const mapUrlToCategory = (val: string | null): PrestasiCategory => {
-    if (!val) return 'Semua';
+    if (!val) return 'Olimpiade';
     const lower = val.toLowerCase();
     if (lower === 'sains' || lower === 'olimpiade') return 'Olimpiade';
     if (lower === 'olaraga' || lower === 'olahraga') return 'Olahraga';
     if (lower === 'seni') return 'Seni';
     if (lower === 'agama' || lower === 'keagamaan') return 'Keagamaan';
     if (lower === 'umum') return 'Umum';
-    return 'Semua';
+    return 'Olimpiade';
   };
 
   const initialCategory: PrestasiCategory = useMemo(() => {
@@ -324,10 +323,10 @@ export const PrestasiPage: React.FC = () => {
             <p className="text-xs text-slate-400">Tidak ditemukan data prestasi untuk kategori ini. Silakan pilih kategori prestasi lainnya.</p>
             <button
               type="button"
-              onClick={() => handleSelectCategory('Semua')}
+              onClick={() => handleSelectCategory('Olimpiade')}
               className="mt-2 px-3.5 py-1.5 rounded-lg bg-[#0E7A4C] text-white font-bold text-xs hover:bg-[#095736] cursor-pointer"
             >
-              Tampilkan Semua Prestasi
+              Tampilkan Sains &amp; Olimpiade
             </button>
           </div>
         )}

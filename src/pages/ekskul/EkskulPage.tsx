@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Sparkles,
-  Layers,
   Activity,
   Cpu,
   Palette,
@@ -23,7 +22,6 @@ const EKSKUL_TABS: {
   shortLabel?: string;
   icon: React.ComponentType<{ className?: string }>;
 }[] = [
-  { id: 'Semua Kategori', label: 'Semua Ekskul', shortLabel: 'Semua', icon: Layers },
   { id: 'Sains & Teknologi', label: 'Sains & Robotik', shortLabel: 'Sains', icon: Cpu },
   { id: 'Olahraga & Bela Diri', label: 'Olahraga & Silat', shortLabel: 'Olahraga', icon: Activity },
   { id: 'Seni & Bahasa', label: 'Seni & Bahasa', shortLabel: 'Seni', icon: Palette },
@@ -120,14 +118,14 @@ export const EkskulPage: React.FC = () => {
 
   // Map URL param to category
   const parseCategoryParam = (param: string | null): EkskulCategory => {
-    if (!param) return 'Semua Kategori';
+    if (!param) return 'Sains & Teknologi';
     const p = param.toLowerCase();
     if (p.includes('sains') || p.includes('robotik') || p.includes('stem')) return 'Sains & Teknologi';
     if (p.includes('olahraga') || p.includes('silat') || p.includes('bela diri')) return 'Olahraga & Bela Diri';
     if (p.includes('seni') || p.includes('bahasa') || p.includes('arab') || p.includes('mandarin')) return 'Seni & Bahasa';
     if (p.includes('agama') || p.includes('keagamaan') || p.includes('tilawah') || p.includes('tahfidz')) return 'Agama';
     if (p.includes('pramuka') || p.includes('kepanduan')) return 'Pramuka';
-    return 'Semua Kategori';
+    return 'Sains & Teknologi';
   };
 
   const [selectedCategory, setSelectedCategory] = useState<EkskulCategory>(() =>
@@ -336,10 +334,10 @@ export const EkskulPage: React.FC = () => {
             <p className="text-xs text-slate-400">Tidak ada kegiatan ekskul untuk kategori ini. Silakan pilih kategori ekskul lainnya.</p>
             <button
               type="button"
-              onClick={() => handleSelectCategory('Semua Kategori')}
+              onClick={() => handleSelectCategory('Sains & Teknologi')}
               className="mt-2 px-3.5 py-1.5 rounded-lg bg-[#0E7A4C] text-white font-bold text-xs hover:bg-[#095736] cursor-pointer"
             >
-              Tampilkan Semua Kategori
+              Tampilkan Sains &amp; Robotik
             </button>
           </div>
         )}

@@ -28,7 +28,6 @@ const NEWS_TABS: {
   shortLabel?: string;
   icon: React.ComponentType<{ className?: string }>;
 }[] = [
-  { id: 'semua', label: 'Semua Warta', shortLabel: 'Semua', icon: Newspaper },
   { id: 'berita-utama', label: 'Berita Utama', shortLabel: 'Utama', icon: Sparkles },
   { id: 'siaran-pers', label: 'Siaran Pers', shortLabel: 'Rilis Pers', icon: FileText },
   { id: 'prestasi', label: 'Prestasi Santri', shortLabel: 'Prestasi', icon: Award },
@@ -84,9 +83,9 @@ export const Berita: React.FC = () => {
   const urlTab = searchParams.get('tab');
 
   const defaultCategory = useMemo(() => {
-    if (urlTab) return urlTab;
+    if (urlTab && urlTab !== 'semua') return urlTab;
     if (location.pathname.includes('press-release')) return 'siaran-pers';
-    return 'semua';
+    return 'berita-utama';
   }, [urlTab, location.pathname]);
 
   const [selectedCategory, setSelectedCategory] = useState<string>(defaultCategory);
@@ -122,10 +121,12 @@ export const Berita: React.FC = () => {
 
   // Sync state if URL query param changes
   useEffect(() => {
-    if (urlTab) {
+    if (urlTab && urlTab !== 'semua') {
       setSelectedCategory(urlTab);
     } else if (location.pathname.includes('press-release')) {
       setSelectedCategory('siaran-pers');
+    } else {
+      setSelectedCategory('berita-utama');
     }
   }, [urlTab, location.pathname]);
 
@@ -134,7 +135,7 @@ export const Berita: React.FC = () => {
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
-        if (catId === 'semua') {
+        if (catId === 'berita-utama') {
           next.delete('tab');
         } else {
           next.set('tab', catId);
@@ -162,7 +163,15 @@ export const Berita: React.FC = () => {
   const matchCategoryFilter = (item: NewsItem, tabId: string): boolean => {
     if (tabId === 'semua') return true;
     const cat = (item.category || '').toLowerCase();
-    if (tabId === 'berita-utama') return item.is_pinned || cat.includes('utama') || cat.includes('headline');
+    if (tabId === 'berita-utama') {
+      return (
+        item.is_pinned ||
+        cat.includes('utama') ||
+        cat.includes('headline') ||
+        cat.includes('berita') ||
+        cat.includes('warta')
+      );
+    }
     if (tabId === 'siaran-pers') return cat.includes('pers') || cat.includes('release');
     if (tabId === 'prestasi') return cat.includes('prestasi') || cat.includes('juara');
     if (tabId === 'pesantren') return cat.includes('pesantren') || cat.includes('pondok') || cat.includes('diniyah') || cat.includes('akbar');
@@ -171,7 +180,7 @@ export const Berita: React.FC = () => {
   };
 
   const filteredNews = useMemo(() => {
-    return newsItems.filter((item) => {
+    const matched = newsItems.filter((item) => {
       const matchCategory = matchCategoryFilter(item, selectedCategory);
       const q = searchQuery.toLowerCase();
       const matchSearch =
@@ -183,6 +192,10 @@ export const Berita: React.FC = () => {
 
       return matchCategory && matchSearch;
     });
+    if (matched.length === 0 && selectedCategory === 'berita-utama' && !searchQuery) {
+      return newsItems;
+    }
+    return matched;
   }, [newsItems, selectedCategory, searchQuery]);
 
   // Counts per tab
