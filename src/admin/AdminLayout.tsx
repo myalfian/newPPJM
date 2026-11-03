@@ -73,7 +73,7 @@ export const AdminLayout: React.FC = () => {
   if (admin.loading) {
     return <div className="min-h-screen grid place-items-center bg-[#FAF7F0] text-sm text-teal-900">Memuat…</div>;
   }
-  if (!admin.session) return <Navigate to="/admin/login" replace />;
+  if (!admin.session) return <Navigate to="/login?as=admin&from=guard&redirect=%2Fadmin#login-section" replace />;
   if (!admin.isStaff) {
     return (
       <div className="min-h-screen grid place-items-center bg-[#FAF7F0] p-6">

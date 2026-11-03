@@ -15,95 +15,59 @@ export interface StaffProfile {
   jabatan?: string | null;
 }
 
-const DEFAULT_SUPER_ADMIN: StaffProfile = {
-  id: 'd1111111-1111-4111-a111-111111111111',
-  full_name: 'KH. Jauharul Maknuun, M.Pd.',
-  role: 'super_admin',
-  email: 'admin@ppjauharulmaknuun.sch.id',
-  is_active: true,
-  jabatan: 'Pengasuh Utama & Super Administrator',
-};
+// Roles that may enter the admin area. Santri and guest (no session) are never staff.
+const NON_STAFF_ROLES = new Set(['santri', 'guest']);
 
 export function useAdminSession() {
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<StaffProfile | null>(DEFAULT_SUPER_ADMIN);
+  const [profile, setProfile] = useState<StaffProfile | null>(null);
   const [perms, setPerms] = useState<PermRow[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async (s: Session | null) => {
     setSession(s);
 
+    if (!s?.user) {
+      // Guest: no session, no profile, no permissions.
+      setProfile(null);
+      setPerms([]);
+      setLoading(false);
+      return;
+    }
+
     const { data: rp } = await db.from('role_permissions').select('*');
     setPerms((rp as PermRow[] | null) ?? []);
 
-    if (s?.user) {
-      const { data: p } = await db
-        .from('profiles')
-        .select('id, full_name, role, email, status_aktif, foto_url, jabatan')
-        .eq('id', s.user.id)
-        .maybeSingle();
-
-      if (p) {
-        const canonical = normalizeCanonicalRole((p as any).role);
-        // If visiting /admin while logged in as demo santri/guru, elevate to super_admin for admin management preview
-        const effectiveRole = canonical === 'santri' ? 'super_admin' : canonical;
-        setProfile({
-          id: (p as any).id,
-          full_name: (p as any).full_name,
-          role: effectiveRole,
-          email: (p as any).email,
-          is_active: (p as any).status_aktif !== false,
-          foto_url: (p as any).foto_url,
-          jabatan: (p as any).jabatan,
-        });
-        setLoading(false);
-        return;
-      }
-    }
-
-    // Fallback to Super Admin profile from public.profiles so /admin/users and /admin/roles work seamlessly
-    const { data: fallbackAdmin } = await db
+    const { data: p } = await db
       .from('profiles')
       .select('id, full_name, role, email, status_aktif, foto_url, jabatan')
-      .eq('id', DEFAULT_SUPER_ADMIN.id)
+      .eq('id', s.user.id)
       .maybeSingle();
 
-    if (fallbackAdmin) {
+    if (p) {
+      // Never elevate: the effective role is exactly what the database says.
       setProfile({
-        id: (fallbackAdmin as any).id,
-        full_name: (fallbackAdmin as any).full_name,
-        role: 'super_admin',
-        email: (fallbackAdmin as any).email,
-        is_active: (fallbackAdmin as any).status_aktif !== false,
-        foto_url: (fallbackAdmin as any).foto_url,
-        jabatan: (fallbackAdmin as any).jabatan,
+        id: (p as any).id,
+        full_name: (p as any).full_name,
+        role: normalizeCanonicalRole((p as any).role),
+        email: (p as any).email,
+        is_active: (p as any).status_aktif !== false,
+        foto_url: (p as any).foto_url,
+        jabatan: (p as any).jabatan,
       });
     } else {
-      setProfile(DEFAULT_SUPER_ADMIN);
+      setProfile(null);
     }
     setLoading(false);
   }, []);
 
   useEffect(() => {
-    db.auth.getSession().then(async ({ data }) => {
-      if (!data.session) {
-        const { data: signInData } = await db.auth.signInWithPassword({
-          email: 'admin@ppjauharulmaknuun.sch.id',
-          password: 'PPJM_SuperAdmin2026!',
-        });
-        if (signInData?.session) {
-          await load(signInData.session);
-          return;
-        }
-      }
-      await load(data.session);
-    });
+    db.auth.getSession().then(({ data }) => load(data.session));
     const { data: sub } = db.auth.onAuthStateChange((_e, s) => {
       void load(s);
     });
     return () => sub.subscription.unsubscribe();
   }, [load]);
-
   const can = useCallback(
     (section: string, action: PermAction) => canFn(perms, profile?.role, section, action),
     [perms, profile],
@@ -118,9 +82,9 @@ export function useAdminSession() {
     await db.auth.signOut();
   }, []);
 
-  const isStaff = Boolean(profile && profile.is_active !== false);
+  const isStaff = Boolean(session && profile && profile.is_active !== false && !NON_STAFF_ROLES.has(profile.role));
 
-  return { session: session ?? ({ user: { id: DEFAULT_SUPER_ADMIN.id } } as unknown as Session), profile, perms, loading, can, isStaff, reloadPerms, signOut };
+  return { session, profile, perms, loading, can, isStaff, reloadPerms, signOut };
 }
 
 export type AdminSession = ReturnType<typeof useAdminSession>;

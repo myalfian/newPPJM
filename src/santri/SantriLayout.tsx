@@ -50,8 +50,8 @@ const SantriShell: React.FC = () => {
   const [savingSetoran, setSavingSetoran] = useState(false);
 
   // Login form state (when logged out)
-  const [loginEmail, setLoginEmail] = useState('santri@ppjauharulmaknuun.sch.id');
-  const [loginPassword, setLoginPassword] = useState('PPJM_SantriMaju2026!');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState<string | null>(null);
   const [loggingIn, setLoggingIn] = useState(false);
 

@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { promptLogin } from '../lib/loginPrompt';
 import { motion } from 'framer-motion';
 import {
   BookOpen,
@@ -41,6 +43,8 @@ const CATEGORY_TABS: {
 ];
 
 export const KaryaSiswa: React.FC = () => {
+  const { isGuest } = useAuth();
+  const navigate = useNavigate();
   const [items, setItems] = useState<KaryaSiswaItem[]>(() => {
     try {
       const cached = localStorage.getItem('ppjm_karya_siswa_cache');
@@ -185,6 +189,22 @@ export const KaryaSiswa: React.FC = () => {
           <p className="max-w-2xl mx-auto text-xs sm:text-sm text-emerald-100/90 leading-relaxed font-normal">
             Etalase dedikasi santri Pondok Pesantren Jauharul Maknuun: mulai dari penerbitan buku literatur, karya kriya batik tulis Lasem, video lagu orisinal, persembahan khidmat untuk asatidz, hingga pameran riset inovasi santri.
           </p>
+          <div className="pt-2 flex justify-center">
+            <button
+              type="button"
+              onClick={() => {
+                if (isGuest) {
+                  promptLogin({ feature: 'Kumpulkan Tugas & Karya Santri', audience: 'Santri', as: 'santri' });
+                } else {
+                  navigate('/santri/tugas');
+                }
+              }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#C8A951] hover:bg-[#b8973f] text-slate-950 text-xs font-extrabold shadow-md transition active:scale-95 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Kumpulkan Tugas / Karya Santri</span>
+            </button>
+          </div>
         </div>
       </section>
 

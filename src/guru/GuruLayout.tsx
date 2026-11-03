@@ -43,8 +43,8 @@ const GuruShell: React.FC = () => {
   const navigate = useNavigate();
 
   const [showNotifDropdown, setShowNotifDropdown] = useState(false);
-  const [loginEmail, setLoginEmail] = useState('akademik@ppjauharulmaknuun.sch.id');
-  const [loginPassword, setLoginPassword] = useState('PPJM_GuruAkademik2026!');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
   const [loginError, setLoginError] = useState<string | null>(null);
   const [loggingIn, setLoggingIn] = useState(false);
 

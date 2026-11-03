@@ -1,44 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import {
-  Sparkles,
-  ChevronDown,
-  User
-} from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { PUBLIC_NAV_TABS, NavTabItem } from '../../data/navigationData';
-import { useAuth } from '../../context/AuthContext';
-
-// Helper formatters for Profile Pill
-const DEFAULT_VISITOR_AVATAR = '/avatars/guest-avatar.svg';
-
-const getFormattedDisplayName = (fullName?: string, role?: string): string => {
-  if (!fullName || role === 'visitor') return 'Guest';
-  const trimmed = fullName.trim();
-  if (trimmed.startsWith('KH.')) {
-    const parts = trimmed.split(' ');
-    return parts.slice(0, 2).join(' '); // "KH. Jauharul"
-  }
-  if (trimmed.startsWith('Ustadz')) {
-    const parts = trimmed.replace('Ustadz ', '').split(' ');
-    return `Ust. ${parts[parts.length - 1] || parts[0]}`; // "Ust. Ridlwan", "Ust. Riski"
-  }
-  const parts = trimmed.split(' ');
-  if (parts.length > 1 && parts[0].length <= 5) {
-    return `${parts[0]} ${parts[1]}`; // "Ahmad Zaki"
-  }
-  return parts[0] || 'Akun';
-};
-
-const getRoleDisplayBadge = (role?: string, statusBadge?: string): string => {
-  if (!role || role === 'visitor') return 'Guest';
-  if (role === 'super_admin') return 'Super Admin';
-  if (role === 'pengurus_konten') return 'Pengurus Konten';
-  if (role === 'guru_akademik') return 'Guru Akademik';
-  if (role === 'user') return 'Santri';
-  return statusBadge || 'Pengurus';
-};
-
+import { GuestButton } from '../auth/GuestButton';
 
 interface NavbarProps {
 
@@ -47,7 +12,6 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) => {
-  const { profile, role, isAuthenticated } = useAuth();
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const location = useLocation();
 
@@ -260,55 +224,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               </nav>
             </div>
 
-            {/* Right Side: Profile Pill Capsule */}
+            {/* Right Side: Guest / Account pill (always visible, all viewports) */}
             <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 shrink-0">
-              {/* Profile Pill Capsule (Universal for All Viewports) */}
-              <Link
-                to="/profil"
-                className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 pl-0.5 xs:pl-1 pr-1.5 xs:pr-2.5 sm:pr-3 py-0.5 xs:py-1 lg:py-1.5 rounded-full bg-white hover:bg-slate-50 border border-slate-200/90 shadow-2xs transition-all duration-200 active:scale-95 cursor-pointer select-none shrink-0 flex-none h-8 xs:h-8.5 sm:h-9 lg:h-10 max-h-10 group"
-                title={`Profil Pengguna: ${profile?.full_name || 'Tamu / Pengunjung'} (${getRoleDisplayBadge(role, profile?.status_badge)})`}
-              >
-                {/* User Portrait Avatar */}
-                <div className="relative w-[26px] h-[26px] min-w-[26px] min-h-[26px] max-w-[26px] max-h-[26px] xs:w-[28px] xs:h-[28px] xs:min-w-[28px] xs:min-h-[28px] xs:max-w-[28px] xs:max-h-[28px] sm:w-[30px] sm:h-[30px] sm:min-w-[30px] sm:min-h-[30px] sm:max-w-[30px] sm:max-h-[30px] lg:w-[32px] lg:h-[32px] lg:min-w-[32px] lg:min-h-[32px] lg:max-w-[32px] lg:max-h-[32px] rounded-full overflow-hidden bg-slate-100 border border-slate-200 shrink-0 flex-none aspect-square">
-                  <img
-                    src={profile?.avatar_url || DEFAULT_VISITOR_AVATAR}
-                    alt={profile?.full_name || 'Avatar Profil'}
-                    width="32"
-                    height="32"
-                    loading="eager"
-                    decoding="async"
-                    className="w-full h-full min-w-full min-h-full max-w-full max-h-full object-cover rounded-full block shrink-0 flex-none select-none pointer-events-none"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = DEFAULT_VISITOR_AVATAR;
-                    }}
-                  />
-                  {/* Status Indicator Dot */}
-                  <span
-                    className={`absolute bottom-0 right-0 w-2 h-2 rounded-full border border-white ring-1 ${
-                      isAuthenticated
-                        ? 'bg-emerald-500 ring-emerald-300'
-                        : 'bg-slate-400 ring-slate-200'
-                    }`}
-                  />
-                </div>
-
-                {/* Name & Role Text Stack */}
-                <div className="flex flex-col text-left leading-tight shrink-0">
-                  <span className="text-[10px] xs:text-[11px] sm:text-[12px] lg:text-[13px] font-bold text-slate-800 tracking-tight leading-tight truncate max-w-[50px] xs:max-w-[70px] sm:max-w-[95px] lg:max-w-[130px]">
-                    {getFormattedDisplayName(profile?.full_name, role)}
-                  </span>
-                  <span
-                    className={`text-[7.5px] xs:text-[8.5px] sm:text-[9.5px] lg:text-[10px] font-medium leading-none capitalize ${
-                      isAuthenticated ? 'text-emerald-700' : 'text-slate-500'
-                    }`}
-                  >
-                    {getRoleDisplayBadge(role, profile?.status_badge)}
-                  </span>
-                </div>
-
-                {/* Dropdown Chevron */}
-                <ChevronDown className="w-2.5 h-2.5 xs:w-3 xs:h-3 text-slate-400 shrink-0 ml-0.2 xs:ml-0.5 group-hover:text-slate-600 transition-colors" />
-              </Link>
+              <GuestButton />
             </div>
 
           </div>

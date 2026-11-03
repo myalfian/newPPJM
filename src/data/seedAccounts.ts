@@ -35,7 +35,7 @@ export const SEED_ACCOUNTS: Record<UserRole, SeedAccount> = {
       accent: '#d4af37'
     },
     email: 'admin@ppjauharulmaknuun.sch.id',
-    password: 'PPJM_SuperAdmin2026!',
+    password: '',
     fullName: 'KH. Jauharul Maknuun, M.Pd.',
     department: 'Pengasuh Pondok & IT Administrator',
     nisOrNip: 'PPJM-ADM-001',
@@ -67,7 +67,7 @@ export const SEED_ACCOUNTS: Record<UserRole, SeedAccount> = {
       accent: '#059669'
     },
     email: 'konten@ppjauharulmaknuun.sch.id',
-    password: 'PPJM_KontenMedia2026!',
+    password: '',
     fullName: 'Ustadz M. Ridlwan, S.Kom.',
     department: 'Biro Humas & Publikasi Media PPJM',
     nisOrNip: 'PPJM-KNT-002',
@@ -99,7 +99,7 @@ export const SEED_ACCOUNTS: Record<UserRole, SeedAccount> = {
       accent: '#0284c7'
     },
     email: 'akademik@ppjauharulmaknuun.sch.id',
-    password: 'PPJM_GuruAkademik2026!',
+    password: '',
     fullName: 'Ustadz Riski, S.T.',
     department: 'Divisi Laboratorium STEM & Bahasa Asing',
     nisOrNip: 'PPJM-GUR-003',
@@ -131,7 +131,7 @@ export const SEED_ACCOUNTS: Record<UserRole, SeedAccount> = {
       accent: '#9333ea'
     },
     email: 'santri@ppjauharulmaknuun.sch.id',
-    password: 'PPJM_SantriMaju2026!',
+    password: '',
     fullName: 'Ahmad Zaki Al-Maknuuni',
     department: 'Santriwan Kelas XII - Markaz Tahfidz 30 Juz',
     nisOrNip: 'SAN-2024-089',

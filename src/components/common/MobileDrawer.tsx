@@ -1,3 +1,4 @@
+import { GuestButton } from '../auth/GuestButton';
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -361,6 +362,11 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
                   9 Pilar Terpadu
                 </span>
               </div>
+            </div>
+
+            {/* Guest / account card - always first item in the mobile menu */}
+            <div className="p-3.5 pb-0 shrink-0">
+              <GuestButton variant="card" onNavigate={onClose} />
             </div>
 
             {/* Menu List: 9 Harmonized Pillars */}

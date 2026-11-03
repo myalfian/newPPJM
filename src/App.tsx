@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { RootLayout } from './layouts/RootLayout';
 import { AuthProvider } from './context/AuthContext';
 import { RoleGuard } from './components/auth/RoleGuard';
+import { RouteGuard } from './components/auth/RouteGuard';
 
 import { Sparkles } from 'lucide-react';
 
@@ -123,7 +124,7 @@ const SkeletonLoader: React.FC = () => (
 );
 
 const AdminLayout = lazy(() => import('./admin/AdminLayout').then(m => ({ default: m.AdminLayout })));
-const AdminLogin = lazy(() => import('./admin/AdminLogin').then(m => ({ default: m.AdminLogin })));
+const LoginPage = lazy(() => import('./pages/auth/LoginPage').then(m => ({ default: m.LoginPage })));
 const AdminDashboard = lazy(() => import('./admin/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
 const VisiMisiEditor = lazy(() => import('./admin/VisiMisiEditor').then(m => ({ default: m.VisiMisiEditor })));
 const SejarahEditor = lazy(() => import('./admin/SejarahEditor').then(m => ({ default: m.SejarahEditor })));
@@ -263,8 +264,13 @@ export const App: React.FC = () => {
             <Route path="profile" element={<UserProfilePage />} />
             <Route path="profile/:role/:id" element={<PublicProfileViewPage />} />
             <Route path="profil" element={<UserProfilePage />} />
+
+            {/* Login section (Guest default flow) */}
+            <Route path="login" element={<LoginPage />} />
           </Route>
 
+          {/* Protected areas: guests are redirected to /login?redirect=...#login-section */}
+          <Route element={<RouteGuard />}>
           {/* Portal Santri (/santri) */}
           <Route path="/santri" element={<SantriLayout />}>
             <Route index element={<SantriDashboard />} />
@@ -288,7 +294,6 @@ export const App: React.FC = () => {
           </Route>
 
           {/* Admin v2 */}
-          <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="visi-misi" element={<VisiMisiEditor />} />
@@ -298,7 +303,8 @@ export const App: React.FC = () => {
             <Route path="users" element={<UsersPage />} />
             <Route path="roles" element={<RolesPage />} />
           </Route>
-          <Route path="/login" element={<Navigate to="/admin/login" replace />} />
+          </Route>
+          <Route path="/admin/login" element={<Navigate to="/login?as=admin#login-section" replace />} />
           <Route path="/editor" element={<Navigate to="/" replace />} />
 
           {/* 404 Fallback to Home */}

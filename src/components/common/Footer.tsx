@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { YoutubeIcon, InstagramIcon, WhatsAppIcon, TikTokIcon } from './SocialIcons';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { useAuth } from '../../hooks/useAuth';
 
 interface KontakMedsosItem {
   id: string;
@@ -24,6 +25,7 @@ interface KontakMedsosItem {
 }
 
 export const Footer: React.FC = () => {
+  const { isGuest } = useAuth();
   const [showContactModal, setShowContactModal] = useState(false);
   const [modalType, setModalType] = useState<'contact' | 'calendar' | 'privacy' | 'faq' | null>(null);
   const [medsosLinks, setMedsosLinks] = useState<Record<string, string>>({
@@ -297,6 +299,12 @@ export const Footer: React.FC = () => {
               <span>
                 © {new Date().getFullYear()} PP. Jauharul Maknuun Lasem Sidayu Gresik. Hak Cipta Dilindungi.
               </span>
+              {isGuest && (
+                <span data-testid="guest-mode-badge" className="ml-1 inline-flex items-center gap-1 rounded-full border border-emerald-400/40 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden />
+                  Mode Guest
+                </span>
+              )}
             </div>
 
             <div className="flex items-center gap-3 text-emerald-300/80 flex-wrap justify-center font-medium">

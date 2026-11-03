@@ -19,3 +19,4 @@ ALTER POLICY "Self Update Profile" ON public.admin_profiles
 ALTER POLICY rls_profiles_modify_all_roles ON public.profiles
   USING ((id = (SELECT auth.uid())) OR is_role('super_admin') OR is_role('kepsek') OR is_role('yayasan'))
   WITH CHECK (((id = (SELECT auth.uid())) AND role = (SELECT p.role FROM public.profiles p WHERE p.id = (SELECT auth.uid()))) OR is_role('super_admin') OR is_role('kepsek') OR is_role('yayasan'));
+

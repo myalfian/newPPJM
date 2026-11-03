@@ -364,20 +364,6 @@ export const SantriProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         return;
       }
 
-      // Auto-sign-in default santri session unless user explicitly logged out of /santri
-      if (localStorage.getItem('ppjm_santri_logged_out') !== 'true') {
-        const { data: signData, error: signErr } = await supabase.auth.signInWithPassword({
-          email: 'santri@ppjauharulmaknuun.sch.id',
-          password: 'PPJM_SantriMaju2026!',
-        });
-        if (!signErr && signData?.user) {
-          setUserId(signData.user.id);
-          setIsAuthenticatedSantri(true);
-          await loadSantriDataForUser(signData.user.id, signData.user.email);
-          setLoading(false);
-          return;
-        }
-      }
     } catch (err) {
       console.warn('[SantriContext] Session init warning:', err);
     }
@@ -390,8 +376,8 @@ export const SantriProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const loginAsSantri = useCallback(
     async (
-      email = 'santri@ppjauharulmaknuun.sch.id',
-      password = 'PPJM_SantriMaju2026!'
+      email = '',
+      password = ''
     ): Promise<{ ok: boolean; error?: string }> => {
       setLoading(true);
       localStorage.removeItem('ppjm_santri_logged_out');

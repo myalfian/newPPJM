@@ -385,31 +385,15 @@ export const GuruProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return;
       }
 
-      if (localStorage.getItem('ppjm_guru_logged_out') !== 'true') {
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
-
-        // If not logged in as teacher/admin, sign in as Ustadz Riski (akademik@ppjauharulmaknuun.sch.id)
-        if (!session?.user || session.user.email === 'santri@ppjauharulmaknuun.sch.id') {
-          const { data: signData, error: signErr } = await supabase.auth.signInWithPassword({
-            email: 'akademik@ppjauharulmaknuun.sch.id',
-            password: 'PPJM_GuruAkademik2026!',
-          });
-          if (!signErr && signData?.user) {
-            setUserId(signData.user.id);
-            setIsAuthenticatedGuru(true);
-            await loadAllGuruData(signData.user.id);
-            setLoading(false);
-            return;
-          }
-        } else if (session?.user) {
-          setUserId(session.user.id);
-          setIsAuthenticatedGuru(true);
-          await loadAllGuruData(session.user.id);
-          setLoading(false);
-          return;
-        }
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUserId(session.user.id);
+        setIsAuthenticatedGuru(true);
+        await loadAllGuruData(session.user.id);
+        setLoading(false);
+        return;
       }
     } catch (err) {
       console.warn('[GuruContext] Init warning:', err);
@@ -483,8 +467,8 @@ export const GuruProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const loginAsGuru = useCallback(
     async (
-      email = 'akademik@ppjauharulmaknuun.sch.id',
-      password = 'PPJM_GuruAkademik2026!'
+      email = '',
+      password = ''
     ): Promise<{ ok: boolean; error?: string }> => {
       setLoading(true);
       localStorage.removeItem('ppjm_guru_logged_out');

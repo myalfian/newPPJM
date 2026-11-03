@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useMemo } from '
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase, isSupabaseConfigured, UserRole, AdminProfile, normalizeRole } from '../lib/supabase';
 import { SEED_ACCOUNTS } from '../data/seedAccounts';
+import { AppRole, parseAppRole } from '../lib/roles';
 
 interface AuthContextType {
   user: User | null;
@@ -12,6 +13,13 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isSuperAdmin: boolean;
   isVisitor: boolean;
+  /** Canonical 9-role value, or 'guest' when there is no Supabase session. */
+  appRole: AppRole;
+  /** True while the role of a signed-in user is still being resolved from the database. */
+  roleLoading: boolean;
+  isGuest: boolean;
+  displayName: string | null;
+  fotoUrl: string | null;
   hasRole: (allowedRoles: UserRole[]) => boolean;
   signIn: (email: string, password: string) => Promise<{ error: AuthError | Error | null }>;
   signOut: () => Promise<void>;
@@ -313,7 +321,60 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return allowedRoles.includes(role);
   };
 
+  // Canonical identity (role/name/photo) straight from public.profiles.
+  // "Guest" is purely a frontend state: no session => guest, nothing stored in the DB.
+  const [identity, setIdentity] = useState<{ role: string | null; fullName: string | null; fotoUrl: string | null } | null>(null);
+  const [identityFor, setIdentityFor] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    try {
+      if (user) localStorage.removeItem('jm_guest_mode');
+      else if (!loading) localStorage.setItem('jm_guest_mode', 'true');
+    } catch { /* storage unavailable (private mode) */ }
+
+    if (!user) {
+      setIdentity(null);
+      setIdentityFor(null);
+      return;
+    }
+    (supabase as any)
+      .from('profiles')
+      .select('role, full_name, foto_url')
+      .eq('id', user.id)
+      .maybeSingle()
+      .then(({ data }: { data: any }) => {
+        if (cancelled) return;
+        setIdentity({
+          role: data?.role ?? null,
+          fullName: data?.full_name ?? null,
+          fotoUrl: data?.foto_url ?? null,
+        });
+        setIdentityFor(user.id);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, loading]);
+
+  const roleLoading = Boolean(user) && identityFor !== user?.id;
+  const appRole: AppRole = !user
+    ? 'guest'
+    : parseAppRole(identity?.role) ?? (role !== 'visitor' ? parseAppRole(role) : null) ?? 'santri';
+  const isGuest = !user || appRole === 'guest';
+  useEffect(() => {
+    if (loading || typeof document === 'undefined') return;
+    document.cookie = `role=${appRole}; Path=/; SameSite=Lax; Max-Age=2592000`;
+    try { localStorage.setItem('jm_guest_mode', isGuest ? 'true' : 'false'); } catch { /* ignore */ }
+  }, [appRole, isGuest, loading]);
+  const displayName = identity?.fullName ?? (profile && role !== 'visitor' ? profile.full_name : null);
+  const fotoUrl = identity?.fotoUrl ?? (profile && role !== 'visitor' ? profile.avatar_url ?? null : null);
   const value = {
+    appRole,
+    roleLoading,
+    isGuest,
+    displayName,
+    fotoUrl,
     user,
     session,
     profile,
