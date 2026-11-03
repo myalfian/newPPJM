@@ -34,6 +34,7 @@ export const PERM_ACTIONS: { key: PermAction; label: string }[] = [
 export const ADMIN_SECTIONS: { key: string; label: string }[] = [
   { key: 'visi_misi', label: 'Profil: Visi, Misi & Tujuan' },
   { key: 'sejarah', label: 'Profil: Sejarah' },
+  { key: 'fasilitas', label: 'JM Center: Fasilitas' },
   { key: 'roles', label: 'Pengaturan: Role & Credential' },
 ];
 
