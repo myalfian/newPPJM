@@ -126,8 +126,8 @@ export const StemShowcase: React.FC<StemShowcaseProps> = ({ mode, projects }) =>
     }
   };
 
-  const displayList = mode === 'portofolio' 
-    ? activeProjects.filter(p => p.is_portfolio) 
+  const displayList = mode === 'portofolio'
+    ? activeProjects.filter(p => p.is_portfolio)
     : activeProjects;
 
   const handleSimulateSubmit = (e: React.FormEvent) => {
@@ -155,7 +155,7 @@ export const StemShowcase: React.FC<StemShowcaseProps> = ({ mode, projects }) =>
             {mode === 'materi' ? 'Laboratorium STEM: Materi & Penugasan Proyek' : 'Portofolio Karya & Inovasi Sains Siswa'}
           </h2>
           <p className="text-xs sm:text-sm text-emerald-200/90 max-w-xl">
-            {mode === 'materi' 
+            {mode === 'materi'
               ? 'Pilih salah satu card proyek di bawah untuk membuka modul panduan materi lengkap, silabus, dan lembar penugasan santri.'
               : 'Eksplorasi karya inovasi teknologi terapan, robotika mekatronika, dan sains lingkungan yang diciptakan langsung oleh para santri.'}
           </p>
@@ -184,7 +184,7 @@ export const StemShowcase: React.FC<StemShowcaseProps> = ({ mode, projects }) =>
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-900/10 to-transparent" />
-                
+
                 <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 backdrop-blur-md text-gold-300 text-[10.5px] font-extrabold border border-gold-400/30">
                   {project.category}
                 </span>

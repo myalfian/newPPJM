@@ -80,14 +80,6 @@ export const VisiMisiSection: React.FC = () => {
     };
   }, []);
 
-  const parsedIndicators = useMemo(() => {
-    if (!visionIndicator) return [];
-    if (visionIndicator.includes(';')) {
-      return visionIndicator.split(';').map((s) => s.trim()).filter(Boolean);
-    }
-    return [visionIndicator.trim()];
-  }, [visionIndicator]);
-
   if (loading) {
     return (
       <div className="py-12 text-center text-xs text-zinc-400 animate-pulse">
@@ -95,6 +87,41 @@ export const VisiMisiSection: React.FC = () => {
       </div>
     );
   }
+
+  return (
+    <VisiMisiView
+      sectionTitle={sectionTitle}
+      vision={vision}
+      visionIndicator={visionIndicator}
+      missions={missions}
+      values={values}
+    />
+  );
+};
+
+export interface VisiMisiViewProps {
+  sectionTitle: string;
+  vision: string;
+  visionIndicator: string;
+  missions: string[];
+  values: ValueItem[];
+}
+
+/** Tampilan murni (tanpa fetch) agar bisa dipakai juga oleh live preview editor. */
+export const VisiMisiView: React.FC<VisiMisiViewProps> = ({
+  sectionTitle,
+  vision,
+  visionIndicator,
+  missions,
+  values,
+}) => {
+  const parsedIndicators = useMemo(() => {
+    if (!visionIndicator) return [];
+    if (visionIndicator.includes(';')) {
+      return visionIndicator.split(';').map((s) => s.trim()).filter(Boolean);
+    }
+    return [visionIndicator.trim()];
+  }, [visionIndicator]);
 
   return (
     <div className="space-y-3.5 sm:space-y-4">

@@ -122,6 +122,11 @@ const SkeletonLoader: React.FC = () => (
   </div>
 );
 
+const AdminLayout = lazy(() => import('./admin/AdminLayout').then(m => ({ default: m.AdminLayout })));
+const AdminLogin = lazy(() => import('./admin/AdminLogin').then(m => ({ default: m.AdminLogin })));
+const AdminDashboard = lazy(() => import('./admin/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
+const VisiMisiEditor = lazy(() => import('./admin/VisiMisiEditor').then(m => ({ default: m.VisiMisiEditor })));
+const RolesPage = lazy(() => import('./admin/RolesPage').then(m => ({ default: m.RolesPage })));
 const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
 const JmCenter = lazy(() => import('./pages/jm-center/JmCenter').then(m => ({ default: m.JmCenter })));
 const Profil = lazy(() => import('./pages/jm-center/Profil').then(m => ({ default: m.Profil })));
@@ -239,10 +244,14 @@ export const App: React.FC = () => {
             <Route path="profile" element={<Navigate to="/profil" replace />} />
           </Route>
 
-          {/* Fallback rute admin / login ke beranda */}
-          <Route path="/admin/*" element={<Navigate to="/" replace />} />
-          <Route path="/admin" element={<Navigate to="/" replace />} />
-          <Route path="/login" element={<Navigate to="/" replace />} />
+          {/* Admin v2 */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="visi-misi" element={<VisiMisiEditor />} />
+            <Route path="roles" element={<RolesPage />} />
+          </Route>
+          <Route path="/login" element={<Navigate to="/admin/login" replace />} />
           <Route path="/editor" element={<Navigate to="/" replace />} />
 
           {/* 404 Fallback to Home */}
