@@ -14,51 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      achievements: {
-        Row: {
-          category: string
-          certificate_url: string | null
-          created_at: string
-          description: string | null
-          id: string
-          is_active: boolean | null
-          medal_type: string
-          organizer: string | null
-          photo_url: string | null
-          title: string
-          winner_name: string
-          year: number
-        }
-        Insert: {
-          category: string
-          certificate_url?: string | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_active?: boolean | null
-          medal_type: string
-          organizer?: string | null
-          photo_url?: string | null
-          title: string
-          winner_name: string
-          year: number
-        }
-        Update: {
-          category?: string
-          certificate_url?: string | null
-          created_at?: string
-          description?: string | null
-          id?: string
-          is_active?: boolean | null
-          medal_type?: string
-          organizer?: string | null
-          photo_url?: string | null
-          title?: string
-          winner_name?: string
-          year?: number
-        }
-        Relationships: []
-      }
       admin_profiles: {
         Row: {
           address: string | null
@@ -314,66 +269,6 @@ export type Database = {
         }
         Relationships: []
       }
-      cms_sections: {
-        Row: {
-          created_at: string
-          created_by: string | null
-          data: Json
-          id: string
-          order_index: number
-          type: string
-          updated_at: string
-          updated_by: string | null
-          visible: boolean
-        }
-        Insert: {
-          created_at?: string
-          created_by?: string | null
-          data?: Json
-          id: string
-          order_index?: number
-          type: string
-          updated_at?: string
-          updated_by?: string | null
-          visible?: boolean
-        }
-        Update: {
-          created_at?: string
-          created_by?: string | null
-          data?: Json
-          id?: string
-          order_index?: number
-          type?: string
-          updated_at?: string
-          updated_by?: string | null
-          visible?: boolean
-        }
-        Relationships: []
-      }
-      cms_sections_versions: {
-        Row: {
-          created_at: string
-          created_by: string | null
-          data: Json
-          id: string
-          section_id: string
-        }
-        Insert: {
-          created_at?: string
-          created_by?: string | null
-          data?: Json
-          id?: string
-          section_id: string
-        }
-        Update: {
-          created_at?: string
-          created_by?: string | null
-          data?: Json
-          id?: string
-          section_id?: string
-        }
-        Relationships: []
-      }
       ekskul: {
         Row: {
           category: string
@@ -430,51 +325,6 @@ export type Database = {
           schedule?: string | null
           syllabus?: string | null
           target?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      extracurriculars: {
-        Row: {
-          category: string | null
-          cover_image: string | null
-          created_at: string
-          description: string
-          icon_name: string | null
-          id: string
-          is_active: boolean | null
-          location: string | null
-          mentor_name: string | null
-          name: string
-          schedule: string
-          updated_at: string | null
-        }
-        Insert: {
-          category?: string | null
-          cover_image?: string | null
-          created_at?: string
-          description: string
-          icon_name?: string | null
-          id?: string
-          is_active?: boolean | null
-          location?: string | null
-          mentor_name?: string | null
-          name: string
-          schedule: string
-          updated_at?: string | null
-        }
-        Update: {
-          category?: string | null
-          cover_image?: string | null
-          created_at?: string
-          description?: string
-          icon_name?: string | null
-          id?: string
-          is_active?: boolean | null
-          location?: string | null
-          mentor_name?: string | null
-          name?: string
-          schedule?: string
           updated_at?: string | null
         }
         Relationships: []
@@ -617,287 +467,55 @@ export type Database = {
         }
         Relationships: []
       }
-      galleries: {
+      hafalan_setoran: {
         Row: {
-          category: string
-          cover_image: string | null
-          created_at: string
-          description: string | null
-          event_date: string
-          id: string
-          slug: string
-          title: string
-          updated_at: string
-          video_url: string | null
-        }
-        Insert: {
-          category: string
-          cover_image?: string | null
-          created_at?: string
-          description?: string | null
-          event_date: string
-          id?: string
-          slug: string
-          title: string
-          updated_at?: string
-          video_url?: string | null
-        }
-        Update: {
-          category?: string
-          cover_image?: string | null
-          created_at?: string
-          description?: string | null
-          event_date?: string
-          id?: string
-          slug?: string
-          title?: string
-          updated_at?: string
-          video_url?: string | null
-        }
-        Relationships: []
-      }
-      gallery_photos: {
-        Row: {
-          caption: string | null
-          created_at: string
-          gallery_id: string
-          id: string
-          order_index: number | null
-          photo_url: string
-        }
-        Insert: {
-          caption?: string | null
-          created_at?: string
-          gallery_id: string
-          id?: string
-          order_index?: number | null
-          photo_url: string
-        }
-        Update: {
-          caption?: string | null
-          created_at?: string
-          gallery_id?: string
-          id?: string
-          order_index?: number | null
-          photo_url?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "gallery_photos_gallery_id_fkey"
-            columns: ["gallery_id"]
-            isOneToOne: false
-            referencedRelation: "galleries"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      hafidz_audios: {
-        Row: {
-          audio_url: string
-          ayah_number: number
-          created_at: string
-          duration: number | null
-          id: string
-          reciter_id: string | null
-          surah_id: string | null
-        }
-        Insert: {
-          audio_url: string
-          ayah_number: number
-          created_at?: string
-          duration?: number | null
-          id?: string
-          reciter_id?: string | null
-          surah_id?: string | null
-        }
-        Update: {
-          audio_url?: string
-          ayah_number?: number
-          created_at?: string
-          duration?: number | null
-          id?: string
-          reciter_id?: string | null
-          surah_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "hafidz_audios_reciter_id_fkey"
-            columns: ["reciter_id"]
-            isOneToOne: false
-            referencedRelation: "hafidz_reciters"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "hafidz_audios_surah_id_fkey"
-            columns: ["surah_id"]
-            isOneToOne: false
-            referencedRelation: "hafidz_surahs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      hafidz_murojaah_questions: {
-        Row: {
-          ayah_number: number
-          created_at: string
-          created_by: string | null
-          difficulty: string
-          hidden_words: Json
-          id: string
-          options: Json
-          surah_id: string | null
-        }
-        Insert: {
-          ayah_number: number
-          created_at?: string
-          created_by?: string | null
-          difficulty?: string
-          hidden_words?: Json
-          id?: string
-          options?: Json
-          surah_id?: string | null
-        }
-        Update: {
-          ayah_number?: number
-          created_at?: string
-          created_by?: string | null
-          difficulty?: string
-          hidden_words?: Json
-          id?: string
-          options?: Json
-          surah_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "hafidz_murojaah_questions_surah_id_fkey"
-            columns: ["surah_id"]
-            isOneToOne: false
-            referencedRelation: "hafidz_surahs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      hafidz_reciters: {
-        Row: {
-          audio_quality: string | null
-          country: string | null
-          created_at: string
-          id: string
-          name: string
-          photo_url: string | null
-          surah_count: number | null
-        }
-        Insert: {
-          audio_quality?: string | null
-          country?: string | null
-          created_at?: string
-          id?: string
-          name: string
-          photo_url?: string | null
-          surah_count?: number | null
-        }
-        Update: {
-          audio_quality?: string | null
-          country?: string | null
-          created_at?: string
-          id?: string
-          name?: string
-          photo_url?: string | null
-          surah_count?: number | null
-        }
-        Relationships: []
-      }
-      hafidz_setoran: {
-        Row: {
-          ayah_from: number
-          ayah_to: number
-          created_at: string
-          id: string
-          kelancaran: number
-          makhorijul: number
-          notes: string | null
-          pembimbing_id: string | null
-          santri_id: string | null
-          status: string
-          surah_id: string | null
-          tajwid: number
-        }
-        Insert: {
-          ayah_from: number
-          ayah_to: number
-          created_at?: string
-          id?: string
-          kelancaran?: number
-          makhorijul?: number
-          notes?: string | null
-          pembimbing_id?: string | null
-          santri_id?: string | null
-          status?: string
-          surah_id?: string | null
-          tajwid?: number
-        }
-        Update: {
-          ayah_from?: number
-          ayah_to?: number
-          created_at?: string
-          id?: string
-          kelancaran?: number
-          makhorijul?: number
-          notes?: string | null
-          pembimbing_id?: string | null
-          santri_id?: string | null
-          status?: string
-          surah_id?: string | null
-          tajwid?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "hafidz_setoran_surah_id_fkey"
-            columns: ["surah_id"]
-            isOneToOne: false
-            referencedRelation: "hafidz_surahs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      hafidz_surahs: {
-        Row: {
-          ayah_count: number
-          content: Json | null
-          created_at: string
+          ayat_dari: number
+          ayat_sampai: number
+          catatan: string | null
           id: string
           juz: number
-          meaning: string
-          name_arab: string
-          name_latin: string
-          number: number
-          place: string
+          penyimak: string | null
+          penyimak_nama: string | null
+          santri_id: string
+          status: string
+          surah: string
+          tanggal: string
         }
         Insert: {
-          ayah_count: number
-          content?: Json | null
-          created_at?: string
+          ayat_dari?: number
+          ayat_sampai?: number
+          catatan?: string | null
           id?: string
           juz?: number
-          meaning: string
-          name_arab: string
-          name_latin: string
-          number: number
-          place: string
+          penyimak?: string | null
+          penyimak_nama?: string | null
+          santri_id: string
+          status?: string
+          surah: string
+          tanggal?: string
         }
         Update: {
-          ayah_count?: number
-          content?: Json | null
-          created_at?: string
+          ayat_dari?: number
+          ayat_sampai?: number
+          catatan?: string | null
           id?: string
           juz?: number
-          meaning?: string
-          name_arab?: string
-          name_latin?: string
-          number?: number
-          place?: string
+          penyimak?: string | null
+          penyimak_nama?: string | null
+          santri_id?: string
+          status?: string
+          surah?: string
+          tanggal?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "hafalan_setoran_santri_id_fkey"
+            columns: ["santri_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       institutions: {
         Row: {
@@ -1135,44 +753,6 @@ export type Database = {
           },
         ]
       }
-      mandarin_scores: {
-        Row: {
-          created_at: string
-          id: string
-          quiz_id: string | null
-          santri_id: string | null
-          score: number
-          status: string
-          time_spent: number
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          quiz_id?: string | null
-          santri_id?: string | null
-          score: number
-          status?: string
-          time_spent?: number
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          quiz_id?: string | null
-          santri_id?: string | null
-          score?: number
-          status?: string
-          time_spent?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "mandarin_scores_quiz_id_fkey"
-            columns: ["quiz_id"]
-            isOneToOne: false
-            referencedRelation: "mandarin_quizzes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       mandarin_vocabularies: {
         Row: {
           arti: string
@@ -1350,6 +930,53 @@ export type Database = {
         }
         Relationships: []
       }
+      performance: {
+        Row: {
+          catatan_musyrif: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          jenis: string
+          mapel: string
+          nilai: number
+          predikat: string
+          santri_id: string
+          semester: string
+        }
+        Insert: {
+          catatan_musyrif?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          jenis: string
+          mapel: string
+          nilai: number
+          predikat?: string
+          santri_id: string
+          semester?: string
+        }
+        Update: {
+          catatan_musyrif?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          jenis?: string
+          mapel?: string
+          nilai?: number
+          predikat?: string
+          santri_id?: string
+          semester?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "performance_santri_id_fkey"
+            columns: ["santri_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prestasi: {
         Row: {
           category: string
@@ -1413,81 +1040,57 @@ export type Database = {
         }
         Relationships: []
       }
-      profiles_jm_center: {
+      profiles: {
         Row: {
-          author_name: string | null
-          content: string
+          angkatan: string | null
+          bio: Json | null
           created_at: string
+          email: string | null
+          foto_url: string | null
+          full_name: string
+          hafalan_juz: number
           id: string
-          image_url: string | null
-          jabatan: string | null
-          title: string
-          type: string
+          kamar_asrama: string | null
+          kelas: string | null
+          nis: string | null
+          no_wa_wali: string | null
+          role: string
           updated_at: string
+          wali_santri: string | null
         }
         Insert: {
-          author_name?: string | null
-          content: string
+          angkatan?: string | null
+          bio?: Json | null
           created_at?: string
-          id?: string
-          image_url?: string | null
-          jabatan?: string | null
-          title: string
-          type: string
-          updated_at?: string
-        }
-        Update: {
-          author_name?: string | null
-          content?: string
-          created_at?: string
-          id?: string
-          image_url?: string | null
-          jabatan?: string | null
-          title?: string
-          type?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      programs: {
-        Row: {
-          category: string
-          cover_image: string | null
-          created_at: string
-          curriculum: Json | null
-          description: string
+          email?: string | null
+          foto_url?: string | null
+          full_name?: string
+          hafalan_juz?: number
           id: string
-          schedule: string | null
-          slug: string
-          target_audience: string | null
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          category: string
-          cover_image?: string | null
-          created_at?: string
-          curriculum?: Json | null
-          description: string
-          id?: string
-          schedule?: string | null
-          slug: string
-          target_audience?: string | null
-          title: string
+          kamar_asrama?: string | null
+          kelas?: string | null
+          nis?: string | null
+          no_wa_wali?: string | null
+          role?: string
           updated_at?: string
+          wali_santri?: string | null
         }
         Update: {
-          category?: string
-          cover_image?: string | null
+          angkatan?: string | null
+          bio?: Json | null
           created_at?: string
-          curriculum?: Json | null
-          description?: string
+          email?: string | null
+          foto_url?: string | null
+          full_name?: string
+          hafalan_juz?: number
           id?: string
-          schedule?: string | null
-          slug?: string
-          target_audience?: string | null
-          title?: string
+          kamar_asrama?: string | null
+          kelas?: string | null
+          nis?: string | null
+          no_wa_wali?: string | null
+          role?: string
           updated_at?: string
+          wali_santri?: string | null
         }
         Relationships: []
       }
@@ -1791,53 +1394,6 @@ export type Database = {
         }
         Relationships: []
       }
-      stem_portfolios: {
-        Row: {
-          created_at: string
-          description: string | null
-          id: string
-          images: Json | null
-          santri_id: string | null
-          score: number | null
-          status: string
-          title: string
-          video_url: string | null
-          worksheet_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          images?: Json | null
-          santri_id?: string | null
-          score?: number | null
-          status?: string
-          title: string
-          video_url?: string | null
-          worksheet_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          images?: Json | null
-          santri_id?: string | null
-          score?: number | null
-          status?: string
-          title?: string
-          video_url?: string | null
-          worksheet_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "stem_portfolios_worksheet_id_fkey"
-            columns: ["worksheet_id"]
-            isOneToOne: false
-            referencedRelation: "stem_worksheets"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       stem_projects: {
         Row: {
           assignment_doc_url: string | null
@@ -1885,41 +1441,6 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
-      }
-      stem_rubrics: {
-        Row: {
-          created_at: string
-          criteria: Json
-          id: string
-          parameter: string
-          weight: number
-          worksheet_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          criteria?: Json
-          id?: string
-          parameter: string
-          weight?: number
-          worksheet_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          criteria?: Json
-          id?: string
-          parameter?: string
-          weight?: number
-          worksheet_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "stem_rubrics_worksheet_id_fkey"
-            columns: ["worksheet_id"]
-            isOneToOne: false
-            referencedRelation: "stem_worksheets"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       stem_worksheets: {
         Row: {
@@ -2010,6 +1531,110 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      tugas: {
+        Row: {
+          attachment_url: string[]
+          created_at: string
+          deadline: string
+          deskripsi: Json
+          guru_id: string | null
+          guru_nama: string | null
+          id: string
+          judul: string
+          kelas_target: string
+          mapel: string
+          tipe: string
+        }
+        Insert: {
+          attachment_url?: string[]
+          created_at?: string
+          deadline: string
+          deskripsi?: Json
+          guru_id?: string | null
+          guru_nama?: string | null
+          id?: string
+          judul: string
+          kelas_target?: string
+          mapel: string
+          tipe?: string
+        }
+        Update: {
+          attachment_url?: string[]
+          created_at?: string
+          deadline?: string
+          deskripsi?: Json
+          guru_id?: string | null
+          guru_nama?: string | null
+          id?: string
+          judul?: string
+          kelas_target?: string
+          mapel?: string
+          tipe?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tugas_guru_id_fkey"
+            columns: ["guru_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tugas_submission: {
+        Row: {
+          feedback: string | null
+          file_url: string[]
+          id: string
+          jawaban_text: Json
+          nilai: number | null
+          santri_id: string
+          status: string
+          submitted_at: string | null
+          tugas_id: string
+          updated_at: string
+        }
+        Insert: {
+          feedback?: string | null
+          file_url?: string[]
+          id?: string
+          jawaban_text?: Json
+          nilai?: number | null
+          santri_id: string
+          status?: string
+          submitted_at?: string | null
+          tugas_id: string
+          updated_at?: string
+        }
+        Update: {
+          feedback?: string | null
+          file_url?: string[]
+          id?: string
+          jawaban_text?: Json
+          nilai?: number | null
+          santri_id?: string
+          status?: string
+          submitted_at?: string | null
+          tugas_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tugas_submission_santri_id_fkey"
+            columns: ["santri_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tugas_submission_tugas_id_fkey"
+            columns: ["tugas_id"]
+            isOneToOne: false
+            referencedRelation: "tugas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -2106,6 +1731,32 @@ export type Database = {
         Args: { required_role: Database["public"]["Enums"]["user_role"] }
         Returns: boolean
       }
+      ensure_santri_profile: {
+        Args: { p_email?: string; p_full_name?: string }
+        Returns: {
+          angkatan: string | null
+          bio: Json | null
+          created_at: string
+          email: string | null
+          foto_url: string | null
+          full_name: string
+          hafalan_juz: number
+          id: string
+          kamar_asrama: string | null
+          kelas: string | null
+          nis: string | null
+          no_wa_wali: string | null
+          role: string
+          updated_at: string
+          wali_santri: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       get_my_role: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
@@ -2119,6 +1770,7 @@ export type Database = {
         Returns: boolean
       }
       is_admin: { Args: never; Returns: boolean }
+      is_staff_or_guru: { Args: never; Returns: boolean }
     }
     Enums: {
       user_role:

@@ -160,6 +160,12 @@ const Berita = lazy(() => import('./pages/Berita').then(m => ({ default: m.Berit
 const DetailBerita = lazy(() => import('./pages/DetailBerita').then(m => ({ default: m.DetailBerita })));
 const Spmb = lazy(() => import('./pages/Spmb').then(m => ({ default: m.Spmb })));
 const UserProfilePage = lazy(() => import('./pages/profile/UserProfilePage').then(m => ({ default: m.UserProfilePage })));
+const SantriLayout = lazy(() => import('./santri/SantriLayout').then(m => ({ default: m.SantriLayout })));
+const SantriDashboard = lazy(() => import('./santri/SantriDashboard').then(m => ({ default: m.SantriDashboard })));
+const SantriProfilePage = lazy(() => import('./santri/SantriProfilePage').then(m => ({ default: m.SantriProfilePage })));
+const SantriTugasListPage = lazy(() => import('./santri/SantriTugasListPage').then(m => ({ default: m.SantriTugasListPage })));
+const SantriTugasDetailPage = lazy(() => import('./santri/SantriTugasDetailPage').then(m => ({ default: m.SantriTugasDetailPage })));
+const SantriPerformancePage = lazy(() => import('./santri/SantriPerformancePage').then(m => ({ default: m.SantriPerformancePage })));
 
 import { clearOldSeedCache } from './utils/clearOldCache';
 
@@ -245,6 +251,15 @@ export const App: React.FC = () => {
             {/* Profile Akun Pengguna / Santri */}
             <Route path="profil" element={<UserProfilePage />} />
             <Route path="profile" element={<Navigate to="/profil" replace />} />
+          </Route>
+
+          {/* Portal Santri (/santri) */}
+          <Route path="/santri" element={<SantriLayout />}>
+            <Route index element={<SantriDashboard />} />
+            <Route path="profile" element={<SantriProfilePage />} />
+            <Route path="tugas" element={<SantriTugasListPage />} />
+            <Route path="tugas/:id" element={<SantriTugasDetailPage />} />
+            <Route path="performance" element={<SantriPerformancePage />} />
           </Route>
 
           {/* Admin v2 */}
