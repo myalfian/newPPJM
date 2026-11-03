@@ -506,43 +506,6 @@ const PhotoCardSlider: React.FC<PhotoCardSliderProps> = ({ item, cardIndex, onOp
               </>
             )}
           </div>
-
-          {/* 3-Photo Interactive Mini Thumbnail Strip with Smooth Active Highlight */}
-          <div className="grid grid-cols-3 gap-1.5" role="tablist" aria-label={`Pilih foto untuk ${item.title}`}>
-            {photos.map((photo, idx) => {
-              const isCurrent = idx === activeIndex;
-              return (
-                <button
-                  key={idx}
-                  type="button"
-                  role="tab"
-                  aria-selected={isCurrent}
-                  onClick={() => jumpTo(idx)}
-                  onDoubleClick={() => onOpenLightbox(item, idx)}
-                  title={`Slide #${idx + 1}: ${photo.caption || item.title} (Klik untuk slide, klik 2x untuk Lightbox)`}
-                  className={`relative aspect-[16/9] rounded-lg overflow-hidden cursor-pointer transition-all duration-300 border ${
-                    isCurrent
-                      ? 'border-emerald-600 ring-2 ring-emerald-500/35 opacity-100 scale-[1.01]'
-                      : 'border-slate-200/80 opacity-65 hover:opacity-95'
-                  }`}
-                >
-                  <img
-                    src={photo.photo_url}
-                    alt={photo.caption || `${item.title} - Thumbnail ${idx + 1}`}
-                    loading="lazy"
-                    className="w-full h-full object-cover"
-                  />
-                  <span
-                    className={`absolute bottom-0.5 right-0.5 px-1 py-0.2 rounded text-[8.5px] font-extrabold leading-tight ${
-                      isCurrent ? 'bg-emerald-700 text-white' : 'bg-black/60 text-white/90'
-                    }`}
-                  >
-                    #{idx + 1}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
         </div>
 
         {/* Header Tags & Metadata */}
@@ -1224,24 +1187,20 @@ export const Galeri: React.FC<GaleriProps> = ({ defaultTab = 'foto' }) => {
                   </motion.p>
                 </AnimatePresence>
 
-                {/* Mini Thumbnails */}
-                <div className="flex items-center gap-2.5 overflow-x-auto pb-1">
-                  {lightboxData.activity.photos.map((p, idx) => (
+                {/* Slide Progress Dots */}
+                <div className="flex items-center gap-1.5">
+                  {lightboxData.activity.photos.map((_, idx) => (
                     <button
                       key={idx}
                       type="button"
+                      aria-label={`Pilih slide foto ${idx + 1}`}
                       onClick={() => jumpLightboxPhoto(idx)}
-                      className={`relative w-20 h-14 rounded-xl overflow-hidden shrink-0 border-2 transition-all duration-300 cursor-pointer ${
+                      className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
                         idx === lightboxData.currentIndex
-                          ? 'border-amber-400 ring-2 ring-amber-400/40 scale-105 opacity-100'
-                          : 'border-transparent opacity-55 hover:opacity-95'
+                          ? 'w-7 bg-amber-400'
+                          : 'w-2 bg-zinc-700 hover:bg-zinc-500'
                       }`}
-                    >
-                      <img src={p.photo_url} alt="" className="w-full h-full object-cover" />
-                      <span className="absolute bottom-1 right-1 px-1.5 py-0.2 rounded bg-black/70 text-[9px] font-bold text-white">
-                        #{idx + 1}
-                      </span>
-                    </button>
+                    />
                   ))}
                 </div>
 
