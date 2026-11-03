@@ -75,6 +75,7 @@ export interface StemPortfolioItem {
 // PILAR B: MANDARIN CLASS
 // ------------------------------------------
 export interface VocabularyItem {
+  numberLabel?: string;
   hanzi: string;
   pinyin: string;
   indonesian: string;
@@ -93,6 +94,21 @@ export interface MandarinActivityItem {
   desc: string;
 }
 
+export interface MandarinSubTable {
+  title: string;
+  subtitle?: string;
+  formulaTitle?: string;
+  formulaText?: string;
+  formulaExample?: string;
+  rows: VocabularyItem[];
+}
+
+export interface MandarinShortAnswerItem {
+  no: number;
+  question: string;
+  answer: string;
+}
+
 export interface MandarinTopicItem {
   id: string;
   topicKey: string;
@@ -104,11 +120,18 @@ export interface MandarinTopicItem {
   posterFlyer: string;
   summary: string;
   narrative: string;
+  tableTitle?: string;
   vocabularies: VocabularyItem[];
+  subTables?: MandarinSubTable[];
   culturalNote?: string;
   importantNotes?: string[];
   dialogues?: MandarinDialogueLine[];
+  dialogueVocabNote?: { hanzi: string; pinyin: string; meaning: string }[];
+  dialogueExtraExample?: string;
+  miniQuiz?: MandarinQuizQuestion[];
+  shortAnswerExercises?: MandarinShortAnswerItem[];
   classActivities?: MandarinActivityItem[];
+  learningTargets?: string[];
 }
 
 export interface MandarinQuizQuestion {

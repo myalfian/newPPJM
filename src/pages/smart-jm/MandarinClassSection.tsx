@@ -18,7 +18,10 @@ import {
   Download,
   MessageSquare,
   Lightbulb,
-  Users
+  Users,
+  Target,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { LiquidMercuryControl } from '../../components/common/LiquidMercuryControl';
 import {
@@ -36,43 +39,44 @@ export const MANDARIN_TOPICS: MandarinTopicItem[] = [
     topicKey: 'salam',
     topicName: '1. Salam dan Sapaan (问候语)',
     chineseName: '问候语 — Wènhòuyǔ (词汇 — Cíhuì)',
-    level: 'Materi Dasar 1 • SMP Plus JM',
+    level: 'Materi 1 • Salam & Sapaan',
     teacherMentor: 'Ustadzah Nuriyah & Ustadzah Rizza',
     downloadDocUrl: '/docs/mandarin/1_Materi_Salam_dan_Sapaan_Mandarin.docx',
     posterFlyer: '/images/mandarin/flyer_salam_dan_sapaan.png',
     summary:
-      'Mengenal 20 kosakata utama salam dan sapaan harian dalam bahasa Mandarin (Hanzi, Pinyin, dan arti Bahasa Indonesia), kaidah kesopanan menyapa guru, serta latihan percakapan berpasangan.',
+      'Kosakata Salam dan Sapaan (词汇 — Cíhuì) berjumlah 20 ungkapan harian bahasa Mandarin lengkap dengan Hanzi (汉字), Pinyin, dan arti Bahasa Indonesia, disertai catatan penting kesopanan, teks percakapan (对话 — Duìhuà), dan 20 soal latihan pilihan ganda (选择题 — Xuǎnzé tí).',
     narrative:
-      'Materi Salam dan Sapaan (问候语 — Wènhòuyǔ) membekali siswa SMP Plus Jauharul Maknuun dengan kosakata komunikasi dasar sehari-hari, mulai dari sapaan waktu (pagi, menjelang siang, siang, sore, malam), ucapan terima kasih, permintaan maaf, hingga sapaan hormat kepada guru dan orang yang lebih tua.',
+      'Materi Kosakata Salam dan Sapaan (词汇 — Cíhuì) membekali siswa SMP Plus Jauharul Maknuun dengan sapaan dasar sehari-hari berdasarkan waktu (pagi, menjelang siang, siang, sore, malam), sapaan sopan kepada guru (您好 — Nín hǎo), ucapan terima kasih, permintaan maaf, serta kalimat pembuka perkenalan.',
+    tableTitle: 'Kosakata Salam dan Sapaan (词汇 — Cíhuì)',
     culturalNote:
       '你好 (Nǐ hǎo) digunakan untuk menyapa teman atau orang yang dikenal, sedangkan 您好 (Nín hǎo) merupakan bentuk sapaan yang lebih sopan kepada guru atau orang yang lebih tua.',
     importantNotes: [
-      '你好 (Nǐ hǎo) digunakan untuk menyapa teman sebaya atau orang yang sudah dikenal.',
-      '您好 (Nín hǎo) merupakan bentuk sapaan yang lebih sopan, misalnya kepada guru (老师您好 — Lǎoshī nín hǎo) atau orang yang lebih tua.',
-      '晚安 (Wǎn\'ān) biasanya digunakan ketika akan tidur atau berpisah pada malam hari, bukan sebagai salam umum ketika baru bertemu pada malam hari.',
-      'Kata 吗 (ma) diletakkan di akhir kalimat berita untuk membentuk kalimat pertanyaan, misalnya 你好吗？ (Nǐ hǎo ma? — Apa kabar?).'
+      '你好 (Nǐ hǎo) digunakan untuk menyapa teman atau orang yang dikenal.',
+      '您好 (Nín hǎo) merupakan bentuk sapaan yang lebih sopan, misalnya kepada guru atau orang yang lebih tua.',
+      '晚安 (Wǎn\'ān) biasanya digunakan ketika akan tidur atau berpisah pada malam hari, bukan sebagai salam umum ketika bertemu pada malam hari.',
+      'Kata 吗 (ma) digunakan untuk membentuk kalimat pertanyaan, misalnya 你好吗？ (Nǐ hǎo ma?).'
     ],
     vocabularies: [
-      { hanzi: '你好', pinyin: 'Nǐ hǎo', indonesian: 'Halo / Hai', exampleSentence: 'Sapaan umum kepada teman atau kenalan' },
-      { hanzi: '您好', pinyin: 'Nín hǎo', indonesian: 'Halo (sopan)', exampleSentence: '老师您好！(Lǎoshī nín hǎo! — Halo Guru!)' },
-      { hanzi: '早上好', pinyin: 'Zǎoshang hǎo', indonesian: 'Selamat pagi', exampleSentence: 'Digunakan saat bertemu di pagi hari' },
-      { hanzi: '上午好', pinyin: 'Shàngwǔ hǎo', indonesian: 'Selamat pagi (menjelang siang)', exampleSentence: 'Digunakan sekitar pukul 09.00–11.00' },
-      { hanzi: '中午好', pinyin: 'Zhōngwǔ hǎo', indonesian: 'Selamat siang', exampleSentence: 'Digunakan sekitar pukul 11.00–13.00' },
-      { hanzi: '下午好', pinyin: 'Xiàwǔ hǎo', indonesian: 'Selamat sore', exampleSentence: 'Digunakan pada siang menjelang sore hari' },
-      { hanzi: '晚上好', pinyin: 'Wǎnshang hǎo', indonesian: 'Selamat malam', exampleSentence: 'Salam sapaan saat bertemu di malam hari' },
-      { hanzi: '晚安', pinyin: 'Wǎn\'ān', indonesian: 'Selamat tidur', exampleSentence: 'Diucapkan sebelum tidur malam' },
-      { hanzi: '再见', pinyin: 'Zàijiàn', indonesian: 'Sampai jumpa', exampleSentence: 'Ungkapan saat berpamitan / berpisah' },
-      { hanzi: '明天见', pinyin: 'Míngtiān jiàn', indonesian: 'Sampai jumpa besok', exampleSentence: 'Diucapkan saat berpisah untuk bertemu besok' },
-      { hanzi: '你好吗？', pinyin: 'Nǐ hǎo ma?', indonesian: 'Apa kabar?', exampleSentence: 'Menanyakan kabar lawan bicara' },
-      { hanzi: '我很好', pinyin: 'Wǒ hěn hǎo', indonesian: 'Saya baik-baik saja', exampleSentence: '我很好，谢谢！(Saya baik, terima kasih!)' },
-      { hanzi: '谢谢', pinyin: 'Xièxie', indonesian: 'Terima kasih', exampleSentence: 'Ungkapan rasa syukur dan apresiasi' },
-      { hanzi: '不客气', pinyin: 'Bú kèqi', indonesian: 'Sama-sama', exampleSentence: 'Balasan sopan saat seseorang mengucapkan 谢谢' },
-      { hanzi: '对不起', pinyin: 'Duìbuqǐ', indonesian: 'Maaf', exampleSentence: 'Ungkapan memohon maaf' },
-      { hanzi: '没关系', pinyin: 'Méi guānxi', indonesian: 'Tidak apa-apa', exampleSentence: 'Balasan untuk kalimat permintaan maaf 对不起' },
-      { hanzi: '你叫什么名字？', pinyin: 'Nǐ jiào shénme míngzi?', indonesian: 'Siapa namamu?', exampleSentence: 'Kalimat tanya untuk menanyakan nama' },
-      { hanzi: '我叫……', pinyin: 'Wǒ jiào…', indonesian: 'Nama saya…', exampleSentence: '我叫小明 (Wǒ jiào Xiǎo Míng)' },
-      { hanzi: '很高兴认识你', pinyin: 'Hěn gāoxìng rènshi nǐ', indonesian: 'Senang berkenalan denganmu', exampleSentence: 'Ungkapan ramah di akhir perkenalan' },
-      { hanzi: '请问', pinyin: 'Qǐngwèn', indonesian: 'Permisi / boleh bertanya', exampleSentence: 'Kata pembuka sopan sebelum bertanya sesuatu' }
+      { numberLabel: '1', hanzi: '你好', pinyin: 'Nǐ hǎo', indonesian: 'Halo / Hai' },
+      { numberLabel: '2', hanzi: '您好', pinyin: 'Nín hǎo', indonesian: 'Halo (sopan)' },
+      { numberLabel: '3', hanzi: '早上好', pinyin: 'Zǎoshang hǎo', indonesian: 'Selamat pagi' },
+      { numberLabel: '4', hanzi: '上午好', pinyin: 'Shàngwǔ hǎo', indonesian: 'Selamat pagi (menjelang siang)' },
+      { numberLabel: '5', hanzi: '中午好', pinyin: 'Zhōngwǔ hǎo', indonesian: 'Selamat siang' },
+      { numberLabel: '6', hanzi: '下午好', pinyin: 'Xiàwǔ hǎo', indonesian: 'Selamat sore' },
+      { numberLabel: '7', hanzi: '晚上好', pinyin: 'Wǎnshang hǎo', indonesian: 'Selamat malam' },
+      { numberLabel: '8', hanzi: '晚安', pinyin: 'Wǎn\'ān', indonesian: 'Selamat tidur' },
+      { numberLabel: '9', hanzi: '再见', pinyin: 'Zàijiàn', indonesian: 'Sampai jumpa' },
+      { numberLabel: '10', hanzi: '明天见', pinyin: 'Míngtiān jiàn', indonesian: 'Sampai jumpa besok' },
+      { numberLabel: '11', hanzi: '你好吗？', pinyin: 'Nǐ hǎo ma?', indonesian: 'Apa kabar?' },
+      { numberLabel: '12', hanzi: '我很好', pinyin: 'Wǒ hěn hǎo', indonesian: 'Saya baik-baik saja' },
+      { numberLabel: '13', hanzi: '谢谢', pinyin: 'Xièxie', indonesian: 'Terima kasih' },
+      { numberLabel: '14', hanzi: '不客气', pinyin: 'Bú kèqi', indonesian: 'Sama-sama' },
+      { numberLabel: '15', hanzi: '对不起', pinyin: 'Duìbuqǐ', indonesian: 'Maaf' },
+      { numberLabel: '16', hanzi: '没关系', pinyin: 'Méi guānxi', indonesian: 'Tidak apa-apa' },
+      { numberLabel: '17', hanzi: '你叫什么名字？', pinyin: 'Nǐ jiào shénme míngzi?', indonesian: 'Siapa namamu?' },
+      { numberLabel: '18', hanzi: '我叫……', pinyin: 'Wǒ jiào…', indonesian: 'Nama saya…' },
+      { numberLabel: '19', hanzi: '很高兴认识你', pinyin: 'Hěn gāoxìng rènshi nǐ', indonesian: 'Senang berkenalan denganmu' },
+      { numberLabel: '20', hanzi: '请问', pinyin: 'Qǐngwèn', indonesian: 'Permisi / boleh bertanya' }
     ],
     dialogues: [
       {
@@ -105,40 +109,53 @@ export const MANDARIN_TOPICS: MandarinTopicItem[] = [
     id: 'topic-introduction',
     topicKey: 'introduction',
     topicName: '2. Perkenalan Diri (自我介绍)',
-    chineseName: '自我介绍 — Zìwǒ jièshào (句型 — Jùxíng)',
-    level: 'Materi Dasar 2 • SMP Plus JM',
+    chineseName: '主题：自我介绍 (Zìwǒ jièshào) — Perkenalan Diri',
+    level: 'Materi 2 • Perkenalan Diri',
     teacherMentor: 'Ustadzah Nuriyah & Ustadzah Rizza',
     downloadDocUrl: '/docs/mandarin/2_Materi_Perkenalan_Diri_Mandarin.docx',
     posterFlyer: '/images/mandarin/flyer_perkenalan_diri.jpeg',
     summary:
-      'Pola kalimat (句型 — Jùxíng) dan dialog perkenalan diri dalam bahasa Mandarin: menyebutkan nama, menanyakan asal negara (kewarganegaraan Indonesia), menyebutkan usia, serta kosakata kata ganti orang dan status.',
+      'Pola Kalimat (句型 — Jùxíng) Perkenalan Diri dalam bahasa Mandarin: menyapa, menanyakan dan menyebutkan nama, menanyakan asal negara (kewarganegaraan Indonesia), menanyakan usia, serta dialog perkenalan diri antara Xiao Mei dan Xiao Ming.',
     narrative:
-      'Pada topik Perkenalan Diri (自我介绍 — Zìwǒ jièshào), siswa mempelajari struktur kalimat tanya-jawab esensial ketika pertama kali berkenalan dengan teman baru maupun guru, termasuk penggunaan kata ganti orang (我, 你, 他, 她) dan partikel balik "你呢？ (Nǐ ne? — Kalau kamu?)".',
+      'Pada tema 自我介绍 (Zìwǒ jièshào — Perkenalan Diri), siswa mempelajari 8 pola kalimat utama (句型 — Jùxíng) beserta kosakata kata ganti orang dan sapaan untuk memperkenalkan diri secara runtut dan percaya diri dalam bahasa Mandarin.',
+    tableTitle: '句型 (Jùxíng) — Pola Kalimat Perkenalan Diri',
     culturalNote:
-      'Dalam bahasa Mandarin, kata "叫 (jiào)" berarti dipanggil/bernama, sedangkan satuan "岁 (suì)" digunakan khusus untuk menyatakan tahun usia seseorang.',
+      'Dalam bahasa Mandarin, kata “叫 (jiào)” digunakan untuk memperkenalkan nama panggilan/lengkap, sedangkan kata “岁 (suì)” digunakan untuk menyatakan usia.',
     importantNotes: [
-      'Gunakan pola "我叫 + Nama" (Wǒ jiào...) untuk memperkenalkan nama panggilan atau nama lengkap.',
-      'Untuk menanyakan kewarganegaraan gunakan "你是哪国人？ (Nǐ shì nǎ guó rén?)" dan dijawab "我是印度尼西亚人 (Wǒ shì Yìndùníxīyà rén — Saya orang Indonesia)".',
-      'Kata "他 (tā)" berarti dia laki-laki, sedangkan "她 (tā)" memiliki pelafalan sama namun digunakan untuk dia perempuan.',
-      'Kata "也 (yě)" berarti "juga" dan selalu diletakkan sebelum kata kerja atau kata sifat, contoh: 我也很高兴认识你！(Wǒ yě hěn gāoxìng rènshi nǐ!).'
+      'Pola memperkenalkan nama: 我叫…… (Wǒ jiào…) — Contoh: 我叫小美 (Wǒ jiào Xiǎo Měi — Nama saya Xiao Mei).',
+      'Menanyakan asal negara/kebangsaan: 你是哪国人？ (Nǐ shì nǎ guó rén?) → Dijawab: 我是印度尼西亚人。 (Wǒ shì Yìndùníxīyà rén. — Saya orang Indonesia).',
+      'Menanyakan usia: 你几岁？ (Nǐ jǐ suì? — Berapa usiamu?) → Dijawab: 我……岁。 (Wǒ… suì. — Contoh: 我十三岁 / Umur saya 13 tahun).',
+      'Ungkapan balik “你呢？ (Nǐ ne?)” berarti “Kalau kamu?”, dan “也 (yě)” berarti “juga” (Contoh: 我也很高兴认识你！).'
     ],
     vocabularies: [
-      { hanzi: '你好！', pinyin: 'Nǐ hǎo!', indonesian: 'Halo!', exampleSentence: 'Salam pembuka perkenalan' },
-      { hanzi: '你叫什么名字？', pinyin: 'Nǐ jiào shénme míngzi?', indonesian: 'Siapa namamu?', exampleSentence: 'Menanyakan nama lawan bicara' },
-      { hanzi: '我叫……', pinyin: 'Wǒ jiào…', indonesian: 'Nama saya…', exampleSentence: '我叫小美。(Wǒ jiào Xiǎo Měi. — Nama saya Xiao Mei.)' },
-      { hanzi: '你是哪国人？', pinyin: 'Nǐ shì nǎ guó rén?', indonesian: 'Kamu berasal dari negara mana?', exampleSentence: 'Menanyakan kebangsaan / kewarganegaraan' },
-      { hanzi: '我是印度尼西亚人。', pinyin: 'Wǒ shì Yìndùníxīyà rén.', indonesian: 'Saya orang Indonesia.', exampleSentence: '我也是印度尼西亚人。(Saya juga orang Indonesia.)' },
-      { hanzi: '你几岁？', pinyin: 'Nǐ jǐ suì?', indonesian: 'Berapa usiamu?', exampleSentence: 'Menanyakan umur teman sebaya / anak-anak' },
-      { hanzi: '我……岁。', pinyin: 'Wǒ… suì.', indonesian: 'Umur saya… tahun.', exampleSentence: '我十三岁。(Wǒ shí sān suì. — Saya berusia 13 tahun.)' },
-      { hanzi: '很高兴认识你！', pinyin: 'Hěn gāoxìng rènshi nǐ!', indonesian: 'Senang berkenalan denganmu!', exampleSentence: '我也很高兴认识你！(Saya juga senang berkenalan denganmu!)' },
-      { hanzi: '你呢？', pinyin: 'Nǐ ne?', indonesian: 'Kalau kamu? / Bagaimana denganmu?', exampleSentence: '我叫小美。你呢？(Nama saya Xiao Mei. Kalau kamu?)' },
-      { hanzi: '我 / 你', pinyin: 'Wǒ / Nǐ', indonesian: 'Saya / Kamu', exampleSentence: 'Kata ganti orang pertama dan kedua tunggal' },
-      { hanzi: '他 / 她', pinyin: 'Tā / Tā', indonesian: 'Dia (laki-laki) / Dia (perempuan)', exampleSentence: 'Pronomina orang ketiga tunggal' },
-      { hanzi: '老师', pinyin: 'Lǎoshī', indonesian: 'Guru', exampleSentence: '我是老师。(Wǒ shì lǎoshī. — Saya adalah guru.)' },
-      { hanzi: '学生', pinyin: 'Xuésheng', indonesian: 'Murid / Siswa', exampleSentence: '我是学生。(Wǒ shì xuésheng. — Saya adalah siswa.)' },
-      { hanzi: '朋友', pinyin: 'Péngyou', indonesian: 'Teman / Sahabat', exampleSentence: '好朋友 (Hǎo péngyou — Teman baik)' },
-      { hanzi: '名字', pinyin: 'Míngzi', indonesian: 'Nama', exampleSentence: '你的名字 (Nǐ de míngzi — Namamu)' },
-      { hanzi: '认识', pinyin: 'Rènshi', indonesian: 'Kenal / Mengenal', exampleSentence: '认识你很高兴 (Senang mengenalmu)' }
+      { numberLabel: '1', hanzi: '你好！', pinyin: 'Nǐ hǎo!', indonesian: 'Halo!' },
+      { numberLabel: '2', hanzi: '你叫什么名字？', pinyin: 'Nǐ jiào shénme míngzi?', indonesian: 'Siapa namamu?' },
+      { numberLabel: '3', hanzi: '我叫……', pinyin: 'Wǒ jiào…', indonesian: 'Nama saya…' },
+      { numberLabel: '4', hanzi: '你是哪国人？', pinyin: 'Nǐ shì nǎ guó rén?', indonesian: 'Kamu berasal dari negara mana?' },
+      { numberLabel: '5', hanzi: '我是印度尼西亚人。', pinyin: 'Wǒ shì Yìndùníxīyà rén.', indonesian: 'Saya orang Indonesia.' },
+      { numberLabel: '6', hanzi: '你几岁？', pinyin: 'Nǐ jǐ suì?', indonesian: 'Berapa usiamu?' },
+      { numberLabel: '7', hanzi: '我……岁。', pinyin: 'Wǒ… suì.', indonesian: 'Umur saya… tahun.' },
+      { numberLabel: '8', hanzi: '很高兴认识你！', pinyin: 'Hěn gāoxìng rènshi nǐ!', indonesian: 'Senang berkenalan denganmu!' }
+    ],
+    subTables: [
+      {
+        title: 'Kosakata Penting dalam Soal Pilihan Ganda (词汇 — Cíhuì)',
+        subtitle: 'Kosakata kata ganti, profesi/status, dan kata kunci yang muncul pada latihan soal Pilihan Ganda (选择题):',
+        rows: [
+          { numberLabel: '1', hanzi: '我', pinyin: 'Wǒ', indonesian: 'Saya' },
+          { numberLabel: '2', hanzi: '你', pinyin: 'Nǐ', indonesian: 'Kamu' },
+          { numberLabel: '3', hanzi: '他', pinyin: 'Tā', indonesian: 'Dia (laki-laki)' },
+          { numberLabel: '4', hanzi: '她', pinyin: 'Tā', indonesian: 'Dia (perempuan)' },
+          { numberLabel: '5', hanzi: '名字', pinyin: 'Míngzi', indonesian: 'Nama' },
+          { numberLabel: '6', hanzi: '老师', pinyin: 'Lǎoshī', indonesian: 'Guru' },
+          { numberLabel: '7', hanzi: '学生', pinyin: 'Xuésheng', indonesian: 'Siswa / Murid' },
+          { numberLabel: '8', hanzi: '朋友', pinyin: 'Péngyou', indonesian: 'Teman' },
+          { numberLabel: '9', hanzi: '认识', pinyin: 'Rènshi', indonesian: 'Kenal / Mengenal' },
+          { numberLabel: '10', hanzi: '岁', pinyin: 'Suì', indonesian: 'Tahun usia / Umur (年龄)' },
+          { numberLabel: '11', hanzi: '你呢？', pinyin: 'Nǐ ne?', indonesian: 'Kalau kamu? / Bagaimana denganmu?' },
+          { numberLabel: '12', hanzi: '也', pinyin: 'Yě', indonesian: 'Juga (Contoh: 我也是印度尼西亚人)' }
+        ]
+      }
     ],
     dialogues: [
       {
@@ -189,44 +206,85 @@ export const MANDARIN_TOPICS: MandarinTopicItem[] = [
     id: 'topic-number-shuzi',
     topicKey: 'number',
     topicName: '3. Angka Mandarin 0–100 (数字)',
-    chineseName: '数字 — Shùzì (Angka 0–100)',
-    level: 'Materi Dasar 3 • SMP Plus JM',
+    chineseName: 'Materi Kelas Mandarin: Angka (数字 Shùzì) 0–100',
+    level: 'Materi 3 • Angka 0–100',
     teacherMentor: 'Ustadzah Nuriyah & Ustadzah Rizza',
     downloadDocUrl: '/docs/mandarin/3_Materi_Angka_Shuzi_Mandarin.docx',
     posterFlyer: '/images/mandarin/flyer_angka_mandarin.jpeg',
     summary:
-      'Mengenal angka 0–100 dalam bahasa Mandarin, cara membaca Pinyin, cara menulis karakter Hanzi untuk angka belasan (11–19), puluhan (20–90), angka gabungan, serta penggunaannya dalam percakapan usia.',
+      'Mengenal angka 0–100 dalam bahasa Mandarin, cara membaca Pinyin, dan cara menulis karakter Hanzi. Dilengkapi rumus angka belasan (11–20), puluhan (20–100), angka gabungan, percakapan usia, kuis interaktif, dan aktivitas kelas.',
     narrative:
-      'Materi ini dirancang khusus untuk siswa SMP Plus Jauharul Maknuun agar mampu menyebutkan angka 0–100, memahami rumus pembentukan bilangan belasan dan puluhan secara logis, menuliskan karakter Mandarinnya, serta menggunakannya dalam percakapan menanyakan umur (你几岁？).',
-    culturalNote:
-      'Target Pembelajaran: Setelah materi selesai, siswa mampu menyebutkan angka 0–100, membaca Pinyin, menuliskan angka dalam karakter Mandarin, dan menggunakan angka dalam percakapan sederhana.',
+      'Mengenal angka 0–100 dalam bahasa Mandarin, cara membaca Pinyin, dan cara menulis karakter Hanzi. Materi ini dirancang untuk siswa SMP Plus Jauharul Maknuun.',
+    tableTitle: '1. Mengenal Angka 0–10 (Klik kartu / speaker untuk mendengar pelafalan)',
     importantNotes: [
-      'Rumus Angka Belasan (11–19) = 十 (sepuluh) + angka satuan. Contoh: 十五 (shí wǔ) = 十 (10) + 五 (5) = 15.',
-      'Rumus Angka Puluhan (20–90) = angka satuan + 十 (sepuluh). Contoh: 二十 (èr shí) = 20, 三十 (sān shí) = 30.',
-      'Rumus Angka Gabungan (21–99) = angka puluhan + 十 + angka satuan. Contoh: 36 = 三十六 (sān shí liù), 48 = 四十八 (sì shí bā), 99 = 九十九 (jiǔ shí jiǔ).',
-      'Kosakata Penting Usia: 你 (nǐ = kamu), 我 (wǒ = saya), 几 (jǐ = berapa), 岁 (suì = tahun usia). Contoh: 你几岁？(Nǐ jǐ suì?) → 我十二岁。(Wǒ shí èr suì. — Saya berumur 12 tahun).'
+      'Rumus mudah Angka Belasan (11–19): angka belasan = 十 (sepuluh) + angka satuan. Contoh: 十五 = 十 (10) + 五 (5) = 15.',
+      'Rumus mudah Angka Puluhan (20–90): angka satuan + 十 (sepuluh). Contoh: 二十 (èr shí) = 20, 三十 (sān shí) = 30.',
+      'Rumus mudah Angka Gabungan (21–99): angka puluhan + 十 + angka satuan. Contoh: 三十六 = 三 (3) + 十 (10) + 六 (6) = 36.',
+      'Angka 100 dalam bahasa Mandarin ditulis 一百 (yì bǎi) yang berarti seratus.'
     ],
     vocabularies: [
-      { hanzi: '零', pinyin: 'líng', indonesian: '0 (Nol)', exampleSentence: 'Angka dasar 0' },
-      { hanzi: '一', pinyin: 'yī', indonesian: '1 (Satu)', exampleSentence: '十一 (shí yī — 11 Sebelas)' },
-      { hanzi: '二', pinyin: 'èr', indonesian: '2 (Dua)', exampleSentence: '十二 (shí èr — 12) | 二十 (èr shí — 20)' },
-      { hanzi: '三', pinyin: 'sān', indonesian: '3 (Tiga)', exampleSentence: '十三 (shí sān — 13) | 三十 (sān shí — 30)' },
-      { hanzi: '四', pinyin: 'sì', indonesian: '4 (Empat)', exampleSentence: '十四 (shí sì — 14) | 四十 (sì shí — 40)' },
-      { hanzi: '五', pinyin: 'wǔ', indonesian: '5 (Lima)', exampleSentence: '十五 (shí wǔ — 15) | 五十 (wǔ shí — 50)' },
-      { hanzi: '六', pinyin: 'liù', indonesian: '6 (Enam)', exampleSentence: '十六 (shí liù — 16) | 六十 (liù shí — 60)' },
-      { hanzi: '七', pinyin: 'qī', indonesian: '7 (Tujuh)', exampleSentence: '十七 (shí qī — 17) | 七十 (qī shí — 70)' },
-      { hanzi: '八', pinyin: 'bā', indonesian: '8 (Delapan)', exampleSentence: '十八 (shí bā — 18) | 八十 (bā shí — 80)' },
-      { hanzi: '九', pinyin: 'jiǔ', indonesian: '9 (Sembilan)', exampleSentence: '十九 (shí jiǔ — 19) | 九十 (jiǔ shí — 90)' },
-      { hanzi: '十', pinyin: 'shí', indonesian: '10 (Sepuluh)', exampleSentence: 'Dasar pembentukan belasan dan puluhan' },
-      { hanzi: '二十一', pinyin: 'èr shí yī', indonesian: '21 (Dua puluh satu)', exampleSentence: '二 (2) + 十 (10) + 一 (1)' },
-      { hanzi: '二十五', pinyin: 'èr shí wǔ', indonesian: '25 (Dua puluh lima)', exampleSentence: '二 (2) + 十 (10) + 五 (5)' },
-      { hanzi: '三十六', pinyin: 'sān shí liù', indonesian: '36 (Tiga puluh enam)', exampleSentence: '三 (3) + 十 (10) + 六 (6)' },
-      { hanzi: '三十九', pinyin: 'sān shí jiǔ', indonesian: '39 (Tiga puluh sembilan)', exampleSentence: '三 (3) + 十 (10) + 九 (9)' },
-      { hanzi: '四十八', pinyin: 'sì shí bā', indonesian: '48 (Empat puluh delapan)', exampleSentence: '四 (4) + 十 (10) + 八 (8)' },
-      { hanzi: '五十七', pinyin: 'wǔ shí qī', indonesian: '57 (Lima puluh tujuh)', exampleSentence: '五 (5) + 十 (10) + 七 (7)' },
-      { hanzi: '九十九', pinyin: 'jiǔ shí jiǔ', indonesian: '99 (Sembilan puluh sembilan)', exampleSentence: '九 (9) + 十 (10) + 九 (9)' },
-      { hanzi: '一百', pinyin: 'yì bǎi', indonesian: '100 (Seratus)', exampleSentence: 'Bilangan seratus' },
-      { hanzi: '你几岁？', pinyin: 'Nǐ jǐ suì?', indonesian: 'Kamu berumur berapa tahun?', exampleSentence: '我十三岁。(Wǒ shí sān suì. — Saya berumur 13 tahun.)' }
+      { numberLabel: '0', hanzi: '零', pinyin: 'líng', indonesian: 'nol' },
+      { numberLabel: '1', hanzi: '一', pinyin: 'yī', indonesian: 'satu' },
+      { numberLabel: '2', hanzi: '二', pinyin: 'èr', indonesian: 'dua' },
+      { numberLabel: '3', hanzi: '三', pinyin: 'sān', indonesian: 'tiga' },
+      { numberLabel: '4', hanzi: '四', pinyin: 'sì', indonesian: 'empat' },
+      { numberLabel: '5', hanzi: '五', pinyin: 'wǔ', indonesian: 'lima' },
+      { numberLabel: '6', hanzi: '六', pinyin: 'liù', indonesian: 'enam' },
+      { numberLabel: '7', hanzi: '七', pinyin: 'qī', indonesian: 'tujuh' },
+      { numberLabel: '8', hanzi: '八', pinyin: 'bā', indonesian: 'delapan' },
+      { numberLabel: '9', hanzi: '九', pinyin: 'jiǔ', indonesian: 'sembilan' },
+      { numberLabel: '10', hanzi: '十', pinyin: 'shí', indonesian: 'sepuluh' }
+    ],
+    subTables: [
+      {
+        title: '2. Angka 11–20',
+        subtitle: 'Untuk angka 11 sampai 19, cukup tambahkan angka satuan setelah 十 (shí = sepuluh).',
+        formulaTitle: 'Rumus mudah:',
+        formulaText: 'angka belasan = 十 (sepuluh) + angka satuan',
+        formulaExample: 'Contoh: 十五 = 十 (10) + 五 (5) = 15.',
+        rows: [
+          { numberLabel: '11', hanzi: '十一', pinyin: 'shí yī', indonesian: 'sebelas' },
+          { numberLabel: '12', hanzi: '十二', pinyin: 'shí èr', indonesian: 'dua belas' },
+          { numberLabel: '13', hanzi: '十三', pinyin: 'shí sān', indonesian: 'tiga belas' },
+          { numberLabel: '14', hanzi: '十四', pinyin: 'shí sì', indonesian: 'empat belas' },
+          { numberLabel: '15', hanzi: '十五', pinyin: 'shí wǔ', indonesian: 'lima belas' },
+          { numberLabel: '16', hanzi: '十六', pinyin: 'shí liù', indonesian: 'enam belas' },
+          { numberLabel: '17', hanzi: '十七', pinyin: 'shí qī', indonesian: 'tujuh belas' },
+          { numberLabel: '18', hanzi: '十八', pinyin: 'shí bā', indonesian: 'delapan belas' },
+          { numberLabel: '19', hanzi: '十九', pinyin: 'shí jiǔ', indonesian: 'sembilan belas' },
+          { numberLabel: '20', hanzi: '二十', pinyin: 'èr shí', indonesian: 'dua puluh' }
+        ]
+      },
+      {
+        title: '3. Angka Puluhan sampai 100',
+        subtitle: 'Untuk puluhan (20, 30, 40, dan seterusnya), letakkan angka satuan di depan 十 (shí).',
+        rows: [
+          { numberLabel: '20', hanzi: '二十', pinyin: 'èr shí', indonesian: 'dua puluh' },
+          { numberLabel: '30', hanzi: '三十', pinyin: 'sān shí', indonesian: 'tiga puluh' },
+          { numberLabel: '40', hanzi: '四十', pinyin: 'sì shí', indonesian: 'empat puluh' },
+          { numberLabel: '50', hanzi: '五十', pinyin: 'wǔ shí', indonesian: 'lima puluh' },
+          { numberLabel: '60', hanzi: '六十', pinyin: 'liù shí', indonesian: 'enam puluh' },
+          { numberLabel: '70', hanzi: '七十', pinyin: 'qī shí', indonesian: 'tujuh puluh' },
+          { numberLabel: '80', hanzi: '八十', pinyin: 'bā shí', indonesian: 'delapan puluh' },
+          { numberLabel: '90', hanzi: '九十', pinyin: 'jiǔ shí', indonesian: 'sembilan puluh' },
+          { numberLabel: '100', hanzi: '一百', pinyin: 'yì bǎi', indonesian: 'seratus' }
+        ]
+      },
+      {
+        title: 'Bagaimana membaca angka gabungan?',
+        subtitle: 'Gabungkan angka puluhan di depan 十 (shí) lalu tambahkan angka satuan di belakangnya:',
+        formulaTitle: 'Rumus mudah:',
+        formulaText: 'angka puluhan + 十 + angka satuan',
+        formulaExample: 'Contoh: 三十六 = 三 (3) + 十 (10) + 六 (6) = 36.',
+        rows: [
+          { numberLabel: '21', hanzi: '二十一', pinyin: 'èr shí yī', indonesian: 'dua puluh satu' },
+          { numberLabel: '25', hanzi: '二十五', pinyin: 'èr shí wǔ', indonesian: 'dua puluh lima' },
+          { numberLabel: '36', hanzi: '三十六', pinyin: 'sān shí liù', indonesian: 'tiga puluh enam' },
+          { numberLabel: '48', hanzi: '四十八', pinyin: 'sì shí bā', indonesian: 'empat puluh delapan' },
+          { numberLabel: '57', hanzi: '五十七', pinyin: 'wǔ shí qī', indonesian: 'lima puluh tujuh' },
+          { numberLabel: '99', hanzi: '九十九', pinyin: 'jiǔ shí jiǔ', indonesian: 'sembilan puluh sembilan' }
+        ]
+      }
     ],
     dialogues: [
       {
@@ -242,36 +300,128 @@ export const MANDARIN_TOPICS: MandarinTopicItem[] = [
         meaning: 'Saya berumur 13 tahun.'
       }
     ],
-    classActivities: [
+    dialogueVocabNote: [
+      { hanzi: '你', pinyin: 'nǐ', meaning: 'kamu' },
+      { hanzi: '我', pinyin: 'wǒ', meaning: 'saya' },
+      { hanzi: '几', pinyin: 'jǐ', meaning: 'berapa' },
+      { hanzi: '岁', pinyin: 'suì', meaning: 'tahun usia' }
+    ],
+    dialogueExtraExample: 'Contoh lain: 你几岁？ → 我十二岁。 (Saya berumur 12 tahun)',
+    miniQuiz: [
       {
-        title: '1. Tebak Angka',
-        desc: 'Guru menyebutkan angka dalam bahasa Indonesia, siswa menjawab cepat dengan bahasa Mandarin.'
+        id: 'mq-1',
+        topicId: 'topic-number-shuzi',
+        hanzi: '五',
+        pinyin: 'wǔ',
+        question: '1. Angka Mandarin untuk 5 adalah...',
+        options: ['四 (sì)', '五 (wǔ)', '六 (liù)', '七 (qī)'],
+        correctIndex: 1,
+        explanation: 'Jawaban benar: B. 五 (wǔ) berarti 5 (lima).'
       },
       {
-        title: '2. Angkat Kartu (1–100)',
+        id: 'mq-2',
+        topicId: 'topic-number-shuzi',
+        hanzi: '十八',
+        pinyin: 'shí bā',
+        question: '2. Apa arti dari 十八 (shí bā)?',
+        options: ['8', '80', '18', '28'],
+        correctIndex: 2,
+        explanation: 'Jawaban benar: C. 18 — karena 十 (10) + 八 (8) = 18.'
+      },
+      {
+        id: 'mq-3',
+        topicId: 'topic-number-shuzi',
+        hanzi: '二十四',
+        pinyin: 'èr shí sì',
+        question: '3. Bagaimana menulis 24 dalam bahasa Mandarin?',
+        options: ['四十二', '二十四', '十四', '二十'],
+        correctIndex: 1,
+        explanation: 'Jawaban benar: B. 二十四 (èr shí sì) = 二 (2) + 十 (10) + 四 (4) = 24.'
+      },
+      {
+        id: 'mq-4',
+        topicId: 'topic-number-shuzi',
+        hanzi: '一百',
+        pinyin: 'yì bǎi',
+        question: '4. Apa arti dari 一百 (yì bǎi)?',
+        options: ['10', '50', '100', '1000'],
+        correctIndex: 2,
+        explanation: 'Jawaban benar: C. 100 — 一百 (yì bǎi) berarti seratus.'
+      },
+      {
+        id: 'mq-5',
+        topicId: 'topic-number-shuzi',
+        hanzi: '三十九',
+        pinyin: 'sān shí jiǔ',
+        question: '5. Bagaimana cara membaca 三十九?',
+        options: ['sān shí qī', 'sān shí jiǔ', 'sì shí jiǔ', 'jiǔ shí sān'],
+        correctIndex: 1,
+        explanation: 'Jawaban benar: B. sān shí jiǔ (39 = Tiga puluh sembilan).'
+      }
+    ],
+    shortAnswerExercises: [
+      {
+        no: 16,
+        question: 'Tulislah angka 8 dalam karakter Mandarin dan Pinyin!',
+        answer: '八 (bā)'
+      },
+      {
+        no: 17,
+        question: 'Angka 十九 (shí jiǔ) jika ditulis dalam angka biasa adalah ....',
+        answer: '19'
+      },
+      {
+        no: 18,
+        question: 'Tulislah angka 42 dalam karakter Mandarin!',
+        answer: '四十二 (sì shí èr)'
+      },
+      {
+        no: 19,
+        question: 'Apa arti dari 七十 (qī shí)?',
+        answer: '70 (Tujuh puluh)'
+      },
+      {
+        no: 20,
+        question: 'Lengkapilah percakapan berikut: 小明：你几岁？ — 小丽：我________岁。(Xiaoli berusia 15 tahun.)',
+        answer: '十五 (Wǒ shí wǔ suì.)'
+      }
+    ],
+    classActivities: [
+      {
+        title: 'Tebak angka',
+        desc: 'Guru menyebutkan angka dalam bahasa Indonesia, siswa menjawab dengan bahasa Mandarin.'
+      },
+      {
+        title: 'Angkat kartu',
         desc: 'Guru menunjukkan kartu angka 1–100, siswa menyebutkan karakter Mandarin dan Pinyinnya.'
       },
       {
-        title: '3. Tanya Teman (Berpasangan)',
-        desc: 'Siswa berpasangan dan bertanya “你几岁？ (Nǐ jǐ suì?)” lalu menjawab menggunakan usia masing-masing.'
+        title: 'Tanya teman',
+        desc: 'Siswa berpasangan dan bertanya “你几岁？” lalu menjawab menggunakan usia masing-masing.'
       },
       {
-        title: '4. Tantangan Angka Cepat',
-        desc: 'Guru menuliskan angka seperti 27, 45, atau 68 di papan tulis, lalu siswa berlomba menuliskan karakter Mandarinnya.'
+        title: 'Tantangan angka',
+        desc: 'Guru menulis angka seperti 27, 45, atau 68 di papan tulis, lalu siswa menuliskan karakter Mandarinnya.'
       }
+    ],
+    learningTargets: [
+      'Menyebutkan angka 0–100',
+      'Membaca Pinyin',
+      'Menuliskan angka dalam karakter Mandarin',
+      'Menggunakan angka dalam percakapan sederhana'
     ]
   }
 ];
 
 // ============================================================================
-// BANK SOAL LATIHAN & KUIS INTERAKTIF MANDARIN
+// BANK SOAL LATIHAN & KUIS INTERAKTIF MANDARIN (60 SOAL RESMI)
 // Sesuai dokumen latihan Ustadzah Nuriyah & Ustadzah Rizza
 // ============================================================================
 export const MANDARIN_QUIZZES: MandarinQuizTopic[] = [
   {
     id: 'quiz-salam-sapaan',
     title: '1. Kuis Salam & Sapaan (20 Soal)',
-    chineseTitle: '问候语选择题 — Latihan Pilihan Ganda Salam & Sapaan',
+    chineseTitle: '选择题 (Xuǎnzé tí) — Latihan Soal Pilihan Ganda Salam & Sapaan',
     level: 'Topik 1',
     description: '20 soal latihan pilihan ganda resmi materi Salam dan Sapaan (词汇 — Cíhuì & 对话 — Duìhuà).',
     questions: [
@@ -480,7 +630,7 @@ export const MANDARIN_QUIZZES: MandarinQuizTopic[] = [
   {
     id: 'quiz-introduction',
     title: '2. Kuis Perkenalan Diri (20 Soal)',
-    chineseTitle: '自我介绍选择题 — Latihan Pilihan Ganda Perkenalan Diri',
+    chineseTitle: '第三部分：选择题 (Xuǎnzé tí) — Soal Pilihan Ganda Perkenalan Diri',
     level: 'Topik 2',
     description: '20 soal latihan pilihan ganda resmi materi Perkenalan Diri (自我介绍 — Zìwǒ jièshào).',
     questions: [
@@ -689,9 +839,9 @@ export const MANDARIN_QUIZZES: MandarinQuizTopic[] = [
   {
     id: 'quiz-number-shuzi',
     title: '3. Kuis Angka 0–100 (20 Soal)',
-    chineseTitle: '数字 0–100 练习 — Latihan Soal Bahasa Mandarin Materi Angka',
+    chineseTitle: 'SOAL LATIHAN BAHASA MANDARIN — Materi: Angka (数字 Shùzì) 0–100',
     level: 'Topik 3',
-    description: '20 soal latihan resmi materi Angka Mandarin (数字 Shùzì) 0–100 beserta soal percakapan usia.',
+    description: '20 soal latihan resmi materi Angka Mandarin (数字 Shùzì) 0–100: A. Pilihan Ganda (1–15) & B. Isian Singkat (16–20).',
     questions: [
       {
         id: 'q-num-1',
@@ -848,7 +998,7 @@ export const MANDARIN_QUIZZES: MandarinQuizTopic[] = [
         topicId: 'quiz-number-shuzi',
         hanzi: '八',
         pinyin: 'bā',
-        question: '16. [Isian Singkat] Bagaimanakah penulisan angka 8 dalam karakter Mandarin dan Pinyin?',
+        question: '16. [Bagian B — Isian Singkat] Tulislah angka 8 dalam karakter Mandarin dan Pinyin!',
         options: ['七 (qī)', '八 (bā)', '六 (liù)', '九 (jiǔ)'],
         correctIndex: 1,
         explanation: 'Angka 8 ditulis 八 dengan Pinyin “bā”.'
@@ -858,7 +1008,7 @@ export const MANDARIN_QUIZZES: MandarinQuizTopic[] = [
         topicId: 'quiz-number-shuzi',
         hanzi: '十九',
         pinyin: 'shí jiǔ',
-        question: '17. [Isian Singkat] Angka 十九 (shí jiǔ) jika ditulis dalam angka biasa adalah ....',
+        question: '17. [Bagian B — Isian Singkat] Angka 十九 (shí jiǔ) jika ditulis dalam angka biasa adalah ....',
         options: ['90', '91', '19', '18'],
         correctIndex: 2,
         explanation: '十九 = 十 (10) + 九 (9) = 19.'
@@ -868,7 +1018,7 @@ export const MANDARIN_QUIZZES: MandarinQuizTopic[] = [
         topicId: 'quiz-number-shuzi',
         hanzi: '四十二',
         pinyin: 'sì shí èr',
-        question: '18. [Isian Singkat] Bagaimanakah penulisan angka 42 dalam karakter Mandarin?',
+        question: '18. [Bagian B — Isian Singkat] Tulislah angka 42 dalam karakter Mandarin!',
         options: ['二十四', '四十二', '四十二个', '十四二'],
         correctIndex: 1,
         explanation: 'Angka 42 = 四 (4) + 十 (10) + 二 (2) = 四十二 (sì shí èr).'
@@ -878,17 +1028,17 @@ export const MANDARIN_QUIZZES: MandarinQuizTopic[] = [
         topicId: 'quiz-number-shuzi',
         hanzi: '七十',
         pinyin: 'qī shí',
-        question: '19. [Isian Singkat] Apa arti dari 七十 (qī shí)?',
+        question: '19. [Bagian B — Isian Singkat] Apa arti dari 七十 (qī shí)?',
         options: ['Tujuh belas (17)', 'Tujuh puluh (70)', 'Tujuh (7)', 'Delapan puluh (80)'],
         correctIndex: 1,
-        explanation: '七十 (qī shí) = 七 (7) + 十 (10) = Tujuh puluh (70).'
+        explanation: '七十 (qī shí) = 七 (7) + 十 (10) + Tujuh puluh (70).'
       },
       {
         id: 'q-num-20',
         topicId: 'quiz-number-shuzi',
         hanzi: '我十五岁。',
         pinyin: 'Wǒ shí wǔ suì.',
-        question: '20. [Isian Singkat] 小明：你几岁？ — 小丽：我________岁。(Xiaoli berusia 15 tahun.)',
+        question: '20. [Bagian B — Isian Singkat] 小明：你几岁？ — 小丽：我________岁。(Xiaoli berusia 15 tahun.)',
         options: ['五十 (wǔ shí)', '十五 (shí wǔ)', '五 (wǔ)', '二十五 (èr shí wǔ)'],
         correctIndex: 1,
         explanation: 'Usia 15 tahun ditulis “十五” (shí wǔ), sehingga menjadi “我十五岁。”'
@@ -906,7 +1056,11 @@ export const MandarinClassSection: React.FC = () => {
   const [selectedTopic, setSelectedTopic] = useState<MandarinTopicItem>(MANDARIN_TOPICS[0]);
   const [flyerLightbox, setFlyerLightbox] = useState<{ url: string; title: string } | null>(null);
 
-  // Quiz State
+  // Interactive Mini-Quiz State (Inside Topic 3 Material)
+  const [miniQuizAnswers, setMiniQuizAnswers] = useState<Record<string, number>>({});
+  const [revealedShortAnswers, setRevealedShortAnswers] = useState<Record<number, boolean>>({});
+
+  // Full Quiz Tab State
   const [activeQuizTopic, setActiveQuizTopic] = useState<MandarinQuizTopic>(MANDARIN_QUIZZES[0]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [selectedAnswerIndex, setSelectedAnswerIndex] = useState<number | null>(null);
@@ -995,10 +1149,10 @@ export const MandarinClassSection: React.FC = () => {
             <span>Kelas Bahasa Mandarin • Belajar Bahasa Mandarin Itu Seru!</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-zinc-900 dark:text-white leading-tight">
-            Mandarin Class SMP Plus JM
+            Kelas Mandarin SMP Plus Jauharul Maknuun
           </h2>
           <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Pengampu: <strong className="text-zinc-700 dark:text-zinc-300">Ustadzah Nuriyah &amp; Ustadzah Rizza</strong> • Kosakata Hanzi, Pelafalan Pinyin, Percakapan &amp; Kuis Interaktif
+            Pengampu: <strong className="text-zinc-700 dark:text-zinc-300">Ustadzah Nuriyah &amp; Ustadzah Rizza</strong> • Modul Salam &amp; Sapaan, Perkenalan Diri (自我介绍), serta Angka (数字 0–100)
           </p>
         </div>
 
@@ -1008,7 +1162,7 @@ export const MandarinClassSection: React.FC = () => {
             size="md"
             options={[
               { id: 'materi', label: 'Materi & Flyer Belajar', icon: BookOpen },
-              { id: 'quiz', label: 'Latihan & Quiz (60 Soal)', icon: HelpCircle }
+              { id: 'quiz', label: 'Latihan Soal (60 Soal)', icon: HelpCircle }
             ]}
             value={activeSubTab}
             onChange={setActiveSubTab}
@@ -1050,7 +1204,7 @@ export const MandarinClassSection: React.FC = () => {
                   </span>
                   {selectedTopic.teacherMentor && (
                     <span className="text-xs text-zinc-500">
-                      • Pembina: <strong className="text-zinc-700 dark:text-zinc-300">{selectedTopic.teacherMentor}</strong>
+                      • Pengampu: <strong className="text-zinc-700 dark:text-zinc-300">{selectedTopic.teacherMentor}</strong>
                     </span>
                   )}
                 </div>
@@ -1088,15 +1242,15 @@ export const MandarinClassSection: React.FC = () => {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300/70 dark:border-amber-800 font-bold text-xs transition-all cursor-pointer active:scale-95"
                 >
                   <HelpCircle className="w-3.5 h-3.5" />
-                  <span>Kerjakan Latihan Soal</span>
+                  <span>Kerjakan 20 Soal Latihan</span>
                 </button>
               </div>
             </div>
 
             {/* Split Grid: Flyer Visual Resmi & Konten Pembelajaran */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-start">
-              {/* Kolom Kiri: Poster Flyer Visual + Catatan Penting */}
-              <div className="lg:col-span-4 space-y-2.5">
+              {/* Kolom Kiri: Poster Flyer Visual + Catatan Penting + Target Pembelajaran */}
+              <div className="lg:col-span-4 space-y-2.5 lg:sticky lg:top-20">
                 <div
                   className="relative aspect-[3/4] overflow-hidden rounded-xl bg-zinc-950 border border-zinc-200/70 dark:border-zinc-800/70 shadow-sm cursor-pointer group"
                   onClick={() =>
@@ -1135,7 +1289,7 @@ export const MandarinClassSection: React.FC = () => {
                   <div className="p-2.5 sm:p-3 rounded-xl bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200/70 dark:border-amber-800/50 space-y-1.5">
                     <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-900 dark:text-amber-300 uppercase tracking-wider">
                       <Lightbulb className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                      <span>Catatan Penting &amp; Kaidah:</span>
+                      <span>Catatan Penting:</span>
                     </div>
                     <ul className="space-y-1 text-[11px] text-amber-950/90 dark:text-amber-200/90 list-disc list-inside leading-relaxed">
                       {selectedTopic.importantNotes.map((note, idx) => (
@@ -1144,73 +1298,177 @@ export const MandarinClassSection: React.FC = () => {
                     </ul>
                   </div>
                 )}
+
+                {/* Target Pembelajaran (Jika Ada, Misal Materi Angka) */}
+                {selectedTopic.learningTargets && selectedTopic.learningTargets.length > 0 && (
+                  <div className="p-2.5 sm:p-3 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-800/50 space-y-1.5">
+                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-900 dark:text-emerald-300 uppercase tracking-wider">
+                      <Target className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Target Pembelajaran:</span>
+                    </div>
+                    <p className="text-[11px] text-emerald-900/80 dark:text-emerald-200/80">
+                      Setelah materi selesai, siswa mampu:
+                    </p>
+                    <ul className="space-y-1 text-[11px] text-emerald-950/90 dark:text-emerald-200/90 list-disc list-inside leading-relaxed font-medium">
+                      {selectedTopic.learningTargets.map((target, idx) => (
+                        <li key={idx}>{target}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
 
-              {/* Kolom Kanan: Tabel Kosakata, Dialog Percakapan & Aktivitas Kelas */}
+              {/* Kolom Kanan: Tabel Resmi Materi, Sub-Tabel, Dialog Percakapan, Kuis Interaktif & Aktivitas Kelas */}
               <div className="lg:col-span-8 space-y-3">
-                {/* Pengantar Konteks */}
-                <div className="p-2.5 sm:p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-800/60 space-y-1 text-xs">
-                  <h4 className="font-bold text-zinc-900 dark:text-white uppercase tracking-wider text-[11px]">
-                    Pengantar Materi Pembelajaran:
-                  </h4>
-                  <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    {selectedTopic.narrative}
-                  </p>
-                </div>
-
-                {/* Daftar Kosakata Inti (Cards Grid) */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-zinc-900 dark:text-white text-xs sm:text-sm flex items-center gap-1.5">
-                      <Languages className="w-4 h-4 text-emerald-600" />
-                      <span>Tabel Kosakata &amp; Pola Kalimat ({selectedTopic.vocabularies.length} Kosakata)</span>
+                {/* Tabel Utama Kosakata / Pola Kalimat / Angka 0–10 */}
+                <div className="rounded-xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden bg-white dark:bg-zinc-900 shadow-2xs">
+                  <div className="px-3 py-2 bg-emerald-900 text-white flex items-center justify-between gap-2">
+                    <h4 className="font-bold text-xs sm:text-sm flex items-center gap-1.5">
+                      <Languages className="w-4 h-4 text-amber-300 shrink-0" />
+                      <span>{selectedTopic.tableTitle || 'Tabel Kosakata & Pola Kalimat'}</span>
                     </h4>
-                    <span className="text-[10.5px] text-emerald-700 dark:text-emerald-400 font-semibold">
-                      🔊 Klik speaker untuk audio Hanzi
+                    <span className="text-[10.5px] text-emerald-200 font-medium shrink-0">
+                      🔊 Klik speaker untuk audio
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2 max-h-[460px] overflow-y-auto pr-0.5">
-                    {selectedTopic.vocabularies.map((vocab, idx) => (
-                      <div
-                        key={idx}
-                        className="p-2.5 rounded-xl bg-white dark:bg-zinc-800/80 border border-zinc-200/70 dark:border-zinc-800/70 shadow-2xs hover:border-emerald-500/50 transition-all flex items-start justify-between gap-2"
-                      >
-                        <div className="space-y-0.5 min-w-0">
-                          <div className="flex items-baseline gap-2 flex-wrap">
-                            <span className="text-[10px] font-bold text-zinc-400">
-                              #{idx + 1}
-                            </span>
-                            <span className="text-lg sm:text-xl font-bold text-red-600 dark:text-red-400 font-serif">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse text-xs">
+                      <thead>
+                        <tr className="bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-200 border-b border-zinc-200/70 dark:border-zinc-800">
+                          <th className="py-2 px-2.5 font-bold w-12 text-center">
+                            {selectedTopic.topicKey === 'number' ? 'Angka' : 'No.'}
+                          </th>
+                          <th className="py-2 px-3 font-bold">Hanzi (汉字)</th>
+                          <th className="py-2 px-3 font-bold">Pinyin</th>
+                          <th className="py-2 px-3 font-bold">Arti Bahasa Indonesia</th>
+                          <th className="py-2 px-2.5 font-bold text-center w-14">Audio</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-200/60 dark:divide-zinc-800/70">
+                        {selectedTopic.vocabularies.map((vocab, idx) => (
+                          <tr
+                            key={idx}
+                            onClick={() => speakChinese(vocab.hanzi)}
+                            className="hover:bg-emerald-50/40 dark:hover:bg-emerald-950/20 transition-colors cursor-pointer"
+                          >
+                            <td className="py-1.5 px-2.5 text-center font-bold text-zinc-500 dark:text-zinc-400">
+                              {vocab.numberLabel ?? idx + 1}
+                            </td>
+                            <td className="py-1.5 px-3 text-base sm:text-lg font-bold text-red-600 dark:text-red-400 font-serif">
                               {vocab.hanzi}
-                            </span>
-                            <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 font-mono">
+                            </td>
+                            <td className="py-1.5 px-3 font-bold text-emerald-700 dark:text-emerald-400 font-mono">
                               {vocab.pinyin}
-                            </span>
-                          </div>
-                          <div className="text-xs font-bold text-zinc-800 dark:text-zinc-200">
-                            {vocab.indonesian}
-                          </div>
-                          {vocab.exampleSentence && (
-                            <div className="text-[10.5px] text-zinc-500 dark:text-zinc-400 leading-snug">
-                              {vocab.exampleSentence}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Speaker Button */}
-                        <button
-                          type="button"
-                          onClick={() => speakChinese(vocab.hanzi)}
-                          className="w-7 h-7 rounded-full bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/80 dark:hover:bg-emerald-900/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shrink-0 transition-transform active:scale-95 cursor-pointer border border-emerald-200/60 dark:border-emerald-800"
-                          title={`Dengarkan pelafalan: ${vocab.hanzi} (${vocab.pinyin})`}
-                        >
-                          <Volume2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
+                            </td>
+                            <td className="py-1.5 px-3 font-medium text-zinc-800 dark:text-zinc-200">
+                              {vocab.indonesian}
+                            </td>
+                            <td className="py-1.5 px-2.5 text-center">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  speakChinese(vocab.hanzi);
+                                }}
+                                className="w-6 h-6 rounded-full bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 inline-flex items-center justify-center border border-emerald-200/70 dark:border-emerald-800 cursor-pointer"
+                                title={`Dengarkan: ${vocab.hanzi} (${vocab.pinyin})`}
+                              >
+                                <Volume2 className="w-3 h-3" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 </div>
+
+                {/* Sub-Tabel Tambahan (Angka 11–20, Angka Puluhan 20–100, Angka Gabungan, atau Kosakata Pendukung) */}
+                {selectedTopic.subTables &&
+                  selectedTopic.subTables.map((sub, sIdx) => (
+                    <div
+                      key={sIdx}
+                      className="rounded-xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden bg-white dark:bg-zinc-900 shadow-2xs space-y-0"
+                    >
+                      <div className="px-3 py-2 bg-zinc-100 dark:bg-zinc-800/90 border-b border-zinc-200/70 dark:border-zinc-800">
+                        <h4 className="font-bold text-zinc-900 dark:text-white text-xs sm:text-sm">
+                          {sub.title}
+                        </h4>
+                        {sub.subtitle && (
+                          <p className="text-[11px] text-zinc-600 dark:text-zinc-400 mt-0.5">
+                            {sub.subtitle}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse text-xs">
+                          <thead>
+                            <tr className="bg-zinc-50 dark:bg-zinc-800/40 text-zinc-700 dark:text-zinc-300 border-b border-zinc-200/70 dark:border-zinc-800">
+                              <th className="py-1.5 px-2.5 font-bold w-14 text-center">
+                                {selectedTopic.topicKey === 'number' ? 'Angka' : 'No.'}
+                              </th>
+                              <th className="py-1.5 px-3 font-bold">Karakter (汉字)</th>
+                              <th className="py-1.5 px-3 font-bold">Pinyin</th>
+                              <th className="py-1.5 px-3 font-bold">Arti</th>
+                              <th className="py-1.5 px-2.5 font-bold text-center w-14">Audio</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-200/60 dark:divide-zinc-800/70">
+                            {sub.rows.map((row, rIdx) => (
+                              <tr
+                                key={rIdx}
+                                onClick={() => speakChinese(row.hanzi)}
+                                className="hover:bg-emerald-50/40 dark:hover:bg-emerald-950/20 transition-colors cursor-pointer"
+                              >
+                                <td className="py-1.5 px-2.5 text-center font-bold text-emerald-800 dark:text-emerald-300">
+                                  {row.numberLabel ?? rIdx + 1}
+                                </td>
+                                <td className="py-1.5 px-3 text-base font-bold text-red-600 dark:text-red-400 font-serif">
+                                  {row.hanzi}
+                                </td>
+                                <td className="py-1.5 px-3 font-bold text-emerald-700 dark:text-emerald-400 font-mono">
+                                  {row.pinyin}
+                                </td>
+                                <td className="py-1.5 px-3 font-medium text-zinc-800 dark:text-zinc-200">
+                                  {row.indonesian}
+                                </td>
+                                <td className="py-1.5 px-2.5 text-center">
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      speakChinese(row.hanzi);
+                                    }}
+                                    className="w-6 h-6 rounded-full bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 inline-flex items-center justify-center border border-emerald-200/70 dark:border-emerald-800 cursor-pointer"
+                                  >
+                                    <Volume2 className="w-3 h-3" />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {sub.formulaText && (
+                        <div className="p-2.5 sm:px-3 bg-amber-50/80 dark:bg-amber-950/30 border-t border-amber-200/60 dark:border-amber-800/50 text-xs flex flex-wrap items-center gap-1.5">
+                          <span className="font-bold text-amber-900 dark:text-amber-300">
+                            {sub.formulaTitle || 'Rumus mudah:'}
+                          </span>
+                          <code className="px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-950 dark:text-amber-200 font-bold">
+                            {sub.formulaText}
+                          </code>
+                          {sub.formulaExample && (
+                            <span className="text-amber-900/90 dark:text-amber-200/90 font-medium">
+                              • {sub.formulaExample}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  ))}
 
                 {/* Dialog Percakapan (对话 — Duìhuà) */}
                 {selectedTopic.dialogues && selectedTopic.dialogues.length > 0 && (
@@ -1218,10 +1476,16 @@ export const MandarinClassSection: React.FC = () => {
                     <div className="flex items-center justify-between">
                       <h4 className="text-xs sm:text-sm font-bold text-emerald-950 dark:text-emerald-300 flex items-center gap-1.5">
                         <MessageSquare className="w-4 h-4 text-emerald-600" />
-                        <span>Teks Percakapan (对话 — Duìhuà)</span>
+                        <span>
+                          {selectedTopic.topicKey === 'number'
+                            ? '4. Percakapan Sederhana tentang Angka'
+                            : selectedTopic.topicKey === 'introduction'
+                            ? '对话：自我介绍 (Percakapan: Perkenalan Diri)'
+                            : 'Percakapan Salam dan Sapaan (对话 — Duìhuà)'}
+                        </span>
                       </h4>
                       <span className="text-[10px] text-emerald-700 dark:text-emerald-400">
-                        Klik tombol suara untuk mendengar kalimat
+                        Klik speaker untuk mendengar dialog
                       </span>
                     </div>
 
@@ -1261,15 +1525,183 @@ export const MandarinClassSection: React.FC = () => {
                         </div>
                       ))}
                     </div>
+
+                    {/* Kosakata Penting Percakapan (Khusus Topik 3 Angka) */}
+                    {selectedTopic.dialogueVocabNote && (
+                      <div className="pt-1.5 border-t border-emerald-200/60 dark:border-emerald-800/50 space-y-1.5">
+                        <div className="text-[11px] font-bold text-emerald-900 dark:text-emerald-300">
+                          Kosakata penting:
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {selectedTopic.dialogueVocabNote.map((v, i) => (
+                            <span
+                              key={i}
+                              onClick={() => speakChinese(v.hanzi)}
+                              className="px-2.5 py-1 rounded-lg bg-white dark:bg-zinc-900 border border-emerald-200/80 dark:border-zinc-700 text-xs font-medium cursor-pointer hover:border-emerald-500"
+                            >
+                              <strong className="text-red-600 dark:text-red-400 font-serif">{v.hanzi}</strong>{' '}
+                              <span className="text-emerald-700 dark:text-emerald-400 font-mono">({v.pinyin})</span> ={' '}
+                              {v.meaning}
+                            </span>
+                          ))}
+                        </div>
+                        {selectedTopic.dialogueExtraExample && (
+                          <div className="text-xs text-emerald-950 dark:text-emerald-200 font-medium bg-white/80 dark:bg-zinc-900/80 px-2.5 py-1.5 rounded-lg border border-emerald-200/60">
+                            {selectedTopic.dialogueExtraExample}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
 
-                {/* Aktivitas Interaktif di Kelas (Khusus Materi Angka) */}
+                {/* 5. Latihan Interaktif: Kuis Angka Mandarin (5 Soal Cepat di Halaman Materi Topik 3) */}
+                {selectedTopic.miniQuiz && selectedTopic.miniQuiz.length > 0 && (
+                  <div className="p-3 rounded-xl bg-amber-50/50 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-800/60 space-y-2.5">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-1.5">
+                          <HelpCircle className="w-4 h-4 text-amber-600" />
+                          <span>5. Latihan Interaktif: Kuis Angka Mandarin (5 Soal)</span>
+                        </h4>
+                        <p className="text-[11px] text-zinc-600 dark:text-zinc-400">
+                          Pilih salah satu jawaban untuk memeriksa hasil secara langsung.
+                        </p>
+                      </div>
+                      {Object.keys(miniQuizAnswers).length > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setMiniQuizAnswers({})}
+                          className="text-[11px] font-bold text-amber-800 dark:text-amber-300 hover:underline cursor-pointer"
+                        >
+                          Reset Pilihan
+                        </button>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {selectedTopic.miniQuiz.map((mq) => {
+                        const chosenIdx = miniQuizAnswers[mq.id];
+                        const isAnswered = chosenIdx !== undefined;
+                        return (
+                          <div
+                            key={mq.id}
+                            className="p-2.5 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 space-y-1.5"
+                          >
+                            <div className="text-xs font-bold text-zinc-900 dark:text-white">
+                              {mq.question}
+                            </div>
+                            <div className="grid grid-cols-2 gap-1">
+                              {mq.options.map((opt, oIdx) => {
+                                const isThisChosen = chosenIdx === oIdx;
+                                const isThisCorrect = oIdx === mq.correctIndex;
+                                let cls =
+                                  'bg-zinc-50 dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-emerald-400';
+                                if (isAnswered) {
+                                  if (isThisCorrect) {
+                                    cls =
+                                      'bg-emerald-50 dark:bg-emerald-950/70 border-emerald-500 text-emerald-800 dark:text-emerald-200 font-bold';
+                                  } else if (isThisChosen) {
+                                    cls =
+                                      'bg-red-50 dark:bg-red-950/70 border-red-500 text-red-800 dark:text-red-200';
+                                  }
+                                }
+                                return (
+                                  <button
+                                    key={oIdx}
+                                    type="button"
+                                    onClick={() =>
+                                      setMiniQuizAnswers((prev) => ({ ...prev, [mq.id]: oIdx }))
+                                    }
+                                    className={`px-2 py-1.5 rounded-lg border text-left text-[11px] transition-all cursor-pointer flex items-center justify-between gap-1 ${cls}`}
+                                  >
+                                    <span>
+                                      {String.fromCharCode(65 + oIdx)}. {opt}
+                                    </span>
+                                    {isAnswered && isThisCorrect && (
+                                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                                    )}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            {isAnswered && (
+                              <div className="text-[10.5px] text-emerald-800 dark:text-emerald-300 font-medium pt-0.5">
+                                {mq.explanation}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Bagian B. Isian Singkat (Soal 16–20 Materi Angka) */}
+                {selectedTopic.shortAnswerExercises && selectedTopic.shortAnswerExercises.length > 0 && (
+                  <div className="p-3 rounded-xl bg-white dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white">
+                        B. Latihan Isian Singkat Angka Mandarin (Nomor 16–20)
+                      </h4>
+                      <span className="text-[10.5px] text-zinc-500">
+                        Klik &ldquo;Lihat Kunci&rdquo; untuk mencocokkan jawaban
+                      </span>
+                    </div>
+                    <div className="space-y-1.5">
+                      {selectedTopic.shortAnswerExercises.map((item) => {
+                        const isShown = !!revealedShortAnswers[item.no];
+                        return (
+                          <div
+                            key={item.no}
+                            className="p-2 rounded-lg bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
+                          >
+                            <div className="font-medium text-zinc-800 dark:text-zinc-200">
+                              <strong className="text-emerald-700 dark:text-emerald-400">{item.no}.</strong>{' '}
+                              {item.question}
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              {isShown && (
+                                <span className="px-2.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-900 dark:text-emerald-200 font-bold border border-emerald-300/70">
+                                  {item.answer}
+                                </span>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setRevealedShortAnswers((prev) => ({
+                                    ...prev,
+                                    [item.no]: !prev[item.no]
+                                  }))
+                                }
+                                className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-[11px] font-semibold text-zinc-700 dark:text-zinc-300 hover:border-emerald-500 cursor-pointer"
+                              >
+                                {isShown ? (
+                                  <>
+                                    <EyeOff className="w-3 h-3" />
+                                    <span>Tutup</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Eye className="w-3 h-3" />
+                                    <span>Lihat Kunci</span>
+                                  </>
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* 6. Aktivitas di Kelas (Khusus Materi Angka) */}
                 {selectedTopic.classActivities && selectedTopic.classActivities.length > 0 && (
                   <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/70 dark:border-zinc-800 space-y-2">
                     <h4 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-1.5">
                       <Users className="w-4 h-4 text-emerald-600" />
-                      <span>Aktivitas Interaktif di Kelas</span>
+                      <span>6. Aktivitas di Kelas</span>
                     </h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {selectedTopic.classActivities.map((act, idx) => (
@@ -1278,7 +1710,7 @@ export const MandarinClassSection: React.FC = () => {
                           className="p-2 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200/60 dark:border-zinc-800 space-y-0.5"
                         >
                           <div className="text-xs font-bold text-emerald-800 dark:text-emerald-300">
-                            {act.title}
+                            {idx + 1}. {act.title}
                           </div>
                           <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-snug">
                             {act.desc}
