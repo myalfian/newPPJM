@@ -1,24 +1,30 @@
 import { createClient } from '@supabase/supabase-js';
 import { Database } from '../types/database.types';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+// Public (client-safe) project coordinates. The anon key is public by design:
+// every table is protected by Row Level Security, so it grants no extra privileges.
+// Used as a fallback when build-time env vars are missing/invalid (e.g. a deploy
+// without VITE_SUPABASE_* configured) so public pages never break.
+const FALLBACK_SUPABASE_URL = 'https://gzijnybcmhectajfkdtd.supabase.co';
+const FALLBACK_SUPABASE_ANON_KEY =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd6aWpueWJjbWhlY3RhamZrZHRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5MTk5MDQsImV4cCI6MjEwODQ5NTkwNH0.bKAedWftgBt0dFnhUoTOM1dgmdwgeHvI4vc4AhsuMtY';
 
-export const isSupabaseConfigured = () => {
-  return (
-    Boolean(supabaseUrl) &&
-    Boolean(supabaseAnonKey) &&
-    !supabaseUrl.includes('placeholder-ppjm') &&
-    !supabaseAnonKey.includes('placeholder')
-  );
-};
+const envUrl = String(import.meta.env.VITE_SUPABASE_URL || '').trim().replace(/\/+$/, '');
+const envKey = String(import.meta.env.VITE_SUPABASE_ANON_KEY || '').trim();
+
+const envIsValid =
+  /^https:\/\/[a-z0-9-]+\.supabase\.(co|in)$/i.test(envUrl) &&
+  envKey.length > 20 &&
+  !envUrl.includes('placeholder') &&
+  !envKey.includes('placeholder');
+
+const supabaseUrl = envIsValid ? envUrl : FALLBACK_SUPABASE_URL;
+const supabaseAnonKey = envIsValid ? envKey : FALLBACK_SUPABASE_ANON_KEY;
+
+export const isSupabaseConfigured = () => Boolean(supabaseUrl) && Boolean(supabaseAnonKey);
 
 // Singleton Typed Supabase Client
-export const supabase = createClient<Database>(
-  isSupabaseConfigured() ? supabaseUrl : 'https://gzijnybcmhectajfkdtd.supabase.co',
-  isSupabaseConfigured() ? supabaseAnonKey : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder'
-);
-
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey);
 export type UserRole = 'super_admin' | 'pengurus_konten' | 'guru_akademik' | 'user' | 'visitor';
 
 export function normalizeRole(rawRole: string | undefined | null): UserRole {

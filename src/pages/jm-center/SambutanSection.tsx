@@ -174,7 +174,7 @@ export const SambutanSection: React.FC = () => {
             Gagal Memuat Naskah Sambutan Pimpinan
           </h3>
           <p className="text-xs text-rose-700 dark:text-rose-400 mt-1 max-w-md mx-auto">
-            {error}. Periksa koneksi internet atau hak akses policy (RLS) pada Supabase.
+            {error.replace(/\.+$/, '')}. Periksa koneksi internet atau hak akses policy (RLS) pada Supabase.
           </p>
         </div>
         <button
