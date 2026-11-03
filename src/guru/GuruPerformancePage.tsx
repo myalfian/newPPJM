@@ -53,6 +53,15 @@ function computePredikat(nilai: number): string {
   return 'C (Maqbul)';
 }
 
+function escapeHtml(raw?: string | number | null): string {
+  return String(raw ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export const GuruPerformancePage: React.FC = () => {
   const { kelas } = useParams<{ kelas: string }>();
   const navigate = useNavigate();
@@ -266,11 +275,11 @@ export const GuruPerformancePage: React.FC = () => {
         (r, i) => `
         <tr>
           <td style="padding:8px 10px;border:1px solid #d6d3d1;text-align:center;">${i + 1}</td>
-          <td style="padding:8px 10px;border:1px solid #d6d3d1;font-weight:600;">${r.mapel}</td>
-          <td style="padding:8px 10px;border:1px solid #d6d3d1;text-transform:uppercase;text-align:center;">${r.jenis}</td>
-          <td style="padding:8px 10px;border:1px solid #d6d3d1;text-align:center;font-weight:700;color:#115E59;">${r.nilai}</td>
-          <td style="padding:8px 10px;border:1px solid #d6d3d1;">${r.predikat}</td>
-          <td style="padding:8px 10px;border:1px solid #d6d3d1;font-size:12px;">${r.catatan_musyrif || '-'}</td>
+          <td style="padding:8px 10px;border:1px solid #d6d3d1;font-weight:600;">${escapeHtml(r.mapel)}</td>
+          <td style="padding:8px 10px;border:1px solid #d6d3d1;text-transform:uppercase;text-align:center;">${escapeHtml(r.jenis)}</td>
+          <td style="padding:8px 10px;border:1px solid #d6d3d1;text-align:center;font-weight:700;color:#115E59;">${escapeHtml(r.nilai)}</td>
+          <td style="padding:8px 10px;border:1px solid #d6d3d1;">${escapeHtml(r.predikat)}</td>
+          <td style="padding:8px 10px;border:1px solid #d6d3d1;font-size:12px;">${escapeHtml(r.catatan_musyrif || '-')}</td>
         </tr>`
       )
       .join('');
@@ -279,7 +288,7 @@ export const GuruPerformancePage: React.FC = () => {
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Rapor Mini Santri - ${santri.full_name}</title>
+  <title>Rapor Mini Santri - ${escapeHtml(santri.full_name)}</title>
   <style>
     body { font-family: 'Segoe UI', Arial, sans-serif; color: #1c1917; margin: 32px; background: #fff; }
     .kop { border-bottom: 3px double #115E59; padding-bottom: 14px; margin-bottom: 20px; text-align: center; }
@@ -301,12 +310,12 @@ export const GuruPerformancePage: React.FC = () => {
   </div>
   <h3 style="text-align:center;margin:0 0 16px 0;font-size:15px;text-transform:uppercase;">LAPORAN HASIL BELAJAR & TAHFIDZ (RAPOR MINI)</h3>
   <div class="bio">
-    <div><strong>Nama Santri:</strong> ${santri.full_name}</div>
-    <div><strong>Kelas / Angkatan:</strong> ${santri.kelas} (${santri.angkatan})</div>
-    <div><strong>Nomor Induk (NIS):</strong> ${santri.nis}</div>
-    <div><strong>Asrama / Kamar:</strong> ${santri.kamar_asrama}</div>
-    <div><strong>Capaian Tahfidz:</strong> ${santri.hafalan_juz} Juz (${setoran.length} Setoran Tercatat)</div>
-    <div><strong>Rata-Rata Akademik:</strong> ${avg} (${computePredikat(avg)})</div>
+    <div><strong>Nama Santri:</strong> ${escapeHtml(santri.full_name)}</div>
+    <div><strong>Kelas / Angkatan:</strong> ${escapeHtml(santri.kelas)} (${escapeHtml(santri.angkatan)})</div>
+    <div><strong>Nomor Induk (NIS):</strong> ${escapeHtml(santri.nis)}</div>
+    <div><strong>Asrama / Kamar:</strong> ${escapeHtml(santri.kamar_asrama)}</div>
+    <div><strong>Capaian Tahfidz:</strong> ${escapeHtml(santri.hafalan_juz)} Juz (${setoran.length} Setoran Tercatat)</div>
+    <div><strong>Rata-Rata Akademik:</strong> ${avg} (${escapeHtml(computePredikat(avg))})</div>
   </div>
   <table>
     <thead>
@@ -327,12 +336,12 @@ export const GuruPerformancePage: React.FC = () => {
     <div>
       <p>Mengetahui,<br/>Wali Santri</p>
       <br/><br/><br/>
-      <p><strong>(${santri.wali_santri || '........................'})</strong></p>
+      <p><strong>(${escapeHtml(santri.wali_santri || '........................')})</strong></p>
     </div>
     <div style="text-align:right;">
       <p>Gresik, ${new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}<br/>Guru Pengampu / Musyrif</p>
       <br/><br/><br/>
-      <p><strong>${guruProfile.full_name}</strong><br/><span style="font-size:11px;color:#57534e;">NIP. ${guruProfile.nip || '-'}</span></p>
+      <p><strong>${escapeHtml(guruProfile.full_name)}</strong><br/><span style="font-size:11px;color:#57534e;">NIP. ${escapeHtml(guruProfile.nip || '-')}</span></p>
     </div>
   </div>
   <script>window.onload = function() { setTimeout(function() { window.print(); }, 250); };</script>

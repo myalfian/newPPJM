@@ -207,7 +207,58 @@ Akses melalui rute `/admin` dengan proteksi hak akses berbasis RBAC ([`RoleGuard
 | **Portal OSIS** | [`KelolaOsis.tsx`](file:///e:/NewPPPJM/src/pages/admin/KelolaOsis.tsx) | Pembaruan susunan kabinet khidmah santri masa bakti, rincian proker 5 departemen, dan publikasi event organisasi. | `super_admin`, `pengurus_konten` |
 | **Agenda & Kalender** | [`KelolaAgenda.tsx`](file:///e:/NewPPPJM/src/pages/admin/KelolaAgenda.tsx) | Penjadwalan kalender pendidikan terpadu, penetapan agenda terdekat bertimer, dan pengaturan rutinitas kegiatan santri. | `super_admin`, `pengurus_konten` |
 | **Kontak & Medsos Pop-up** | [`KelolaKontak.tsx`](file:///e:/NewPPPJM/src/pages/admin/KelolaKontak.tsx) | Konfigurasi nomor resmi WhatsApp hotline admin, tautan saluran pengumuman, dan integrasi akun media sosial resmi. | `super_admin`, `pengurus_konten` |
-| **Pengaturan Akun & RBAC** | [`UserProfilePage.tsx`](file:///e:/NewPPPJM/src/pages/profile/UserProfilePage.tsx) | Manajemen data personal admin/operator, audit peran akun pengguna, dan pembaruan kredensial keamanan kata sandi. | `super_admin`, `pengurus_konten`, `guru_akademik` |
+| **Pengaturan Akun & RBAC** | [`UserProfilePage.tsx`](file:///e:/NewPPPJM/src/pages/profile/UserProfilePage.tsx) | Manajemen data personal dinamis untuk 9 role, audit peran akun pengguna, dan pembaruan kredensial keamanan kata sandi. | Semua Role Terautentikasi |
+
+---
+
+## 🎓 Portal Akademik Terpadu: Santri, Guru & Sistem Profile Dinamis (9-Role RBAC)
+
+Selain CMS Publik & Backoffice, sistem kini memiliki ekosistem akademik terintegrasi bergaya **Schudio Power Editor** dengan isolasi Row-Level Security (RLS) ketat pada Supabase:
+
+### 1. Portal Santri (`/santri/*`)
+| Route | File Komponen | Fitur Utama |
+| :--- | :--- | :--- |
+| `/santri` | [`SantriDashboardPage.tsx`](file:///e:/NewPPPJM/src/santri/SantriDashboardPage.tsx) | Ringkasan tugas aktif, capaian setoran hafalan minggu ini, rata-rata nilai akademik, serta jadwal harian asrama (Password 4 Bahasa, Shalat Berjamaah, Muhadasah, Murojaah). |
+| `/santri/tugas` | [`SantriTugasListPage.tsx`](file:///e:/NewPPPJM/src/santri/SantriTugasListPage.tsx) | Daftar penugasan kelas dengan filter status (`Semua`, `Belum Dikumpulkan`, `Dinilai`), countdown batas waktu, dan badge status warna. |
+| `/santri/tugas/:id` | [`SantriTugasDetailPage.tsx`](file:///e:/NewPPPJM/src/santri/SantriTugasDetailPage.tsx) | Pembaca instruksi WYSIWYG (TipTap JSON), lembar jawaban TipTap rich-text, drag-and-drop unggah lampiran ke bucket `tugas`, simpan draft, kumpulkan, dan **update jawaban** selama status masih `draft` atau `revisi`. |
+| `/santri/performance` | [`SantriPerformancePage.tsx`](file:///e:/NewPPPJM/src/santri/SantriPerformancePage.tsx) | Grafik batang nilai per mata pelajaran (`recharts`), radial progress hafalan 30 Juz, riwayat setoran Al-Qur'an, dan catatan pembinaan dari Musyrif/Ustadz. |
+| `/santri/profile` | [`SantriProfilePage.tsx`](file:///e:/NewPPPJM/src/santri/SantriProfilePage.tsx) | Pembaruan foto profil, biodata santri, NIS, kelas, kamar asrama, nama wali, dan bio WYSIWYG. |
+
+### 2. Portal Guru & Musyrif (`/guru/*`)
+| Route | File Komponen | Fitur Utama |
+| :--- | :--- | :--- |
+| `/guru` | [`GuruDashboardPage.tsx`](file:///e:/NewPPPJM/src/guru/GuruDashboardPage.tsx) | Statistik tugas aktif, badge merah pengumpulan tugas yang perlu dinilai, rata-rata nilai kelas, santri terbaik minggu ini, dan notifikasi realtime Supabase (`postgres_changes`) saat santri mengumpulkan tugas. |
+| `/guru/tugas` | [`GuruTugasListPage.tsx`](file:///e:/NewPPPJM/src/guru/GuruTugasListPage.tsx) | Daftar tugas yang dibuat guru, bar progres pengumpulan santri per kelas, toggle status `published`/`draft`, dan manajemen tenggat waktu. |
+| `/guru/tugas/create` & `:id/edit` | [`GuruTugasFormPage.tsx`](file:///e:/NewPPPJM/src/guru/GuruTugasFormPage.tsx) | Power Editor TipTap (embed gambar & YouTube tervalidasi protokol `http/https`), multi-select kelas target (`7A`, `7B`, `8A`, `8B`, `9A`, `9B`), pilihan mata pelajaran, tipe tugas, dan unggah lampiran ke Supabase Storage. |
+| `/guru/tugas/:id/submissions` | [`GuruTugasSubmissionsPage.tsx`](file:///e:/NewPPPJM/src/guru/GuruTugasSubmissionsPage.tsx) | Inspeksi lembar jawaban santri & berkas lampiran, pemberian nilai (`0–100`), penulisan feedback koreksi, serta pengembalian status ke `revisi` atau `dinilai`. |
+| `/guru/performance/:kelas` | [`GuruPerformancePage.tsx`](file:///e:/NewPPPJM/src/guru/GuruPerformancePage.tsx) | Rekap nilai santri per kelas, grafik perkembangan individu, input nilai satuan (`harian`, `uts`, `uas`, `tahfidz`, `adab`), **Bulk Import CSV**, dan cetak **PDF Rapor Mini** (dilengkapi proteksi HTML entity encoding anti-XSS). |
+| `/guru/content` | [`GuruContentPage.tsx`](file:///e:/NewPPPJM/src/guru/GuruContentPage.tsx) | Quick editor pembuatan berita kegiatan & materi pembelajaran yang langsung terpublikasi ke tabel `berita` website utama. |
+| `/guru/profile` | [`GuruProfilePage.tsx`](file:///e:/NewPPPJM/src/guru/GuruProfilePage.tsx) | Pengelolaan profil pengajar: NIP, mata pelajaran ampu, kelas ampu, riwayat pendidikan, jadwal mengajar, dan bio WYSIWYG. |
+
+### 3. Sistem Profile Dinamis & Manajemen 9 Role (`/profile`, `/admin/users`, `/admin/roles`)
+- **[`/profile`](file:///e:/NewPPPJM/src/pages/profile/UserProfilePage.tsx) (Dynamic My Profile)**: Menyesuaikan tampilan kartu & tab secara otomatis berdasarkan 9 role (`super_admin`, `yayasan`, `kepsek`, `guru`, `musyrif`, `santri`, `ppdb`, `keuangan`, `humas`).
+- **[`/profile/:role/:id`](file:///e:/NewPPPJM/src/pages/profile/PublicProfileViewPage.tsx) (Privacy-Aware Public Profile)**: Melihat profil pengguna lain sesuai otorisasi RLS. Menyembunyikan nomor WhatsApp pribadi, alamat lengkap, dan kontak wali santri jika diakses oleh pengguna non-pemilik / non-admin.
+- **[`/admin/users`](file:///e:/NewPPPJM/src/pages/admin/AdminUsersPage.tsx) (User Management)**: CRUD akun lintas 9 role dengan form dinamis (input NIS/Kelas/Kamar untuk Santri, NIP/Mapel untuk Guru), filter role, pencarian, toggle status aktif, dan modal generator kredensial password.
+- **[`/admin/roles`](file:///e:/NewPPPJM/src/pages/admin/AdminRolesPage.tsx) (9-Role Permission Matrix)**: Matriks izin akses interaktif untuk 9 role pada seluruh modul (`santri_tugas`, `guru_tugas`, `performance`, `profile`, `ppdb`, `keuangan`, `berita_cms`, `users_rbac`).
+
+---
+
+## 🛡️ Laporan Audit Keamanan & Hardening (2026-11-03)
+
+Seluruh kode frontend, konfigurasi edge headers, dan skema database live Supabase (`gzijnybcmhectajfkdtd`) telah diaudit menggunakan standar **OWASP Top 10:2025** dan **Supabase Security Advisor**:
+
+1. **Remediasi Linter Database Supabase (Zero Advisories pada Skema `public`)**:
+   - **`0010_security_definer_view` (ERROR -> FIXED)**: Mengubah view `public.news` menjadi `security_invoker = true` agar selalu menghormati kebijakan RLS pemanggil.
+   - **`0011_function_search_path_mutable` (WARN -> FIXED)**: Mengunci `SET search_path = public, pg_temp` pada seluruh fungsi trigger dan RPC (`sync_profiles_alias_columns()`, `is_role()`, dll.) untuk mencegah pembajakan skema (*search_path hijacking*).
+   - **`0028_anon_security_definer_function_executable` (WARN -> FIXED)**: Mencabut hak eksekusi (`REVOKE EXECUTE FROM PUBLIC, anon`) pada seluruh 11 fungsi `SECURITY DEFINER` (`admin_upsert_user_account`, `admin_create_user`, `admin_delete_user`, `admin_reset_user_password`, `admin_toggle_user_status`, `admin_update_user`, `ensure_santri_profile`, `check_user_role`, `current_user_role`, `is_role`, `is_staff_or_guru`) dan membatasinya hanya untuk role `authenticated`.
+2. **Penguatan Otorisasi RPC & Anti-Privilege Escalation (`profiles` & `role_permissions`)**:
+   - Memperketat fungsi RPC `public.admin_upsert_user_account` agar memverifikasi role pemanggil (`super_admin`, `kepsek`, `yayasan`, atau pemilik sah `auth.uid() = p_id`) serta memblokir eskalasi role ke `super_admin` oleh non-super-admin.
+   - Menghapus klausa permisif pada kebijakan RLS `rls_profiles_modify_all_roles` dan `rls_role_permissions_all`, serta mengunci kolom `role` pada saat pengguna memperbarui profil pribadinya (`role = (SELECT p.role FROM public.profiles p WHERE p.id = auth.uid())`).
+3. **Hardening Frontend (Anti-XSS, Safe URL & Upload Validation)**:
+   - **DOM/Stored XSS Prevention**: Menambahkan fungsi [`escapeHtml()`](file:///e:/NewPPPJM/src/guru/GuruPerformancePage.tsx) pada pencetakan Rapor Mini (`handlePrintRaporMini`) agar seluruh data dinamis (nama santri, NIS, mata pelajaran, catatan musyrif) di-encode secara aman sebelum dirender ke jendela cetak.
+   - **URL Protocol & Upload Validation**: Menambahkan [`isSafeHttpUrl()`](file:///e:/NewPPPJM/src/guru/GuruTipTap.tsx) (hanya mengizinkan protokol `http:` dan `https:`, menolak `javascript:`/`data:`) serta validasi ketat tipe MIME (`image/jpeg`, `image/png`, `image/webp`, `image/gif`) dan batas ukuran maksimum **5 MB** pada editor TipTap.
+4. **HTTP Security Headers ([`vercel.json`](file:///e:/NewPPPJM/vercel.json))**:
+   - Dilengkapi dengan `Content-Security-Policy` (CSP), `Strict-Transport-Security` (`max-age=63072000; includeSubDomains; preload`), `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Cross-Origin-Opener-Policy: same-origin-allow-popups`, dan `Permissions-Policy`.
 
 ---
 
@@ -253,6 +304,14 @@ Jika Anda melakukan setup ulang pada database lokal atau remote Supabase, jalank
 4. **Dataset Otentik Publik (JM Center, Program, STEM, Mandarin, Prestasi, Agenda)**:
    ```sql
    -- Jalankan: supabase/seed.sql
+   ```
+5. **Skema Portal Santri, Guru, Sistem Profile Dinamis 9-Role & Security Hardening Audit**:
+   ```sql
+   -- Jalankan berurutan:
+   -- 1) supabase/migrations/20261102_santri_portal.sql
+   -- 2) supabase/migrations/20261102_guru_portal.sql
+   -- 3) supabase/migrations/20261102_dynamic_profiles_rbac.sql
+   -- 4) supabase/migrations/20261103_security_hardening_audit.sql
    ```
 
 ---

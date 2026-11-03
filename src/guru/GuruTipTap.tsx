@@ -25,6 +25,18 @@ import {
 } from 'lucide-react';
 import { parseRichJsonb } from '../santri/SantriTipTap';
 
+function isSafeHttpUrl(rawUrl: string): boolean {
+  try {
+    const parsed = new URL(rawUrl.trim());
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
+const ALLOWED_IMAGE_MIMES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+
 interface GuruTipTapEditorProps {
   value: any;
   onChange: (json: any, html: string) => void;
@@ -69,7 +81,7 @@ export const GuruTipTapEditor: React.FC<GuruTipTapEditorProps> = ({
 
   const handleInsertYoutube = () => {
     const trimmed = youtubeUrl.trim();
-    if (!trimmed) return;
+    if (!trimmed || !isSafeHttpUrl(trimmed)) return;
     editor.commands.setYoutubeVideo({ src: trimmed });
     setYoutubeUrl('');
     setShowYoutubeInput(false);
@@ -77,7 +89,7 @@ export const GuruTipTapEditor: React.FC<GuruTipTapEditorProps> = ({
 
   const handleInsertImageUrl = () => {
     const trimmed = imageUrl.trim();
-    if (!trimmed) return;
+    if (!trimmed || !isSafeHttpUrl(trimmed)) return;
     editor.chain().focus().setImage({ src: trimmed }).run();
     setImageUrl('');
     setShowImageUrlInput(false);
@@ -86,11 +98,14 @@ export const GuruTipTapEditor: React.FC<GuruTipTapEditorProps> = ({
   const handleImageFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!ALLOWED_IMAGE_MIMES.includes(file.type) || file.size > MAX_IMAGE_SIZE_BYTES) {
+      return;
+    }
     if (onUploadImage) {
       setUploadingImg(true);
       const { url } = await onUploadImage(file);
       setUploadingImg(false);
-      if (url) {
+      if (url && (isSafeHttpUrl(url) || url.startsWith('blob:'))) {
         editor.chain().focus().setImage({ src: url }).run();
       }
     } else {
