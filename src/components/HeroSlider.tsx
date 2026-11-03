@@ -930,14 +930,6 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                 </div>
               </div>
               <div className="flex items-center gap-1.5">
-                <Link
-                  to="/admin/slider"
-                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold transition-colors"
-                  title="Buka Halaman Editor Lengkap di Panel Admin"
-                >
-                  <span>Panel Penuh</span>
-                  <ExternalLink className="w-3 h-3" />
-                </Link>
                 <button
                   type="button"
                   onClick={() => setShowAdminSpeedModal(false)}

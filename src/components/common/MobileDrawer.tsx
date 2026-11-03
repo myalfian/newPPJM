@@ -563,15 +563,6 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({ isOpen, onClose }) =
                 <Globe className="w-4 h-4 text-emerald-700" />
                 <span>Kanal Komunikasi &amp; Medsos Resmi (7 Kanal)</span>
               </button>
-
-              <Link
-                to="/admin"
-                onClick={onClose}
-                className="flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl text-xs font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200/90 min-h-[40px] transition-colors"
-              >
-                <User className="w-4 h-4 text-slate-600" />
-                <span>Panel Pengurus &amp; Admin</span>
-              </Link>
             </div>
           </motion.div>
         </div>

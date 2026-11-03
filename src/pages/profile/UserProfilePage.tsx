@@ -460,14 +460,6 @@ export const UserProfilePage: React.FC = () => {
                       <BookOpen className="w-3.5 h-3.5 text-[#C8A951]" />
                       <span>Isi Buku Tamu</span>
                     </button>
-
-                    <Link
-                      to="/admin/login"
-                      className="flex-1 sm:flex-none min-h-[44px] px-5 py-2.5 rounded-xl bg-[#0E7A4C] hover:bg-[#0A2116] text-white text-xs font-bold transition-all active:scale-[0.98] flex items-center justify-center gap-2 shadow-sm"
-                    >
-                      <Key className="w-3.5 h-3.5 text-[#C8A951]" />
-                      <span>Masuk Akun</span>
-                    </Link>
                   </>
                 ) : (
                   <>
@@ -653,22 +645,22 @@ export const UserProfilePage: React.FC = () => {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <Link
-                      to="/admin/berita"
+                      to="/berita"
                       className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/60 hover:border-emerald-500 transition-all flex items-center justify-between group"
                     >
                       <div>
-                        <p className="font-bold text-xs text-zinc-900 dark:text-white">Kelola Warta & Berita</p>
+                        <p className="font-bold text-xs text-zinc-900 dark:text-white">Lihat Warta & Berita</p>
                         <p className="text-[11px] text-zinc-500 mt-0.5">Integrasi WhatsApp Santri</p>
                       </div>
                       <ChevronRight className="w-4 h-4 text-emerald-600 group-hover:translate-x-1 transition-transform" />
                     </Link>
                     <Link
-                      to="/admin/galeri"
+                      to="/galeri/foto"
                       className="p-4 rounded-2xl bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200/60 dark:border-emerald-800/60 hover:border-emerald-500 transition-all flex items-center justify-between group"
                     >
                       <div>
                         <p className="font-bold text-xs text-zinc-900 dark:text-white">Media Galeri Dokumentasi</p>
-                        <p className="text-[11px] text-zinc-500 mt-0.5">Kompresi Otomatis WebP</p>
+                        <p className="text-[11px] text-zinc-500 mt-0.5">Arsip Dokumentasi Kegiatan</p>
                       </div>
                       <ChevronRight className="w-4 h-4 text-emerald-600 group-hover:translate-x-1 transition-transform" />
                     </Link>
@@ -684,22 +676,22 @@ export const UserProfilePage: React.FC = () => {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <Link
-                      to="/admin/hafidz"
+                      to="/smart-jm/hafidz/read"
                       className="p-4 rounded-2xl bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200/60 dark:border-sky-800/60 hover:border-sky-500 transition-all flex items-center justify-between group"
                     >
                       <div>
-                        <p className="font-bold text-xs text-zinc-900 dark:text-white">Evaluasi Hafalan Qur'an</p>
-                        <p className="text-[11px] text-zinc-500 mt-0.5">114 Surat & 15 Reciter Murottal</p>
+                        <p className="font-bold text-xs text-zinc-900 dark:text-white">Al-Qur'an & Evaluasi Hafalan</p>
+                        <p className="text-[11px] text-zinc-500 mt-0.5">114 Surat & Murottal</p>
                       </div>
                       <ChevronRight className="w-4 h-4 text-sky-600 group-hover:translate-x-1 transition-transform" />
                     </Link>
                     <Link
-                      to="/admin/stem"
+                      to="/smart-jm/stem/materi"
                       className="p-4 rounded-2xl bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200/60 dark:border-sky-800/60 hover:border-sky-500 transition-all flex items-center justify-between group"
                     >
                       <div>
                         <p className="font-bold text-xs text-zinc-900 dark:text-white">Lab Riset & STEM Santri</p>
-                        <p className="text-[11px] text-zinc-500 mt-0.5">IoT ESP32 & Rubrik Terstandar</p>
+                        <p className="text-[11px] text-zinc-500 mt-0.5">Kurikulum Riset Terpadu</p>
                       </div>
                       <ChevronRight className="w-4 h-4 text-sky-600 group-hover:translate-x-1 transition-transform" />
                     </Link>
@@ -742,15 +734,6 @@ export const UserProfilePage: React.FC = () => {
                     <span>Kunjungi Beranda Website</span>
                     <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
                   </Link>
-                  {role !== 'visitor' && (
-                    <Link
-                      to="/admin/dashboard"
-                      className="w-full p-3 rounded-2xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/30 text-[#0E7A4C] dark:text-emerald-400 text-xs font-bold transition-colors flex items-center justify-between"
-                    >
-                      <span>Masuk Pusat Kendali Admin</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-                  )}
                 </div>
               </div>
             </div>

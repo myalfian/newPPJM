@@ -32,8 +32,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({ isOpen, onClose }) => 
     { title: 'Kuis Interaktif Mandarin', category: 'Bahasa', desc: 'Uji kemampuan Hanzi dan Pinyin dengan penilaian langsung', route: '/smart-jm/mandarin/quiz', icon: BookOpen },
     { title: 'Ekstrakurikuler Santri', category: 'Kesiswaan', desc: 'Banjari, Silat Pagar Nusa, Robotika, Pramuka & Qiroah', route: '/ekskul', icon: Trophy },
     { title: 'Prestasi & Kejuaraan', category: 'Capaian', desc: 'Daftar raihan juara MHQ 30 Juz, MQK, Sains & Pidato', route: '/prestasi', icon: Award },
-    { title: 'Galeri Foto & Dokumentasi', category: 'Media', desc: 'Arsip foto kegiatan, halaqah dan fasilitas asrama', route: '/galeri/foto', icon: BookOpen },
-    { title: 'Portal Zero-IT Admin CMS', category: 'Admin', desc: 'Pusat manajemen konten, berita, nilai, santri & STEM', route: '/admin', icon: Compass },
+    { title: 'Galeri Foto & Dokumentasi', category: 'Media', desc: 'Arsip foto kegiatan, halaqah dan fasilitas asrama', route: '/galeri/foto', icon: BookOpen }
   ];
 
   const results = query.trim() === ''

@@ -122,94 +122,11 @@ const SkeletonLoader: React.FC = () => (
   </div>
 );
 
-// Admin Layout (Lazy loaded to isolate heavy CMS bundle from public visitors)
-const AdminLayout = lazy(() => import('./layouts/AdminLayout').then(m => ({ default: m.AdminLayout })));
-
-// Public Pages (Route-level code splitting with React.lazy)
-const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
-const JmCenter = lazy(() => import('./pages/jm-center/JmCenter').then(m => ({ default: m.JmCenter })));
-const Profil = lazy(() => import('./pages/jm-center/Profil').then(m => ({ default: m.Profil })));
-const Sambutan = lazy(() => import('./pages/jm-center/Sambutan').then(m => ({ default: m.Sambutan })));
-const Sejarah = lazy(() => import('./pages/jm-center/Sejarah').then(m => ({ default: m.Sejarah })));
-const VisiMisi = lazy(() => import('./pages/jm-center/VisiMisi').then(m => ({ default: m.VisiMisi })));
-const Fasilitas = lazy(() => import('./pages/jm-center/Fasilitas').then(m => ({ default: m.Fasilitas })));
-const Lembaga = lazy(() => import('./pages/jm-center/Lembaga').then(m => ({ default: m.Lembaga })));
-const FasilitasPondok = lazy(() => import('./pages/jm-center/FasilitasPondok').then(m => ({ default: m.FasilitasPondok })));
-const FasilitasSekolah = lazy(() => import('./pages/jm-center/FasilitasSekolah').then(m => ({ default: m.FasilitasSekolah })));
-const LembagaPondok = lazy(() => import('./pages/jm-center/LembagaPondok').then(m => ({ default: m.LembagaPondok })));
-const LembagaSekolah = lazy(() => import('./pages/jm-center/LembagaSekolah').then(m => ({ default: m.LembagaSekolah })));
-const ProgramHub = lazy(() => import('./pages/program/ProgramHub').then(m => ({ default: m.ProgramHub })));
-const AmaliyahPondok = lazy(() => import('./pages/program-unggulan/AmaliyahPondok').then(m => ({ default: m.AmaliyahPondok })));
-const ProgramSekolah = lazy(() => import('./pages/program-unggulan/ProgramSekolah').then(m => ({ default: m.ProgramSekolah })));
-const ProgramMadin = lazy(() => import('./pages/program-unggulan/ProgramMadin').then(m => ({ default: m.ProgramMadin })));
-const SmartJmHub = lazy(() => import('./pages/smart-jm/SmartJmHub').then(m => ({ default: m.SmartJmHub })));
-const QuranReadPage = lazy(() => import('./pages/smart-jm/hafidz/QuranReadPage').then(m => ({ default: m.QuranReadPage })));
-const MurojaahPage = lazy(() => import('./pages/smart-jm/hafidz/MurojaahPage').then(m => ({ default: m.MurojaahPage })));
-const StemMateri = lazy(() => import('./pages/smart-jm/stem/StemMateri').then(m => ({ default: m.StemMateri })));
-const StemPortofolio = lazy(() => import('./pages/smart-jm/stem/StemPortofolio').then(m => ({ default: m.StemPortofolio })));
-const MandarinMateri = lazy(() => import('./pages/smart-jm/mandarin/MandarinMateri').then(m => ({ default: m.MandarinMateri })));
-const MandarinQuizPage = lazy(() => import('./pages/smart-jm/mandarin/MandarinQuizPage').then(m => ({ default: m.MandarinQuizPage })));
-const Prestasi = lazy(() => import('./pages/Prestasi').then(m => ({ default: m.Prestasi })));
-const Ekskul = lazy(() => import('./pages/Ekskul').then(m => ({ default: m.Ekskul })));
-const Agenda = lazy(() => import('./pages/Agenda').then(m => ({ default: m.Agenda })));
-const KaryaSiswa = lazy(() => import('./pages/KaryaSiswa').then(m => ({ default: m.KaryaSiswa })));
-const Osis = lazy(() => import('./pages/Osis').then(m => ({ default: m.Osis })));
-const GaleriFoto = lazy(() => import('./pages/galeri/GaleriFoto').then(m => ({ default: m.GaleriFoto })));
-const GaleriVideo = lazy(() => import('./pages/galeri/GaleriVideo').then(m => ({ default: m.GaleriVideo })));
-const Berita = lazy(() => import('./pages/Berita').then(m => ({ default: m.Berita })));
-const DetailBerita = lazy(() => import('./pages/DetailBerita').then(m => ({ default: m.DetailBerita })));
-const Spmb = lazy(() => import('./pages/Spmb').then(m => ({ default: m.Spmb })));
-
-// Admin CMS Pages (Route-level code splitting with React.lazy)
-const Login = lazy(() => import('./pages/admin/Login').then(m => ({ default: m.Login })));
-const Dashboard = lazy(() => import('./pages/admin/Dashboard').then(m => ({ default: m.Dashboard })));
-const KelolaBerita = lazy(() => import('./pages/admin/KelolaBerita').then(m => ({ default: m.KelolaBerita })));
-const KelolaAgenda = lazy(() => import('./pages/admin/KelolaAgenda').then(m => ({ default: m.KelolaAgenda })));
-const KelolaStem = lazy(() => import('./pages/admin/KelolaStem').then(m => ({ default: m.KelolaStem })));
-const KelolaMandarin = lazy(() => import('./pages/admin/KelolaMandarin').then(m => ({ default: m.KelolaMandarin })));
-const KelolaGaleri = lazy(() => import('./pages/admin/KelolaGaleri').then(m => ({ default: m.KelolaGaleri })));
-const KelolaSlider = lazy(() => import('./pages/admin/KelolaSlider').then(m => ({ default: m.KelolaSlider })));
-const KelolaHafidz = lazy(() => import('./pages/admin/KelolaHafidz').then(m => ({ default: m.KelolaHafidz })));
-const KelolaPrestasi = lazy(() => import('./pages/admin/KelolaPrestasi').then(m => ({ default: m.KelolaPrestasi })));
-const KelolaEkskul = lazy(() => import('./pages/admin/KelolaEkskul').then(m => ({ default: m.KelolaEkskul })));
-const KelolaProfil = lazy(() => import('./pages/admin/KelolaProfil').then(m => ({ default: m.KelolaProfil })));
-const KelolaSambutan = lazy(() => import('./pages/admin/KelolaSambutan').then(m => ({ default: m.KelolaSambutan })));
-const KelolaOsis = lazy(() => import('./pages/admin/KelolaOsis').then(m => ({ default: m.KelolaOsis })));
-const KelolaKaryaSiswa = lazy(() => import('./pages/admin/KelolaKaryaSiswa').then(m => ({ default: m.KelolaKaryaSiswa })));
-const KelolaKontak = lazy(() => import('./pages/admin/KelolaKontak').then(m => ({ default: m.KelolaKontak })));
-const KelolaUsers = lazy(() => import('./pages/admin/KelolaUsers').then(m => ({ default: m.KelolaUsers })));
-const KelolaFasilitas = lazy(() => import('./pages/admin/KelolaFasilitas').then(m => ({ default: m.KelolaFasilitas })));
-const KelolaKeunggulan = lazy(() => import('./pages/admin/KelolaKeunggulan').then(m => ({ default: m.KelolaKeunggulan })));
-const KelolaQuickMenu = lazy(() => import('./pages/admin/KelolaQuickMenu').then(m => ({ default: m.KelolaQuickMenu })));
-const KelolaNavbar = lazy(() => import('./pages/admin/KelolaNavbar').then(m => ({ default: m.KelolaNavbar })));
-const KelolaBottomNav = lazy(() => import('./pages/admin/KelolaBottomNav').then(m => ({ default: m.KelolaBottomNav })));
-const KelolaInstitusi = lazy(() => import('./pages/admin/KelolaInstitusi').then(m => ({ default: m.KelolaInstitusi })));
-const KelolaProgram = lazy(() => import('./pages/admin/KelolaProgram').then(m => ({ default: m.KelolaProgram })));
-const KelolaSpmb = lazy(() => import('./pages/admin/KelolaSpmb').then(m => ({ default: m.KelolaSpmb })));
-const WebVisualEditor = lazy(() => import('./pages/admin/WebVisualEditor').then(m => ({ default: m.WebVisualEditor })));
 const UserProfilePage = lazy(() => import('./pages/profile/UserProfilePage').then(m => ({ default: m.UserProfilePage })));
-const IntegrationTestPage = lazy(() => import('./pages/admin/IntegrationTestPage').then(m => ({ default: m.IntegrationTestPage })));
-const GoLiveCheckPage = lazy(() => import('./pages/admin/GoLiveCheckPage').then(m => ({ default: m.GoLiveCheckPage })));
-const DataFlowAuditPage = lazy(() => import('./pages/admin/DataFlowAuditPage').then(m => ({ default: m.DataFlowAuditPage })));
-const ComponentTableCheckPage = lazy(() => import('./pages/admin/ComponentTableCheckPage').then(m => ({ default: m.ComponentTableCheckPage })));
 
 import { clearOldSeedCache } from './utils/clearOldCache';
 
 export const App: React.FC = () => {
-  const navigate = useNavigate();
-
-  // Clear obsolete seed cache once on app initialization
-  useEffect(() => {
-    clearOldSeedCache();
-  }, []);
-
-  // Dukung akses via hash URL (misal #admin atau #/admin)
-  useEffect(() => {
-    if (window.location.hash === '#admin' || window.location.hash.startsWith('#/admin')) {
-      navigate('/admin');
-    }
-  }, [navigate]);
-
   return (
     <AuthProvider>
       <Suspense fallback={<SkeletonLoader />}>
@@ -293,96 +210,13 @@ export const App: React.FC = () => {
             <Route path="profile" element={<Navigate to="/profil" replace />} />
           </Route>
 
-          {/* 2. Admin Login Routes */}
-          <Route path="/admin/login" element={<Login />} />
-          <Route path="/login" element={<Login />} />
+          {/* Fallback rute admin / login ke beranda */}
+          <Route path="/admin/*" element={<Navigate to="/" replace />} />
+          <Route path="/admin" element={<Navigate to="/" replace />} />
+          <Route path="/login" element={<Navigate to="/" replace />} />
+          <Route path="/editor" element={<Navigate to="/" replace />} />
 
-          {/* Dedicated In-Context Visual Web Editor (Full-screen Canvas) */}
-          <Route
-            path="/admin/editor"
-            element={
-              <RoleGuard allowedRoles={['super_admin', 'pengurus_konten', 'guru_akademik']}>
-                <WebVisualEditor />
-              </RoleGuard>
-            }
-          />
-          <Route
-            path="/editor"
-            element={
-              <RoleGuard allowedRoles={['super_admin', 'pengurus_konten', 'guru_akademik']}>
-                <WebVisualEditor />
-              </RoleGuard>
-            }
-          />
-
-          {/* 3. Admin CMS Zero-IT-Skill Portal Protected by RoleGuard */}
-          <Route
-            path="/admin/*"
-            element={
-              <RoleGuard allowedRoles={['super_admin', 'pengurus_konten', 'guru_akademik']}>
-                <AdminLayout />
-              </RoleGuard>
-            }
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="editor" element={<WebVisualEditor />} />
-            <Route path="berita" element={<KelolaBerita />} />
-            <Route path="agenda" element={<KelolaAgenda />} />
-            <Route path="stem" element={<KelolaStem />} />
-            <Route path="mandarin" element={<KelolaMandarin />} />
-            <Route path="galeri" element={<KelolaGaleri />} />
-            <Route path="slider" element={<KelolaSlider />} />
-            <Route path="hafidz" element={<KelolaHafidz />} />
-            <Route path="prestasi" element={<KelolaPrestasi />} />
-            <Route path="ekstrakurikuler" element={<KelolaEkskul />} />
-            <Route path="ekskul" element={<Navigate to="/admin/ekstrakurikuler" replace />} />
-            <Route path="fasilitas" element={<KelolaFasilitas />} />
-            <Route path="keunggulan" element={<KelolaKeunggulan />} />
-            <Route path="quick-menu" element={<KelolaQuickMenu />} />
-            <Route path="navbar" element={<KelolaNavbar />} />
-            <Route path="bottom-nav" element={<KelolaBottomNav />} />
-            <Route path="lembaga" element={<KelolaInstitusi />} />
-            <Route path="institusi" element={<Navigate to="/admin/lembaga" replace />} />
-            <Route path="spmb" element={<KelolaSpmb />} />
-            <Route path="sambutan" element={<KelolaSambutan />} />
-            <Route path="profil" element={<KelolaProfil />} />
-            <Route path="program" element={<KelolaProgram />} />
-            <Route path="osis" element={<KelolaOsis />} />
-            <Route path="karya-siswa" element={<KelolaKaryaSiswa />} />
-            <Route path="karya" element={<Navigate to="/admin/karya-siswa" replace />} />
-            <Route path="kontak" element={<KelolaKontak />} />
-            <Route path="integration-test" element={<IntegrationTestPage />} />
-            <Route path="go-live-check" element={<GoLiveCheckPage />} />
-            <Route path="data-audit" element={<DataFlowAuditPage />} />
-            <Route path="component-check" element={<ComponentTableCheckPage />} />
-            <Route path="audit" element={<Navigate to="/admin/integration-test" replace />} />
-            <Route path="akun" element={<UserProfilePage />} />
-            <Route
-              path="users"
-              element={
-                <RoleGuard allowedRoles={['super_admin']}>
-                  <KelolaUsers />
-                </RoleGuard>
-              }
-            />
-            <Route path="administrators" element={<Navigate to="/admin/users" replace />} />
-            <Route path="profile" element={<Navigate to="/admin/akun" replace />} />
-            <Route path="*" element={<Dashboard />} />
-          </Route>
-          <Route
-            path="/admin"
-            element={
-              <RoleGuard allowedRoles={['super_admin', 'pengurus_konten', 'guru_akademik']}>
-                <AdminLayout />
-              </RoleGuard>
-            }
-          >
-            <Route index element={<Dashboard />} />
-            <Route path="*" element={<Dashboard />} />
-          </Route>
-
-          {/* 4. 404 Fallback to Home */}
+          {/* 404 Fallback to Home */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
