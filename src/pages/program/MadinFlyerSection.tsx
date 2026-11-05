@@ -151,7 +151,7 @@ const MADIN_FLYERS: MadinFlyerItem[] = [
 
 export const MadinFlyerSection: React.FC = () => {
   const [flyers, setFlyers] = useState<MadinFlyerItem[]>(MADIN_FLYERS);
-  const [categoryFilter, setCategoryFilter] = useState<'all' | FlyerCategory>('all');
+  const [categoryFilter, setCategoryFilter] = useState<FlyerCategory>('kitab');
   const [levelFilter, setLevelFilter] = useState<string>('all');
   const [activeFlyer, setActiveFlyer] = useState<MadinFlyerItem | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
@@ -186,7 +186,7 @@ export const MadinFlyerSection: React.FC = () => {
   }, []);
 
   const filteredFlyers = flyers.filter((item) => {
-    if (categoryFilter !== 'all' && item.category !== categoryFilter) {
+    if (item.category !== categoryFilter) {
       return false;
     }
     if (levelFilter !== 'all') {
@@ -253,10 +253,9 @@ export const MadinFlyerSection: React.FC = () => {
         <div className="flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 bg-zinc-50 dark:bg-zinc-900/60 p-1 sm:p-1.5 rounded-xl border border-zinc-200/60 dark:border-zinc-800/60">
           {/* Main Category Filter (Liquid Mercury) */}
           <div className="shrink-0 max-w-full overflow-x-auto no-scrollbar">
-            <LiquidMercuryControl<'all' | FlyerCategory>
+            <LiquidMercuryControl<FlyerCategory>
               size="sm"
               options={[
-                { id: 'all', label: 'Semua Poster' },
                 { id: 'kitab', label: 'Kurikulum Kitab Kuning' },
                 { id: 'ubudiyah', label: 'Panduan Ubudiyah' }
               ]}
