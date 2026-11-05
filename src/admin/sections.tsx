@@ -3,7 +3,7 @@ import {
   Images, Share2, MessageSquareQuote, Newspaper, CalendarDays, Camera, Video, Trophy,
   BookOpen, GraduationCap, FileText, Users, Building, Languages, Type, FlaskConical, Rocket,
   ClipboardList, PartyPopper, Target, Network, Layers, HelpCircle,
-  Layout, UserPlus, RotateCcw, MapPin, Zap,
+  LayoutDashboard, UserPlus, RotateCcw, MapPin, Zap, Database, Image,
 } from 'lucide-react';
 
 export type FieldKind =
@@ -213,7 +213,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   // ───────── MASTER DATA SUPERADMIN
   {
-    key: 'kelas', table: 'master_kelas', label: 'Data Kelas', group: 'Pengaturan', icon: Layout,
+    key: 'kelas', table: 'master_kelas', label: 'Data Kelas', group: 'Pengaturan', icon: LayoutDashboard,
     titleField: 'nama_kelas', sort: { col: 'nama_kelas', asc: true },
     fields: [
       { key: 'nama_kelas', label: 'Nama Kelas', kind: 'text', required: true, placeholder: 'Mis: Kelas 7A' },
@@ -551,7 +551,136 @@ export const CRUD_SECTIONS: CrudSection[] = [
       { key: 'specs', label: 'Spesifikasi (JSON)', kind: 'json', advanced: true },
     ],
   },
-  // ───────── MANAJEMEN
+  // ───────── MASTER DATA (SuperAdmin)
+  {
+    key: 'master_data', table: 'master_kelas', label: 'Data Tabel Master', group: 'Manajemen', icon: LayoutDashboard,
+    titleField: 'nama_kelas', subtitleField: 'tingkat', badgeField: 'is_active', sort: { col: 'nama_kelas', asc: true },
+    fields: [
+      { key: 'nama_kelas', label: 'Nama Kelas', kind: 'text', required: true, placeholder: 'Mis: Kelas 7A' },
+      { key: 'tingkat', label: 'Tingkat', kind: 'select', options: ['7', '8', '9'], required: true },
+      { key: 'keterangan', label: 'Keterangan', kind: 'textarea', placeholder: 'Tulis keterangan tambahan…' },
+      { key: 'is_active', label: 'Aktif', kind: 'bool', defaultValue: true },
+    ],
+  },
+  {
+    key: 'master_jabatan', table: 'master_jabatan', label: 'Data Jabatan', group: 'Manajemen', icon: Users,
+    titleField: 'nama_jabatan', sort: { col: 'nama_jabatan', asc: true },
+    fields: [
+      { key: 'nama_jabatan', label: 'Nama Jabatan', kind: 'text', required: true, placeholder: 'Mis: Kepala Sekolah' },
+      { key: 'singkatan', label: 'Singkatan', kind: 'text', placeholder: 'Mis: KS' },
+      { key: 'tingkat_kewenangan', label: 'Tingkat Kewenangan', kind: 'select', options: ['Tinggi', 'Sedang', 'Rendah'], defaultValue: 'Sedang' },
+      { key: 'is_active', label: 'Aktif', kind: 'bool', defaultValue: true },
+    ],
+  },
+  {
+    key: 'master_mapel', table: 'master_mapel', label: 'Data Mata Pelajaran', group: 'Manajemen', icon: BookOpen,
+    titleField: 'nama_mapel', sort: { col: 'nama_mapel', asc: true },
+    fields: [
+      { key: 'nama_mapel', label: 'Nama Mata Pelajaran', kind: 'text', required: true, placeholder: 'Mis: Agama Islam' },
+      { key: 'kode_mapel', label: 'Kode Mapel', kind: 'text', placeholder: 'Mis: AGM-101' },
+      { key: 'jenjang', label: 'Jenjang', kind: 'select', options: ['SMP', 'SMA', 'Diniyah'], defaultValue: 'SMP' },
+      { key: 'is_active', label: 'Aktif', kind: 'bool', defaultValue: true },
+    ],
+  },
+  {
+    key: 'master_kategori', table: 'master_kategori', label: 'Data Kategori', group: 'Manajemen', icon: Layers,
+    titleField: 'nama_kategori', sort: { col: 'nama_kategori', asc: true },
+    fields: [
+      { key: 'nama_kategori', label: 'Nama Kategori', kind: 'text', required: true, placeholder: 'Mis: Akademik' },
+      { key: 'deskripsi', label: 'Deskripsi', kind: 'textarea', placeholder: 'Tulis deskripsi kategori…' },
+      { key: 'is_active', label: 'Aktif', kind: 'bool', defaultValue: true },
+    ],
+  },
+  {
+    key: 'master_sasaran', table: 'master_sasaran', label: 'Data Sasaran', group: 'Manajemen', icon: Target,
+    titleField: 'nama_sasaran', sort: { col: 'nama_sasaran', asc: true },
+    fields: [
+      { key: 'nama_sasaran', label: 'Nama Sasaran', kind: 'text', required: true, placeholder: 'Mis: Santri Teladan' },
+      { key: 'deskripsi', label: 'Deskripsi', kind: 'textarea', placeholder: 'Tulis deskripsi sasaran…' },
+      { key: 'is_active', label: 'Aktif', kind: 'bool', defaultValue: true },
+    ],
+  },
+  {
+    key: 'master_lokasi', table: 'master_lokasi', label: 'Data Lokasi', group: 'Manajemen', icon: MapPin,
+    titleField: 'nama_lokasi', sort: { col: 'nama_lokasi', asc: true },
+    fields: [
+      { key: 'nama_lokasi', label: 'Nama Lokasi', kind: 'text', required: true, placeholder: 'Mis: Aula Utama' },
+      { key: 'gedung', label: 'Gedung', kind: 'text', placeholder: 'Mis: Gedung Utama' },
+      { key: 'kapasitas', label: 'Kapasitas', kind: 'text', placeholder: 'Mis: 500 orang' },
+      { key: 'is_active', label: 'Aktif', kind: 'bool', defaultValue: true },
+    ],
+  },
+  // ───────── DATABASE ASSETS (Tabel Database)
+  {
+    key: 'database_assets', table: 'programs_pondok', label: 'Database Assets', group: 'Manajemen', icon: Database,
+    titleField: 'title', subtitleField: 'description', badgeField: 'category', sort: { col: 'created_at', asc: false },
+    fields: [
+      { key: 'title', label: 'Nama Tabel / Program', kind: 'text', required: true },
+      { key: 'description', label: 'Deskripsi', kind: 'textarea', placeholder: 'Tulis deskripsi tabel…' },
+      { key: 'category', label: 'Kategori Tabel', kind: 'select', options: ['Akademik', 'Keuangan', 'Kehadiran', 'Prestasi', 'Umum'], defaultValue: 'Akademik' },
+      { key: 'image_url', label: 'Gambar Ikon (Otomatis WebP)', kind: 'image' },
+      { key: 'is_active', label: 'Aktif', kind: 'bool', defaultValue: true },
+    ],
+  },
+  // ───────── PHOTO ASSETS
+  {
+    key: 'photo_assets', table: 'galeri_foto', label: 'Foto Assets', group: 'Manajemen', icon: Image,
+    titleField: 'title', subtitleField: 'description', imageField: 'image_url', badgeField: 'category',
+    orderField: 'order_index', activeField: 'is_active', sort: { col: 'created_at', asc: false },
+    fields: [
+      { key: 'title', label: 'Judul Foto', kind: 'text', required: true },
+      { key: 'category', label: 'Kategori', kind: 'select', options: ['Kegiatan OSIS', 'Rapat', 'Lomba', 'Kejahatan', 'Dokumentasi'], defaultValue: 'Kegiatan OSIS' },
+      { key: 'description', label: 'Keterangan', kind: 'textarea' },
+      { key: 'image_url', label: 'Foto (Otomatis WebP)', kind: 'image', required: true },
+      { key: 'location', label: 'Lokasi', kind: 'select', options: GALERI_LOCATION_OPTIONS.slice(0, 8), defaultValue: 'Aula Utama PP. Jauharul Maknuun' },
+      { key: 'is_featured', label: 'Unggulan', kind: 'bool' },
+    ],
+  },
+  // ───────── VIDEO ASSETS
+  {
+    key: 'video_assets', table: 'galeri_videos', label: 'Video Assets', group: 'Manajemen', icon: Video,
+    titleField: 'title', subtitleField: 'youtube_url', imageField: 'thumbnail_url', badgeField: 'category',
+    orderField: 'order_index', activeField: 'is_active', sort: { col: 'created_at', asc: false },
+    fields: [
+      { key: 'title', label: 'Judul Video', kind: 'text', required: true },
+      { key: 'category', label: 'Kategori', kind: 'select', options: ['Kegiatan OSIS', 'Kajian', 'Pidato', 'Dokumentasi', 'Tutorial'], defaultValue: 'Kegiatan OSIS' },
+      { key: 'description', label: 'Keterangan', kind: 'textarea' },
+      { key: 'youtube_url', label: 'Tautan YouTube', kind: 'url', required: true },
+      { key: 'thumbnail_url', label: 'Thumbnail (Otomatis WebP)', kind: 'image' },
+      { key: 'is_featured', label: 'Unggulan', kind: 'bool' },
+    ],
+  },
+  // ───────── DOCUMENT ASSETS
+  {
+    key: 'document_assets', table: 'osis_events', label: 'Dokumen Assets', group: 'Manajemen', icon: FileText,
+    titleField: 'title', subtitleField: 'category', imageField: 'image_url', badgeField: 'category',
+    activeField: 'is_active', sort: { col: 'created_at', asc: false },
+    slugFrom: 'title',
+    fields: [
+      { key: 'title', label: 'Judul Dokumen', kind: 'text', required: true },
+      { key: 'category', label: 'Kategori', kind: 'select', options: ['Surat Keputusan', 'Laporan Kegiatan', 'Proposal', 'Pedoman', 'Sertifikat', 'Lainnya'], defaultValue: 'Laporan Kegiatan' },
+      { key: 'description', label: 'Deskripsi Dokumen', kind: 'textarea' },
+      { key: 'image_url', label: 'Cover Sampul (Otomatis WebP)', kind: 'image' },
+      { key: 'content', label: 'Isi Dokumen / Catatan', kind: 'rich' },
+      { key: 'is_featured', label: 'Tampilkan Unggulan', kind: 'bool' },
+    ],
+  },
+  // ───────── ARTICLE / NASKAH ASSETS
+  {
+    key: 'article_assets', table: 'info_terkini', label: 'Artikel / Naskah', group: 'Manajemen', icon: Newspaper,
+    titleField: 'title', subtitleField: 'category', imageField: 'image_url', badgeField: 'category',
+    activeField: 'is_published', sort: { col: 'created_at', asc: false },
+    slugFrom: 'title', authorField: 'author_id', publishedAtField: 'created_at',
+    fields: [
+      { key: 'title', label: 'Judul Naskah', kind: 'text', required: true },
+      { key: 'category', label: 'Kategori', kind: 'select', options: ['Berita OSIS', 'Pengumuman', 'Prestasi', 'Kegiatan', 'Lainnya'], defaultValue: 'Berita OSIS' },
+      { key: 'excerpt', label: 'Ringkasan', kind: 'textarea' },
+      { key: 'image_url', label: 'Gambar Sampul (Otomatis WebP)', kind: 'image' },
+      { key: 'content', label: 'Isi Naskah / Artikel', kind: 'rich', required: true },
+      { key: 'slug', label: 'Alamat (slug)', kind: 'text', advanced: true },
+      { key: 'is_featured', label: 'Tampilkan Unggulan', kind: 'bool' },
+    ],
+  },
   {
     key: 'spmb_info', table: 'spmb_info', label: 'Info SPMB/PPDB', group: 'Manajemen', icon: ClipboardList,
     titleField: 'tahun_ajaran', subtitleField: 'gelombang', activeField: 'is_active', sort: { col: 'created_at', asc: false },
@@ -604,7 +733,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   // ───────── MANAJEMEN OSIS (khusus Pengurus OSIS)
   {
-    key: 'osis_data_tabel', table: 'osis_structure', label: 'Data Tabel OSIS', group: 'Manajemen', icon: Layout,
+    key: 'osis_data_tabel', table: 'osis_structure', label: 'Data Tabel OSIS', group: 'Manajemen', icon: LayoutDashboard,
     titleField: 'name', subtitleField: 'position', badgeField: 'class', sort: { col: 'order_index', asc: true },
     fields: [
       { key: 'name', label: 'Nama Lengkap', kind: 'text', required: true },

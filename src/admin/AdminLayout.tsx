@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, Link, useLocation, Navigate } from 'react-router-dom';
 import {
-  LayoutDashboard, Landmark, History, Building2, ShieldCheck, Users, UserCircle2, ChevronsLeft, ChevronsRight,
+  LayoutDashboard, Layout, Landmark, History, Building2, ShieldCheck, Users, UserCircle2, ChevronsLeft, ChevronsRight,
   ExternalLink, LogOut, Menu, X, ChevronRight, Layers,
 } from 'lucide-react';
 import { useAdminSession, type AdminSession } from './useAdminSession';
@@ -39,16 +39,17 @@ const GROUPS: NavGroup[] = [
     title: 'Publikasi',
     items: crudGroup('Publikasi'),
   },
-  {
-    title: 'Manajemen & Pengaturan',
-    items: [
-      { to: '/admin/users', label: 'Manajemen User', icon: Users, section: 'users' },
-      { to: '/admin/roles', label: 'Role & Permission', icon: ShieldCheck, section: 'roles' },
-      { to: '/profile', label: 'Profil Saya', icon: UserCircle2 },
-      ...crudGroup('Manajemen'),
-      ...crudGroup('Pengaturan'),
-    ],
-  },
+      {
+        title: 'Manajemen & Pengaturan',
+        items: [
+          { to: '/admin/users', label: 'Manajemen User', icon: Users, section: 'users' },
+          { to: '/admin/roles', label: 'Role & Permission', icon: ShieldCheck, section: 'roles' },
+          { to: '/profile', label: 'Profil Saya', icon: UserCircle2 },
+          ...crudGroup('Manajemen'),
+          ...crudGroup('Pengaturan'),
+          { to: '/admin/kelola-aset', label: 'Manajemen Aset', icon: Layout, section: 'master_data' },
+        ],
+      },
 ];
 
 const CRUMBS: Record<string, string> = {
