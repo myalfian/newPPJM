@@ -13,7 +13,8 @@ export type AppRole =
   | 'santri'
   | 'ppdb'
   | 'keuangan'
-  | 'humas';
+  | 'humas'
+  | 'osis_pengurus';
 
 export const ROLE_LABEL: Record<AppRole, string> = {
   guest: 'Guest',
@@ -26,6 +27,7 @@ export const ROLE_LABEL: Record<AppRole, string> = {
   ppdb: 'Panitia PPDB',
   keuangan: 'Keuangan',
   humas: 'Humas',
+  osis_pengurus: 'Pengurus OSIS',
 };
 
 const ALIASES: Record<string, AppRole> = {
@@ -51,6 +53,9 @@ const ALIASES: Record<string, AppRole> = {
   keuangan: 'keuangan',
   humas: 'humas',
   pengurus_konten: 'humas',
+  osis_pengurus: 'osis_pengurus',
+  osis: 'osis_pengurus',
+  ketua_osis: 'osis_pengurus',
 };
 
 /** Returns null when the value is empty / unknown (so callers can fall back). */
@@ -59,7 +64,7 @@ export function parseAppRole(raw?: string | null): AppRole | null {
   return ALIASES[key] ?? null;
 }
 
-const ADMIN_AREA_ROLES: AppRole[] = ['super_admin', 'yayasan', 'kepsek', 'humas', 'ppdb', 'keuangan'];
+const ADMIN_AREA_ROLES: AppRole[] = ['super_admin', 'yayasan', 'kepsek', 'humas', 'ppdb', 'keuangan', 'osis_pengurus'];
 
 export interface ProtectedArea {
   prefix: string;
@@ -99,6 +104,7 @@ export function homeForRole(role: AppRole): string {
     case 'humas':
     case 'ppdb':
     case 'keuangan':
+    case 'osis_pengurus':
       return '/admin';
     default:
       return '/';

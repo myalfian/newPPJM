@@ -40,15 +40,13 @@ const GROUPS: NavGroup[] = [
     items: crudGroup('Publikasi'),
   },
   {
-    title: 'Manajemen',
-    items: crudGroup('Manajemen'),
-  },
-  {
-    title: 'Pengaturan',
+    title: 'Manajemen & Pengaturan',
     items: [
       { to: '/admin/users', label: 'Manajemen User', icon: Users, section: 'users' },
       { to: '/admin/roles', label: 'Role & Permission', icon: ShieldCheck, section: 'roles' },
       { to: '/profile', label: 'Profil Saya', icon: UserCircle2 },
+      ...crudGroup('Manajemen'),
+      ...crudGroup('Pengaturan'),
     ],
   },
 ];

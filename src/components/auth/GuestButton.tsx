@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronDown, GraduationCap, LayoutDashboard, LogIn, LogOut, ShieldCheck, User, UserCircle2, BookOpenCheck, Presentation } from 'lucide-react';
+import { ChevronDown, GraduationCap, LayoutDashboard, LogIn, LogOut, ShieldCheck, User, UserCircle2, UserPlus, BookOpenCheck, Presentation } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import { buildLoginUrl } from '../../lib/roles';
+import { openAuthModal } from '../../lib/authModal';
 
 const DEFAULT_AVATAR = '/avatars/guest-avatar.svg';
 
@@ -31,15 +31,19 @@ const GuestMenu: React.FC<{ onPick: () => void }> = ({ onPick }) => (
         <p className="text-[11.5px] leading-snug text-emerald-800/80">Anda menjelajah sebagai Guest. Konten publik terbuka tanpa login.</p>
       </div>
     </div>
-    <Link to={buildLoginUrl({ as: 'santri', from: 'guest' })} onClick={onPick} className={itemCls}>
+    <button type="button" onClick={() => { onPick(); openAuthModal({ view: 'login', tab: 'santri', from: 'guest' }); }} className={itemCls}>
       <GraduationCap className="h-4 w-4 text-emerald-700" aria-hidden /> Login sebagai Santri
-    </Link>
-    <Link to={buildLoginUrl({ as: 'guru', from: 'guest' })} onClick={onPick} className={itemCls}>
+    </button>
+    <button type="button" onClick={() => { onPick(); openAuthModal({ view: 'login', tab: 'guru', from: 'guest' }); }} className={itemCls}>
       <Presentation className="h-4 w-4 text-sky-700" aria-hidden /> Login sebagai Guru
-    </Link>
-    <Link to={buildLoginUrl({ as: 'admin', from: 'guest' })} onClick={onPick} className={itemCls}>
+    </button>
+    <button type="button" onClick={() => { onPick(); openAuthModal({ view: 'login', tab: 'admin', from: 'guest' }); }} className={itemCls}>
       <ShieldCheck className="h-4 w-4 text-slate-800" aria-hidden /> Login sebagai Admin
-    </Link>
+    </button>
+    <div className="my-1 h-px bg-slate-100" />
+    <button type="button" onClick={() => { onPick(); openAuthModal({ view: 'register', from: 'guest' }); }} className={itemCls}>
+      <UserPlus className="h-4 w-4 text-emerald-600" aria-hidden /> Daftar Akun Baru
+    </button>
     <div className="my-1 h-px bg-slate-100" />
     <Link to="/ppdb" onClick={onPick} className={itemCls}>
       <BookOpenCheck className="h-4 w-4 text-amber-600" aria-hidden /> Cara Daftar PPDB
@@ -97,13 +101,13 @@ export const GuestButton: React.FC<GuestButtonProps> = ({ variant = 'pill', onNa
                 <p className="text-[11.5px] text-slate-500">Anda menjelajah sebagai Guest</p>
               </div>
             </div>
-            <Link
-              to={buildLoginUrl({ from: 'guest' })}
-              onClick={done}
+            <button
+              type="button"
+              onClick={() => { done(); openAuthModal({ view: 'login', from: 'guest' }); }}
               className="mb-1 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0d4a28] py-2.5 text-[13px] font-bold text-white active:scale-[0.98]"
             >
               <LogIn className="h-4 w-4" aria-hidden /> Login
-            </Link>
+            </button>
             <GuestMenu onPick={done} />
           </>
         ) : (
@@ -132,8 +136,9 @@ export const GuestButton: React.FC<GuestButtonProps> = ({ variant = 'pill', onNa
     <div ref={rootRef} className="relative shrink-0">
       {isGuest ? (
         <div className={`${pillBase} ${loading ? 'opacity-70' : ''}`}>
-          <Link
-            to={buildLoginUrl({ from: 'guest' })}
+          <button
+            type="button"
+            onClick={() => openAuthModal({ view: 'login', from: 'guest' })}
             className="flex h-full items-center gap-1.5 rounded-l-full pl-2 pr-1 text-[12px] font-bold text-slate-800 transition-colors hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 lg:text-[13px]"
             aria-label="Guest - klik untuk login"
             title="Anda menjelajah sebagai Guest - klik untuk login"
@@ -143,7 +148,7 @@ export const GuestButton: React.FC<GuestButtonProps> = ({ variant = 'pill', onNa
               <span className="absolute -bottom-px -right-px h-2 w-2 rounded-full border border-white bg-emerald-500" aria-hidden />
             </span>
             Guest
-          </Link>
+          </button>
           <button
             type="button"
             onClick={() => setOpen((v) => !v)}
@@ -197,4 +202,3 @@ export const GuestButton: React.FC<GuestButtonProps> = ({ variant = 'pill', onNa
     </div>
   );
 };
-

@@ -148,8 +148,9 @@ const SEKOLAH_STORIES: SekolahStoryActivity[] = [
   }
 ];
 
-export const SekolahProgramSection: React.FC = () => {
+  export const SekolahProgramSection: React.FC = () => {
   const [programs, setPrograms] = useState<SekolahProgramItem[]>(SEKOLAH_PROGRAMS);
+  const [schoolStories, setSchoolStories] = useState<SekolahStoryActivity[]>(SEKOLAH_STORIES);
   const [selectedStoryImage, setSelectedStoryImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -163,24 +164,56 @@ export const SekolahProgramSection: React.FC = () => {
 
         if (!error && data && data.length > 0) {
           const mapped: SekolahProgramItem[] = data.map((row: any, idx: number) => {
-            const visual = row.visual_story || {};
+            const visual = row.schedule?.visual_story || row.schedule || {};
             const points = Array.isArray(visual.points) ? visual.points : [];
+            const stories = Array.isArray(visual.stories) ? visual.stories : [];
 
             return {
               id: row.id,
               title: row.title,
               category: idx === 0 ? 'Pilar Akademik' : 'Inovasi Teknologi',
               badge: visual.headline || (idx === 0 ? 'Akreditasi A Unggul' : 'Sains & Robotik'),
-              description: row.curriculum || 'Kurikulum Terpadu Berstandar Nasional & Riset Terapan',
+              description: row.schedule?.description || row.description || 'Kurikulum Terpadu Berstandar Nasional & Riset Terapan',
               highlights: points.length > 0 ? points : [
                 'Pembelajaran berbasis project (Project-Based Learning)',
                 'Ruang kelas multimedia interaktif ber-AC',
                 'Laboratorium sains & komputer mandiri',
                 'Evaluasi berkala terstandar nasional'
-              ]
+              ],
+              stories: stories.length > 0 ? stories : SEKOLAH_STORIES.map((s, i) => ({
+                id: s.id,
+                title: s.title,
+                categoryTag: s.categoryTag || 'Kegiatan Sekolah',
+                subtitle: s.subtitle || '',
+                description: s.description || '',
+                imageUrl: s.imageUrl || '',
+                achievements: s.achievements || [],
+                dateOrPeriod: s.dateOrPeriod || ''
+              }))
             };
           });
           setPrograms(mapped);
+          // Collect stories from all programs
+          const allStories: SekolahStoryActivity[] = [];
+          data.forEach((row: any) => {
+            const visual = row.schedule?.visual_story || row.schedule || {};
+            const stories = Array.isArray(visual.stories) ? visual.stories : [];
+            stories.forEach((s: any) => {
+              allStories.push({
+                id: s.id || `story-${row.id}-${Math.random().toString(36).slice(2)}`,
+                title: s.title || '',
+                categoryTag: s.category || 'Kegiatan Sekolah',
+                subtitle: s.subtitle || '',
+                description: s.description || '',
+                imageUrl: s.image_url || s.imageUrl || '',
+                achievements: s.achievements || s.highlights || [],
+                dateOrPeriod: s.date_or_period || s.dateOrPeriod || ''
+              });
+            });
+          });
+          if (allStories.length > 0) {
+            setSchoolStories(allStories);
+          }
         }
       } catch (err) {
         console.warn('Failed to load programs_sekolah:', err);
@@ -295,7 +328,7 @@ export const SekolahProgramSection: React.FC = () => {
 
         {/* Visual Story Cards (Alternating Layout) */}
         <div className="space-y-3 sm:space-y-4">
-          {SEKOLAH_STORIES.map((story, index) => {
+          {schoolStories.map((story, index) => {
             const isEven = index % 2 === 0;
 
             return (

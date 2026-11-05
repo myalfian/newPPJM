@@ -5,6 +5,7 @@ import StarterKit from '@tiptap/starter-kit';
 import {
   GripVertical, Trash2, Plus, Save, ImagePlus, Eye, EyeOff, Search, ChevronDown, ChevronUp,
   Bold, Italic, List, Monitor, Tablet, Smartphone, Sparkles, Layers, CheckCircle2, AlertCircle,
+  HelpCircle, Info, FileText, Image, Calendar, BarChart3, Code as CodeIcon,
 } from 'lucide-react';
 import {
   DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent,
@@ -356,6 +357,79 @@ const GalleryPhotosEditor: React.FC<{
   );
 };
 
+/** FieldInputTip: Panduan input spesifik per tipe kolom, ditampilkan di bawah setiap input. */
+const FieldInputTip: React.FC<{ kind: Field['kind']; label: string }> = ({ kind, label }) => {
+  const tips: Record<string, { icon: React.ElementType; text: string; color: string }> = {
+    text: {
+      icon: FileText,
+      text: 'Ketik teks secara bebas. Hindari karakter khusus berlebihan. Gunakan huruf kapital pertama untuk judul agar rapi.',
+      color: 'text-slate-700 border-slate-200 bg-slate-50',
+    },
+    textarea: {
+      icon: FileText,
+      text: 'Tulis konten lengkap. Tekan Enter untuk paragraf baru. Hindari menempel teks dengan formatting rumit dari Word.',
+      color: 'text-slate-700 border-slate-200 bg-slate-50',
+    },
+    lines: {
+      icon: List,
+      text: 'Satu baris = satu entri. Tekan Enter untuk baris baru. Contoh: "Baris 1", "Baris 2", dst.',
+      color: 'text-emerald-700 border-emerald-200 bg-emerald-50',
+    },
+    json: {
+      icon: CodeIcon,
+      text: 'Masukkan JSON yang valid. Contoh: {"nama": "value", "angka": 1}. Pastikan semua kunci menggunakan kutip ganda.',
+      color: 'text-indigo-700 border-indigo-200 bg-indigo-50',
+    },
+    rich: {
+      icon: Bold,
+      text: 'Gunakan tombol formatting di atas (tebal, miring, daftar) untuk konten yang akan ditampilkan di website.',
+      color: 'text-purple-700 border-purple-200 bg-purple-50',
+    },
+    select: {
+      icon: ChevronDown,
+      text: 'Pilih salah satu opsi dari daftar drop-down yang tersedia.',
+      color: 'text-blue-700 border-blue-200 bg-blue-50',
+    },
+    select_array: {
+      icon: Layers,
+      text: 'Pilih salah satu lokasi. Sistem akan otomatis menambahkan tag halaman yang sesuai.',
+      color: 'text-orange-700 border-orange-200 bg-orange-50',
+    },
+    image: {
+      icon: Image,
+      text: 'Unggah file gambar dari komputer. Otomatis dikonversi ke format WebP ringan (maksimal 20 MB).',
+      color: 'text-emerald-700 border-emerald-200 bg-emerald-50',
+    },
+    number: {
+      icon: BarChart3,
+      text: 'Masukkan angka saja. Hindari spasi, koma, atau simbol mata uang.',
+      color: 'text-cyan-700 border-cyan-200 bg-cyan-50',
+    },
+    date: {
+      icon: Calendar,
+      text: 'Pilih tanggal dari kalender atau ketik dalam format YYYY-MM-DD (contoh: 2026-11-05).',
+      color: 'text-cyan-700 border-cyan-200 bg-cyan-50',
+    },
+    bool: {
+      icon: CheckCircle2,
+      text: 'Centang jika AKTIF / ditampilkan. Biarkan kosong jika NONAKTIF / disembunyikan.',
+      color: 'text-emerald-700 border-emerald-200 bg-emerald-50',
+    },
+    gallery_photos: {
+      icon: Image,
+      text: 'Unggah hingga 3 foto slider. Setiap foto otomatis dikonversi ke WebP. Isi keterangan untuk aksesibilitas.',
+      color: 'text-emerald-700 border-emerald-200 bg-emerald-50',
+    },
+  };
+  const tip = tips[kind] ?? tips.text;
+  return (
+    <div className="mt-1 flex items-center gap-2 rounded-md border border-transparent px-2 py-1.5 text-[10px] font-medium bg-[var(--bg)] text-[var(--color)]">
+      <tip.icon className="w-3 h-3 shrink-0" />
+      <span>{tip.text}</span>
+    </div>
+  );
+};
+
 const FieldInput: React.FC<{
   sec: CrudSection;
   f: Field;
@@ -548,13 +622,14 @@ const FieldInput: React.FC<{
   }
 
   return (
-    <div className="block space-y-1 text-xs font-semibold text-zinc-700">
+    <div className="block space-y-1 text-xs font-bold text-zinc-700">
       <span>
         {f.label}
         {f.required && <span className="text-red-600"> *</span>}
       </span>
       {control}
       {f.help && <span className="block font-normal text-zinc-500">{f.help}</span>}
+      <FieldInputTip kind={f.kind} label={f.label} />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import {
   Calendar,
   User,
@@ -16,12 +17,24 @@ import {
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { OsisArticleEvent } from './types';
 import { OSIS_EVENTS as INITIAL_EVENTS } from './osisData';
+import '../../components/common/BottomNavBarTabs.css';
 
 export const OsisEventsSection: React.FC = () => {
   const [events, setEvents] = useState<OsisArticleEvent[]>(INITIAL_EVENTS);
   const [selectedArticle, setSelectedArticle] = useState<OsisArticleEvent | null>(null);
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
-  const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('all');
+  const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('Pendidikan');
+
+  const FIXED_CATEGORIES: string[] = ['Pendidikan', 'Keamanan', 'Bahasa', 'Kebersihan & Kesehatan', 'Inovasi', 'Umum'];
+
+  const EVENT_CATEGORY_MAP: Record<string, string> = {
+    'Demokrasi & Kepemimpinan': 'Pendidikan',
+    'Serah Terima Jabatan': 'Umum',
+    'Kesehatan & Lingkungan': 'Kebersihan & Kesehatan',
+    'Pentas Seni & Bakat': 'Inovasi'
+  };
+
+  const mapEventCategory = (cat: string): string => EVENT_CATEGORY_MAP[cat] || 'Umum';
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -92,12 +105,10 @@ export const OsisEventsSection: React.FC = () => {
     }
   };
 
-  const categories = ['all', ...Array.from(new Set(events.map((e) => e.category)))];
-
-  const filteredEvents =
-    activeCategoryFilter === 'all'
-      ? events
-      : events.filter((e) => e.category === activeCategoryFilter);
+  const filteredEvents = events.filter((e) => {
+    const eventCat = mapEventCategory(e.category);
+    return eventCat === activeCategoryFilter;
+  });
 
   return (
     <div className="space-y-2 sm:space-y-2.5 animate-in fade-in duration-300">
@@ -117,28 +128,73 @@ export const OsisEventsSection: React.FC = () => {
         </p>
       </div>
 
-      {/* Category Filter Pills */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar select-none">
-        {categories.map((cat) => {
-          const isSelected = activeCategoryFilter === cat;
-          return (
-            <button
-              key={cat}
-              type="button"
-              onClick={() => setActiveCategoryFilter(cat)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[32px] flex items-center gap-1.5 active:scale-[0.98] ${
-                isSelected
-                  ? 'bg-[#0E7A4C] text-[#C8A951] shadow-xs border border-[#C8A951]/40'
-                  : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200/70 dark:border-zinc-800/70 hover:bg-zinc-50'
-              }`}
-            >
-              <span>{cat === 'all' ? 'Semua Warta & Dokumentasi' : cat}</span>
-              <span className="text-[10px] opacity-75">
-                ({cat === 'all' ? events.length : events.filter((e) => e.category === cat).length})
-              </span>
-            </button>
-          );
-        })}
+      {/* Category Filter Tabs (BottomNavBarTabs Style) */}
+      <div className="bottom-curved-navbar-bar w-full">
+        <div className="bottom-curved-scroll-track flex-1 min-w-0 flex items-center justify-start h-full overflow-x-auto relative w-full px-2">
+          <ul className="bottom-curved-tab-list flex items-center gap-2">
+            {FIXED_CATEGORIES.map((cat) => {
+              const isSelected = activeCategoryFilter === cat;
+              return (
+                <li key={cat} className="bottom-curved-tab-col flex-none h-full flex items-center justify-center snap-start shrink-0">
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setActiveCategoryFilter(cat)}
+                    aria-pressed={isSelected}
+                    className={`bottom-curved-tab-btn ${isSelected ? 'active' : ''}`}
+                  >
+                    {isSelected && (
+                      <motion.div
+                        layoutId={`osis-event-pill-${cat}`}
+                        layout="position"
+                        className="bottom-curved-pointer"
+                        transition={{ type: 'spring', stiffness: 380, damping: 30, mass: 0.55 }}
+                      >
+                        <svg
+                          viewBox="0 0 74 22"
+                          className="bottom-curved-notch-svg"
+                          width="74"
+                          height="22"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          aria-hidden="true"
+                        >
+                          <defs>
+                            <radialGradient id={`osis-event-notchDotGrad-${cat}`} cx="35%" cy="35%" r="65%">
+                              <stop offset="0%" stopColor="#fffbeb" />
+                              <stop offset="35%" stopColor="#fde047" />
+                              <stop offset="75%" stopColor="#d97706" />
+                              <stop offset="100%" stopColor="#92400e" />
+                            </radialGradient>
+                          </defs>
+                          <path
+                            d="M 0 22 C 16 22, 22 4, 37 4 C 52 4, 58 22, 74 22 Z"
+                            className="bottom-curved-notch-surface"
+                            stroke="none"
+                          />
+                          <circle
+                            cx="37"
+                            cy="16"
+                            r="4.8"
+                            fill={`url(#osis-event-notchDotGrad-${cat})`}
+                            className="bottom-curved-notch-dot"
+                            stroke="none"
+                          />
+                          <circle cx="35.5" cy="14.5" r="1.4" fill="#ffffff" opacity="0.85" stroke="none" />
+                        </svg>
+                      </motion.div>
+                    )}
+                    <span className="bottom-curved-tab-text font-extrabold tracking-tight">
+                      <span className={`text-white ${isSelected ? 'text-[#facc15]' : ''}`}>
+                      {cat}
+                    </span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
 
       {/* Event Articles Grid */}

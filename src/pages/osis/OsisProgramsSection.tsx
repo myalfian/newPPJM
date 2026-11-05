@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import {
   Sparkles,
   Users,
@@ -10,21 +11,19 @@ import {
   Calendar,
   Target,
   ArrowRight,
-  Search,
   User,
   Filter,
-  Layers,
   ChevronDown,
   ChevronUp
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { OsisDepartment, OsisProgram } from './types';
 import { OSIS_DEPARTMENTS as INITIAL_DEPARTMENTS, OSIS_METADATA_2026 } from './osisData';
+import '../../components/common/BottomNavBarTabs.css';
 
 export const OsisProgramsSection: React.FC = () => {
   const [departments, setDepartments] = useState<OsisDepartment[]>(INITIAL_DEPARTMENTS);
   const [selectedDeptId, setSelectedDeptId] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [showGoals, setShowGoals] = useState<boolean>(true);
 
   useEffect(() => {
@@ -91,28 +90,18 @@ export const OsisProgramsSection: React.FC = () => {
     return departments.reduce((acc, curr) => acc + curr.programs.length, 0);
   }, [departments]);
 
-  // Filtered Programs based on selected tab and search query
+  // Filtered Programs based on selected tab
   const filteredDepts = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-
     return departments
       .filter((dept) => selectedDeptId === 'all' || dept.id === selectedDeptId)
       .map((dept) => {
-        if (!query) return dept;
-        const matchingPrograms = dept.programs.filter(
-          (p) =>
-            p.title.toLowerCase().includes(query) ||
-            p.description.toLowerCase().includes(query) ||
-            (p.personInCharge && p.personInCharge.toLowerCase().includes(query)) ||
-            (p.target && p.target.toLowerCase().includes(query))
-        );
         return {
           ...dept,
-          programs: matchingPrograms
+          programs: dept.programs
         };
       })
       .filter((dept) => dept.programs.length > 0);
-  }, [departments, selectedDeptId, searchQuery]);
+  }, [departments, selectedDeptId]);
 
   const getFrequencyBadge = (freq: string) => {
     switch (freq) {
@@ -205,67 +194,78 @@ export const OsisProgramsSection: React.FC = () => {
         )}
       </section>
 
-      {/* Control Bar: Division Pills & Search Input */}
+      {/* Control Bar: Division Tabs & Search Input */}
       <div className="space-y-1.5">
-        {/* Division Switcher Pills (Horizontal Scroll) */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar select-none">
-          <button
-            type="button"
-            onClick={() => setSelectedDeptId('all')}
-            className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[32px] flex items-center gap-1.5 active:scale-[0.98] ${
-              selectedDeptId === 'all'
-                ? 'bg-[#0E7A4C] text-[#C8A951] shadow-xs border border-[#C8A951]/40'
-                : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200/70 dark:border-zinc-800/70 hover:bg-zinc-50'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5" />
-            <span>Semua Divisi</span>
-            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/20 font-mono">
-              {totalProgramsCount}
-            </span>
-          </button>
-
-          {departments.map((dept) => {
-            const isSelected = selectedDeptId === dept.id;
-            return (
-              <button
-                key={dept.id}
-                type="button"
-                onClick={() => setSelectedDeptId(dept.id)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap min-h-[32px] flex items-center gap-1.5 active:scale-[0.98] ${
-                  isSelected
-                    ? 'bg-[#0E7A4C] text-[#C8A951] shadow-xs border border-[#C8A951]/40'
-                    : 'bg-white dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 border border-zinc-200/70 dark:border-zinc-800/70 hover:bg-zinc-50'
-                }`}
-              >
-                <span>{dept.name}</span>
-                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-black/20 font-mono">
-                  {dept.programs.length}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Quick Search Bar */}
-        <div className="relative">
-          <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Cari program kerja, kata kunci, sasaran, atau penanggung jawab..."
-            className="w-full pl-8 pr-4 py-1.5 rounded-lg text-xs bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-[#0E7A4C] focus:ring-1 focus:ring-[#0E7A4C] transition shadow-2xs"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-zinc-400 hover:text-zinc-600 cursor-pointer"
-            >
-              Reset
-            </button>
-          )}
+        {/* Division Switcher Tabs (BottomNavBarTabs Style) */}
+        <div className="bottom-curved-navbar-bar w-full">
+          <div className="bottom-curved-scroll-track flex-1 min-w-0 flex items-center justify-start h-full overflow-x-auto relative w-full px-2">
+            <ul className="bottom-curved-tab-list flex items-center gap-2">
+              {departments.map((dept) => {
+                const isSelected = selectedDeptId === dept.id;
+                return (
+                  <li
+                    key={dept.id}
+                    className="bottom-curved-tab-col flex-none h-full flex items-center justify-center snap-start shrink-0"
+                  >
+                    <button
+                      key={dept.id}
+                      type="button"
+                      onClick={() => setSelectedDeptId(dept.id)}
+                      aria-pressed={isSelected}
+                      className={`bottom-curved-tab-btn ${isSelected ? 'active' : ''}`}
+                    >
+                      {isSelected && (
+                        <motion.div
+                          layoutId={`osis-dept-pill-${dept.id}`}
+                          layout="position"
+                          className="bottom-curved-pointer"
+                          transition={{ type: 'spring', stiffness: 380, damping: 30, mass: 0.55 }}
+                        >
+                          <svg
+                            viewBox="0 0 74 22"
+                            className="bottom-curved-notch-svg"
+                            width="74"
+                            height="22"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            aria-hidden="true"
+                          >
+                            <defs>
+                              <radialGradient id={`osis-notchDotGrad-${dept.id}`} cx="35%" cy="35%" r="65%">
+                                <stop offset="0%" stopColor="#fffbeb" />
+                                <stop offset="35%" stopColor="#fde047" />
+                                <stop offset="75%" stopColor="#d97706" />
+                                <stop offset="100%" stopColor="#92400e" />
+                              </radialGradient>
+                            </defs>
+                            <path
+                              d="M 0 22 C 16 22, 22 4, 37 4 C 52 4, 58 22, 74 22 Z"
+                              className="bottom-curved-notch-surface"
+                              stroke="none"
+                            />
+                            <circle
+                              cx="37"
+                              cy="16"
+                              r="4.8"
+                              fill={`url(#osis-notchDotGrad-${dept.id})`}
+                              className="bottom-curved-notch-dot"
+                              stroke="none"
+                            />
+                            <circle cx="35.5" cy="14.5" r="1.4" fill="#ffffff" opacity="0.85" stroke="none" />
+                          </svg>
+                        </motion.div>
+                      )}
+                      <span className="bottom-curved-tab-text font-extrabold tracking-tight">
+                        <span className={`text-white ${isSelected ? 'text-[#facc15]' : ''}`}>
+                          {dept.name}
+                        </span>
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       </div>
 

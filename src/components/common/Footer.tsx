@@ -15,6 +15,7 @@ import {
 import { YoutubeIcon, InstagramIcon, WhatsAppIcon, TikTokIcon } from './SocialIcons';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { useAuth } from '../../hooks/useAuth';
+import { openAuthModal } from '../../lib/authModal';
 
 interface KontakMedsosItem {
   id: string;
@@ -226,11 +227,21 @@ export const Footer: React.FC = () => {
                 <li>
                   <button
                     type="button"
-                    onClick={() => openModal('faq')}
+                    onClick={() => openAuthModal({ view: 'register', from: 'footer' })}
                     className="hover:text-white transition-colors flex items-center gap-1.5 text-left cursor-pointer group"
                   >
                     <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-[11px]">›</span>
-                    <span>Tanya Jawab (FAQ SPMB)</span>
+                    <span>Daftar Pengguna Baru</span>
+                  </button>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => openAuthModal({ view: 'login', from: 'footer' })}
+                    className="hover:text-white transition-colors flex items-center gap-1.5 text-left cursor-pointer group"
+                  >
+                    <span className="text-[#e5a93b] group-hover:translate-x-0.5 transition-transform text-[11px]">›</span>
+                    <span>Masuk ke Akun</span>
                   </button>
                 </li>
                 <li>

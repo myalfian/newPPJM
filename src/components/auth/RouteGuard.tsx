@@ -1,12 +1,13 @@
-import React from 'react';
-import { Navigate, Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom';
 import { Lock, LogOut } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
-import { ROLE_LABEL, buildLoginUrl, canAccessPath, matchProtectedArea } from '../../lib/roles';
+import { ROLE_LABEL, canAccessPath, matchProtectedArea } from '../../lib/roles';
+import { openAuthModal } from '../../lib/authModal';
 
 /**
  * Route-level access control (SPA equivalent of Next.js middleware):
- *   - no session            -> /login?redirect=<path>#login-section   (guest never sees a blank page)
+ *   - no session            -> opens AuthModal overlay (guest never sees a blank page)
  *   - session, wrong role   -> "Akses ditolak" panel with a way back
  * Real data protection is still enforced by Supabase RLS; this is the UX layer.
  */
@@ -14,6 +15,30 @@ export const RouteGuard: React.FC = () => {
   const { isGuest, role, loading, roleLoading, homePath, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  // When guest tries to access a protected route, redirect to home and open the auth modal
+  useEffect(() => {
+    if (loading || roleLoading) return;
+    if (!isGuest) return;
+
+    const area = matchProtectedArea(location.pathname);
+    const as = area?.prefix === '/santri' ? 'santri' : area?.prefix === '/guru' ? 'guru' : area?.prefix === '/admin' ? 'admin' : undefined;
+
+    // Navigate to root first
+    navigate('/', { replace: true });
+
+    // Then open the auth modal
+    const t = window.setTimeout(() => {
+      openAuthModal({
+        view: 'login',
+        tab: as ?? 'guest',
+        redirect: location.pathname + location.search,
+        from: 'guard',
+      });
+    }, 80);
+
+    return () => window.clearTimeout(t);
+  }, [isGuest, loading, roleLoading, location.pathname, location.search, navigate]);
 
   if (loading || roleLoading) {
     return (
@@ -26,14 +51,13 @@ export const RouteGuard: React.FC = () => {
     );
   }
 
-  const area = matchProtectedArea(location.pathname);
-
   if (isGuest) {
-    const as = area?.prefix === '/santri' ? 'santri' : area?.prefix === '/guru' ? 'guru' : area?.prefix === '/admin' ? 'admin' : undefined;
-    return <Navigate to={buildLoginUrl({ as, from: 'guard', redirect: location.pathname + location.search })} replace />;
+    // Render nothing — the useEffect above will redirect + open modal
+    return null;
   }
 
   if (!canAccessPath(role, location.pathname)) {
+    const area = matchProtectedArea(location.pathname);
     return (
       <div className="grid min-h-[60vh] place-items-center p-4">
         <div className="w-full max-w-sm rounded-3xl border border-rose-100 bg-white p-6 text-center shadow-sm">
@@ -52,7 +76,8 @@ export const RouteGuard: React.FC = () => {
               type="button"
               onClick={async () => {
                 await signOut();
-                navigate(buildLoginUrl({ redirect: location.pathname }), { replace: true });
+                navigate('/', { replace: true });
+                openAuthModal({ view: 'login', redirect: location.pathname });
               }}
               className="flex items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
             >
@@ -66,4 +91,3 @@ export const RouteGuard: React.FC = () => {
 
   return <Outlet />;
 };
-

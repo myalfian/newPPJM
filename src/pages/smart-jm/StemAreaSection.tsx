@@ -7,18 +7,10 @@ import {
   CheckCircle2,
   Download,
   ExternalLink,
-  Maximize2,
   X,
   User,
   ArrowRight,
-  Microscope,
   PlayCircle,
-  ShieldAlert,
-  Wrench,
-  BookOpen,
-  Camera,
-  FileText,
-  Compass
 } from 'lucide-react';
 import { LiquidMercuryControl } from '../../components/common/LiquidMercuryControl';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
@@ -26,6 +18,9 @@ import {
   StemWorksheetItem,
   StemPortfolioItem
 } from './types';
+import { STEM_PROJECTS, StemProject } from './stemProjects';
+import { ProjectSummaryGrid } from './components/ProjectSummaryGrid';
+import { ProjectDetailSection } from './components/ProjectDetailSection';
 
 // ============================================================================
 // KURIKULUM RESMI STEM SMP PLUS JAUHARUL MAKNUUN
@@ -456,12 +451,13 @@ export const STEM_PORTFOLIO: StemPortfolioItem[] = [
 
 export const StemAreaSection: React.FC = () => {
   const location = useLocation();
-  const [worksheets, setWorksheets] = useState<StemWorksheetItem[]>(STEM_WORKSHEETS);
+  const [_worksheets, setWorksheets] = useState<StemWorksheetItem[]>(STEM_WORKSHEETS);
   const [portfolios, setPortfolios] = useState<StemPortfolioItem[]>(STEM_PORTFOLIO);
   const [activeSubTab, setActiveSubTab] = useState<'worksheet' | 'portfolio'>(() =>
     location.pathname.includes('/portofolio') ? 'portfolio' : 'worksheet'
   );
-  const [selectedWorksheet, setSelectedWorksheet] = useState<StemWorksheetItem>(STEM_WORKSHEETS[0]);
+  const [view, setView] = useState<'list' | 'detail'>('list');
+  const [selectedProject, setSelectedProject] = useState<StemProject | null>(null);
   const [selectedPortfolio, setSelectedPortfolio] = useState<StemPortfolioItem | null>(null);
   const [lightboxImage, setLightboxImage] = useState<{ url: string; caption?: string } | null>(null);
 
@@ -582,413 +578,27 @@ export const StemAreaSection: React.FC = () => {
       </div>
 
       {/* ========================================================= */}
-      {/* KONTEN 1: WORKSHEET PROYEK STEM (LKPD EDP) & RUBRIK */}
+      {/* KONTEN 1: LKPD & MATERI PROYEK STEM (Summary Card + Detail Tab) */}
       {/* ========================================================= */}
       {activeSubTab === 'worksheet' && (
         <div className="space-y-2 sm:space-y-2.5 animate-in fade-in duration-300">
-          {/* Selector Proyek Worksheet */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-            {worksheets.map((ws) => {
-              const isSelected = selectedWorksheet.id === ws.id;
-              return (
-                <button
-                  key={ws.id}
-                  type="button"
-                  onClick={() => setSelectedWorksheet(ws)}
-                  className={`text-left p-2.5 sm:p-3 rounded-xl border transition-all cursor-pointer active:scale-[0.99] flex flex-col justify-between ${
-                    isSelected
-                      ? 'bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-600/80 shadow-xs ring-2 ring-emerald-500/20'
-                      : 'bg-white/85 dark:bg-zinc-900/80 border-zinc-200/70 dark:border-zinc-800/70 hover:border-emerald-300'
-                  }`}
-                >
-                  <div>
-                    <div className="flex flex-wrap items-center justify-between gap-1">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 bg-emerald-100/80 dark:bg-emerald-900/60 px-2 py-0.5 rounded-full">
-                        {ws.category}
-                      </span>
-                      <span className="text-[10px] font-semibold text-zinc-500 dark:text-zinc-400">
-                        {ws.targetLevel}
-                      </span>
-                    </div>
-                    <h3 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white mt-1.5 line-clamp-2">
-                      {ws.title}
-                    </h3>
-                  </div>
-                  <div className="flex items-center justify-between text-[10.5px] text-zinc-500 dark:text-zinc-400 mt-2 pt-1.5 border-t border-zinc-100 dark:border-zinc-800">
-                    <span>Pembina: {ws.teacherMentor}</span>
-                    <span className="font-semibold text-emerald-700 dark:text-emerald-400">{ws.duration}</span>
-                  </div>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Detail Worksheet yang Dipilih */}
-          <div className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 p-3 sm:p-4 lg:p-4.5 shadow-xs space-y-3 sm:space-y-3.5">
-            {/* Header Proyek + Tombol Unduh LKPD */}
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 pb-2 border-b border-zinc-100 dark:border-zinc-800">
-              <div className="space-y-1">
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <span className="text-[10.5px] font-bold text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-800/60">
-                    {selectedWorksheet.category}
-                  </span>
-                  <span className="text-xs font-medium text-zinc-500">• {selectedWorksheet.targetLevel}</span>
-                  <span className="text-xs font-medium text-zinc-500">• {selectedWorksheet.duration}</span>
-                </div>
-                <h3 className="text-lg sm:text-xl font-extrabold text-zinc-900 dark:text-white tracking-tight leading-snug">
-                  {selectedWorksheet.title}
-                </h3>
-                {selectedWorksheet.learningModel && (
-                  <p className="text-[11.5px] text-zinc-500 dark:text-zinc-400">
-                    Model Pembelajaran: <strong className="text-zinc-700 dark:text-zinc-200">{selectedWorksheet.learningModel}</strong> — Pengampu: <strong className="text-emerald-700 dark:text-emerald-400">{selectedWorksheet.teacherMentor}</strong>
-                  </p>
-                )}
-              </div>
-
-              {selectedWorksheet.downloadDocUrl && (
-                <a
-                  href={selectedWorksheet.downloadDocUrl}
-                  download
-                  className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-xs transition-all cursor-pointer active:scale-95"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Unduh Dokumen LKPD (.docx)</span>
-                </a>
-              )}
-            </div>
-
-            {/* Split Grid: Foto Display Topik & Narasi Konteks */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 items-start">
-              {/* Foto Display Topik */}
-              <div className="lg:col-span-5 space-y-2">
-                <div
-                  className="relative aspect-[16/10] overflow-hidden rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200/60 dark:border-zinc-800/60 shadow-xs cursor-pointer group"
-                  onClick={() =>
-                    setLightboxImage({
-                      url: selectedWorksheet.setupPhoto,
-                      caption: selectedWorksheet.title
-                    })
-                  }
-                  title="Klik untuk memperbesar gambar topik proyek"
-                >
-                  <img
-                    src={selectedWorksheet.setupPhoto}
-                    alt={selectedWorksheet.title}
-                    className="w-full h-full object-contain bg-white dark:bg-zinc-900 group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent opacity-70 group-hover:opacity-90 transition-opacity" />
-
-                  <div className="absolute top-2.5 right-2.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="w-7 h-7 rounded-full bg-white/90 text-zinc-800 flex items-center justify-center shadow-md">
-                      <Maximize2 className="w-3.5 h-3.5" />
-                    </div>
-                  </div>
-
-                  <div className="absolute bottom-2.5 left-2.5 right-2.5 text-white">
-                    <span className="text-[9.5px] font-semibold text-emerald-300 uppercase tracking-wider block">
-                      Visualisasi &amp; Display Topik Proyek
-                    </span>
-                    <span className="text-xs font-bold drop-shadow-sm line-clamp-1">
-                      {selectedWorksheet.title}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Video Materi & Referensi Pembelajaran */}
-                {selectedWorksheet.videoRefs && selectedWorksheet.videoRefs.length > 0 && (
-                  <div className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/70 dark:border-zinc-800 space-y-1.5">
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-800 dark:text-zinc-200 uppercase tracking-wider">
-                      <PlayCircle className="w-3.5 h-3.5 text-red-600 dark:text-red-400" />
-                      <span>Video Materi &amp; Referensi Praktikum:</span>
-                    </div>
-                    <div className="space-y-1">
-                      {selectedWorksheet.videoRefs.map((vid, idx) => (
-                        <a
-                          key={idx}
-                          href={vid.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between gap-2 p-1.5 rounded-lg bg-white dark:bg-zinc-900 hover:bg-emerald-50/70 dark:hover:bg-emerald-950/40 border border-zinc-200/60 dark:border-zinc-800 transition-colors group"
-                        >
-                          <div className="flex items-center gap-2 min-w-0">
-                            <span className="w-5 h-5 rounded-full bg-red-100 dark:bg-red-950/80 text-red-600 dark:text-red-400 font-bold text-[10px] flex items-center justify-center shrink-0">
-                              {idx + 1}
-                            </span>
-                            <div className="truncate">
-                              <span className="text-[11px] font-semibold text-zinc-800 dark:text-zinc-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-300 block truncate">
-                                {vid.title}
-                              </span>
-                              {vid.durationOrLabel && (
-                                <span className="text-[9.5px] text-zinc-400 block">
-                                  {vid.durationOrLabel}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <ExternalLink className="w-3 h-3 text-zinc-400 group-hover:text-emerald-600 shrink-0" />
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Narasi Konteks, Tujuan, K3, & Alat Bahan */}
-              <div className="lg:col-span-7 space-y-2.5 text-zinc-700 dark:text-zinc-300 text-xs sm:text-sm leading-relaxed">
-                <div className="p-2.5 sm:p-3 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/30 border border-emerald-200/70 dark:border-emerald-900/50 space-y-1">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-900 dark:text-emerald-300 uppercase tracking-wider">
-                    <Microscope className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Tujuan Pembelajaran Proyek:</span>
-                  </div>
-                  <p className="text-xs text-zinc-700 dark:text-zinc-300 leading-relaxed">
-                    {selectedWorksheet.objective}
-                  </p>
-                </div>
-
-                <div>
-                  <h4 className="text-[11px] font-bold text-zinc-900 dark:text-white uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                    <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Tantangan Rekayasa &amp; Konteks Sains:</span>
-                  </h4>
-                  <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                    {selectedWorksheet.context}
-                  </p>
-                </div>
-
-                {/* Keselamatan Kerja (Jika Ada, seperti pada Roket Air) */}
-                {selectedWorksheet.safetyRules && selectedWorksheet.safetyRules.length > 0 && (
-                  <div className="p-2.5 rounded-xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/60 space-y-1">
-                    <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-900 dark:text-amber-300 uppercase tracking-wider">
-                      <ShieldAlert className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                      <span>Prosedur Keselamatan Kerja (K3 Praktikum):</span>
-                    </div>
-                    <ul className="space-y-0.5 text-[11px] text-amber-900/90 dark:text-amber-200/90 list-disc list-inside">
-                      {selectedWorksheet.safetyRules.map((rule, idx) => (
-                        <li key={idx}>{rule}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {/* Alat & Bahan */}
-                <div className="pt-0.5">
-                  <h4 className="text-[11px] font-bold text-zinc-900 dark:text-white uppercase tracking-wider mb-1 flex items-center gap-1.5">
-                    <Wrench className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>Daftar Alat &amp; Bahan Praktikum:</span>
-                  </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
-                    {selectedWorksheet.toolsAndMaterials.map((item, idx) => (
-                      <div
-                        key={idx}
-                        className="flex items-start gap-1.5 text-[11px] text-zinc-600 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-800/60 p-1.5 rounded-lg border border-zinc-200/50 dark:border-zinc-800/50"
-                      >
-                        <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* ========================================================= */}
-            {/* ALUR ENGINEERING DESIGN PROCESS (EDP) SESUAI LKPD */}
-            {/* ========================================================= */}
-            {selectedWorksheet.edpSteps && selectedWorksheet.edpSteps.length > 0 && (
-              <div className="space-y-2 pt-2.5 border-t border-zinc-200/70 dark:border-zinc-800/70">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white flex items-center gap-1.5">
-                      <Compass className="w-4 h-4 text-emerald-600" />
-                      <span>Tahapan Engineering Design Process (EDP) pada LKPD</span>
-                    </h4>
-                    <p className="text-[11px] text-zinc-500">
-                      Alur kerja ilmiah santri mulai dari perumusan masalah, perancangan prototipe, pengujian data, hingga iterasi perbaikan.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
-                  {selectedWorksheet.edpSteps.map((edp, idx) => (
-                    <div
-                      key={idx}
-                      className="p-2.5 rounded-xl bg-zinc-50/90 dark:bg-zinc-800/50 border border-zinc-200/70 dark:border-zinc-800 flex flex-col justify-between space-y-1"
-                    >
-                      <div className="space-y-1">
-                        <span className="inline-block text-[9.5px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-700 text-white">
-                          {edp.step}
-                        </span>
-                        <h5 className="text-xs font-bold text-zinc-900 dark:text-white leading-snug">
-                          {edp.title}
-                        </h5>
-                        <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                          {edp.desc}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* ========================================================= */}
-            {/* PRATINJAU LEMBAR KERJA (LKPD SCAN) & DOKUMENTASI PELAKSANAAN */}
-            {/* ========================================================= */}
-            {(selectedWorksheet.lkpdPages || selectedWorksheet.documentationPhotos) && (
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 pt-2.5 border-t border-zinc-200/70 dark:border-zinc-800/70">
-                {/* Pratinjau Lembar LKPD */}
-                {selectedWorksheet.lkpdPages && selectedWorksheet.lkpdPages.length > 0 && (
-                  <div className="lg:col-span-5 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-1.5">
-                        <FileText className="w-4 h-4 text-emerald-600" />
-                        <span>Lembar Kerja Peserta Didik (LKPD)</span>
-                      </h4>
-                      <span className="text-[10px] text-zinc-400">Klik untuk perbesar</span>
-                    </div>
-                    <div className="grid grid-cols-3 gap-1.5">
-                      {selectedWorksheet.lkpdPages.map((pg, idx) => (
-                        <div
-                          key={idx}
-                          onClick={() => setLightboxImage(pg)}
-                          className="group cursor-pointer rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-2xs hover:border-emerald-500 transition-all"
-                        >
-                          <div className="aspect-[3/4] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
-                            <img
-                              src={pg.url}
-                              alt={pg.caption}
-                              loading="lazy"
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                          </div>
-                          <div className="p-1 text-center bg-zinc-50 dark:bg-zinc-800/80">
-                            <span className="text-[9.5px] font-bold text-zinc-700 dark:text-zinc-300 block truncate">
-                              Halaman {idx + 1}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Galeri Dokumentasi Pelaksanaan Praktikum */}
-                {selectedWorksheet.documentationPhotos && selectedWorksheet.documentationPhotos.length > 0 && (
-                  <div className={`${selectedWorksheet.lkpdPages ? 'lg:col-span-7' : 'lg:col-span-12'} space-y-2`}>
-                    <div className="flex items-center justify-between">
-                      <h4 className="text-xs sm:text-sm font-bold text-zinc-900 dark:text-white flex items-center gap-1.5">
-                        <Camera className="w-4 h-4 text-emerald-600" />
-                        <span>Dokumentasi Pelaksanaan Praktikum Santri</span>
-                      </h4>
-                      <span className="text-[10px] text-zinc-400">
-                        {selectedWorksheet.documentationPhotos.length} Foto Kegiatan
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      {selectedWorksheet.documentationPhotos.map((doc, idx) => (
-                        <div
-                          key={idx}
-                          onClick={() => setLightboxImage(doc)}
-                          className="group cursor-pointer rounded-xl overflow-hidden border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 shadow-2xs hover:border-emerald-500 transition-all flex flex-col"
-                        >
-                          <div className="relative aspect-[4/3] overflow-hidden bg-zinc-200 dark:bg-zinc-800">
-                            <img
-                              src={doc.url}
-                              alt={doc.caption}
-                              loading="lazy"
-                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                            <div className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                              <Maximize2 className="w-3 h-3" />
-                            </div>
-                          </div>
-                          <p className="p-1.5 text-[10px] text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-snug">
-                            {doc.caption}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* ========================================================= */}
-            {/* RUBRIK PENILAIAN RESMI (SESUAI LKPD US. RIA & US. ANGGUN) */}
-            {/* ========================================================= */}
-            <div className="space-y-2 pt-2.5 border-t border-zinc-200/70 dark:border-zinc-800/70">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white leading-tight">
-                    Rubrik &amp; Standar Penilaian LKPD STEM
-                  </h4>
-                  <p className="text-[11px] text-zinc-500">
-                    Pedoman evaluasi autentik proyek STEM santri (Skala Skor 4 – 1 • Nilai Akhir = (Total Skor ÷ 20) × 100).
-                  </p>
-                </div>
-                <span className="hidden sm:inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60">
-                  Total Bobot: 100%
-                </span>
-              </div>
-
-              {/* Tampilan Desktop: Clean Table */}
-              <div className="hidden md:block overflow-hidden rounded-xl border border-zinc-200/80 dark:border-zinc-800/80 shadow-2xs">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-zinc-50 dark:bg-zinc-800/80 text-zinc-700 dark:text-zinc-300 font-bold border-b border-zinc-200 dark:border-zinc-700 uppercase tracking-wider text-[10.5px]">
-                    <tr>
-                      <th className="py-2 px-3">Aspek Penilaian</th>
-                      <th className="py-2 px-2.5 text-center">Bobot</th>
-                      <th className="py-2 px-3">Indikator Capaian</th>
-                      <th className="py-2 px-3">Deskriptor Skala Skor (4 – 1)</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-zinc-200/60 dark:divide-zinc-800/60 text-zinc-600 dark:text-zinc-400">
-                    {selectedWorksheet.rubric.map((r) => (
-                      <tr key={r.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/40 transition-colors">
-                        <td className="py-2 px-3 font-bold text-zinc-900 dark:text-white">
-                          {r.category}
-                        </td>
-                        <td className="py-2 px-2.5 text-center">
-                          <span className="px-2 py-0.5 rounded-full font-bold text-[10.5px] bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
-                            {r.weight}
-                          </span>
-                        </td>
-                        <td className="py-2 px-3">{r.criteria}</td>
-                        <td className="py-2 px-3 text-emerald-800 dark:text-emerald-300 font-medium">
-                          {r.scaleDescription}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Tampilan Mobile: Adaptif Card List */}
-              <div className="md:hidden space-y-2">
-                {selectedWorksheet.rubric.map((r) => (
-                  <div
-                    key={r.id}
-                    className="p-2.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/60 border border-zinc-200/60 dark:border-zinc-800/60 space-y-1.5"
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-xs text-zinc-900 dark:text-white">
-                        {r.category}
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full font-bold text-[10px] bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-200">
-                        Bobot {r.weight}
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                      {r.criteria}
-                    </p>
-                    <div className="text-[10.5px] font-medium text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 p-1.5 rounded-lg border border-emerald-100 dark:border-emerald-900/30">
-                      {r.scaleDescription}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          {view === 'list' ? (
+            <ProjectSummaryGrid
+              projects={STEM_PROJECTS}
+              onSelect={(project) => {
+                setSelectedProject(project);
+                setView('detail');
+              }}
+            />
+          ) : (
+            <ProjectDetailSection
+              project={selectedProject!}
+              onBack={() => {
+                setView('list');
+                setSelectedProject(null);
+              }}
+            />
+          )}
         </div>
       )}
 

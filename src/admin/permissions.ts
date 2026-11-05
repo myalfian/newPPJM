@@ -9,7 +9,8 @@ export type CanonicalRole =
   | 'santri'
   | 'ppdb'
   | 'keuangan'
-  | 'humas';
+  | 'humas'
+  | 'osis_pengurus';
 
 export type StaffRole =
   | CanonicalRole
@@ -17,6 +18,7 @@ export type StaffRole =
   | 'kepala_sekolah'
   | 'staff_ppdb'
   | 'pengurus_konten'
+  | 'pengurus_osis'
   | 'guru_akademik';
 
 export interface RoleMeta {
@@ -168,6 +170,21 @@ export const NINE_ROLES: RoleMeta[] = [
       'Update profil staf Humas di /profile',
     ],
   },
+  {
+    value: 'osis_pengurus',
+    label: 'Pengurus OSIS',
+    shortLabel: 'OSIS',
+    badgeClass: 'bg-indigo-50 text-indigo-800 border-indigo-200',
+    dotClass: 'bg-indigo-600',
+    defaultRoute: '/admin/s/osis_events',
+    description:
+      'Pengurus Organisasi Siswa Intra Sekolah: mengelola kegiatan OSIS, program kerja, struktur pengurus, dokumen, foto, video, dan naskah kegiatan OSIS.',
+    permissionsSummary: [
+      'Full CRUD pada Kegiatan OSIS, Program OSIS, dan Struktur Pengurus OSIS',
+      'Kelola Foto OSIS, Video OSIS, Dokumen OSIS, dan Naskah OSIS',
+      'Akses halaman OSIS publik untuk publikasi konten kehalusan',
+    ],
+  },
 ];
 
 export const STAFF_ROLES: { value: StaffRole; label: string }[] = NINE_ROLES.map((r) => ({
@@ -185,6 +202,7 @@ export function normalizeCanonicalRole(raw?: string | null): CanonicalRole {
   if (r === 'ppdb' || r === 'staff_ppdb') return 'ppdb';
   if (r === 'keuangan') return 'keuangan';
   if (r === 'humas' || r === 'pengurus_konten') return 'humas';
+  if (r === 'osis_pengurus' || r === 'pengurus_osis' || r === 'ketua_osis') return 'osis_pengurus';
   return 'santri';
 }
 

@@ -222,6 +222,7 @@ const DAILY_SCHEDULES: DailyScheduleItem[] = [
 
 export const PondokProgramSection: React.FC = () => {
   const [programs, setPrograms] = useState<PondokProgramItem[]>(DEFAULT_PONDOK_PROGRAMS);
+  const [pondokPhotos, setPondokPhotos] = useState<PondokActivityPhoto[]>(PONDOK_PHOTOS);
   const [selectedPhoto, setSelectedPhoto] = useState<PondokActivityPhoto | null>(null);
   const [scheduleFilter, setScheduleFilter] = useState<string>('semua');
 
@@ -250,6 +251,20 @@ export const PondokProgramSection: React.FC = () => {
             ]
           }));
           setPrograms(mapped);
+        }
+
+        // Fetch photos from images JSONB column
+        const photosData = data?.find((row: any) => row.images && Array.isArray(row.images) && row.images.length > 0);
+        if (photosData?.images) {
+          const photos: PondokActivityPhoto[] = (photosData.images as any[]).map((img: any, idx: number) => ({
+            id: img.id || `photo-${idx}`,
+            title: img.title || 'Kegiatan Santri',
+            description: img.description || '',
+            imageUrl: img.image_url || img.url || '',
+            timeTag: img.time || img.waktu || '',
+            location: img.location || img.tempat || ''
+          }));
+          setPondokPhotos(photos);
         }
       } catch (err) {
         console.warn('Failed to load programs_pondok:', err);
@@ -369,7 +384,7 @@ export const PondokProgramSection: React.FC = () => {
 
         {/* 6 Photo Grid: aspect-[4/3], rounded-xl, zoom on hover */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-3.5">
-          {PONDOK_PHOTOS.map((photo) => (
+          {pondokPhotos.map((photo) => (
             <div
               key={photo.id}
               onClick={() => setSelectedPhoto(photo)}
