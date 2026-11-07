@@ -23,6 +23,7 @@ import {
   GraduationCap,
 } from 'lucide-react';
 import { GuruProvider, useGuru } from './GuruContext';
+import { UserMenu } from '../components/common/UserMenu';
 
 const GuruShell: React.FC = () => {
   const {
@@ -390,6 +391,8 @@ const GuruShell: React.FC = () => {
                 <PlusCircle className="w-3.5 h-3.5 text-amber-300" />
                 <span>Posting Tugas</span>
               </Link>
+
+              <UserMenu variant="compact" />
             </div>
           </div>
         </header>

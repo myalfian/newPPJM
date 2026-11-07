@@ -7,6 +7,7 @@ import {
 import { useAdminSession, type AdminSession } from './useAdminSession';
 import { STAFF_ROLES } from './permissions';
 import { CRUD_SECTIONS, type NavGroupKey } from './sections';
+import { UserMenu } from '../components/common/UserMenu';
 
 type NavItem = { to: string; label: string; icon: React.ElementType; section?: string };
 type NavGroup = { title: string; items: NavItem[] };
@@ -181,13 +182,7 @@ export const AdminLayout: React.FC = () => {
             >
               <ExternalLink size={14} /> <span className="hidden sm:inline">Lihat Website</span>
             </Link>
-            <div className="hidden md:block text-right leading-tight">
-              <p className="text-xs font-semibold">{admin.profile?.full_name}</p>
-              <p className="text-[11px] text-zinc-500">{roleLabel}</p>
-            </div>
-            <button onClick={admin.signOut} className="p-2 rounded-xl hover:bg-teal-900/5" aria-label="Keluar">
-              <LogOut size={18} />
-            </button>
+            <UserMenu variant="compact" />
           </div>
         </header>
 

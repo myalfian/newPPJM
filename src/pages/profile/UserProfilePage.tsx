@@ -14,6 +14,7 @@ import {
   Phone,
   MapPin,
   CheckCircle2,
+  AlertCircle,
   ExternalLink,
   Sparkles,
   Briefcase,
@@ -31,6 +32,7 @@ import {
   type CanonicalRole,
 } from '../../admin/permissions';
 import { SantriTipTapEditor } from '../../santri/SantriTipTap';
+import { useAuth } from '../../hooks/useAuth';
 import type { DynamicProfileRecord } from '../../admin/UsersPage';
 
 const db = supabase as any;
@@ -55,6 +57,7 @@ const KELAS_OPTIONS = [
 ];
 
 export const UserProfilePage: React.FC = () => {
+  const { user, isSuperAdmin } = useAuth();
   const [allProfiles, setAllProfiles] = useState<DynamicProfileRecord[]>([]);
   const [activeProfileId, setActiveProfileId] = useState<string>('');
   const [loading, setLoading] = useState(true);
@@ -125,8 +128,14 @@ export const UserProfilePage: React.FC = () => {
     setTugasRows(tugData || []);
     setBeritaRows(berData || []);
 
-    const sessionUid = sessData?.session?.user?.id;
+    const sessionUid = user?.id || sessData?.session?.user?.id;
     setActiveProfileId((prev) => {
+      // Non-superadmin is strictly locked to their own user profile ID
+      if (!isSuperAdmin) {
+        if (sessionUid && list.some((p) => p.id === sessionUid)) return sessionUid;
+        return list[0]?.id || '';
+      }
+      // Super Admin can switch between accounts
       if (prev && list.some((p) => p.id === prev)) return prev;
       if (sessionUid && list.some((p) => p.id === sessionUid)) return sessionUid;
       const santriDefault = list.find((p) => normalizeCanonicalRole(p.role) === 'santri');
@@ -134,7 +143,7 @@ export const UserProfilePage: React.FC = () => {
     });
 
     setLoading(false);
-  }, []);
+  }, [user?.id, isSuperAdmin]);
 
   useEffect(() => {
     void fetchAll();
@@ -212,6 +221,13 @@ export const UserProfilePage: React.FC = () => {
   const handleSaveProfile = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!currentProfile) return;
+
+    // Strict IDOR ownership check
+    if (!isSuperAdmin && user?.id && currentProfile.id !== user.id) {
+      showToast('Akses ditolak: Anda hanya dapat memperbarui data profil Anda sendiri.');
+      return;
+    }
+
     setSaving(true);
 
     const payload: Record<string, any> = {
@@ -266,6 +282,11 @@ export const UserProfilePage: React.FC = () => {
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawFile = e.target.files?.[0];
     if (!rawFile || !currentProfile) return;
+
+    if (rawFile.size > 15 * 1024 * 1024) {
+      showToast('Ukuran foto profil melebihi batas maksimal 15 MB.');
+      return;
+    }
     let fileToUpload = rawFile;
     let savedInfo = '';
     if (rawFile.type.startsWith('image/')) {
@@ -343,182 +364,215 @@ export const UserProfilePage: React.FC = () => {
       )}
 
       <div className="mx-auto max-w-6xl space-y-6">
-        {/* Role Switcher Bar for Testing All 9 Roles in Antigravity IDE */}
-        <div className="rounded-2xl border border-stone-200/80 bg-white p-4 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-[#115E59] shrink-0" />
-            <span className="text-xs font-bold text-stone-700">
-              Mode Preview Profil Dinamis (Pilih Role / Akun):
-            </span>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-1.5">
-            {NINE_ROLES.map((r) => {
-              const profForRole = allProfiles.find((p) => normalizeCanonicalRole(p.role) === r.value);
-              const isSelected = currentRole === r.value;
-              return (
-                <button
-                  key={r.value}
-                  type="button"
-                  onClick={() => {
-                    if (profForRole) {
-                      setActiveProfileId(profForRole.id);
-                      setIsEditing(false);
-                    }
-                  }}
-                  className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition ${
-                    isSelected
-                      ? 'bg-[#115E59] text-white shadow-xs'
-                      : 'bg-stone-100 text-stone-600 hover:bg-stone-200/70'
-                  }`}
-                >
-                  <span className={`h-1.5 w-1.5 rounded-full ${isSelected ? 'bg-white' : r.dotClass}`} />
-                  {r.shortLabel}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* =====================================================================
-            HERO PROFILE CARD (ADAPTS TO SANTRI / GURU / ADMIN-YAYASAN-KEPSEK)
-           ===================================================================== */}
-        <div className="rounded-2xl border border-stone-200/80 bg-white p-6 sm:p-8 shadow-xs">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            {/* Avatar + Primary Identity */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-              <div className="relative group shrink-0">
-                <img
-                  src={fotoUrl}
-                  alt={fullName}
-                  className="h-28 w-28 sm:h-32 sm:w-32 rounded-2xl object-cover border-2 border-teal-800/20 shadow-md"
-                />
-                <label className="absolute -bottom-2 -right-2 flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl bg-[#115E59] text-white shadow-md hover:bg-[#0F766E] transition">
-                  <Camera className="h-4 w-4" />
-                  <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
-                </label>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-0.5 text-xs font-bold ${roleMeta.badgeClass}`}
-                  >
-                    <span className={`h-1.5 w-1.5 rounded-full ${roleMeta.dotClass}`} />
-                    {roleMeta.label}
-                  </span>
-
-                  <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800 border border-emerald-200">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
-                    Status Aktif
-                  </span>
-
-                  {currentRole === 'santri' && (
-                    <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-bold text-stone-700">
-                      NIS: {nis}
-                    </span>
-                  )}
-                  {currentRole !== 'santri' && (
-                    <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-bold text-stone-700">
-                      NIP: {nip}
-                    </span>
-                  )}
-                </div>
-
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className="w-full max-w-md rounded-xl border border-teal-600 bg-[#FAF8F5] px-3.5 py-1.5 text-xl font-bold text-stone-900"
-                  />
-                ) : (
-                  <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900">{fullName}</h1>
-                )}
-
-                {currentRole === 'santri' ? (
-                  <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-stone-600">
-                    <span className="inline-flex items-center gap-1.5 font-semibold text-[#115E59]">
-                      <GraduationCap className="h-4 w-4" />
-                      Kelas {kelas} (Angkatan {angkatan})
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <Home className="h-4 w-4 text-stone-400" />
-                      Kamar: <strong>{asramaKamar}</strong>
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <Users className="h-4 w-4 text-stone-400" />
-                      Wali: <strong>{namaAyah} & {namaIbu}</strong>
-                    </span>
-                  </div>
-                ) : (
-                  <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-stone-600">
-                    <span className="inline-flex items-center gap-1.5 font-semibold text-[#115E59]">
-                      <Briefcase className="h-4 w-4" />
-                      {jabatan}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <Phone className="h-4 w-4 text-stone-400" />
-                      {waNumber}
-                    </span>
-                    <span className="inline-flex items-center gap-1.5">
-                      <MapPin className="h-4 w-4 text-stone-400" />
-                      {alamatLengkap}
-                    </span>
-                  </div>
-                )}
-              </div>
+        {/* Role Switcher Bar: Khusus Super Admin dalam mode inspeksi/audit */}
+        {isSuperAdmin && (
+          <div className="rounded-2xl border border-amber-300/80 bg-amber-50/60 p-4 shadow-xs flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-4 w-4 text-[#115E59] shrink-0" />
+              <span className="text-xs font-bold text-stone-700">
+                Mode Preview Profil Super Admin ({allProfiles.length} Akun):
+              </span>
             </div>
 
-            {/* Right Side: Santri Juz Progress OR Quick Action Buttons */}
-            <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-4">
-              {currentRole === 'santri' && (
-                <div className="w-full sm:w-64 rounded-2xl border border-teal-900/10 bg-[#FAF8F5] p-3.5">
-                  <div className="flex items-center justify-between text-xs font-bold mb-1.5">
-                    <span className="text-stone-600 flex items-center gap-1.5">
-                      <BookOpen className="h-3.5 w-3.5 text-[#115E59]" />
-                      Capaian Tahfidz Al-Qur'an
-                    </span>
-                    <span className="text-[#115E59]">{hafalanJuz} / 30 Juz ({juzProgressPct}%)</span>
-                  </div>
-                  <div className="h-2.5 w-full rounded-full bg-stone-200 overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-gradient-to-r from-[#115E59] to-teal-500 transition-all"
-                      style={{ width: `${juzProgressPct}%` }}
-                    />
-                  </div>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {NINE_ROLES.map((r) => {
+                const profForRole = allProfiles.find((p) => normalizeCanonicalRole(p.role) === r.value);
+                const isSelected = currentRole === r.value;
+                return (
+                  <button
+                    key={r.value}
+                    type="button"
+                    onClick={() => {
+                      if (profForRole) {
+                        setActiveProfileId(profForRole.id);
+                        setIsEditing(false);
+                      }
+                    }}
+                    className={`inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition min-h-[38px] ${
+                      isSelected
+                        ? 'bg-[#115E59] text-white shadow-xs'
+                        : 'bg-white/90 border border-stone-200 text-stone-600 hover:bg-stone-200/70'
+                    }`}
+                  >
+                    <span className={`h-1.5 w-1.5 rounded-full ${isSelected ? 'bg-white' : r.dotClass}`} />
+                    {r.shortLabel}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Warning Banner bila Super Admin menginspeksi akun orang lain */}
+        {isSuperAdmin && user?.id && currentProfile.id !== user.id && (
+          <div className="rounded-2xl border border-amber-300 bg-amber-50 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-amber-950 font-medium">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-amber-700 shrink-0" />
+              <span>
+                <strong>Mode Pengawasan Admin:</strong> Meninjau profil <strong>{currentProfile.full_name}</strong> ({roleMeta.label}). Perubahan akan disimpan ke akun ini.
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setActiveProfileId(user.id)}
+              className="px-3 py-2 rounded-xl bg-amber-200/80 hover:bg-amber-300 text-amber-950 font-bold shrink-0 text-xs transition min-h-[44px] flex items-center justify-center cursor-pointer"
+            >
+              Kembali ke Akun Saya
+            </button>
+          </div>
+        )}
+
+        {/* =====================================================================
+            HERO PROFILE CARD (Coligo LMS Banner & Overlapping Avatar)
+           ===================================================================== */}
+        <div className="rounded-3xl border border-stone-200/80 bg-white shadow-xs overflow-hidden">
+          {/* Coligo LMS Emerald Gradient Banner Header */}
+          <div className="relative h-32 sm:h-44 w-full bg-gradient-to-r from-[#0d4a28] via-[#115E59] to-[#0f766e] overflow-hidden select-none">
+            <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#d4af37_1.5px,transparent_1.5px)] [background-size:16px_16px]" />
+            <div className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 flex items-center gap-2">
+              <span className="px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-white text-[11px] font-extrabold uppercase tracking-wider border border-white/20">
+                Pesantren Jauharul Maknuun
+              </span>
+            </div>
+          </div>
+
+          <div className="p-5 sm:p-7 pt-0 relative">
+            <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-5 -mt-14 sm:-mt-18 mb-4">
+              {/* Avatar + Primary Identity */}
+              <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-5">
+                <div className="relative group shrink-0">
+                  <img
+                    src={fotoUrl}
+                    alt={fullName}
+                    className="h-28 w-28 sm:h-36 sm:w-36 rounded-2xl sm:rounded-3xl object-cover border-4 border-white shadow-xl bg-white"
+                  />
+                  <label className="absolute -bottom-2 -right-2 flex h-10 w-10 min-w-[44px] min-h-[44px] cursor-pointer items-center justify-center rounded-xl bg-[#115E59] text-white shadow-md hover:bg-[#0F766E] transition">
+                    <Camera className="h-4.5 w-4.5" />
+                    <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
+                  </label>
                 </div>
-              )}
 
-              <div className="flex flex-wrap items-center gap-2">
-                <Link
-                  to={`/profile/${currentRole}/${currentProfile.id}`}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-stone-200 bg-[#FAF8F5] hover:bg-stone-100 px-3.5 py-2.5 text-xs font-bold text-stone-700 transition"
-                >
-                  <Eye className="h-3.5 w-3.5 text-[#115E59]" />
-                  Lihat Public Card
-                </Link>
+                <div className="space-y-1.5 pb-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-0.5 text-xs font-bold ${roleMeta.badgeClass}`}
+                    >
+                      <span className={`h-1.5 w-1.5 rounded-full ${roleMeta.dotClass}`} />
+                      {roleMeta.label}
+                    </span>
 
-                {isEditing ? (
-                  <button
-                    type="button"
-                    disabled={saving}
-                    onClick={() => handleSaveProfile()}
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#115E59] hover:bg-[#0F766E] px-5 py-2.5 text-xs font-bold text-white shadow-xs transition"
-                  >
-                    <Save className="h-4 w-4" />
-                    {saving ? 'Menyimpan...' : 'Simpan Profil'}
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => setIsEditing(true)}
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#115E59] hover:bg-[#0F766E] px-5 py-2.5 text-xs font-bold text-white shadow-xs transition"
-                  >
-                    <Edit3 className="h-4 w-4" />
-                    Edit Profil (WYSIWYG)
-                  </button>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800 border border-emerald-200">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
+                      Status Aktif
+                    </span>
+
+                    {currentRole === 'santri' && (
+                      <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-bold text-stone-700">
+                        NIS: {nis}
+                      </span>
+                    )}
+                    {currentRole !== 'santri' && (
+                      <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-bold text-stone-700">
+                        NIP: {nip}
+                      </span>
+                    )}
+                  </div>
+
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="w-full max-w-md rounded-xl border border-teal-600 bg-[#FAF8F5] px-3.5 py-2 text-xl font-bold text-stone-900"
+                    />
+                  ) : (
+                    <h1 className="text-2xl sm:text-3xl font-extrabold text-stone-900">{fullName}</h1>
+                  )}
+
+                  {currentRole === 'santri' ? (
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-stone-600">
+                      <span className="inline-flex items-center gap-1.5 font-semibold text-[#115E59]">
+                        <GraduationCap className="h-4 w-4" />
+                        Kelas {kelas} (Angkatan {angkatan})
+                      </span>
+                      <span className="inline-flex items-center gap-1.5">
+                        <Home className="h-4 w-4 text-stone-400" />
+                        Kamar: <strong>{asramaKamar}</strong>
+                      </span>
+                      <span className="inline-flex items-center gap-1.5">
+                        <Users className="h-4 w-4 text-stone-400" />
+                        Wali: <strong>{namaAyah} &amp; {namaIbu}</strong>
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-stone-600">
+                      <span className="inline-flex items-center gap-1.5 font-semibold text-[#115E59]">
+                        <Briefcase className="h-4 w-4" />
+                        {jabatan}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5">
+                        <Phone className="h-4 w-4 text-stone-400" />
+                        {waNumber}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5">
+                        <MapPin className="h-4 w-4 text-stone-400" />
+                        {alamatLengkap}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Right Side: Santri Juz Progress OR Quick Action Buttons */}
+              <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between gap-3.5">
+                {currentRole === 'santri' && (
+                  <div className="w-full sm:w-64 rounded-2xl border border-teal-900/10 bg-[#FAF8F5] p-3.5">
+                    <div className="flex items-center justify-between text-xs font-bold mb-1.5">
+                      <span className="text-stone-600 flex items-center gap-1.5">
+                        <BookOpen className="h-3.5 w-3.5 text-[#115E59]" />
+                        Capaian Tahfidz Al-Qur'an
+                      </span>
+                      <span className="text-[#115E59]">{hafalanJuz} / 30 Juz ({juzProgressPct}%)</span>
+                    </div>
+                    <div className="h-2.5 w-full rounded-full bg-stone-200 overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-gradient-to-r from-[#115E59] to-teal-500 transition-all"
+                        style={{ width: `${juzProgressPct}%` }}
+                      />
+                    </div>
+                  </div>
                 )}
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <Link
+                    to={`/profile/${currentRole}/${currentProfile.id}`}
+                    className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border border-stone-200 bg-[#FAF8F5] hover:bg-stone-100 px-3.5 py-2.5 text-xs font-bold text-stone-700 transition cursor-pointer"
+                  >
+                    <Eye className="h-3.5 w-3.5 text-[#115E59]" />
+                    Lihat Kartu Publik
+                  </Link>
+
+                  {isEditing ? (
+                    <button
+                      type="button"
+                      disabled={saving}
+                      onClick={() => handleSaveProfile()}
+                      className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-[#115E59] hover:bg-[#0F766E] px-5 py-2.5 text-xs font-bold text-white shadow-xs transition cursor-pointer disabled:opacity-60"
+                    >
+                      <Save className="h-4 w-4" />
+                      {saving ? 'Menyimpan...' : 'Simpan Profil'}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setIsEditing(true)}
+                      className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-[#115E59] hover:bg-[#0F766E] px-5 py-2.5 text-xs font-bold text-white shadow-xs transition cursor-pointer"
+                    >
+                      <Edit3 className="h-4 w-4" />
+                      Edit Profil
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -545,7 +599,7 @@ export const UserProfilePage: React.FC = () => {
                       key={t.key}
                       type="button"
                       onClick={() => setSantriTab(t.key as any)}
-                      className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition ${
+                      className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition min-h-[44px] cursor-pointer ${
                         active
                           ? 'bg-[#115E59] text-white shadow-xs'
                           : 'text-stone-600 hover:bg-stone-100'
@@ -560,7 +614,7 @@ export const UserProfilePage: React.FC = () => {
 
               <Link
                 to="/santri"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-teal-50 px-3.5 py-2 text-xs font-bold text-[#115E59] hover:bg-teal-100 transition"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-teal-50 px-3.5 py-2 text-xs font-bold text-[#115E59] hover:bg-teal-100 transition min-h-[44px]"
               >
                 Buka Dashboard Santri (/santri)
                 <ExternalLink className="h-3.5 w-3.5" />
@@ -849,7 +903,7 @@ export const UserProfilePage: React.FC = () => {
                       key={t.key}
                       type="button"
                       onClick={() => setGuruTab(t.key as any)}
-                      className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition ${
+                      className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold transition min-h-[44px] cursor-pointer ${
                         active
                           ? 'bg-[#115E59] text-white shadow-xs'
                           : 'text-stone-600 hover:bg-stone-100'
@@ -864,7 +918,7 @@ export const UserProfilePage: React.FC = () => {
 
               <Link
                 to="/guru"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-teal-50 px-3.5 py-2 text-xs font-bold text-[#115E59] hover:bg-teal-100 transition"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-teal-50 px-3.5 py-2 text-xs font-bold text-[#115E59] hover:bg-teal-100 transition min-h-[44px]"
               >
                 Buka Dashboard Guru (/guru)
                 <ExternalLink className="h-3.5 w-3.5" />

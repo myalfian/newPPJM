@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { PUBLIC_NAV_TABS, NavTabItem } from '../../data/navigationData';
-import { GuestButton } from '../auth/GuestButton';
+import { UserMenu } from './UserMenu';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { useCachedQuery } from '../../lib/queryCache';
 
@@ -390,9 +390,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               </nav>
             </div>
 
-            {/* Right Side: Guest / Account pill (always visible, all viewports) */}
+            {/* Right Side: User Menu / Account pill (always visible, all viewports) */}
             <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 shrink-0">
-              <GuestButton />
+              <UserMenu variant="pill" />
             </div>
 
           </div>

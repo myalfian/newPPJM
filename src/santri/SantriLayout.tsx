@@ -20,6 +20,7 @@ import {
   Lock,
 } from 'lucide-react';
 import { SantriProvider, useSantri } from './SantriContext';
+import { UserMenu } from '../components/common/UserMenu';
 
 const SantriShell: React.FC = () => {
   const {
@@ -338,6 +339,8 @@ const SantriShell: React.FC = () => {
                 <PlusCircle className="w-3.5 h-3.5 text-amber-300" />
                 <span>Setor Hafalan</span>
               </button>
+
+              <UserMenu variant="compact" />
             </div>
           </div>
         </header>

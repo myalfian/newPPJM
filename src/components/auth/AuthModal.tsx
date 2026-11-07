@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   AlertCircle,
   ArrowRight,
@@ -86,16 +87,11 @@ const INFO: Record<AuthModalTab, { title: string; points: string[] }> = {
 };
 
 const REGISTER_ROLES: { value: string; label: string }[] = [
-  { value: 'santri', label: 'Santri' },
-  { value: 'guru', label: 'Guru / Ustadz(ah)' },
-  { value: 'musyrif', label: 'Musyrif / Musyrifah' },
-  { value: 'ppdb', label: 'Panitia PPDB' },
-  { value: 'keuangan', label: 'Staf Keuangan' },
-  { value: 'humas', label: 'Humas / Konten' },
+  { value: 'santri', label: 'Santri / Calon Santri & Wali' },
 ];
 
 /* ════════════════════════════════════════════════════════════════════════
- *   Login Form — clean mobile card (Behance-style)
+ *   Login Form — clean responsive card (Figma/Behance-inspired)
  * ════════════════════════════════════════════════════════════════════════ */
 interface LoginFormProps {
   expected: AuthModalTab | null;
@@ -116,15 +112,44 @@ const LoginForm: React.FC<LoginFormProps> = ({ expected, redirectTo, onToast, on
   const [attempts, setAttempts] = useState(0);
   const [cooldown, setCooldown] = useState(0);
 
+  // Inline validation states
+  const [touchedId, setTouchedId] = useState(false);
+  const [touchedPw, setTouchedPw] = useState(false);
+
   useEffect(() => {
     if (cooldown <= 0) return;
     const t = window.setTimeout(() => setCooldown((c) => c - 1), 1000);
     return () => window.clearTimeout(t);
   }, [cooldown]);
 
+  const idValidationError = useMemo(() => {
+    if (!touchedId || !identifier.trim()) return '';
+    const val = identifier.trim();
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+    const isPhone = /^[0-9+ -]{8,20}$/.test(val);
+    const isUsername = /^[a-zA-Z0-9._-]{3,30}$/.test(val);
+    if (!isEmail && !isPhone && !isUsername) {
+      return 'Format nomor WhatsApp, email, atau username belum valid.';
+    }
+    return '';
+  }, [identifier, touchedId]);
+
+  const pwValidationError = useMemo(() => {
+    if (!touchedPw || !password) return '';
+    if (password.length < 6) {
+      return 'Kata sandi minimal 6 karakter.';
+    }
+    return '';
+  }, [password, touchedPw]);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setTouchedId(true);
+    setTouchedPw(true);
+
     if (busy || cooldown > 0) return;
+    if (idValidationError || pwValidationError || !identifier.trim() || !password) return;
+
     setBusy(true);
     setError('');
 
@@ -140,8 +165,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ expected, redirectTo, onToast, on
         setCooldown(COOLDOWN_SECONDS);
         setAttempts(0);
       }
-      setError('Username/email atau kata sandi salah.');
-      onToast({ kind: 'error', text: 'Login gagal. Anda tetap sebagai Guest.' });
+      setError('Username, email, atau kata sandi tidak cocok.');
+      onToast({ kind: 'error', text: 'Login gagal. Anda tetap berada di sesi Guest.' });
       setBusy(false);
       return;
     }
@@ -154,7 +179,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ expected, redirectTo, onToast, on
 
     if (prof && prof.status_aktif === false) {
       await supabase.auth.signOut();
-      setError('Akun ini dinonaktifkan. Hubungi admin.');
+      setError('Akun ini dinonaktifkan oleh administrator.');
       onToast({ kind: 'error', text: 'Akun dinonaktifkan. Anda tetap sebagai Guest.' });
       setBusy(false);
       return;
@@ -167,7 +192,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ expected, redirectTo, onToast, on
     if (wantedTab && wantedTab !== 'guest' && roleTab && wantedTab !== roleTab) {
       onToast({ kind: 'info', text: `Akun Anda terdaftar sebagai ${ROLE_LABEL[role]}.` });
     } else {
-      onToast({ kind: 'success', text: `Selamat datang, ${prof?.full_name ?? ROLE_LABEL[role]}!` });
+      onToast({ kind: 'success', text: `Ahlan wa Sahlan, ${prof?.full_name ?? ROLE_LABEL[role]}!` });
     }
 
     const target = redirectTo && canAccessPath(role, redirectTo) ? redirectTo : homeForRole(role);
@@ -177,45 +202,70 @@ const LoginForm: React.FC<LoginFormProps> = ({ expected, redirectTo, onToast, on
   };
 
   const locked = cooldown > 0;
+  const isFormValid = identifier.trim().length > 0 && password.length >= 6 && !idValidationError && !pwValidationError;
 
   return (
     <form onSubmit={submit} className="space-y-4" noValidate>
-      <label className="block space-y-1.5 text-xs font-bold text-slate-700">
-        Nomor HP atau email
-        <input
-          value={identifier}
-          onChange={(e) => setIdentifier(e.target.value)}
-          required
-          autoComplete="username"
-          autoCapitalize="none"
-          spellCheck={false}
-          disabled={busy || locked}
-          className={inputCls}
-          placeholder="mis. 081234567890 atau nama@email.com"
-        />
-      </label>
-      <label className="block space-y-1.5 text-xs font-bold text-slate-700">
-        Kata sandi
-        <span className="relative block">
+      <div>
+        <label htmlFor="auth-identifier" className="block text-xs font-bold text-slate-700 mb-1.5">
+          Nomor WhatsApp / Email / Username
+        </label>
+        <div className="relative">
           <input
+            id="auth-identifier"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
+            onBlur={() => setTouchedId(true)}
+            required
+            autoComplete="username"
+            autoCapitalize="none"
+            spellCheck={false}
+            disabled={busy || locked}
+            className={`${inputCls} ${idValidationError ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/20' : ''}`}
+            placeholder="mis. 081234567890 atau nama@email.com"
+          />
+        </div>
+        {idValidationError && (
+          <p className="mt-1 text-[11px] font-medium text-rose-600 flex items-center gap-1">
+            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+            <span>{idValidationError}</span>
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label htmlFor="auth-password" className="block text-xs font-bold text-slate-700 mb-1.5">
+          Kata Sandi
+        </label>
+        <div className="relative">
+          <input
+            id="auth-password"
             type={showPw ? 'text' : 'password'}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onBlur={() => setTouchedPw(true)}
             required
             autoComplete="current-password"
             disabled={busy || locked}
-            className={`${inputCls} pr-11`}
+            className={`${inputCls} pr-12 ${pwValidationError ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/20' : ''}`}
+            placeholder="Minimal 6 karakter"
           />
           <button
             type="button"
             onClick={() => setShowPw((v) => !v)}
             aria-label={showPw ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'}
-            className="absolute inset-y-0 right-0 grid w-11 place-items-center text-slate-400 hover:text-slate-700"
+            className="absolute inset-y-0 right-0 min-w-[44px] min-h-[44px] flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
           >
-            {showPw ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            {showPw ? <EyeOff className="h-4.5 w-4.5" /> : <Eye className="h-4.5 w-4.5" />}
           </button>
-        </span>
-      </label>
+        </div>
+        {pwValidationError && (
+          <p className="mt-1 text-[11px] font-medium text-rose-600 flex items-center gap-1">
+            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+            <span>{pwValidationError}</span>
+          </p>
+        )}
+      </div>
 
       <div aria-live="polite" className="min-h-[1.25rem] text-xs font-semibold text-rose-600">
         {locked ? `Terlalu banyak percobaan. Coba lagi dalam ${cooldown} detik.` : error}
@@ -223,18 +273,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ expected, redirectTo, onToast, on
 
       <button
         type="submit"
-        disabled={busy || locked || !identifier.trim() || !password}
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0d4a28] py-3 text-sm font-bold text-white transition hover:bg-[#0a3a20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+        disabled={busy || locked || !isFormValid}
+        className="flex w-full min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#0d4a28] py-3 text-sm font-bold text-white transition hover:bg-[#0a3a20] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 shadow-sm"
       >
-        {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <LogIn className="h-4 w-4" aria-hidden />}
-        {busy ? 'Memproses…' : 'Masuk'}
+        {busy ? <Loader2 className="h-4.5 w-4.5 animate-spin" aria-hidden /> : <LogIn className="h-4.5 w-4.5" aria-hidden />}
+        {busy ? 'Memverifikasi…' : 'Masuk ke Akun'}
       </button>
 
       <div className="mt-4 text-center">
         <p className="text-xs text-slate-500">
           Lupa kata sandi?{' '}
-          <button type="button" onClick={() => onToast({ kind: 'info', text: 'Hubungi admin pondok untuk reset kata sandi.' })} className="font-bold text-emerald-700 hover:text-emerald-900 hover:underline">
-            Hubungi admin
+          <button
+            type="button"
+            onClick={() => onToast({ kind: 'info', text: 'Silakan hubungi administrator pondok untuk reset kata sandi.' })}
+            className="font-bold text-[#115E59] hover:text-emerald-900 hover:underline min-h-[44px] inline-flex items-center"
+          >
+            Hubungi Admin
           </button>
         </p>
       </div>
@@ -254,15 +308,37 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onToast, onSwitchToLogin })
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [requestedRole, setRequestedRole] = useState('santri');
+  const [requestedRole] = useState('santri');
   const [alamat, setAlamat] = useState('');
   const [alasan, setAlasan] = useState('');
   const [busy, setBusy] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
+  const [touchedName, setTouchedName] = useState(false);
+  const [touchedPhone, setTouchedPhone] = useState(false);
+
+  const nameError = useMemo(() => {
+    if (!touchedName || !fullName.trim()) return '';
+    if (fullName.trim().length < 3) return 'Nama lengkap minimal 3 karakter.';
+    return '';
+  }, [fullName, touchedName]);
+
+  const phoneError = useMemo(() => {
+    if (!touchedPhone || !phone.trim()) return '';
+    if (!/^[0-9+ -]{9,18}$/.test(phone.trim())) {
+      return 'Format nomor WhatsApp tidak valid (mis. 081234567890).';
+    }
+    return '';
+  }, [phone, touchedPhone]);
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setTouchedName(true);
+    setTouchedPhone(true);
+
     if (busy) return;
+    if (nameError || phoneError || !fullName.trim() || !phone.trim()) return;
+
     setBusy(true);
 
     try {
@@ -285,7 +361,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onToast, onSwitchToLogin })
       }
 
       setSubmitted(true);
-      onToast({ kind: 'success', text: 'Pendaftaran berhasil dikirim! Tunggu persetujuan Super Admin.' });
+      onToast({ kind: 'success', text: 'Pendaftaran berhasil dikirim! Menunggu persetujuan Super Admin.' });
     } catch (err: any) {
       onToast({ kind: 'error', text: `Terjadi kesalahan: ${err?.message || 'Coba lagi.'}` });
     }
@@ -295,107 +371,141 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onToast, onSwitchToLogin })
   if (submitted) {
     return (
       <div className="space-y-4 text-center py-4">
-        <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-emerald-50">
+        <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-emerald-50 border border-emerald-200">
           <CheckCircle2 className="h-7 w-7 text-emerald-600" aria-hidden />
         </div>
-        <h3 className="text-lg font-extrabold text-slate-900">Pendaftaran Terkirim!</h3>
+        <h3 className="text-lg font-extrabold text-slate-900">Pendaftaran Berhasil Dikirim</h3>
         <p className="text-sm leading-relaxed text-slate-600">
-          Data Anda telah dikirim kepada Super Admin PP. Jauharul Maknuun untuk diverifikasi.
-          Anda akan dihubungi melalui nomor WhatsApp yang tercantum setelah akun disetujui.
+          Data pendaftaran akun santri telah diterima. Super Admin akan memverifikasi data Anda dan mengirimkan kredensial masuk ke nomor WhatsApp yang terdaftar.
         </p>
         <button
           type="button"
           onClick={onSwitchToLogin}
-          className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-3 text-sm font-bold text-slate-800 hover:bg-slate-50"
+          className="mt-2 flex w-full min-h-[44px] items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white py-3 text-sm font-bold text-slate-800 hover:bg-slate-50 transition-colors shadow-2xs"
         >
-          <LogIn className="h-4 w-4" aria-hidden /> Sudah punya akun? Login
+          <LogIn className="h-4 w-4" aria-hidden /> Kembali ke Halaman Masuk
         </button>
       </div>
     );
   }
 
+  const isFormValid = fullName.trim().length >= 3 && phone.trim().length >= 9 && !nameError && !phoneError;
+
   return (
     <form onSubmit={submit} className="space-y-3.5" noValidate>
-      <p className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs font-semibold text-amber-900">
-        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
-        Pendaftaran akan ditinjau oleh Super Admin. Anda akan menerima kredensial login setelah disetujui.
-      </p>
+      <div className="flex items-start gap-2.5 rounded-xl border border-amber-200 bg-amber-50/80 p-3 text-xs text-amber-900">
+        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" aria-hidden />
+        <div className="space-y-1">
+          <p className="font-bold">Ketentuan Pendaftaran Akun</p>
+          <p className="text-[11px] leading-relaxed text-amber-800">
+            Formulir publik ini dikhususkan bagi <strong>Santri / Calon Santri &amp; Wali Santri</strong>. Akun Dewan Guru (Asatidz), Musyrif, dan Administrator dibuat langsung oleh Super Admin melalui panel internal.
+          </p>
+        </div>
+      </div>
 
-      <label className="block space-y-1.5 text-xs font-bold text-slate-700">
-        <span className="flex items-center gap-1"><User className="h-3.5 w-3.5" /> Nama Lengkap <span className="text-rose-500">*</span></span>
+      <div>
+        <label htmlFor="reg-name" className="block text-xs font-bold text-slate-700 mb-1">
+          <span className="flex items-center gap-1"><User className="h-3.5 w-3.5 text-slate-500" /> Nama Lengkap <span className="text-rose-500">*</span></span>
+        </label>
         <input
+          id="reg-name"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
+          onBlur={() => setTouchedName(true)}
           required
-          className={inputCls}
-          placeholder="Ahmad Zaki bin Abdullah"
+          className={`${inputCls} ${nameError ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/20' : ''}`}
+          placeholder="Nama santri / calon santri"
         />
-      </label>
+        {nameError && (
+          <p className="mt-1 text-[11px] font-medium text-rose-600 flex items-center gap-1">
+            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+            <span>{nameError}</span>
+          </p>
+        )}
+      </div>
 
-      <label className="block space-y-1.5 text-xs font-bold text-slate-700">
-        <span className="flex items-center gap-1"><Phone className="h-3.5 w-3.5" /> No. WhatsApp <span className="text-rose-500">*</span></span>
+      <div>
+        <label htmlFor="reg-phone" className="block text-xs font-bold text-slate-700 mb-1">
+          <span className="flex items-center gap-1"><Phone className="h-3.5 w-3.5 text-slate-500" /> Nomor WhatsApp Aktif <span className="text-rose-500">*</span></span>
+        </label>
         <input
+          id="reg-phone"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          onBlur={() => setTouchedPhone(true)}
           required
           type="tel"
-          className={inputCls}
-          placeholder="0812-3456-7890"
+          className={`${inputCls} ${phoneError ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/20' : ''}`}
+          placeholder="081234567890"
         />
-      </label>
+        {phoneError && (
+          <p className="mt-1 text-[11px] font-medium text-rose-600 flex items-center gap-1">
+            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+            <span>{phoneError}</span>
+          </p>
+        )}
+      </div>
 
-      <label className="block space-y-1.5 text-xs font-bold text-slate-700">
-        <span className="flex items-center gap-1"><Mail className="h-3.5 w-3.5" /> Email (opsional)</span>
+      <div>
+        <label htmlFor="reg-email" className="block text-xs font-bold text-slate-700 mb-1">
+          <span className="flex items-center gap-1"><Mail className="h-3.5 w-3.5 text-slate-500" /> Email (opsional)</span>
+        </label>
         <input
+          id="reg-email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           type="email"
           className={inputCls}
           placeholder="email@contoh.com"
         />
-      </label>
+      </div>
 
-      <label className="block space-y-1.5 text-xs font-bold text-slate-700">
-        <span className="flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> Mendaftar sebagai <span className="text-rose-500">*</span></span>
-        <select
-          value={requestedRole}
-          onChange={(e) => setRequestedRole(e.target.value)}
-          className={`${inputCls} appearance-none bg-[url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e")] bg-[length:1rem] bg-[right_0.75rem_center] bg-no-repeat pr-10`}
-        >
-          {REGISTER_ROLES.map((r) => (
-            <option key={r.value} value={r.value}>{r.label}</option>
-          ))}
-        </select>
-      </label>
+      <div>
+        <label className="block text-xs font-bold text-slate-700 mb-1">
+          <span className="flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5 text-slate-500" /> Kategori Pendaftar</span>
+        </label>
+        <div className="flex items-center justify-between px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-700">
+          <span>Santri / Calon Santri &amp; Wali</span>
+          <span className="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+            Jalur Santri
+          </span>
+        </div>
+      </div>
 
-      <label className="block space-y-1.5 text-xs font-bold text-slate-700">
-        <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" /> Alamat (opsional)</span>
+      <div>
+        <label htmlFor="reg-alamat" className="block text-xs font-bold text-slate-700 mb-1">
+          <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5 text-slate-500" /> Kota / Asal Daerah (opsional)</span>
+        </label>
         <input
+          id="reg-alamat"
           value={alamat}
           onChange={(e) => setAlamat(e.target.value)}
           className={inputCls}
-          placeholder="Kota / Kecamatan"
+          placeholder="mis. Gresik, Surabaya, Lamongan"
         />
-      </label>
+      </div>
 
-      <label className="block space-y-1.5 text-xs font-bold text-slate-700">
-        Alasan / Keterangan (opsional)
+      <div>
+        <label htmlFor="reg-alasan" className="block text-xs font-bold text-slate-700 mb-1">
+          Keterangan Tambahan (opsional)
+        </label>
         <textarea
+          id="reg-alasan"
           value={alasan}
           onChange={(e) => setAlasan(e.target.value)}
           rows={2}
           className={`${inputCls} resize-none`}
-          placeholder="Saya adalah santri angkatan 2026..."
+          placeholder="Catatan kelas, tahun angkatan, atau info pendaftaran santri..."
         />
-      </label>
+      </div>
 
       <button
         type="submit"
-        disabled={busy || !fullName.trim() || !phone.trim()}
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0d4a28] py-3 text-sm font-bold text-white transition hover:bg-[#0a3a20] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+        disabled={busy || !isFormValid}
+        className="flex w-full min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#0d4a28] py-3 text-sm font-bold text-white transition hover:bg-[#0a3a20] active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 shadow-sm"
       >
-        {busy ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <UserPlus className="h-4 w-4" aria-hidden />}
-        {busy ? 'Mengirim…' : 'Kirim Pendaftaran'}
+        {busy ? <Loader2 className="h-4.5 w-4.5 animate-spin" aria-hidden /> : <UserPlus className="h-4.5 w-4.5" aria-hidden />}
+        {busy ? 'Mengirim Pendaftaran…' : 'Kirim Pendaftaran Santri'}
       </button>
     </form>
   );
@@ -474,53 +584,61 @@ export const AuthModal: React.FC = () => {
   const info = INFO[tab];
   const showForm = tab !== 'guest' || showAccountForm;
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 sm:p-6" role="presentation">
-      {/* Backdrop */}
-      <div
-        ref={backdropRef}
-        className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm"
-        onClick={close}
-      />
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center p-3.5 sm:p-6" role="presentation">
+          {/* Backdrop with fade */}
+          <motion.div
+            ref={backdropRef}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="absolute inset-0 bg-slate-950/65 backdrop-blur-sm"
+            onClick={close}
+          />
 
-      {/* Toast */}
-      {toast && (
-        <div
-          role="status"
-          aria-live="polite"
-          className={`fixed left-1/2 top-4 z-[90] flex max-w-[92vw] -translate-x-1/2 items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold shadow-lg ${
-            toast.kind === 'success'
-              ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
-              : toast.kind === 'error'
-                ? 'border-rose-200 bg-rose-50 text-rose-900'
-                : 'border-sky-200 bg-sky-50 text-sky-900'
-          }`}
-        >
-          {toast.kind === 'success' ? <CheckCircle2 className="h-4 w-4" aria-hidden /> : <AlertCircle className="h-4 w-4" aria-hidden />}
-          {toast.text}
-        </div>
-      )}
+          {/* Toast */}
+          {toast && (
+            <div
+              role="status"
+              aria-live="polite"
+              className={`fixed left-1/2 top-4 z-[90] flex max-w-[92vw] -translate-x-1/2 items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-semibold shadow-lg ${
+                toast.kind === 'success'
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
+                  : toast.kind === 'error'
+                    ? 'border-rose-200 bg-rose-50 text-rose-900'
+                    : 'border-sky-200 bg-sky-50 text-sky-900'
+              }`}
+            >
+              {toast.kind === 'success' ? <CheckCircle2 className="h-4 w-4" aria-hidden /> : <AlertCircle className="h-4 w-4" aria-hidden />}
+              {toast.text}
+            </div>
+          )}
 
-      {/* Modal Panel */}
-      <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="auth-modal-heading"
-        className="relative z-10 grid w-full max-w-[56rem] overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_20px_60px_rgba(15,23,42,0.18)] lg:grid-cols-[1fr_17rem]"
-        style={{ maxHeight: 'calc(100vh - 3rem)' }}
-      >
-        {/* Close button */}
-        <button
-          type="button"
-          onClick={close}
-          aria-label="Tutup"
-          className="absolute right-3 top-3 z-20 grid h-9 w-9 place-items-center rounded-full bg-white/80 text-slate-400 shadow-sm backdrop-blur transition hover:bg-white hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
-        >
-          <X className="h-4 w-4" />
-        </button>
+          {/* Modal Panel with subtle scale & slide-up */}
+          <motion.div
+            ref={panelRef}
+            initial={{ opacity: 0, scale: 0.95, y: 8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 8 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="auth-modal-heading"
+            className="relative z-10 grid w-full max-w-[56rem] overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-[0_24px_70px_rgba(15,23,42,0.22)] lg:grid-cols-[1fr_17.5rem]"
+            style={{ maxHeight: 'calc(100vh - 2.5rem)' }}
+          >
+            {/* Close button with >= 44x44px touch target */}
+            <button
+              type="button"
+              onClick={close}
+              aria-label="Tutup dialog masuk"
+              className="absolute right-3 top-3 z-20 min-w-[44px] min-h-[44px] grid place-items-center rounded-full bg-white/85 text-slate-500 shadow-xs backdrop-blur hover:bg-white hover:text-slate-900 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            >
+              <X className="h-5 w-5" />
+            </button>
 
         {/* LEFT: form area */}
         <div className="overflow-y-auto p-5 sm:p-7" style={{ maxHeight: 'calc(100vh - 3rem)' }}>
@@ -679,7 +797,9 @@ export const AuthModal: React.FC = () => {
             </p>
           </aside>
         )}
-      </div>
-    </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 };
