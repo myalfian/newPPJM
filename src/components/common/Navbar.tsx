@@ -4,6 +4,52 @@ import { motion } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import { PUBLIC_NAV_TABS, NavTabItem } from '../../data/navigationData';
 import { GuestButton } from '../auth/GuestButton';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { useCachedQuery } from '../../lib/queryCache';
+
+export interface TickerItem {
+  id: string;
+  title: string;
+  category?: string;
+  excerpt?: string;
+  slug?: string;
+  is_featured?: boolean;
+}
+
+const DEFAULT_TICKER_ITEMS: TickerItem[] = [
+  {
+    id: 'default-spmb',
+    title: '✨ Pendaftaran SPMB (Sistem Penerimaan Murid Baru) TP 2026/2027 telah dibuka!',
+    excerpt: '/spmb',
+    category: 'Pengumuman',
+    is_featured: true,
+  },
+  {
+    id: 'default-akreditasi',
+    title: '🏆 Pondok Pesantren Jauharul Maknuun Resmi Meraih Akreditasi "A" BAN-PDM',
+    excerpt: '/jm-center',
+    category: 'Prestasi',
+    is_featured: true,
+  },
+  {
+    id: 'default-program',
+    title: '📖 Program Unggulan: Tahfidz 30 Juz Bersanad, Madrasah Diniyah Salafiyah, & Pendidikan Terpadu',
+    excerpt: '/program',
+    category: 'Akademik',
+  },
+  {
+    id: 'default-stem',
+    title: '🔬 Laboratorium Komputer Modern & Kurikulum Riset STEM Santri Terpadu',
+    excerpt: '/stem',
+    category: 'Akademik',
+  },
+  {
+    id: 'default-kontak',
+    title: '📲 WhatsApp Admin & Medsos Resmi: +62 856-4619-9273',
+    excerpt: 'medsos-modal',
+    category: 'Kontak',
+  },
+];
 
 interface NavbarProps {
 
@@ -53,31 +99,151 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
     return false;
   };
 
+  // Fetch dynamic Info Terkini Ticker from Supabase with instant SWR cache
+  const { data: rawTickerItems, refetch: refetchTicker } = useCachedQuery<TickerItem[]>(
+    'navbar-info-terkini-ticker',
+    async () => {
+      if (!isSupabaseConfigured()) return DEFAULT_TICKER_ITEMS;
+      const { data, error } = await (supabase as any)
+        .from('info_terkini')
+        .select('id, title, category, excerpt, slug, is_featured')
+        .eq('is_published', true)
+        .order('is_featured', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(15);
+
+      if (error || !data || data.length === 0) {
+        return DEFAULT_TICKER_ITEMS;
+      }
+      return data as unknown as TickerItem[];
+    },
+    DEFAULT_TICKER_ITEMS,
+    60 * 1000
+  );
+
+  const tickerItems = rawTickerItems && rawTickerItems.length > 0 ? rawTickerItems : DEFAULT_TICKER_ITEMS;
+
+  // Real-time synchronization when editor updates Info Terkini in CMS
+  useEffect(() => {
+    const handleTickerRefresh = () => {
+      refetchTicker();
+    };
+    window.addEventListener('ppjm-ticker-refresh', handleTickerRefresh);
+    return () => window.removeEventListener('ppjm-ticker-refresh', handleTickerRefresh);
+  }, [refetchTicker]);
+
+  const renderTickerEntry = (item: TickerItem, keySuffix: string) => {
+    const target = item.excerpt?.trim();
+    const isMedsosModal = target === 'medsos-modal' || item.title.includes('WhatsApp Admin');
+    const isInternalLink = target?.startsWith('/');
+    const isExternalLink = target?.startsWith('http://') || target?.startsWith('https://');
+    const isSlugLink = !target && item.slug && item.slug.trim().length > 0;
+
+    const labelBadge = item.is_featured ? (
+      <span className="bg-amber-500/25 text-amber-900 border border-amber-500/40 px-1.5 py-0.5 rounded text-[9.5px] font-extrabold uppercase tracking-wider mr-1.5 shrink-0">
+        Utama
+      </span>
+    ) : item.category && item.category !== 'Umum' ? (
+      <span className="bg-[#1a6b3c]/20 text-[#073b22] px-1.5 py-0.5 rounded text-[9.5px] font-bold uppercase tracking-wider mr-1.5 shrink-0">
+        {item.category}
+      </span>
+    ) : null;
+
+    const textContent = (
+      <span className="inline-flex items-center">
+        {labelBadge}
+        <span className={item.is_featured ? 'font-bold text-[#073b22]' : 'font-medium'}>
+          {item.title}
+        </span>
+      </span>
+    );
+
+    if (isMedsosModal) {
+      return (
+        <button
+          key={`${item.id}-${keySuffix}`}
+          type="button"
+          onClick={() => window.dispatchEvent(new CustomEvent('open-medsos-modal'))}
+          className="hover:underline cursor-pointer font-bold text-emerald-800 inline-flex items-center hover:text-emerald-950 transition-colors"
+          title="Buka Kontak & Media Sosial Resmi"
+        >
+          {textContent}
+        </button>
+      );
+    }
+
+    if (isInternalLink && target) {
+      return (
+        <Link
+          key={`${item.id}-${keySuffix}`}
+          to={target}
+          className="hover:underline font-bold text-[#0d4a28] hover:text-[#073b22] inline-flex items-center transition-colors"
+        >
+          {textContent}
+        </Link>
+      );
+    }
+
+    if (isExternalLink) {
+      return (
+        <a
+          key={`${item.id}-${keySuffix}`}
+          href={target}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:underline font-bold text-[#0d4a28] hover:text-[#073b22] inline-flex items-center transition-colors"
+        >
+          {textContent}
+        </a>
+      );
+    }
+
+    if (isSlugLink) {
+      return (
+        <Link
+          key={`${item.id}-${keySuffix}`}
+          to={`/jm-news?detail=${encodeURIComponent(item.slug!)}`}
+          className="hover:underline font-medium text-[#0d4a28] hover:text-[#073b22] inline-flex items-center transition-colors"
+        >
+          {textContent}
+        </Link>
+      );
+    }
+
+    return (
+      <span key={`${item.id}-${keySuffix}`} className="inline-flex items-center">
+        {textContent}
+      </span>
+    );
+  };
+
   return (
     <>
-      {/* 1. TOP NEWS TICKER (Light Matcha/Gold Tone matching screenshot) */}
-      <div id="topNewsTicker" className="bg-[#d4af37]/15 border-b border-[#d4af37]/30 py-1.5 px-4 overflow-hidden hidden md:flex items-center text-xs">
-        <div className="bg-[#1a6b3c] text-white font-bold px-3 py-1 rounded-md text-[11px] uppercase tracking-wider shrink-0 flex items-center gap-1.5 mr-3 shadow-xs">
-          <Sparkles className="w-3.5 h-3.5 text-[#d4af37] animate-pulse" />
-          <span>INFO TERKINI</span>
+      {/* 1. TOP NEWS TICKER (Dynamic CMS Running Ticker with Smooth Hover Pause) */}
+      <div
+        id="topNewsTicker"
+        className="bg-[#d4af37]/15 border-b border-[#d4af37]/30 py-1.5 px-3 sm:px-4 overflow-hidden flex items-center text-xs select-none"
+        aria-label="Warta Berjalan Info Terkini"
+      >
+        <div className="bg-[#1a6b3c] text-white font-bold px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-md text-[10px] sm:text-[11px] uppercase tracking-wider shrink-0 flex items-center gap-1.5 mr-2 sm:mr-3 shadow-xs">
+          <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#d4af37] animate-pulse" />
+          <span className="font-extrabold tracking-wider">INFO TERKINI</span>
         </div>
-        <div className="overflow-hidden whitespace-nowrap w-full">
-          <div className="animate-ticker text-[#0d4a28] font-medium inline-block space-x-6">
-            <Link to="/spmb" className="hover:underline font-bold">✨ Pendaftaran SPMB (Sistem Penerimaan Murid Baru) TP 2026/2027 telah dibuka!</Link>
-            <span>|</span>
-            <span>🏆 Pondok Pesantren Jauharul Maknuun Resmi Meraih Akreditasi &quot;A&quot; BAN-PDM</span>
-            <span>|</span>
-            <span>📖 Program Unggulan: Tahfidz 30 Juz Bersanad, Madrasah Diniyah Salafiyah, &amp; Pendidikan Terpadu</span>
-            <span>|</span>
-            <span>🔬 Laboratorium Komputer Modern &amp; Kurikulum Riset STEM Santri Terpadu</span>
-            <span>|</span>
-            <button
-              type="button"
-              onClick={() => window.dispatchEvent(new CustomEvent('open-medsos-modal'))}
-              className="hover:underline cursor-pointer font-bold text-emerald-800 inline-flex items-center gap-1"
-            >
-              <span>📲 WhatsApp Admin &amp; Medsos Resmi: +62 856-4619-9273</span>
-            </button>
+        <div className="overflow-hidden whitespace-nowrap w-full group">
+          <div className="animate-ticker text-[#0d4a28] font-medium inline-flex items-center space-x-6 group-hover:[animation-play-state:paused]">
+            {tickerItems.map((item, idx) => (
+              <React.Fragment key={`ticker-1-${item.id}-${idx}`}>
+                {renderTickerEntry(item, `t1-${idx}`)}
+                <span className="text-[#1a6b3c]/40 select-none">|</span>
+              </React.Fragment>
+            ))}
+            {/* Seamless loop duplication */}
+            {tickerItems.map((item, idx) => (
+              <React.Fragment key={`ticker-2-${item.id}-${idx}`}>
+                {renderTickerEntry(item, `t2-${idx}`)}
+                <span className="text-[#1a6b3c]/40 select-none">|</span>
+              </React.Fragment>
+            ))}
           </div>
         </div>
       </div>

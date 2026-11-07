@@ -552,6 +552,12 @@ export const BulkContentPage: React.FC = () => {
 
       if (selectedSec.table === 'galeri_foto') invalidateCache('gallery_photo_activities_v2');
       if (selectedSec.table === 'galeri_videos') invalidateCache('gallery_video_activities_v2');
+      if (selectedSec.table === 'info_terkini') {
+        invalidateCache('navbar-info-terkini-ticker');
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('ppjm-ticker-refresh'));
+        }
+      }
 
       setBanner({
         kind: 'ok',

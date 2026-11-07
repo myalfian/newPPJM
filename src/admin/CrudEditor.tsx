@@ -849,6 +849,12 @@ const Editor: React.FC<{ sec: CrudSection }> = ({ sec }) => {
   const refreshCaches = () => {
     if (sec.table === 'galeri_foto') invalidateCache('gallery_photo_activities_v2');
     if (sec.table === 'galeri_videos') invalidateCache('gallery_video_activities_v2');
+    if (sec.table === 'info_terkini') {
+      invalidateCache('navbar-info-terkini-ticker');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('ppjm-ticker-refresh'));
+      }
+    }
   };
 
   const saveRow = async (row: Row) => {
