@@ -102,6 +102,31 @@ function parseGalleryPhotos(raw: string, fallbackUrl?: string, fallbackCaption?:
   return list.slice(0, 3);
 }
 
+/** Extract internal Supabase Storage object paths to prevent orphan files when row is deleted */
+function extractStoragePaths(row: Row): { bucket: string; path: string }[] {
+  const paths: { bucket: string; path: string }[] = [];
+  const regex = /\/storage\/v1\/object\/public\/([^/]+)\/(.+)$/;
+
+  const checkValue = (val: unknown) => {
+    if (typeof val === 'string') {
+      const match = val.match(regex);
+      if (match) {
+        paths.push({ bucket: match[1], path: decodeURIComponent(match[2].split('?')[0]) });
+      }
+    } else if (Array.isArray(val)) {
+      val.forEach((item) => {
+        if (typeof item === 'string') checkValue(item);
+        else if (item && typeof item === 'object' && 'photo_url' in item) {
+          checkValue((item as any).photo_url);
+        }
+      });
+    }
+  };
+
+  Object.values(row).forEach((v) => checkValue(v));
+  return paths;
+}
+
 /** Baris DB → nilai form (semua string/boolean agar mudah diedit). */
 function toDraft(sec: CrudSection, row: Row | null): Draft {
   const d: Draft = {};
@@ -775,7 +800,11 @@ const Editor: React.FC<{ sec: CrudSection }> = ({ sec }) => {
       .limit(300);
     if (error) {
       setStatus('error');
-      setMsg(`Gagal memuat data: ${error.message}`);
+      if (error.code === '42501' || error.message.toLowerCase().includes('violates row-level security')) {
+        setMsg(`Akses Ditolak (403): Peran Anda tidak memiliki izin melihat data "${sec.label}".`);
+      } else {
+        setMsg(`Gagal memuat data: ${error.message}`);
+      }
     }
     const list = ((data as Row[] | null) ?? []).map((r) => ({ ...r, id: String(r.id) }));
     setRows(list);
@@ -863,6 +892,9 @@ const Editor: React.FC<{ sec: CrudSection }> = ({ sec }) => {
       const payload = toPayload(sec, drafts[row.id]);
       const { error } = await db.from(sec.table).update(payload).eq('id', row.id);
       if (error) {
+        if (error.code === '42501' || error.message.toLowerCase().includes('violates row-level security')) {
+          throw new Error(`Akses Ditolak (403): Peran Anda tidak memiliki izin untuk menyimpan perubahan pada "${sec.label}".`);
+        }
         throw new Error(`Gagal menyimpan perubahan: ${error.message}`);
       }
       refreshCaches();
@@ -888,6 +920,9 @@ const Editor: React.FC<{ sec: CrudSection }> = ({ sec }) => {
 
       const { error } = await db.from(sec.table).insert(payload);
       if (error) {
+        if (error.code === '42501' || error.message.toLowerCase().includes('violates row-level security')) {
+          throw new Error(`Akses Ditolak (403): Peran Anda tidak memiliki izin untuk menambah data pada "${sec.label}".`);
+        }
         throw new Error(`Gagal menambah data: ${error.message}`);
       }
       refreshCaches();
@@ -902,8 +937,26 @@ const Editor: React.FC<{ sec: CrudSection }> = ({ sec }) => {
 
   const removeRow = async (row: Row) => {
     if (!window.confirm('Hapus data ini? Tindakan ini tidak bisa dibatalkan.')) return;
+
+    // Clean up associated files from Supabase Storage (prevent orphan files)
+    const storageFiles = extractStoragePaths(row);
+    if (storageFiles.length > 0) {
+      try {
+        await Promise.allSettled(
+          storageFiles.map((sf) => db.storage.from(sf.bucket).remove([sf.path]))
+        );
+      } catch (err) {
+        console.warn('Storage cleanup notice:', err);
+      }
+    }
+
     const { error } = await db.from(sec.table).delete().eq('id', row.id);
-    if (error) return fail(`Gagal menghapus data: ${error.message}`);
+    if (error) {
+      if (error.code === '42501' || error.message.toLowerCase().includes('violates row-level security')) {
+        return fail(`Akses Ditolak (403): Peran Anda tidak memiliki izin menghapus data pada "${sec.label}".`);
+      }
+      return fail(`Gagal menghapus data: ${error.message}`);
+    }
     refreshCaches();
     await load();
     ok('Data berhasil dihapus.');
@@ -917,7 +970,12 @@ const Editor: React.FC<{ sec: CrudSection }> = ({ sec }) => {
       patch[sec.publishedAtField] = new Date().toISOString();
     }
     const { error } = await db.from(sec.table).update(patch).eq('id', row.id);
-    if (error) return fail(`Gagal mengubah status tampil: ${error.message}`);
+    if (error) {
+      if (error.code === '42501' || error.message.toLowerCase().includes('violates row-level security')) {
+        return fail(`Akses Ditolak (403): Peran Anda tidak memiliki izin menerbitkan data pada "${sec.label}".`);
+      }
+      return fail(`Gagal mengubah status tampil: ${error.message}`);
+    }
     refreshCaches();
     await load();
   };

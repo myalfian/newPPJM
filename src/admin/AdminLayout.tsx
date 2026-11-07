@@ -47,7 +47,6 @@ const GROUPS: NavGroup[] = [
           { to: '/profile', label: 'Profil Saya', icon: UserCircle2 },
           ...crudGroup('Manajemen'),
           ...crudGroup('Pengaturan'),
-          { to: '/admin/kelola-aset', label: 'Manajemen Aset', icon: Layout, section: 'master_data' },
         ],
       },
 ];
