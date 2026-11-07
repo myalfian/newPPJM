@@ -18,7 +18,7 @@ import {
 import '../components/common/NavBarTabs.css';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { useCachedQuery, invalidateCache } from '../lib/queryCache';
-import { NewsItem, INITIAL_NEWS } from '../data/newsData';
+import { NewsItem } from '../data/newsData';
 import { generateWhatsAppBroadcastUrl } from '../lib/waFormatter';
 import { stripHtmlToPlainText } from '../utils/richContentUtils';
 
@@ -37,7 +37,7 @@ const NEWS_TABS: {
 
 const fetchPublicNews = async (): Promise<NewsItem[]> => {
   if (!isSupabaseConfigured()) {
-    return INITIAL_NEWS;
+    return [];
   }
   try {
     const { data: bData, error } = await (supabase.from('berita' as any) as any)
@@ -49,7 +49,7 @@ const fetchPublicNews = async (): Promise<NewsItem[]> => {
     const rows: any[] = (!error && Array.isArray(bData)) ? bData : [];
 
     if (rows.length === 0) {
-      return INITIAL_NEWS;
+      return [];
     }
 
     return rows.map((row: any) => ({
@@ -73,7 +73,7 @@ const fetchPublicNews = async (): Promise<NewsItem[]> => {
         : 'Terbaru'
     }));
   } catch {
-    return INITIAL_NEWS;
+    return [];
   }
 };
 
@@ -94,7 +94,7 @@ export const Berita: React.FC = () => {
   const tabListRef = useRef<HTMLDivElement | null>(null);
   const activeTabRef = useRef<HTMLButtonElement | null>(null);
 
-  const { data: newsItems = INITIAL_NEWS, refetch } = useCachedQuery<NewsItem[]>(
+  const { data: newsItems = [], refetch } = useCachedQuery<NewsItem[]>(
     'public-news-list',
     fetchPublicNews
   );

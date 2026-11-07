@@ -16,11 +16,10 @@ import {
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { OsisArticleEvent } from './types';
-import { OSIS_EVENTS as INITIAL_EVENTS } from './osisData';
 import '../../components/common/BottomNavBarTabs.css';
 
 export const OsisEventsSection: React.FC = () => {
-  const [events, setEvents] = useState<OsisArticleEvent[]>(INITIAL_EVENTS);
+  const [events, setEvents] = useState<OsisArticleEvent[]>([]);
   const [selectedArticle, setSelectedArticle] = useState<OsisArticleEvent | null>(null);
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>('Pendidikan');
@@ -51,7 +50,7 @@ export const OsisEventsSection: React.FC = () => {
             slug: row.slug || `event-${row.id}`,
             title: row.title,
             date: row.date || 'Oktober 2026',
-            bannerUrl: row.image_url || row.banner_url || INITIAL_EVENTS[0].bannerUrl,
+            bannerUrl: row.image_url || row.banner_url || '',
             summary: row.description || row.summary || row.title,
             author: row.author || 'Tim Humas & OSIS SMP Plus JM',
             category: row.category || 'Warta & Agenda',
@@ -59,10 +58,9 @@ export const OsisEventsSection: React.FC = () => {
             content: row.content || row.description || ''
           }));
 
-          // Merge without duplicate titles
-          const existingTitles = new Set(INITIAL_EVENTS.map((e) => e.title.toLowerCase()));
-          const newEntries = dynamicEvents.filter((e) => !existingTitles.has(e.title.toLowerCase()));
-          setEvents([...INITIAL_EVENTS, ...newEntries]);
+          setEvents(dynamicEvents);
+        } else {
+          setEvents([]);
         }
       } catch (err) {
         console.warn('Failed to load osis_events:', err);
@@ -198,71 +196,79 @@ export const OsisEventsSection: React.FC = () => {
       </div>
 
       {/* Event Articles Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5">
-        {filteredEvents.map((event) => (
-          <article
-            key={event.id}
-            onClick={() => setSelectedArticle(event)}
-            className="group bg-white/95 dark:bg-zinc-900/90 rounded-xl sm:rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 overflow-hidden shadow-2xs hover:shadow-md hover:border-[#0E7A4C]/50 transition-all duration-300 flex flex-col justify-between cursor-pointer active:scale-[0.99] select-none"
-          >
-            <div>
-              {/* Photo Banner with Aspect 16/9 */}
-              <div className="relative aspect-[16/9] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
-                <img
-                  src={event.bannerUrl}
-                  alt={event.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+      {filteredEvents.length === 0 ? (
+        <div className="py-12 px-4 text-center rounded-2xl border border-dashed border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/50">
+          <Newspaper className="w-10 h-10 mx-auto text-zinc-400 mb-2" />
+          <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Belum ada dokumentasi kegiatan untuk kategori ini</p>
+          <p className="text-xs text-zinc-500 mt-1">Dokumentasi kegiatan OSIS akan tampil di sini setelah ditambahkan melalui Admin CMS.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5">
+          {filteredEvents.map((event) => (
+            <article
+              key={event.id}
+              onClick={() => setSelectedArticle(event)}
+              className="group bg-white/95 dark:bg-zinc-900/90 rounded-xl sm:rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 overflow-hidden shadow-2xs hover:shadow-md hover:border-[#0E7A4C]/50 transition-all duration-300 flex flex-col justify-between cursor-pointer active:scale-[0.99] select-none"
+            >
+              <div>
+                {/* Photo Banner with Aspect 16/9 */}
+                <div className="relative aspect-[16/9] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                  <img
+                    src={event.bannerUrl}
+                    alt={event.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
 
-                {/* Category Pill Tag */}
-                <div className="absolute top-2.5 left-2.5">
-                  <span className="text-[9.5px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/60 text-[#C8A951] border border-[#C8A951]/40 backdrop-blur-md shadow-2xs">
-                    {event.category}
-                  </span>
-                </div>
-
-                {/* Date Tag */}
-                <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 text-[11px] text-white/90 font-medium drop-shadow-md">
-                  <Calendar className="w-3 h-3 text-[#C8A951]" />
-                  <span>{event.date}</span>
-                </div>
-              </div>
-
-              {/* Title & Excerpt */}
-              <div className="p-2.5 sm:p-3.5 space-y-1.5">
-                <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white group-hover:text-[#0E7A4C] dark:group-hover:text-emerald-400 transition-colors leading-snug line-clamp-2">
-                  {event.title}
-                </h3>
-
-                <p className="text-[11.5px] sm:text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed">
-                  {event.summary}
-                </p>
-
-                {event.sloganQuote && (
-                  <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/60 text-[11px] font-semibold text-amber-900 dark:text-amber-200 italic">
-                    &quot;{event.sloganQuote}&quot;
+                  {/* Category Pill Tag */}
+                  <div className="absolute top-2.5 left-2.5">
+                    <span className="text-[9.5px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-black/60 text-[#C8A951] border border-[#C8A951]/40 backdrop-blur-md shadow-2xs">
+                      {event.category}
+                    </span>
                   </div>
-                )}
 
-                <div className="flex items-center gap-1.5 text-[11px] text-zinc-400 pt-1.5 border-t border-zinc-100 dark:border-zinc-800">
-                  <User className="w-3 h-3 text-[#0E7A4C]" />
-                  <span className="truncate">{event.author}</span>
+                  {/* Date Tag */}
+                  <div className="absolute bottom-2.5 left-2.5 flex items-center gap-1.5 text-[11px] text-white/90 font-medium drop-shadow-md">
+                    <Calendar className="w-3 h-3 text-[#C8A951]" />
+                    <span>{event.date}</span>
+                  </div>
+                </div>
+
+                {/* Title & Excerpt */}
+                <div className="p-2.5 sm:p-3.5 space-y-1.5">
+                  <h3 className="text-sm sm:text-base font-bold text-zinc-900 dark:text-white group-hover:text-[#0E7A4C] dark:group-hover:text-emerald-400 transition-colors leading-snug line-clamp-2">
+                    {event.title}
+                  </h3>
+
+                  <p className="text-[11.5px] sm:text-xs text-zinc-600 dark:text-zinc-400 line-clamp-2 leading-relaxed">
+                    {event.summary}
+                  </p>
+
+                  {event.sloganQuote && (
+                    <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/60 text-[11px] font-semibold text-amber-900 dark:text-amber-200 italic">
+                      &quot;{event.sloganQuote}&quot;
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-1.5 text-[11px] text-zinc-400 pt-1.5 border-t border-zinc-100 dark:border-zinc-800">
+                    <User className="w-3 h-3 text-[#0E7A4C]" />
+                    <span className="truncate">{event.author}</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Read More Action */}
-            <div className="p-2.5 sm:p-3.5 pt-0">
-              <div className="flex items-center justify-between text-[11px] font-bold text-[#0E7A4C] dark:text-emerald-400 group-hover:underline">
-                <span>Baca Dokumentasi Lengkap</span>
-                <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+              {/* Read More Action */}
+              <div className="p-2.5 sm:p-3.5 pt-0">
+                <div className="flex items-center justify-between text-[11px] font-bold text-[#0E7A4C] dark:text-emerald-400 group-hover:underline">
+                  <span>Baca Dokumentasi Lengkap</span>
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
-      </div>
+            </article>
+          ))}
+        </div>
+      )}
 
       {/* READING MODAL: EDITORIAL FULL ARTICLE VIEW */}
       {selectedArticle && (

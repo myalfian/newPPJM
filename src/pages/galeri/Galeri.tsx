@@ -254,7 +254,14 @@ const SAMPLE_VIDEO_ACTIVITIES: VideoActivity[] = [
   },
 ];
 
-// Supabase fetching with fallback caching
+// Helper extract YouTube thumbnail
+function extractYouTubeThumbnail(url?: string): string {
+  if (!url) return '';
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+  return match ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg` : '';
+}
+
+// Supabase fetching without mock data fallback
 const fetchPhotoActivitiesFromDb = async (): Promise<PhotoActivity[]> => {
   try {
     const { data, error } = await supabase
@@ -264,16 +271,16 @@ const fetchPhotoActivitiesFromDb = async (): Promise<PhotoActivity[]> => {
       .order('created_at', { ascending: false });
 
     if (error || !data || data.length === 0) {
-      return SAMPLE_PHOTO_ACTIVITIES;
+      return [];
     }
 
     const activeRows = data.filter((item: any) => item.is_active !== false);
     if (activeRows.length === 0) {
-      return SAMPLE_PHOTO_ACTIVITIES;
+      return [];
     }
 
     return activeRows.map((item: any, idx: number) => {
-      const primaryUrl = item.image_url || SAMPLE_PHOTO_ACTIVITIES[0].photos[0].photo_url;
+      const primaryUrl = item.image_url || '';
       let photos: PhotoItem[] = [];
 
       if (Array.isArray(item.photos) && item.photos.length > 0) {
@@ -285,14 +292,8 @@ const fetchPhotoActivitiesFromDb = async (): Promise<PhotoActivity[]> => {
           }));
       }
 
-      if (photos.length === 0) {
+      if (photos.length === 0 && primaryUrl) {
         photos.push({ photo_url: primaryUrl, caption: item.description || item.title });
-      }
-
-      // Pad with fallback aesthetic photos so 3-photo slider layout always has 3 slides
-      while (photos.length < 3) {
-        const fallback = SAMPLE_PHOTO_ACTIVITIES[idx % SAMPLE_PHOTO_ACTIVITIES.length].photos[photos.length];
-        photos.push(fallback || { photo_url: primaryUrl, caption: item.title });
       }
 
       const formattedDate =
@@ -311,7 +312,7 @@ const fetchPhotoActivitiesFromDb = async (): Promise<PhotoActivity[]> => {
       };
     });
   } catch {
-    return SAMPLE_PHOTO_ACTIVITIES;
+    return [];
   }
 };
 
@@ -324,12 +325,12 @@ const fetchVideoActivitiesFromDb = async (): Promise<VideoActivity[]> => {
       .order('created_at', { ascending: false });
 
     if (error || !data || data.length === 0) {
-      return SAMPLE_VIDEO_ACTIVITIES;
+      return [];
     }
 
     const activeRows = data.filter((item: any) => item.is_active !== false);
     if (activeRows.length === 0) {
-      return SAMPLE_VIDEO_ACTIVITIES;
+      return [];
     }
 
     return activeRows.map((item: any, idx: number) => {
@@ -337,19 +338,21 @@ const fetchVideoActivitiesFromDb = async (): Promise<VideoActivity[]> => {
         ? new Date(item.created_at).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
         : 'Terbaru';
 
+      const thumb = item.thumbnail_url || extractYouTubeThumbnail(item.youtube_url) || '';
+
       return {
         id: item.id || `v-${idx}`,
         title: item.title,
         categoryTag: item.category || 'Video Resmi',
         event_date: formattedDate,
-        duration: '07:30',
-        flyer: item.thumbnail_url || SAMPLE_VIDEO_ACTIVITIES[idx % SAMPLE_VIDEO_ACTIVITIES.length].flyer,
+        duration: 'Video',
+        flyer: thumb,
         youtubeUrl: item.youtube_url || 'https://youtube.com/@ppjauharulmaknuunlasem?si=OHYeRczBA-kLl3Kl',
         description: item.description || '',
       };
     });
   } catch {
-    return SAMPLE_VIDEO_ACTIVITIES;
+    return [];
   }
 };
 

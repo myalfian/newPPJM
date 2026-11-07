@@ -9,6 +9,7 @@ import {
   CheckCircle2,
   Bookmark,
   ChevronRight,
+  ChevronLeft,
   Filter
 } from 'lucide-react';
 import { QURAN_SURAHS, QURAN_JUZ_LIST, SurahMeta, JuzMeta } from '../../../lib/quranData';
@@ -28,12 +29,16 @@ export const SurahSelectorModal: React.FC<SurahSelectorModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'surah' | 'juz'>('surah');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSurahForAyah, setSelectedSurahForAyah] = useState<SurahMeta | null>(null);
+  const [targetAyahInput, setTargetAyahInput] = useState<string>('1');
 
-  // Lock body scroll when modal is open
+  // Lock body scroll when modal is open and reset sub-step
   useEffect(() => {
     if (isOpen) {
       const orig = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
+      setSelectedSurahForAyah(null);
+      setTargetAyahInput('1');
       return () => {
         document.body.style.overflow = orig;
       };
@@ -209,7 +214,143 @@ export const SurahSelectorModal: React.FC<SurahSelectorModalProps> = ({
 
         {/* Scrollable Content */}
         <div className="p-4 sm:p-5 overflow-y-auto flex-1">
-          {activeTab === 'surah' ? (
+          {selectedSurahForAyah ? (
+            /* SUB-VIEW: PILIH AYAT DALAM SURAT TERPILIH */
+            <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-200">
+              {/* Navigation header */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+                <button
+                  type="button"
+                  onClick={() => setSelectedSurahForAyah(null)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-xs font-bold text-zinc-700 dark:text-zinc-200 transition-colors w-fit cursor-pointer"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Kembali ke Daftar Surat
+                </button>
+
+                <div className="text-left sm:text-right">
+                  <span className="text-sm font-bold text-emerald-800 dark:text-emerald-300 block">
+                    Surat {selectedSurahForAyah.nameLatin} ({selectedSurahForAyah.nameArabic})
+                  </span>
+                  <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                    {selectedSurahForAyah.nameIndo} • Total {selectedSurahForAyah.numberOfAyahs} Ayat • Juz {selectedSurahForAyah.juzStart}
+                  </span>
+                </div>
+              </div>
+
+              {/* Quick Ayah Jump Box */}
+              <div className="p-4 rounded-2xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/80 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <label className="text-xs font-bold text-emerald-900 dark:text-emerald-200 flex items-center gap-1.5">
+                    <BookOpen className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    Pilih Nomor Ayat (1 - {selectedSurahForAyah.numberOfAyahs}):
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelectSurah(selectedSurahForAyah, 1);
+                      onClose();
+                    }}
+                    className="px-3.5 py-1.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer w-fit"
+                  >
+                    Mulai dari Awal Surat (Ayat 1)
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <div className="relative">
+                    <input
+                      type="number"
+                      min={1}
+                      max={selectedSurahForAyah.numberOfAyahs}
+                      value={targetAyahInput}
+                      onChange={(e) => setTargetAyahInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const num = Math.min(
+                            Math.max(1, parseInt(targetAyahInput) || 1),
+                            selectedSurahForAyah.numberOfAyahs
+                          );
+                          onSelectSurah(selectedSurahForAyah, num);
+                          onClose();
+                        }
+                      }}
+                      placeholder="Mis: 125"
+                      className="w-32 px-3.5 py-2 text-sm font-bold text-center rounded-xl bg-white dark:bg-zinc-800 border border-emerald-300 dark:border-emerald-700 text-zinc-900 dark:text-white focus:outline-hidden focus:ring-2 focus:ring-emerald-500 shadow-inner"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const num = Math.min(
+                        Math.max(1, parseInt(targetAyahInput) || 1),
+                        selectedSurahForAyah.numberOfAyahs
+                      );
+                      onSelectSurah(selectedSurahForAyah, num);
+                      onClose();
+                    }}
+                    className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                  >
+                    Buka Ayat Ini
+                  </button>
+                  <span className="text-[11px] text-zinc-500 dark:text-zinc-400">
+                    (Maksimal {selectedSurahForAyah.numberOfAyahs} ayat)
+                  </span>
+                </div>
+
+                {/* Preset Chips */}
+                {selectedSurahForAyah.numberOfAyahs > 10 && (
+                  <div className="flex items-center gap-1.5 flex-wrap pt-2 border-t border-emerald-200/60 dark:border-emerald-800/60">
+                    <span className="text-[11px] font-semibold text-emerald-900 dark:text-emerald-300">
+                      Lompat Cepat:
+                    </span>
+                    {[1, 10, 25, 50, 75, 100, 125, 150, 200, 250, selectedSurahForAyah.numberOfAyahs]
+                      .filter(
+                        (n, idx, arr) =>
+                          n <= selectedSurahForAyah.numberOfAyahs && arr.indexOf(n) === idx
+                      )
+                      .map((num) => (
+                        <button
+                          key={num}
+                          type="button"
+                          onClick={() => {
+                            onSelectSurah(selectedSurahForAyah, num);
+                            onClose();
+                          }}
+                          className="px-2.5 py-0.5 rounded-lg bg-white dark:bg-zinc-800 border border-emerald-200 dark:border-emerald-700 text-[11px] font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-zinc-700 transition-colors cursor-pointer"
+                        >
+                          Ayat {num}
+                        </button>
+                      ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Complete Ayah Grid */}
+              <div className="space-y-2">
+                <div className="text-xs font-bold text-zinc-600 dark:text-zinc-400">
+                  Daftar Seluruh Ayat ({selectedSurahForAyah.numberOfAyahs} Ayat):
+                </div>
+                <div className="grid grid-cols-6 sm:grid-cols-10 md:grid-cols-12 gap-1.5 max-h-64 overflow-y-auto p-1.5 border rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-zinc-900/40">
+                  {Array.from({ length: selectedSurahForAyah.numberOfAyahs }, (_, i) => i + 1).map(
+                    (ayahNum) => (
+                      <button
+                        key={ayahNum}
+                        type="button"
+                        onClick={() => {
+                          onSelectSurah(selectedSurahForAyah, ayahNum);
+                          onClose();
+                        }}
+                        className="h-9 rounded-xl font-bold text-xs flex items-center justify-center transition-all bg-zinc-50 dark:bg-zinc-800/80 hover:bg-emerald-600 hover:text-white text-zinc-700 dark:text-zinc-200 border border-zinc-200/70 dark:border-zinc-700/70 hover:border-emerald-600 active:scale-95 cursor-pointer shadow-2xs"
+                      >
+                        {ayahNum}
+                      </button>
+                    )
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : activeTab === 'surah' ? (
             /* TAB 1: DAFTAR 114 SURAT */
             filteredSurahs.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
@@ -217,21 +358,23 @@ export const SurahSelectorModal: React.FC<SurahSelectorModalProps> = ({
                   const isSelected = surah.number === selectedSurahNumber;
 
                   return (
-                    <button
+                    <div
                       key={surah.number}
-                      type="button"
-                      onClick={() => {
-                        onSelectSurah(surah);
-                        onClose();
-                      }}
-                      className={`group relative p-3 rounded-2xl text-left border transition-all duration-200 cursor-pointer active:scale-[0.98] flex items-center justify-between gap-3 ${
+                      className={`group relative p-3 rounded-2xl text-left border transition-all duration-200 flex items-center justify-between gap-3 ${
                         isSelected
                           ? 'bg-gradient-to-r from-emerald-50 to-emerald-100/70 dark:from-emerald-950/70 dark:to-emerald-900/40 border-emerald-500/80 shadow-xs ring-1 ring-emerald-500/40'
                           : 'bg-white dark:bg-zinc-800/80 hover:bg-zinc-50 dark:hover:bg-zinc-800 border-zinc-200/80 dark:border-zinc-700/80 hover:border-emerald-300'
                       }`}
                     >
                       {/* Left: Number Pill + Latin Info */}
-                      <div className="flex items-center gap-3 min-w-0">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSelectedSurahForAyah(surah);
+                          setTargetAyahInput('1');
+                        }}
+                        className="flex items-center gap-3 min-w-0 flex-1 text-left cursor-pointer"
+                      >
                         {/* Number Octagon / Circle Pill */}
                         <div
                           className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-xs shrink-0 transition-colors ${
@@ -256,21 +399,46 @@ export const SurahSelectorModal: React.FC<SurahSelectorModalProps> = ({
                             {surah.nameIndo} • {surah.numberOfAyahs} Ayat
                           </p>
                         </div>
-                      </div>
+                      </button>
 
-                      {/* Right: Arabic Calligraphy */}
-                      <div className="text-right shrink-0">
+                      {/* Right: Arabic Calligraphy & Select Ayah Action */}
+                      <div className="text-right shrink-0 flex flex-col items-end gap-1">
                         <span
-                          className="font-quran text-lg sm:text-xl text-emerald-800 dark:text-emerald-300 block leading-tight"
+                          className="font-quran text-lg sm:text-xl text-emerald-800 dark:text-emerald-300 block leading-tight cursor-pointer"
                           dir="rtl"
+                          onClick={() => {
+                            setSelectedSurahForAyah(surah);
+                            setTargetAyahInput('1');
+                          }}
                         >
                           {surah.nameArabic}
                         </span>
-                        <span className="text-[9.5px] font-semibold text-zinc-400 block mt-0.5">
-                          Juz {surah.juzStart} • {surah.revelationType === 'Makkiyyah' ? 'Makkah' : 'Madinah'}
-                        </span>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              onSelectSurah(surah, 1);
+                              onClose();
+                            }}
+                            className="px-2 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-700 hover:bg-emerald-100 dark:hover:bg-emerald-900 text-[10px] font-semibold text-zinc-600 dark:text-zinc-300 hover:text-emerald-800 transition-colors cursor-pointer"
+                            title="Buka langsung mulai ayat 1"
+                          >
+                            Ayat 1
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedSurahForAyah(surah);
+                              setTargetAyahInput('1');
+                            }}
+                            className="px-2 py-0.5 rounded-md bg-emerald-700 hover:bg-emerald-800 text-[10px] font-bold text-white transition-colors cursor-pointer"
+                            title="Pilih nomor ayat spesifik"
+                          >
+                            Pilih Ayat →
+                          </button>
+                        </div>
                       </div>
-                    </button>
+                    </div>
                   );
                 })}
               </div>

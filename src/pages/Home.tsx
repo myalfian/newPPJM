@@ -15,7 +15,6 @@ import { QuickMenu } from '../components/QuickMenu';
 import { generateWhatsAppBroadcastUrl } from '../lib/waFormatter';
 import { supabase, isSupabaseConfigured, SambutanPerson } from '../lib/supabase';
 import { useCachedQuery } from '../lib/queryCache';
-import { INITIAL_NEWS } from '../data/newsData';
 import { fetchPublishedEditorState, getPublishedEditorState } from '../lib/editorStorage';
 import { PageEditorState } from '../types/EditorState';
 import { SafeRichContent } from '../components/common/SafeRichContent';
@@ -35,15 +34,7 @@ export interface HomeNewsItem {
 
 const fetchHomeNews = async (): Promise<HomeNewsItem[]> => {
   if (!isSupabaseConfigured()) {
-    return INITIAL_NEWS.map((n) => ({
-      id: n.id,
-      title: n.title,
-      date: n.date_display || 'Terbaru',
-      category: n.category,
-      excerpt: n.summary,
-      image: n.thumbnail,
-      link: `/berita/${n.slug}`
-    }));
+    return [];
   }
   try {
     const { data, error } = await (supabase.from('berita' as any) as any)
@@ -54,15 +45,7 @@ const fetchHomeNews = async (): Promise<HomeNewsItem[]> => {
       .limit(3);
 
     if (error || !data || data.length === 0) {
-      return INITIAL_NEWS.map((n) => ({
-        id: n.id,
-        title: n.title,
-        date: n.date_display || 'Terbaru',
-        category: n.category,
-        excerpt: n.summary,
-        image: n.thumbnail,
-        link: `/berita/${n.slug}`
-      }));
+      return [];
     }
 
     return data.map((row: any) => ({
@@ -81,15 +64,7 @@ const fetchHomeNews = async (): Promise<HomeNewsItem[]> => {
       link: `/berita/${row.slug}`
     }));
   } catch {
-    return INITIAL_NEWS.map((n) => ({
-      id: n.id,
-      title: n.title,
-      date: n.date_display || 'Terbaru',
-      category: n.category,
-      excerpt: n.summary,
-      image: n.thumbnail,
-      link: `/berita/${n.slug}`
-    }));
+    return [];
   }
 };
 

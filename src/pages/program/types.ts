@@ -12,6 +12,7 @@ export interface PondokProgramItem {
   badge: string;
   description: string;
   iconName: string;
+  imageUrl: string | null;
   keyFeatures: string[];
 }
 
@@ -42,6 +43,8 @@ export interface SekolahProgramItem {
   category: string;
   badge: string;
   description: string;
+  iconName: string;
+  imageUrl?: string | null;
   highlights: string[];
 }
 

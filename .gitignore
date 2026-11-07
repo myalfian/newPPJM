@@ -27,4 +27,5 @@ dist
 
 # Agent IDE artifacts
 .agents/
+.kilo/
 skills-lock.json

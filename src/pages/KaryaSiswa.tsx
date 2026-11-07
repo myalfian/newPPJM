@@ -45,13 +45,8 @@ const CATEGORY_TABS: {
 export const KaryaSiswa: React.FC = () => {
   const { isGuest } = useAuth();
   const navigate = useNavigate();
-  const [items, setItems] = useState<KaryaSiswaItem[]>(() => {
-    try {
-      const cached = localStorage.getItem('ppjm_karya_siswa_cache');
-      if (cached) return JSON.parse(cached);
-    } catch {}
-    return KARYA_SISWA_ITEMS;
-  });
+  const [items, setItems] = useState<KaryaSiswaItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const [searchParams, setSearchParams] = useSearchParams();
   const urlTab = searchParams.get('tab') as CategoryFilter | null;
@@ -104,50 +99,57 @@ export const KaryaSiswa: React.FC = () => {
     }
   }, [selectedCategory]);
 
-  // Sync with Supabase & localStorage
+  // Sync with Supabase karya_siswa table
   useEffect(() => {
-    const fetchCloud = async () => {
+    const fetchKarya = async () => {
       if (!isSupabaseConfigured()) return;
       try {
-        const { data, error } = await supabase
-          .from('site_settings')
-          .select('value')
-          .eq('key', 'karya_siswa')
-          .maybeSingle();
+        setLoading(true);
+        const { data, error } = await (supabase as any)
+          .from('karya_siswa')
+          .select('*')
+          .eq('is_active', true)
+          .order('order_index', { ascending: true })
+          .order('created_at', { ascending: false });
 
-        if (!error && data && data.value && Array.isArray(data.value)) {
-          setItems(data.value as unknown as KaryaSiswaItem[]);
-          localStorage.setItem('ppjm_karya_siswa_cache', JSON.stringify(data.value));
+        if (!error && data) {
+          const mapped: KaryaSiswaItem[] = data.map((row: any) => ({
+            id: row.id,
+            title: row.title,
+            category: row.category,
+            author: row.author || 'Santri PPJM',
+            authorRole: row.author_role || 'Santri',
+            year: row.year || '2026',
+            description: row.description || '',
+            imageUrl: row.image_url,
+            videoUrl: row.video_url,
+            pdfUrl: row.pdf_url,
+            specs: typeof row.specs === 'object' && row.specs ? row.specs : {},
+            tags: Array.isArray(row.tags) ? row.tags : [],
+            orderIndex: row.order_index ?? 0
+          }));
+          setItems(mapped);
         }
       } catch (err) {
         console.warn('Error fetching live karya_siswa:', err);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchCloud();
-
-    const handleLocalUpdate = (e: any) => {
-      if (e.detail && Array.isArray(e.detail)) {
-        setItems(e.detail);
-      }
-    };
-    window.addEventListener('ppjm-karya-siswa-updated', handleLocalUpdate);
+    fetchKarya();
 
     const channel = supabase
-      .channel('public-karya-siswa-live')
+      .channel('public-karya-siswa-table')
       .on(
         'postgres_changes',
-        { event: '*', schema: 'public', table: 'site_settings', filter: 'key=eq.karya_siswa' },
-        (payload: any) => {
-          if (payload.new && payload.new.value && Array.isArray(payload.new.value)) {
-            setItems(payload.new.value);
-            localStorage.setItem('ppjm_karya_siswa_cache', JSON.stringify(payload.new.value));
-          }
+        { event: '*', schema: 'public', table: 'karya_siswa' },
+        () => {
+          fetchKarya();
         }
       )
       .subscribe();
 
     return () => {
-      window.removeEventListener('ppjm-karya-siswa-updated', handleLocalUpdate);
       supabase.removeChannel(channel);
     };
   }, []);

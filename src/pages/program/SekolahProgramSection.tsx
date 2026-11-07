@@ -19,201 +19,63 @@ import {
   SekolahStoryActivity
 } from './types';
 
-// ========================
-// MOCK DATA: SEKOLAH
-// ========================
-const SEKOLAH_PROGRAMS: SekolahProgramItem[] = [
-  {
-    id: 'sek-kurikulum',
-    title: 'Kurikulum Nasional Terakreditasi "A" BAN-PDM',
-    category: 'Pilar Akademik',
-    badge: 'Akreditasi A Unggul',
-    description:
-      'Pendidikan tingkat menengah pertama berstandar nasional yang memadukan kedalaman literasi, numerasi, dan sains umum dengan nilai-nilai adab kesantrian.',
-    highlights: [
-      'Tenaga pendidik sarjana & magister profesional',
-      'Pembelajaran berbasis project (Project-Based Learning)',
-      'Ruang kelas multimedia ber-AC dengan smart projector',
-      'Penilaian komprehensif kognitif, afektif, dan psikomotorik'
-    ]
-  },
-  {
-    id: 'sek-stem',
-    title: 'Penguatan STEM & Laboratorium Robotika',
-    category: 'Inovasi Teknologi',
-    badge: 'Sains & Robotik',
-    description:
-      'Pengenalan sains terapan, logika pemrograman dasar (coding), sensor mikrokontroler (Arduino/ESP32), dan literasi digital sejak dini bagi santri.',
-    highlights: [
-      'Praktikum eksperimen laboratorium mandiri',
-      'Pelatihan coding, IoT, dan perakitan robot mini',
-      'Kurikulum Computational Thinking',
-      'Pameran karya inovasi teknologi santri tahunan'
-    ]
-  },
-  {
-    id: 'sek-ekskul',
-    title: 'Ekstrakurikuler Wajib & Minat Bakat',
-    category: 'Pengembangan Diri',
-    badge: 'Multitalenta',
-    description:
-      'Wadah eksplorasi potensi santri dalam bidang kepanduan, olahraga, seni Islam, dan komunikasi publik guna membentuk kepribadian yang sehat dan percaya diri.',
-    highlights: [
-      'Pramuka Gugus Depan Berpangkalan Pesantren',
-      'Seni Kaligrafi Khat & Seni Musik Hadrah/Rebana',
-      'Olahraga: Futsal, Bulutangkis, Tenis Meja, & Tapak Suci',
-      'Klub Bahasa & Muhadharah (Public Speaking) 3 Bahasa'
-    ]
-  },
-  {
-    id: 'sek-olimpiade',
-    title: 'Bimbingan Prestasi Olimpiade & Riset Ilmiah',
-    category: 'Prestasi Juara',
-    badge: 'Klinik Prestasi',
-    description:
-      'Pembinaan intensif bagi santri berbakat untuk mengikuti Kompetisi Sains Madrasah (KSM), Olimpiade Sains Nasional (OSN), dan Lomba Cerdas Cermat regional.',
-    highlights: [
-      'Bimbingan khusus mata pelajaran Matematika, IPA, dan IPS',
-      'Klinik bedah soal olimpiade terstruktur',
-      'Pelatihan karya tulis ilmiah remaja santri',
-      'Rekam jejak juara tingkat kabupaten dan provinsi'
-    ]
-  }
-];
-
-const SEKOLAH_STORIES: SekolahStoryActivity[] = [
-  {
-    id: 'story-1',
-    title: 'Praktikum Sains STEM & Coding IoT di Laboratorium Modern',
-    categoryTag: 'Sains & Teknologi',
-    subtitle: 'Membuka wawasan teknologi masa depan dengan eksperimen nyata',
-    description:
-      'Santri SMP Plus Jauharul Maknuun diajak memahami konsep elektronika dasar dan sensor otomatis melalui perangkat mikrokontroler. Melalui praktikum langsung di laboratorium komputer, santri belajar merancang alat penyiram tanaman otomatis berbasis sensor kelembaban tanah dan logika pemrograman visual.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80',
-    achievements: [
-      'Simulasi sensor IoT mikrokontroler mandiri',
-      'Penguasaan logika coding dan pemecahan masalah',
-      'Kolaborasi tim dalam pemecahan kasus praktikum'
-    ],
-    dateOrPeriod: 'Agenda Mingguan Lab STEM'
-  },
-  {
-    id: 'story-2',
-    title: 'Outing Class Literasi Alam & Studi Ekosistem Pesisir',
-    categoryTag: 'Eksplorasi Lapangan',
-    subtitle: 'Belajar langsung dari alam ciptaan Allah SWT',
-    description:
-      'Tidak hanya terpaku pada buku pelajaran di dalam kelas, santri melaksanakan observasi alam di pesisir utara Gresik untuk meneliti keanekaragaman mangrove, salinitas air laut, serta kehidupan biota pesisir. Kegiatan ini menanamkan kesadaran ekologis dan kekaguman atas keagungan sunnatullah di alam semesta.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=1200&q=80',
-    achievements: [
-      'Pembuatan herbarium & laporan observasi lapangan',
-      'Edukasi konservasi bakau & kebersihan pesisir',
-      'Tadabbur ayat-ayat kauniyah Al-Qur’an'
-    ],
-    dateOrPeriod: 'Program Tengah Semester'
-  },
-  {
-    id: 'story-3',
-    title: 'Latihan Dasar Kepemimpinan Santri (LDKS) & OSIS SMP Plus JM',
-    categoryTag: 'Kepemimpinan & Organisasi',
-    subtitle: 'Membentuk kader pemimpin tangguh, berakhlak, dan solutif',
-    description:
-      'Pelatihan kepemimpinan berkala yang diselenggarakan untuk pengurus OSIS dan santri perwakilan kamar. Menggabungkan materi manajemen persidangan, kepemimpinan profetik Rasulullah SAW, ketangkasan fisik outbond, hingga simulasi penyusunan program kerja madrasah.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=1200&q=80',
-    achievements: [
-      'Sertifikasi kepemimpinan santri muda',
-      'Simulasi public speaking & sidang musyawarah',
-      'Pembentukan karakter disiplin & empati sosial'
-    ],
-    dateOrPeriod: 'Awal Tahun Pelajaran'
-  },
-  {
-    id: 'story-4',
-    title: 'Pekan Apresiasi Bahasa & Panggung Seni Budaya Islami',
-    categoryTag: 'Kreativitas & Bahasa',
-    subtitle: 'Gelar unjuk karya seni kaligrafi, pidato 3 bahasa, dan teater santri',
-    description:
-      'Ajang tahunan bagi seluruh siswa SMP Plus JM untuk mengekspresikan talenta berbahasa dan berkesenian. Mulai dari pidato bahasa Arab dan Inggris tanpa teks, pembacaan puisi religi, parade hadrah banjari, hingga pameran karya kaligrafi santri yang memikat.',
-    imageUrl:
-      'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=1200&q=80',
-    achievements: [
-      'Pentas pidato bahasa Arab, Inggris, & Indonesia',
-      'Pameran karya kaligrafi kontemporer santri',
-      'Apresiasi seni hadrah klasik dan kreasi santri'
-    ],
-    dateOrPeriod: 'Peringatan Hari Santri & Milad'
-  }
-];
-
-  export const SekolahProgramSection: React.FC = () => {
-  const [programs, setPrograms] = useState<SekolahProgramItem[]>(SEKOLAH_PROGRAMS);
-  const [schoolStories, setSchoolStories] = useState<SekolahStoryActivity[]>(SEKOLAH_STORIES);
+export const SekolahProgramSection: React.FC = () => {
+  const [programs, setPrograms] = useState<SekolahProgramItem[]>([]);
+  const [schoolStories, setSchoolStories] = useState<SekolahStoryActivity[]>([]);
   const [selectedStoryImage, setSelectedStoryImage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPrograms = async () => {
       if (!isSupabaseConfigured()) return;
       try {
-        const { data, error } = await supabase
-          .from('programs_sekolah')
-          .select('*')
-          .order('created_at', { ascending: true });
+        const [programsRes, photosRes] = await Promise.all([
+          (supabase as any)
+            .from('programs_sekolah')
+            .select('*')
+            .eq('is_active', true)
+            .order('created_at', { ascending: true }),
+          (supabase as any)
+            .from('program_activity_photos')
+            .select('*')
+            .eq('program_type', 'sekolah')
+            .eq('is_active', true)
+            .order('order_index', { ascending: true })
+        ]);
 
-        if (!error && data && data.length > 0) {
-          const mapped: SekolahProgramItem[] = data.map((row: any, idx: number) => {
-            const visual = row.schedule?.visual_story || row.schedule || {};
-            const points = Array.isArray(visual.points) ? visual.points : [];
-            const stories = Array.isArray(visual.stories) ? visual.stories : [];
+        if (!programsRes.error && programsRes.data && programsRes.data.length > 0) {
+          const mapped: SekolahProgramItem[] = programsRes.data.map((row: any, idx: number) => {
+            const visual = row.visual_story || row.schedule?.visual_story || {};
+            const points = Array.isArray(row.highlights) && row.highlights.length > 0
+              ? row.highlights
+              : Array.isArray(visual.points) ? visual.points : [];
 
             return {
               id: row.id,
               title: row.title,
-              category: idx === 0 ? 'Pilar Akademik' : 'Inovasi Teknologi',
-              badge: visual.headline || (idx === 0 ? 'Akreditasi A Unggul' : 'Sains & Robotik'),
-              description: row.schedule?.description || row.description || 'Kurikulum Terpadu Berstandar Nasional & Riset Terapan',
-              highlights: points.length > 0 ? points : [
-                'Pembelajaran berbasis project (Project-Based Learning)',
-                'Ruang kelas multimedia interaktif ber-AC',
-                'Laboratorium sains & komputer mandiri',
-                'Evaluasi berkala terstandar nasional'
-              ],
-              stories: stories.length > 0 ? stories : SEKOLAH_STORIES.map((s, i) => ({
-                id: s.id,
-                title: s.title,
-                categoryTag: s.categoryTag || 'Kegiatan Sekolah',
-                subtitle: s.subtitle || '',
-                description: s.description || '',
-                imageUrl: s.imageUrl || '',
-                achievements: s.achievements || [],
-                dateOrPeriod: s.dateOrPeriod || ''
-              }))
+              category: row.category || 'Kurikulum Akademik',
+              badge: row.badge || visual.headline || 'Akreditasi A',
+              description: row.description || row.curriculum || '-',
+              iconName: row.icon_name || (idx === 0 ? 'GraduationCap' : 'Cpu'),
+              imageUrl: row.image_url,
+              highlights: points.length > 0 ? points : [],
+              stories: []
             };
           });
           setPrograms(mapped);
-          // Collect stories from all programs
-          const allStories: SekolahStoryActivity[] = [];
-          data.forEach((row: any) => {
-            const visual = row.schedule?.visual_story || row.schedule || {};
-            const stories = Array.isArray(visual.stories) ? visual.stories : [];
-            stories.forEach((s: any) => {
-              allStories.push({
-                id: s.id || `story-${row.id}-${Math.random().toString(36).slice(2)}`,
-                title: s.title || '',
-                categoryTag: s.category || 'Kegiatan Sekolah',
-                subtitle: s.subtitle || '',
-                description: s.description || '',
-                imageUrl: s.image_url || s.imageUrl || '',
-                achievements: s.achievements || s.highlights || [],
-                dateOrPeriod: s.date_or_period || s.dateOrPeriod || ''
-              });
-            });
-          });
-          if (allStories.length > 0) {
-            setSchoolStories(allStories);
-          }
+        }
+
+        if (!photosRes.error && photosRes.data && photosRes.data.length > 0) {
+          const stories: SekolahStoryActivity[] = photosRes.data.map((row: any) => ({
+            id: row.id,
+            title: row.title,
+            categoryTag: row.time_tag || 'Dokumentasi Sekolah',
+            subtitle: row.location || 'SMP Plus Jauharul Maknuun',
+            description: row.description || '',
+            imageUrl: row.image_url,
+            achievements: [],
+            dateOrPeriod: row.time_tag || 'Terbaru'
+          }));
+          setSchoolStories(stories);
         }
       } catch (err) {
         console.warn('Failed to load programs_sekolah:', err);
@@ -247,11 +109,11 @@ const SEKOLAH_STORIES: SekolahStoryActivity[] = [
         <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3.5">
           {programs.map((prog) => {
             const Icon =
-              prog.id === 'sek-kurikulum'
+              prog.iconName === 'GraduationCap'
                 ? GraduationCap
-                : prog.id === 'sek-stem'
+                : prog.iconName === 'Cpu'
                 ? Cpu
-                : prog.id === 'sek-ekskul'
+                : prog.iconName === 'Compass'
                 ? Compass
                 : Trophy;
 
@@ -260,6 +122,15 @@ const SEKOLAH_STORIES: SekolahStoryActivity[] = [
                 key={prog.id}
                 className="group relative bg-white/90 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4.5 border border-zinc-200/70 dark:border-zinc-800/70 shadow-xs hover:shadow-xl hover:border-blue-500/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
               >
+                {prog.imageUrl && (
+                  <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-3 bg-zinc-100 dark:bg-zinc-800">
+                    <img
+                      src={prog.imageUrl}
+                      alt={prog.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                )}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="w-10 h-10 rounded-xl bg-blue-100/70 dark:bg-blue-950/70 border border-blue-200/60 dark:border-blue-800/60 flex items-center justify-center text-blue-800 dark:text-blue-300 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 shadow-xs">
@@ -327,99 +198,107 @@ const SEKOLAH_STORIES: SekolahStoryActivity[] = [
         </div>
 
         {/* Visual Story Cards (Alternating Layout) */}
-        <div className="space-y-3 sm:space-y-4">
-          {schoolStories.map((story, index) => {
-            const isEven = index % 2 === 0;
+        {schoolStories.length > 0 ? (
+          <div className="space-y-3 sm:space-y-4">
+            {schoolStories.map((story, index) => {
+              const isEven = index % 2 === 0;
 
-            return (
-              <article
-                key={story.id}
-                className="group bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 overflow-hidden shadow-xs hover:shadow-xl hover:border-blue-500/40 transition-all duration-300"
-              >
-                <div
-                  className={`grid grid-cols-1 lg:grid-cols-12 gap-0 items-center ${
-                    !isEven ? 'lg:flex-row-reverse' : ''
-                  }`}
+              return (
+                <article
+                  key={story.id}
+                  className="group bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/70 dark:border-zinc-800/70 overflow-hidden shadow-xs hover:shadow-xl hover:border-blue-500/40 transition-all duration-300"
                 >
-                  {/* Photo Column */}
                   <div
-                    className={`lg:col-span-5 relative aspect-[16/10] sm:aspect-[4/3] lg:aspect-auto lg:h-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 cursor-pointer ${
-                      !isEven ? 'lg:order-2' : 'lg:order-1'
-                    }`}
-                    onClick={() => setSelectedStoryImage(story.imageUrl)}
-                    title="Klik untuk perbesar foto kegiatan"
-                  >
-                    <img
-                      src={story.imageUrl}
-                      alt={story.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 min-h-[220px] sm:min-h-[260px]"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-
-                    <div className="absolute top-3 left-3">
-                      <span className="px-2.5 py-0.5 rounded-full bg-white/90 dark:bg-zinc-900/90 text-zinc-900 dark:text-white text-[11px] font-bold backdrop-blur-md shadow-xs">
-                        {story.dateOrPeriod}
-                      </span>
-                    </div>
-
-                    <div className="absolute bottom-3 left-3 right-3 text-white">
-                      <span className="text-[11px] font-semibold text-blue-300 uppercase tracking-wider block">
-                        {story.categoryTag}
-                      </span>
-                      <span className="text-xs font-bold">
-                        SMP Plus Jauharul Maknuun
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Story Narrative Column */}
-                  <div
-                    className={`lg:col-span-7 p-3.5 sm:p-5 lg:p-6 space-y-2.5 ${
-                      !isEven ? 'lg:order-1' : 'lg:order-2'
+                    className={`grid grid-cols-1 lg:grid-cols-12 gap-0 items-center ${
+                      !isEven ? 'lg:flex-row-reverse' : ''
                     }`}
                   >
-                    <div>
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/70 px-2.5 py-0.5 rounded-full border border-blue-200/60 dark:border-blue-800/60">
-                          {story.categoryTag}
+                    {/* Photo Column */}
+                    <div
+                      className={`lg:col-span-5 relative aspect-[16/10] sm:aspect-[4/3] lg:aspect-auto lg:h-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 cursor-pointer ${
+                        !isEven ? 'lg:order-2' : 'lg:order-1'
+                      }`}
+                      onClick={() => setSelectedStoryImage(story.imageUrl)}
+                      title="Klik untuk perbesar foto kegiatan"
+                    >
+                      <img
+                        src={story.imageUrl}
+                        alt={story.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 min-h-[220px] sm:min-h-[260px]"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+
+                      <div className="absolute top-3 left-3">
+                        <span className="px-2.5 py-0.5 rounded-full bg-white/90 dark:bg-zinc-900/90 text-zinc-900 dark:text-white text-[11px] font-bold backdrop-blur-md shadow-xs">
+                          {story.dateOrPeriod}
                         </span>
                       </div>
-                      <h3 className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">
-                        {story.title}
-                      </h3>
-                      <p className="text-xs sm:text-sm font-medium text-emerald-700 dark:text-emerald-400 mt-1">
-                        {story.subtitle}
-                      </p>
+
+                      <div className="absolute bottom-3 left-3 right-3 text-white">
+                        <span className="text-[11px] font-semibold text-blue-300 uppercase tracking-wider block">
+                          {story.categoryTag}
+                        </span>
+                        <span className="text-xs font-bold">
+                          SMP Plus Jauharul Maknuun
+                        </span>
+                      </div>
                     </div>
 
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                      {story.description}
-                    </p>
-
-                    {/* Achievements List */}
-                    <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800/80">
-                      <div className="text-xs font-bold text-zinc-800 dark:text-zinc-200 mb-2">
-                        Poin & Capaian Kegiatan:
+                    {/* Story Narrative Column */}
+                    <div
+                      className={`lg:col-span-7 p-3.5 sm:p-5 lg:p-6 space-y-2.5 ${
+                        !isEven ? 'lg:order-1' : 'lg:order-2'
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <span className="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/70 px-2.5 py-0.5 rounded-full border border-blue-200/60 dark:border-blue-800/60">
+                            {story.categoryTag}
+                          </span>
+                        </div>
+                        <h3 className="text-xl sm:text-2xl font-bold text-zinc-900 dark:text-white tracking-tight">
+                          {story.title}
+                        </h3>
+                        <p className="text-xs sm:text-sm font-medium text-emerald-700 dark:text-emerald-400 mt-1">
+                          {story.subtitle}
+                        </p>
                       </div>
-                      <ul className="space-y-1.5">
-                        {story.achievements.map((item, idx) => (
-                          <li
-                            key={idx}
-                            className="flex items-start gap-2 text-xs text-zinc-600 dark:text-zinc-400"
-                          >
-                            <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
+
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                        {story.description}
+                      </p>
+
+                      {/* Achievements List */}
+                      {story.achievements.length > 0 && (
+                        <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800/80">
+                          <div className="text-xs font-bold text-zinc-800 dark:text-zinc-200 mb-2">
+                            Poin &amp; Capaian Kegiatan:
+                          </div>
+                          <ul className="space-y-1.5">
+                            {story.achievements.map((item, idx) => (
+                              <li
+                                key={idx}
+                                className="flex items-start gap-2 text-xs text-zinc-600 dark:text-zinc-400"
+                              >
+                                <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="p-8 text-center rounded-2xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800 text-zinc-500 text-xs">
+            Belum ada dokumentasi kegiatan sekolah yang dipublikasikan.
+          </div>
+        )}
       </section>
 
       {/* ========================================================= */}

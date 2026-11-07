@@ -102,15 +102,15 @@ const sanitizeHeroSlides = (data: unknown): HeroSlide[] | null => {
  * Ambil daftar slide dari LocalStorage cache atau fallback ke initialHeroSlides
  */
 export const getHeroSlides = (): HeroSlide[] => {
-  if (typeof window === 'undefined') return initialHeroSlides;
+  if (typeof window === 'undefined') return [];
   try {
     const raw = localStorage.getItem(SLIDES_STORAGE_KEY);
-    if (!raw) return initialHeroSlides;
+    if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return sanitizeHeroSlides(parsed) || initialHeroSlides;
+    return sanitizeHeroSlides(parsed) || [];
   } catch (e) {
     console.warn('Gagal membaca konten hero slides dari localStorage:', e);
-    return initialHeroSlides;
+    return [];
   }
 };
 
@@ -120,7 +120,7 @@ export const getHeroSlides = (): HeroSlide[] => {
  */
 export const fetchHeroSlidesFromSupabase = async (): Promise<HeroSlide[]> => {
   if (!isSupabaseConfigured()) {
-    return getHeroSlides();
+    return [];
   }
   try {
     // 1. Coba baca dari tabel utama 'sliders'
@@ -160,7 +160,7 @@ export const fetchHeroSlidesFromSupabase = async (): Promise<HeroSlide[]> => {
       .maybeSingle();
 
     if (error || !data) {
-      return getHeroSlides();
+      return [];
     }
 
     const rawValue = (data as { value?: unknown }).value;
@@ -175,14 +175,14 @@ export const fetchHeroSlidesFromSupabase = async (): Promise<HeroSlide[]> => {
   } catch (e) {
     console.warn('Gagal mengambil hero_slides dari Supabase:', e);
   }
-  return getHeroSlides();
+  return [];
 };
 
 /**
  * Simpan daftar slide ke LocalStorage dan sinkronkan ke tabel site_settings di Supabase
  */
 export const saveHeroSlides = async (slides: HeroSlide[]): Promise<{ syncedToCloud: boolean }> => {
-  const sanitized = sanitizeHeroSlides(slides) || initialHeroSlides;
+  const sanitized = sanitizeHeroSlides(slides) || [];
 
   if (typeof window !== 'undefined') {
     try {
@@ -248,7 +248,7 @@ export const saveHeroSlides = async (slides: HeroSlide[]): Promise<{ syncedToClo
 export const resetHeroSlidesToDefault = async (): Promise<HeroSlide[]> => {
   if (typeof window !== 'undefined') {
     localStorage.removeItem(SLIDES_STORAGE_KEY);
-    window.dispatchEvent(new CustomEvent('ppjm-hero-slides-changed', { detail: initialHeroSlides }));
+    window.dispatchEvent(new CustomEvent('ppjm-hero-slides-changed', { detail: [] }));
   }
 
   if (isSupabaseConfigured()) {
@@ -258,7 +258,7 @@ export const resetHeroSlidesToDefault = async (): Promise<HeroSlide[]> => {
         .upsert(
           {
             key: SUPABASE_SLIDES_KEY,
-            value: initialHeroSlides as unknown as Record<string, unknown>,
+            value: [] as unknown as Record<string, unknown>,
             description: 'Konten daftar kartu HeroSlider utama beranda PPJM',
             updated_at: new Date().toISOString(),
           } as any,
@@ -269,5 +269,5 @@ export const resetHeroSlidesToDefault = async (): Promise<HeroSlide[]> => {
     }
   }
 
-  return initialHeroSlides;
+  return [];
 };

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   CalendarDays,
   ChevronLeft,
@@ -12,124 +12,65 @@ import {
   CalendarCheck
 } from 'lucide-react';
 import { AgendaEventItem, AgendaCategory } from './types';
-
-export const CALENDAR_EVENTS: AgendaEventItem[] = [
-  {
-    id: 'ev-1',
-    title: 'Penilaian Tengah Semester (PTS) Ganjil SMP Plus JM',
-    startDate: '2026-10-12',
-    endDate: '2026-10-19',
-    time: '07.30 - 12.30 WIB',
-    category: 'Sekolah',
-    location: 'Ruang Kelas Multimedia SMP Plus JM',
-    description: 'Evaluasi capaian kurikulum nasional mata pelajaran umum, sains STEM, dan bahasa asing secara terstruktur.',
-    coordinator: 'Waka Kurikulum SMP Plus JM',
-    isHighlight: true
-  },
-  {
-    id: 'ev-2',
-    title: 'Peringatan Hari Santri Nasional & Apel Akbar Santri',
-    startDate: '2026-10-22',
-    endDate: '2026-10-22',
-    time: '07.00 - 11.00 WIB',
-    category: 'Event Akbar',
-    location: 'Halaman Utama Pondok Pesantren Jauharul Maknuun',
-    description: 'Apel bendera khidmat bersarung putih, istighotsah kebangsaan, dan defile seni pencak silat Pagar Nusa santri.',
-    coordinator: 'Pengurus OSIS & BPH Santri',
-    isHighlight: true
-  },
-  {
-    id: 'ev-3',
-    title: 'Karantina Ziyadah Murojaah Hafalan Al-Qur\'an Juz 1 - 30',
-    startDate: '2026-10-24',
-    endDate: '2026-10-30',
-    time: '04.30 - 21.00 WIB',
-    category: 'Pondok',
-    location: 'Masjid Jami’ Raudhatul Ulum PPJM',
-    description: 'Program akselerasi hafalan mutqin santri takhassus dengan setoran talaqqi 5 juz per hari didampingi musyrif bersanad.',
-    coordinator: 'Koordinator Tahfidz PPJM',
-    isHighlight: true
-  },
-  {
-    id: 'ev-4',
-    title: 'Praktikum STEM: Otomasi Penyiram Hidroponik ESP32',
-    startDate: '2026-10-28',
-    endDate: '2026-10-28',
-    time: '08.00 - 11.30 WIB',
-    category: 'Sekolah',
-    location: 'Laboratorium Komputer & STEM',
-    description: 'Perakitan modul sensor kapasitif dan pemrograman mikrokontroler oleh tim riset santri kelas IX.',
-    coordinator: 'Guru Pembina STEM',
-    isHighlight: false
-  },
-  {
-    id: 'ev-5',
-    title: 'Haul Akbar Masyaikh PPJM & Temu Alumni Nasional',
-    startDate: '2026-11-05',
-    endDate: '2026-11-05',
-    time: '19.30 - 23.00 WIB',
-    category: 'Event Akbar',
-    location: 'Aula Ma’had Ali & Masjid Utama',
-    description: 'Tahlil akbar, mauidzah hasanah masyaikh sepuh Jawa Timur, dan temu silaturahmi alumni lintas angkatan.',
-    coordinator: 'Pengurus Yayasan & Alumni PPJM',
-    isHighlight: true
-  },
-  {
-    id: 'ev-6',
-    title: 'Penilaian Akhir Semester (PAS) Ganjil TP 2026/2027',
-    startDate: '2026-11-23',
-    endDate: '2026-11-30',
-    time: '07.30 - 12.30 WIB',
-    category: 'Sekolah',
-    location: 'Gedung Sekolah SMP Plus JM',
-    description: 'Ujian semester berbasis Computer Based Test (CBT) di laboratorium komputer mandiri.',
-    coordinator: 'Panitia PAS SMP Plus JM',
-    isHighlight: false
-  },
-  {
-    id: 'ev-7',
-    title: 'Imtihan Nihai & Sorogan Akbar Madrasah Diniyah',
-    startDate: '2026-12-02',
-    endDate: '2026-12-08',
-    time: '15.30 - 17.30 WIB',
-    category: 'Diniyah',
-    location: 'Zawiyah Madrasah Diniyah Salafiyah',
-    description: 'Ujian lisan sorogan kitab kuning (Jurumiyah, Imrithi, Alfiyah, Fathul Qorib) di hadapan majelis asatidz.',
-    coordinator: 'Dewan Asatidz Madin',
-    isHighlight: true
-  },
-  {
-    id: 'ev-8',
-    title: 'Wisuda Tahfidz Qur’an & Penyerahan Rapor Semester',
-    startDate: '2026-12-15',
-    endDate: '2026-12-15',
-    time: '08.00 - 13.00 WIB',
-    category: 'Event Akbar',
-    location: 'Gedung Serbaguna PPJM',
-    description: 'Pentas penghargaan santri berprestasi, wisuda hafizh-hafizhah 30 juz, serta penyerahan buku laporan hasil belajar wali santri.',
-    coordinator: 'Pimpinan Pesantren & Kepala Sekolah',
-    isHighlight: true
-  },
-  {
-    id: 'ev-9',
-    title: 'Libur Semester Ganjil Santri & Kepulangan Asrama',
-    startDate: '2026-12-18',
-    endDate: '2027-01-02',
-    time: 'Sesuai Jadwal Bus Rombongan',
-    category: 'Libur',
-    location: 'Kawasan Asrama Pondok',
-    description: 'Masa libur semester ganjil santri berkumpul bersama keluarga setelah menyelesaikan seluruh evaluasi.',
-    coordinator: 'Keamanan & Ketertiban Pondok',
-    isHighlight: false
-  }
-];
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
 export const AcademicCalendarSection: React.FC = () => {
-  // Current view year & month (Default October 2026 to match data)
+  const [events, setEvents] = useState<AgendaEventItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // Current view year & month (Default October 2026 to match academic term)
   const [currentYear, setCurrentYear] = useState<number>(2026);
   const [currentMonth, setCurrentMonth] = useState<number>(9); // 0-indexed: 9 = October
   const [selectedDate, setSelectedDate] = useState<string>('2026-10-24');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+
+  useEffect(() => {
+    const fetchAgendas = async () => {
+      if (!isSupabaseConfigured()) return;
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('agendas')
+          .select('*')
+          .eq('is_active', true)
+          .order('order_index', { ascending: true })
+          .order('created_at', { ascending: false });
+
+        if (!error && data) {
+          const monthMap: Record<string, string> = {
+            Januari: '01', Februari: '02', Maret: '03', April: '04',
+            Mei: '05', Juni: '06', Juli: '07', Agustus: '08',
+            September: '09', Oktober: '10', November: '11', Desember: '12'
+          };
+
+          const mapped: AgendaEventItem[] = data.map((row: any) => {
+            const mStr = monthMap[row.month] || '10';
+            const yStr = row.year || '2026';
+            const defaultDate = `${yStr}-${mStr}-15`;
+
+            return {
+              id: row.id,
+              title: row.title,
+              startDate: row.start_date || defaultDate,
+              endDate: row.end_date || defaultDate,
+              time: row.time_display || '08.00 - Selesai',
+              category: (row.category as any) || 'Event Akbar',
+              location: row.location || 'PP. Jauharul Maknuun',
+              description: row.description || '',
+              coordinator: row.coordinator || 'Panitia Agenda',
+              isHighlight: row.is_featured ?? false
+            };
+          });
+          setEvents(mapped);
+        }
+      } catch (err) {
+        console.warn('Error fetching agendas:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAgendas();
+  }, []);
 
   const monthNames = [
     'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -162,11 +103,11 @@ export const AcademicCalendarSection: React.FC = () => {
 
   // Filtered Events
   const filteredEvents = useMemo(() => {
-    return CALENDAR_EVENTS.filter((ev) => {
+    return events.filter((ev) => {
       if (categoryFilter === 'all') return true;
       return ev.category === categoryFilter;
     });
-  }, [categoryFilter]);
+  }, [events, categoryFilter]);
 
   // Calendar Day Calculation
   const calendarDays = useMemo(() => {

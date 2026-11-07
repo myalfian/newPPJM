@@ -451,8 +451,8 @@ export const STEM_PORTFOLIO: StemPortfolioItem[] = [
 
 export const StemAreaSection: React.FC = () => {
   const location = useLocation();
-  const [_worksheets, setWorksheets] = useState<StemWorksheetItem[]>(STEM_WORKSHEETS);
-  const [portfolios, setPortfolios] = useState<StemPortfolioItem[]>(STEM_PORTFOLIO);
+  const [_worksheets, setWorksheets] = useState<StemWorksheetItem[]>([]);
+  const [portfolios, setPortfolios] = useState<StemPortfolioItem[]>([]);
   const [activeSubTab, setActiveSubTab] = useState<'worksheet' | 'portfolio'>(() =>
     location.pathname.includes('/portofolio') ? 'portfolio' : 'worksheet'
   );
@@ -496,9 +496,11 @@ export const StemAreaSection: React.FC = () => {
                     : { step: s.step || `Tahap ${idx + 1}`, title: s.title || '', desc: s.desc || '' }
                 )
               : [],
-            rubric: STEM_WORKSHEETS[0].rubric,
+            rubric: STEM_WORKSHEETS[0]?.rubric || [],
           }));
-          setWorksheets([...STEM_WORKSHEETS, ...customWs]);
+          setWorksheets(customWs);
+        } else {
+          setWorksheets([]);
         }
 
         if (projData && projData.length > 0) {
@@ -520,7 +522,9 @@ export const StemAreaSection: React.FC = () => {
             ],
             completionDate: 'Tahun Ajaran Aktif',
           }));
-          setPortfolios([...STEM_PORTFOLIO, ...customPortfolios]);
+          setPortfolios(customPortfolios);
+        } else {
+          setPortfolios([]);
         }
       } catch (err) {
         console.warn('[StemAreaSection] Non-critical DB fetch notice:', err);

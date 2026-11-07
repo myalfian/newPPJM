@@ -13,74 +13,8 @@ import {
 import { UpcomingEventItem } from './types';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
-const UPCOMING_EVENTS: UpcomingEventItem[] = [
-  {
-    id: 'up-1',
-    title: 'Karantina Ziyadah Murojaah Al-Qur\'an Juz 1 - 30',
-    targetDate: '2026-10-30T04:30:00',
-    dateDisplay: '24 - 30 Oktober 2026',
-    time: '04.30 - 21.00 WIB',
-    category: 'Pondok',
-    location: 'Masjid Jami’ Raudhatul Ulum PPJM',
-    coordinator: 'Ust. Muhammad Syukron, M.Pd.',
-    badgeType: 'sapphire',
-    description:
-      'Program akselerasi hafalan mutqin santri takhassus dengan pendampingan talaqqi 5 juz per hari oleh para huffazh bersanad.',
-    rundown: [
-      { time: '04.30 - 06.00', activity: 'Ziyadah setor hafalan baru ba’da Shubuh' },
-      { time: '08.30 - 11.00', activity: 'Murojaah mandiri di serambi masjid' },
-      { time: '13.30 - 15.00', activity: 'Tasmi’ hafalan antar pasangan santri' },
-      { time: '19.30 - 21.00', activity: 'Simaan akbar di hadapan Asatidz Pengasuh' }
-    ]
-  },
-  {
-    id: 'up-2',
-    title: 'Haul Akbar Masyaikh PPJM & Temu Silaturahmi Alumni',
-    targetDate: '2026-11-05T19:30:00',
-    dateDisplay: 'Kamis Malam, 05 November 2026',
-    time: '19.30 - 23.00 WIB',
-    category: 'Event Akbar',
-    location: 'Aula Ma’had Ali & Masjid Utama PPJM',
-    coordinator: 'Dewan Pengasuh & Pengurus Alumni',
-    badgeType: 'gold',
-    description:
-      'Peringatan wafatnya para pendiri dan muassis pesantren, pembacaan tahlil akbar, istighotsah kubro, dan penguatan jejaring alumni nasional.',
-    rundown: [
-      { time: '19.30 - 20.15', activity: 'Pembacaan Surat Yasin & Tahlil Fida’' },
-      { time: '20.15 - 21.30', activity: 'Mauidzah Hasanah Ulama Khos Jawa Timur' },
-      { time: '21.30 - 23.00', activity: 'Musyawarah & Temu Kangen Alumni' }
-    ]
-  },
-  {
-    id: 'up-3',
-    title: 'Penilaian Akhir Semester (PAS) Ganjil TP 2026/2027',
-    targetDate: '2026-11-23T07:30:00',
-    dateDisplay: '23 - 30 November 2026',
-    time: '07.30 - 12.30 WIB',
-    category: 'Sekolah',
-    location: 'Gedung Sekolah SMP Plus Jauharul Maknuun',
-    coordinator: 'Waka Kurikulum & Panitia PAS',
-    badgeType: 'emerald',
-    description:
-      'Ujian sumatif semester ganjil berbasis Computer Based Test (CBT) menguji kompetensi akademik umum, literasi, numerasi, dan sains STEM.'
-  },
-  {
-    id: 'up-4',
-    title: 'Imtihan Sorogan Akbar Madrasah Diniyah Salafiyah',
-    targetDate: '2026-12-02T15:30:00',
-    dateDisplay: '02 - 08 Desember 2026',
-    time: '15.30 - 17.30 WIB',
-    category: 'Pondok',
-    location: 'Zawiyah Madrasah Diniyah PPJM',
-    coordinator: 'Dewan Masyayikh & Asatidz Madin',
-    badgeType: 'sapphire',
-    description:
-      'Ujian lisan sorogan kitab kuning gundul (Matan Jurumiyah, Imrithi, Alfiyah, dan Fathul Qorib) sebagai syarat kenaikan marhalah santri.'
-  }
-];
-
 export const UpcomingEventsSection: React.FC = () => {
-  const [events, setEvents] = useState<UpcomingEventItem[]>(UPCOMING_EVENTS);
+  const [events, setEvents] = useState<UpcomingEventItem[]>([]);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // Time remaining calculator helper
@@ -203,7 +137,8 @@ export const UpcomingEventsSection: React.FC = () => {
       </div>
 
       {/* Grid 1 Col Mobile, 2 Cols Tablet & Desktop */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3.5">
+      {events.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3.5">
         {events.map((item) => {
           const { days, hours, minutes, seconds, isPast } = calculateCountdown(item.targetDate);
 
@@ -356,7 +291,12 @@ export const UpcomingEventsSection: React.FC = () => {
             </article>
           );
         })}
-      </div>
+        </div>
+      ) : (
+        <div className="p-8 text-center rounded-2xl bg-zinc-50 dark:bg-zinc-900/40 border border-zinc-200/80 dark:border-zinc-800 text-zinc-500 text-xs">
+          Belum ada agenda kegiatan mendatang yang dipublikasikan.
+        </div>
+      )}
     </div>
   );
 };

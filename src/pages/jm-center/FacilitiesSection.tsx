@@ -1,39 +1,18 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Building2,
   Maximize2,
   X,
-  Users,
-  CheckCircle2,
-  Tag,
-  Sparkles,
-  Info
+  CheckCircle2
 } from 'lucide-react';
 import { FacilityItem } from './types';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
-import { LiquidMercuryControl } from '../../components/common/LiquidMercuryControl';
 
 export const FacilitiesSection: React.FC = () => {
   const [facilities, setFacilities] = useState<FacilityItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [categories, setCategories] = useState<string[]>(['Semua']);
-  const [selectedCategory, setSelectedCategory] = useState<string>('Semua');
   const [lightboxFacility, setLightboxFacility] = useState<FacilityItem | null>(null);
-
-  const fetchCategories = async () => {
-    try {
-      const { data, error } = await (supabase.from('sub_items' as any) as any)
-        .select('title')
-        .eq('parent_module', 'facilities_categories')
-        .eq('is_active', true)
-        .order('order_index', { ascending: true });
-
-      if (data && !error && data.length > 0) {
-        setCategories(['Semua', ...data.map((c: any) => c.title)]);
-      }
-    } catch (e) {}
-  };
 
   const fetchFacilities = async () => {
     if (!isSupabaseConfigured()) {
@@ -69,7 +48,6 @@ export const FacilitiesSection: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchCategories();
     fetchFacilities();
 
     const channel = supabase
@@ -81,57 +59,27 @@ export const FacilitiesSection: React.FC = () => {
       )
       .subscribe();
 
-    const catChannel = supabase
-      .channel('public-fac-cats-realtime')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'sub_items', filter: 'parent_module=eq.facilities_categories' },
-        () => fetchCategories()
-      )
-      .subscribe();
-
     return () => {
       supabase.removeChannel(channel);
-      supabase.removeChannel(catChannel);
     };
   }, []);
 
-  const filteredFacilities = selectedCategory === 'Semua'
-    ? facilities
-    : facilities.filter((f) => f.category === selectedCategory);
-
-  const categoryOptions = useMemo(
-    () => categories.map((cat) => ({ id: cat, label: cat })),
-    [categories]
-  );
+  const filteredFacilities = facilities;
 
   return (
     <div className="space-y-1.5 sm:space-y-2">
-      {/* Header Info & Category Pills */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-1.5 sm:gap-2">
-        <div>
-          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[10.5px] font-bold uppercase tracking-wider mb-0.5">
-            <Building2 className="w-3.5 h-3.5" />
-            <span>Sarana &amp; Prasarana Representatif</span>
-          </div>
-          <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight leading-tight">
-            Fasilitas Penunjang Santri &amp; Sekolah
-          </h2>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-            Dirancang secara higienis, aman, dan modern untuk mendukung kenyamanan belajar, beribadah, dan bertempat tinggal.
-          </p>
+      {/* Header Info */}
+      <div>
+        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[10.5px] font-bold uppercase tracking-wider mb-0.5">
+          <Building2 className="w-3.5 h-3.5" />
+          <span>Sarana &amp; Prasarana Representatif</span>
         </div>
-
-        {/* Liquid Mercury Segmented Filter */}
-        <div className="shrink-0 max-w-full overflow-x-auto no-scrollbar">
-          <LiquidMercuryControl
-            size="sm"
-            options={categoryOptions}
-            value={selectedCategory}
-            onChange={setSelectedCategory}
-            ariaLabel="Filter Kategori Fasilitas"
-          />
-        </div>
+        <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight leading-tight">
+          Fasilitas Penunjang Santri &amp; Sekolah
+        </h2>
+        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+          Dirancang secara higienis, aman, dan modern untuk mendukung kenyamanan belajar, beribadah, dan bertempat tinggal.
+        </p>
       </div>
 
       {/* Grid Kartu Fasilitas Modern Lux (aspect-[16/10], zoom-on-hover) */}
@@ -144,7 +92,8 @@ export const FacilitiesSection: React.FC = () => {
           {filteredFacilities.map((fac) => (
             <article
               key={fac.id}
-              className="group bg-white dark:bg-zinc-900 rounded-xl sm:rounded-2xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden shadow-xs hover:shadow-md card-hover-smooth flex flex-col justify-between"
+              onClick={() => setLightboxFacility(fac)}
+              className="group bg-white dark:bg-zinc-900 rounded-xl sm:rounded-2xl border border-zinc-200/80 dark:border-zinc-800 overflow-hidden shadow-xs hover:shadow-md card-hover-smooth flex flex-col justify-between cursor-pointer"
             >
               <div>
                 {/* Visual Image dengan Zoom on Hover */}
@@ -202,7 +151,7 @@ export const FacilitiesSection: React.FC = () => {
         </div>
       ) : (
         <div className="py-8 text-center text-xs text-zinc-400">
-          Belum ada data fasilitas pada kategori ini.
+          Belum ada data fasilitas.
         </div>
       )}
 

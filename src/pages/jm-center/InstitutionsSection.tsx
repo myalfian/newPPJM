@@ -24,7 +24,7 @@ import { SafeRichContent } from '../../components/common/SafeRichContent';
 import { LiquidMercuryControl } from '../../components/common/LiquidMercuryControl';
 
 export interface InstitutionsSectionProps {
-  initialFilter?: 'all' | 'pesantren' | 'formal' | 'madin';
+  initialFilter?: 'pesantren' | 'formal' | 'madin';
 }
 
 /* =========================================================================
@@ -104,16 +104,16 @@ Penulis: Tim Humas & Pengasuhan PPJM | Editor: Tim Redaksi Web Jauharul Maknuun`
   return (
     <article
       id="section-pondok-pesantren"
-      className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-emerald-900/20 dark:border-emerald-700/30 p-3.5 sm:p-6 lg:p-7 shadow-md relative overflow-hidden space-y-6"
+      className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-emerald-900/20 dark:border-emerald-700/30 p-2 sm:p-3 lg:p-4 shadow-md relative overflow-hidden space-y-0.5"
     >
       {/* Ambient Islamic Ornament Backing */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-emerald-500/10 via-emerald-600/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
       {/* 1. Header Banner */}
-      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-zinc-100 dark:border-zinc-800 pb-4">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-300/50 dark:border-emerald-700/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider">
-            <Building2 className="w-3.5 h-3.5" />
+      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-1 border-b border-zinc-100 dark:border-zinc-800 pb-1">
+        <div>
+          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-300/50 dark:border-emerald-700/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold uppercase tracking-wider">
+            <Building2 className="w-3 h-3" />
             <span>Lembaga Kepesantrenan Mukim 24 Jam</span>
           </div>
           <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
@@ -125,7 +125,7 @@ Penulis: Tim Humas & Pengasuhan PPJM | Editor: Tim Redaksi Web Jauharul Maknuun`
         </div>
 
         {/* Status Badge */}
-        <div className="flex items-center gap-2 bg-emerald-50/80 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 rounded-xl px-3 py-1.5 self-start md:self-center shrink-0">
+        <div className="flex items-center gap-1 bg-emerald-50/80 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 rounded-xl px-2 py-1 self-start md:self-center shrink-0">
           <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
           <span className="text-xs font-bold text-emerald-900 dark:text-emerald-200">
             Sanad Tahfidz Muttashil
@@ -134,7 +134,7 @@ Penulis: Tim Humas & Pengasuhan PPJM | Editor: Tim Redaksi Web Jauharul Maknuun`
       </div>
 
       {/* 2. Top Media & Quick Stats */}
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-2 items-center">
         {/* Featured Image */}
         <div className="lg:col-span-5">
           <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-emerald-900/15 dark:border-emerald-600/30 shadow-lg group">
@@ -145,7 +145,7 @@ Penulis: Tim Humas & Pengasuhan PPJM | Editor: Tim Redaksi Web Jauharul Maknuun`
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
-            <div className="absolute bottom-3 left-3 right-3 text-white space-y-0.5">
+            <div className="absolute bottom-3 left-3 right-3 text-white">
               <span className="text-[10px] font-black uppercase tracking-wider text-amber-300 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded-full inline-block">
                 Pusat Tarbiyah Asrama Santri
               </span>
@@ -157,12 +157,12 @@ Penulis: Tim Humas & Pengasuhan PPJM | Editor: Tim Redaksi Web Jauharul Maknuun`
         </div>
 
         {/* Quick Highlights & Stats */}
-        <div className="lg:col-span-7 space-y-3">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div className="lg:col-span-7 space-y-0.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-0.5">
             {stats.map((st, i) => (
               <div
                 key={i}
-                className="p-2.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40 text-center"
+                className="p-1.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40 text-center"
               >
                 <span className="text-[10px] font-medium text-zinc-500 dark:text-zinc-400 block">
                   {st.label}
@@ -174,9 +174,9 @@ Penulis: Tim Humas & Pengasuhan PPJM | Editor: Tim Redaksi Web Jauharul Maknuun`
             ))}
           </div>
 
-          <div className="p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/60 space-y-1.5">
-            <h5 className="text-xs font-black uppercase tracking-wider text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+          <div className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/60 space-y-0.5">
+            <h5 className="text-xs font-black uppercase tracking-wider text-emerald-900 dark:text-emerald-300 flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-amber-500" />
               <span>Komitmen Pengasuhan Ruhani &amp; Intelektual</span>
             </h5>
             <p className="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
@@ -187,26 +187,26 @@ Penulis: Tim Humas & Pengasuhan PPJM | Editor: Tim Redaksi Web Jauharul Maknuun`
       </div>
 
       {/* 3. Structured Article Content: Prose / Rich Article View */}
-      <div className="relative z-10 pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
-        <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-3">
+      <div className="relative z-10 pt-0.5 border-t border-zinc-100 dark:border-zinc-800/80">
+        <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-0.5">
           <SafeRichContent content={description} />
         </div>
       </div>
 
       {/* 4. 4 Pilar Kepesantrenan Cards */}
-      <div className="relative z-10 pt-2 space-y-2.5">
-        <h4 className="text-sm sm:text-base font-extrabold text-zinc-900 dark:text-white flex items-center gap-2">
+      <div className="relative z-10 pt-0.5 space-y-0.5">
+        <h4 className="text-sm sm:text-base font-extrabold text-zinc-900 dark:text-white flex items-center gap-1">
           <Compass className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
           <span>4 Pilar Keunggulan Kepesantrenan PPJM</span>
         </h4>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1.5">
           {pillars.map((pil, idx) => {
             const Icon = pil.icon;
             return (
               <div
                 key={idx}
-                className="bg-zinc-50/80 dark:bg-zinc-800/50 rounded-xl border border-zinc-200/70 dark:border-zinc-700/60 p-3 hover:border-emerald-500/50 transition-all duration-300 space-y-2"
+                className="bg-zinc-50/80 dark:bg-zinc-800/50 rounded-xl border border-zinc-200/70 dark:border-zinc-700/60 p-2 hover:border-emerald-500/50 transition-all duration-300 space-y-0.5"
               >
                 <div className="flex items-center justify-between">
                   <div className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 flex items-center justify-center">
@@ -220,7 +220,7 @@ Penulis: Tim Humas & Pengasuhan PPJM | Editor: Tim Redaksi Web Jauharul Maknuun`
                   <h5 className="text-xs font-black text-zinc-900 dark:text-white leading-snug">
                     {pil.title}
                   </h5>
-                  <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-normal mt-1">
+                  <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-normal">
                     {pil.desc}
                   </p>
                 </div>
@@ -231,14 +231,14 @@ Penulis: Tim Humas & Pengasuhan PPJM | Editor: Tim Redaksi Web Jauharul Maknuun`
       </div>
 
       {/* 5. Checklist Program & Fasilitas Asrama */}
-      <div className="relative z-10 p-3.5 rounded-xl bg-gradient-to-r from-emerald-50/60 via-zinc-50 to-emerald-50/60 dark:from-emerald-950/30 dark:via-zinc-900/50 dark:to-emerald-950/30 border border-emerald-200/50 dark:border-emerald-800/40 space-y-2">
+      <div className="relative z-10 p-2 rounded-xl bg-gradient-to-r from-emerald-50/60 via-zinc-50 to-emerald-50/60 dark:from-emerald-950/30 dark:via-zinc-900/50 dark:to-emerald-950/30 border border-emerald-200/50 dark:border-emerald-800/40 space-y-0">
         <strong className="text-xs font-bold text-emerald-950 dark:text-emerald-200 uppercase tracking-wider block">
           Karakteristik &amp; Keistimewaan Pengasuhan PP. Jauharul Maknuun:
         </strong>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-zinc-700 dark:text-zinc-300">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-0.5 text-xs text-zinc-700 dark:text-zinc-300">
           {features.map((item, idx) => (
-            <li key={idx} className="flex items-start gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+            <li key={idx} className="flex items-start gap-0.5">
+              <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0" />
               <span>{item}</span>
             </li>
           ))}
@@ -358,13 +358,13 @@ Penulis: Ferany Ardiana, S.S., M.Pd. | Editor: Tim Publikasi & Humas SMP Plus JM
   return (
     <article
       id="section-smp-plus"
-      className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/90 dark:border-zinc-800 p-3.5 sm:p-6 lg:p-7 shadow-md relative overflow-hidden space-y-6"
+      className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-zinc-200/90 dark:border-zinc-800 p-2 sm:p-3 lg:p-4 shadow-md relative overflow-hidden space-y-0.5"
     >
       {/* 1. Header Banner */}
-      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-zinc-100 dark:border-zinc-800 pb-4">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-300/50 dark:border-emerald-700/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider">
-            <School className="w-3.5 h-3.5" />
+      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-1 border-b border-zinc-100 dark:border-zinc-800 pb-1">
+        <div>
+          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-300/50 dark:border-emerald-700/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold uppercase tracking-wider">
+            <School className="w-3 h-3" />
             <span>Pendidikan Formal &amp; Riset Modern</span>
           </div>
           <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
@@ -376,7 +376,7 @@ Penulis: Ferany Ardiana, S.S., M.Pd. | Editor: Tim Publikasi & Humas SMP Plus JM
         </div>
 
         {/* Akreditasi Badge */}
-        <div className="flex items-center gap-2 bg-amber-50/90 dark:bg-amber-950/60 border border-amber-300/60 dark:border-amber-700/60 rounded-xl px-3 py-1.5 self-start md:self-center shrink-0">
+        <div className="flex items-center gap-1 bg-amber-50/90 dark:bg-amber-950/60 border border-amber-300/60 dark:border-amber-700/60 rounded-xl px-2 py-1 self-start md:self-center shrink-0">
           <Award className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
           <div className="text-left">
             <span className="text-[10px] uppercase font-bold text-zinc-500 dark:text-zinc-400 block">
@@ -390,7 +390,7 @@ Penulis: Ferany Ardiana, S.S., M.Pd. | Editor: Tim Publikasi & Humas SMP Plus JM
       </div>
 
       {/* 2. Media Image & Quick Card */}
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
         {/* Featured Image */}
         <div className="lg:col-span-5">
           <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-zinc-200/80 dark:border-zinc-700/60 shadow-lg group">
@@ -413,12 +413,12 @@ Penulis: Ferany Ardiana, S.S., M.Pd. | Editor: Tim Publikasi & Humas SMP Plus JM
         </div>
 
         {/* Quick Highlights */}
-        <div className="lg:col-span-7 space-y-3">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+        <div className="lg:col-span-7 space-y-0.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-0.5 text-xs">
             {stats.slice(0, 4).map((st, i) => (
               <div
                 key={i}
-                className="p-2.5 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40"
+                className="p-1.5 rounded-xl bg-emerald-50/60 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40"
               >
                 <span className="text-[10px] text-zinc-500 dark:text-zinc-400 block font-medium">
                   {st.label}
@@ -430,8 +430,8 @@ Penulis: Ferany Ardiana, S.S., M.Pd. | Editor: Tim Publikasi & Humas SMP Plus JM
             ))}
           </div>
 
-          <div className="p-3.5 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/60 space-y-1.5">
-            <h5 className="text-xs font-black uppercase tracking-wider text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5">
+          <div className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 border border-zinc-200/60 dark:border-zinc-700/60 space-y-0.5">
+            <h5 className="text-xs font-black uppercase tracking-wider text-emerald-900 dark:text-emerald-300 flex items-center gap-1">
               <School className="w-3.5 h-3.5 text-emerald-600" />
               <span>Satu Manajemen Terpadu dengan SD IRADA</span>
             </h5>
@@ -443,16 +443,16 @@ Penulis: Ferany Ardiana, S.S., M.Pd. | Editor: Tim Publikasi & Humas SMP Plus JM
       </div>
 
       {/* 3. Structured Article Content: Prose / Rich Article View */}
-      <div className="relative z-10 pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
-        <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-3">
+      <div className="relative z-10 pt-0.5 border-t border-zinc-100 dark:border-zinc-800/80">
+        <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-0.5">
           <SafeRichContent content={description} />
         </div>
       </div>
 
       {/* 4. 4 SINTESA KURIKULUM - The Core Educational Compass */}
-      <div className="relative z-10 pt-2 space-y-2.5">
+      <div className="relative z-10 pt-0.5 space-y-0.5">
         <div className="flex items-center justify-between">
-          <h4 className="text-sm sm:text-base font-extrabold text-zinc-900 dark:text-white flex items-center gap-2">
+          <h4 className="text-sm sm:text-base font-extrabold text-zinc-900 dark:text-white flex items-center gap-1">
             <Compass className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             <span>4 Sintesa Kurikulum Unggulan (Kiblat Satuan Pendidikan)</span>
           </h4>
@@ -461,11 +461,11 @@ Penulis: Ferany Ardiana, S.S., M.Pd. | Editor: Tim Publikasi & Humas SMP Plus JM
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1.5">
           {fourSyntheses.map((item, idx) => (
             <div
               key={idx}
-              className={`rounded-xl border p-3 transition-all duration-300 space-y-2 ${item.color}`}
+              className={`rounded-xl border p-2 transition-all duration-300 space-y-0.5 ${item.color}`}
             >
               <div className="flex items-center justify-between">
                 <span className="text-[10.5px] font-black text-zinc-900 dark:text-white bg-white/70 dark:bg-zinc-800/80 px-2 py-0.5 rounded-md shadow-2xs">
@@ -479,7 +479,7 @@ Penulis: Ferany Ardiana, S.S., M.Pd. | Editor: Tim Publikasi & Humas SMP Plus JM
                 <h5 className="text-xs font-black text-zinc-900 dark:text-white leading-snug">
                   {item.source}
                 </h5>
-                <p className="text-[11px] text-zinc-700 dark:text-zinc-300 leading-normal mt-1">
+                <p className="text-[11px] text-zinc-700 dark:text-zinc-300 leading-normal mt-0">
                   {item.aspect}
                 </p>
               </div>
@@ -489,17 +489,17 @@ Penulis: Ferany Ardiana, S.S., M.Pd. | Editor: Tim Publikasi & Humas SMP Plus JM
       </div>
 
       {/* 5. 14 PROGRAM UNGGULAN & EKSTRAKURIKULER */}
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-4 pt-1">
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-2 pt-0.5">
         {/* Left: Program Unggulan */}
-        <div className="lg:col-span-7 bg-zinc-50/80 dark:bg-zinc-800/50 rounded-xl border border-zinc-200/70 dark:border-zinc-700/60 p-3.5 space-y-2.5">
-          <h5 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+        <div className="lg:col-span-7 bg-zinc-50/80 dark:bg-zinc-800/50 rounded-xl border border-zinc-200/70 dark:border-zinc-700/60 p-2 space-y-0.5">
+          <h5 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-amber-500" />
             <span>14 Program Unggulan Terpadu</span>
           </h5>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-zinc-700 dark:text-zinc-300">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-0.5 text-xs text-zinc-700 dark:text-zinc-300">
             {flagshipPrograms.map((prog, idx) => (
-              <div key={idx} className="flex items-center gap-1.5 py-0.5">
-                <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+              <div key={idx} className="flex items-center gap-0.5 py-0">
+                <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600 shrink-0" />
                 <span className="font-medium">{prog}</span>
               </div>
             ))}
@@ -507,16 +507,16 @@ Penulis: Ferany Ardiana, S.S., M.Pd. | Editor: Tim Publikasi & Humas SMP Plus JM
         </div>
 
         {/* Right: Ekstrakurikuler Pilihan */}
-        <div className="lg:col-span-5 bg-zinc-50/80 dark:bg-zinc-800/50 rounded-xl border border-zinc-200/70 dark:border-zinc-700/60 p-3.5 space-y-2.5">
-          <h5 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-            <Users className="w-3.5 h-3.5 text-emerald-600" />
+        <div className="lg:col-span-5 bg-zinc-50/80 dark:bg-zinc-800/50 rounded-xl border border-zinc-200/70 dark:border-zinc-700/60 p-2 space-y-0.5">
+          <h5 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-1">
+            <Users className="w-3 h-3 text-emerald-600" />
             <span>Ekstrakurikuler Pilihan Santri</span>
           </h5>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-0.5">
             {extracurriculars.map((ekskul, idx) => (
               <span
                 key={idx}
-                className="px-2 py-0.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-[11px] font-semibold text-zinc-700 dark:text-zinc-300"
+                className="px-2 py-0.5 rounded-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 text-[10px] font-semibold text-zinc-700 dark:text-zinc-300"
               >
                 {ekskul}
               </span>
@@ -526,13 +526,13 @@ Penulis: Ferany Ardiana, S.S., M.Pd. | Editor: Tim Publikasi & Humas SMP Plus JM
       </div>
 
       {/* 6. TABEL IDENTITAS RESMI SEKOLAH */}
-      <div className="relative z-10 pt-2 space-y-2">
-        <h5 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-          <FileCheck2 className="w-3.5 h-3.5 text-emerald-600" />
+      <div className="relative z-10 pt-0.5 space-y-0.5">
+        <h5 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-1">
+          <FileCheck2 className="w-3 h-3 text-emerald-600" />
           <span>Tabel Identitas Resmi &amp; Kontak Kelembagaan</span>
         </h5>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-0.5 text-xs">
           {stats.map((st, i) => (
             <div
               key={i}
@@ -656,16 +656,16 @@ Penulis: Tim Asatidz MDT Wustho | Editor: Divisi Pendidikan Diniyah Yayasan Al J
   return (
     <article
       id="section-madrasah-diniyah"
-      className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-amber-900/20 dark:border-amber-700/30 p-3.5 sm:p-6 lg:p-7 shadow-md relative overflow-hidden space-y-6"
+      className="bg-white/95 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl border border-amber-900/20 dark:border-amber-700/30 p-2 sm:p-3 lg:p-4 shadow-md relative overflow-hidden space-y-0.5"
     >
       {/* Ambient Turats Background Glow */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-amber-500/10 via-amber-600/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
       {/* 1. Header Banner */}
-      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-zinc-100 dark:border-zinc-800 pb-4">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/80 border border-amber-300/50 dark:border-amber-700/60 text-amber-800 dark:text-amber-300 text-[11px] font-bold uppercase tracking-wider">
-            <ScrollText className="w-3.5 h-3.5" />
+      <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-1 border-b border-zinc-100 dark:border-zinc-800 pb-1">
+        <div>
+          <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/80 border border-amber-300/50 dark:border-amber-700/60 text-amber-800 dark:text-amber-300 text-[10px] font-bold uppercase tracking-wider">
+            <ScrollText className="w-3 h-3" />
             <span>Pendidikan Formal Keagamaan &amp; Salafiyah</span>
           </div>
           <h3 className="text-xl sm:text-2xl lg:text-3xl font-black text-zinc-900 dark:text-white tracking-tight">
@@ -677,7 +677,7 @@ Penulis: Tim Asatidz MDT Wustho | Editor: Divisi Pendidikan Diniyah Yayasan Al J
         </div>
 
         {/* Legalitas Kemenag Badge */}
-        <div className="flex items-center gap-2 bg-emerald-50/90 dark:bg-emerald-950/60 border border-emerald-300/60 dark:border-emerald-700/60 rounded-xl px-3 py-1.5 self-start md:self-center shrink-0">
+        <div className="flex items-center gap-1 bg-emerald-50/90 dark:bg-emerald-950/60 border border-emerald-300/60 dark:border-emerald-700/60 rounded-xl px-2 py-1 self-start md:self-center shrink-0">
           <FileCheck2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
           <div className="text-left">
             <span className="text-[10px] uppercase font-bold text-zinc-500 dark:text-zinc-400 block">
@@ -691,7 +691,7 @@ Penulis: Tim Asatidz MDT Wustho | Editor: Divisi Pendidikan Diniyah Yayasan Al J
       </div>
 
       {/* 2. Media Image & Quick Card */}
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-3 items-center">
         {/* Featured Image */}
         <div className="lg:col-span-5">
           <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-amber-900/15 dark:border-amber-600/30 shadow-lg group">
@@ -714,9 +714,9 @@ Penulis: Tim Asatidz MDT Wustho | Editor: Divisi Pendidikan Diniyah Yayasan Al J
         </div>
 
         {/* Quick Highlights */}
-        <div className="lg:col-span-7 space-y-3">
-          <div className="p-3.5 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-800/40 space-y-2">
-            <h5 className="text-xs font-black uppercase tracking-wider text-amber-950 dark:text-amber-300 flex items-center gap-1.5">
+        <div className="lg:col-span-7 space-y-0.5">
+          <div className="p-2 rounded-xl bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-800/40 space-y-0.5">
+            <h5 className="text-xs font-black uppercase tracking-wider text-amber-950 dark:text-amber-300 flex items-center gap-1">
               <BookOpen className="w-3.5 h-3.5 text-amber-600" />
               <span>Sistem Pembelajaran Terintegrasi</span>
             </h5>
@@ -728,16 +728,16 @@ Penulis: Tim Asatidz MDT Wustho | Editor: Divisi Pendidikan Diniyah Yayasan Al J
       </div>
 
       {/* 3. Structured Article Content: Prose / Rich Article View */}
-      <div className="relative z-10 pt-2 border-t border-zinc-100 dark:border-zinc-800/80">
-        <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-3">
+      <div className="relative z-10 pt-0.5 border-t border-zinc-100 dark:border-zinc-800/80">
+        <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none text-zinc-700 dark:text-zinc-300 leading-relaxed space-y-0.5">
           <SafeRichContent content={description} />
         </div>
       </div>
 
       {/* 4. 9 MATA PELAJARAN TURATS SALAF (3x3 Grid) */}
-      <div className="relative z-10 pt-2 space-y-2.5">
+      <div className="relative z-10 pt-0.5 space-y-0.5">
         <div className="flex items-center justify-between">
-          <h4 className="text-sm sm:text-base font-extrabold text-zinc-900 dark:text-white flex items-center gap-2">
+          <h4 className="text-sm sm:text-base font-extrabold text-zinc-900 dark:text-white flex items-center gap-1">
             <Layers className="w-4 h-4 text-amber-600 dark:text-amber-400" />
             <span>9 Mata Pelajaran Turats Salaf Terintegrasi (Maknani Jawa)</span>
           </h4>
@@ -746,11 +746,11 @@ Penulis: Tim Asatidz MDT Wustho | Editor: Divisi Pendidikan Diniyah Yayasan Al J
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1.5">
           {nineSubjects.map((sub, idx) => (
             <div
               key={idx}
-              className="bg-zinc-50/80 dark:bg-zinc-800/50 rounded-xl border border-zinc-200/70 dark:border-zinc-700/60 p-3 hover:border-amber-500/50 transition-all duration-300 space-y-1.5"
+              className="bg-zinc-50/80 dark:bg-zinc-800/50 rounded-xl border border-zinc-200/70 dark:border-zinc-700/60 p-2 hover:border-amber-500/50 transition-all duration-300 space-y-0.5"
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-black text-zinc-900 dark:text-white">
@@ -769,7 +769,7 @@ Penulis: Tim Asatidz MDT Wustho | Editor: Divisi Pendidikan Diniyah Yayasan Al J
       </div>
 
       {/* 5. TABEL IDENTITAS RESMI MADRASAH DINIYAH */}
-      <div className="relative z-10 pt-2 space-y-2">
+      <div className="relative z-10 pt-0.5 space-y-0.5">
         <h5 className="text-xs font-black text-zinc-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
           <FileCheck2 className="w-3.5 h-3.5 text-amber-600" />
           <span>Profil Resmi MDT Wustho Jauharul Maknuun</span>
@@ -806,16 +806,10 @@ Penulis: Tim Asatidz MDT Wustho | Editor: Divisi Pendidikan Diniyah Yayasan Al J
 /* =========================================================================
    4. MAIN ORCHESTRATOR: INSTITUTIONS SECTION WITH FILTER TABS
    ========================================================================= */
-export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initialFilter = 'all' }) => {
+export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initialFilter = 'pesantren' }) => {
   const [institutions, setInstitutions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'pesantren' | 'formal' | 'madin'>(initialFilter);
-
-  useEffect(() => {
-    if (initialFilter) {
-      setFilter(initialFilter);
-    }
-  }, [initialFilter]);
+  const [filter, setFilter] = useState<'pesantren' | 'formal' | 'madin'>(initialFilter);
 
   useEffect(() => {
     let isMounted = true;
@@ -887,28 +881,27 @@ export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initia
   );
 
   return (
-    <div className="space-y-1.5 sm:space-y-2">
+    <div className="space-y-0.5 sm:space-y-1">
       {/* Top Bar: Title & Filter Pills */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-1.5 sm:gap-2">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-0.5 sm:gap-0.5">
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[10.5px] font-bold uppercase tracking-wider mb-0.5">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/60 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300 text-[10.5px] font-bold uppercase tracking-wider mb-0">
             <Layers className="w-3.5 h-3.5" />
             <span>Tritunggal Lembaga Terpadu</span>
           </div>
           <h2 className="text-lg sm:text-xl font-black text-zinc-900 dark:text-white tracking-tight leading-tight">
             Tiga Unit Entitas Pendidikan Terintegrasi
           </h2>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0">
             Sinergi harmonis antara Pesantren Salafiyah, Sekolah Menengah Pertama Formal, dan Madrasah Diniyah untuk mewujudkan insan kamil.
           </p>
         </div>
 
         {/* Liquid Mercury Segmented Filter */}
         <div className="shrink-0 max-w-full overflow-x-auto no-scrollbar">
-          <LiquidMercuryControl<'all' | 'pesantren' | 'formal' | 'madin'>
+          <LiquidMercuryControl<'pesantren' | 'formal' | 'madin'>
             size="sm"
             options={[
-              { id: 'all', label: 'Semua Unit' },
               { id: 'pesantren', label: 'Pondok Pesantren' },
               { id: 'formal', label: 'SMP Plus (Sekolah)' },
               { id: 'madin', label: 'Madrasah Diniyah' },
@@ -922,11 +915,11 @@ export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initia
 
       {/* Loading Skeleton */}
       {loading && (
-        <div className="space-y-4">
+        <div className="space-y-2">
           {[1, 2, 3].map((n) => (
             <div
               key={n}
-              className="h-64 rounded-3xl bg-zinc-100 dark:bg-zinc-800/60 animate-pulse border border-zinc-200/60 dark:border-zinc-700/60"
+              className="h-48 rounded-3xl bg-zinc-100 dark:bg-zinc-800/60 animate-pulse border border-zinc-200/60 dark:border-zinc-700/60"
             />
           ))}
         </div>
@@ -934,53 +927,8 @@ export const InstitutionsSection: React.FC<InstitutionsSectionProps> = ({ initia
 
       {/* Dynamic Content Rendering based on Tab Filter */}
       {!loading && (
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-0.5 sm:space-y-1">
           <AnimatePresence mode="wait">
-            {/* VIEW 1: SEMUA UNIT (Sequential View of All 3 Dedicated Sections) */}
-            {filter === 'all' && (
-              <motion.div
-                key="view-all-units"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.25 }}
-                className="space-y-6"
-              >
-                {/* 1. Pondok Pesantren Section */}
-                <PondokPesantrenSection data={pesantrenData} />
-
-                {/* Section Separator */}
-                <div className="relative py-2">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-zinc-200 dark:border-zinc-800" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-zinc-50 dark:bg-zinc-950 px-3 text-zinc-400 font-bold tracking-widest">
-                      Unit Pendidikan Formal
-                    </span>
-                  </div>
-                </div>
-
-                {/* 2. SMP Plus Section */}
-                <SmpPlusSection data={smpData} />
-
-                {/* Section Separator */}
-                <div className="relative py-2">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-zinc-200 dark:border-zinc-800" />
-                  </div>
-                  <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-zinc-50 dark:bg-zinc-950 px-3 text-zinc-400 font-bold tracking-widest">
-                      Unit Pendidikan Keagamaan Salaf
-                    </span>
-                  </div>
-                </div>
-
-                {/* 3. Madrasah Diniyah Section */}
-                <MadinSection data={madinData} />
-              </motion.div>
-            )}
-
             {/* VIEW 2: PONDOK PESANTREN ONLY */}
             {filter === 'pesantren' && (
               <motion.div

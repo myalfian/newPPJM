@@ -12,7 +12,6 @@ import {
 import '../../components/common/NavBarTabs.css';
 import { PrestasiCard } from './PrestasiCard';
 import { PrestasiLightboxModal } from './PrestasiLightboxModal';
-import { PRESTASI_DATASET } from './prestasiData';
 import { PrestasiItem, PrestasiCategory } from './types';
 import { supabase } from '../../lib/supabase';
 import { useCachedQuery, invalidateCache } from '../../lib/queryCache';
@@ -38,8 +37,7 @@ const fetchAchievementsFromDb = async (): Promise<PrestasiItem[]> => {
       .order('year', { ascending: false });
 
     if (error || !data || data.length === 0) {
-      if (error) console.warn('Error fetching prestasi, fallback to local dataset:', error);
-      return PRESTASI_DATASET;
+      return [];
     }
 
     return data
@@ -65,20 +63,20 @@ const fetchAchievementsFromDb = async (): Promise<PrestasiItem[]> => {
           category,
           tingkat,
           year: Number(item.year) || new Date().getFullYear(),
-          winner_name: item.santri_name || item.winner_name || 'Santri Berprestasi',
-          winner_class: item.pembina_name ? `Pembina: ${item.pembina_name}` : 'SMP Plus JM',
-          medal_type: item.level ? `Tingkat ${item.level}` : 'Prestasi Santri',
-          event_name: item.organizer || 'Kompetisi Resmi Santri',
-          organizer: item.organizer || 'Kemenag / Puspresnas / Panitia Resmi',
-          certificate_url: item.certificate_url || item.photo_url || 'https://images.unsplash.com/photo-1579546929518-9e396f3cc809?auto=format&fit=crop&w=1200&q=80',
-          photo_url: item.photo_url || item.certificate_url || undefined,
+          winner_name: item.santri_name || item.winner_name || '-',
+          winner_class: item.pembina_name ? `Pembina: ${item.pembina_name}` : '-',
+          medal_type: item.level ? `Tingkat ${item.level}` : '-',
+          event_name: item.organizer || '-',
+          organizer: item.organizer || '-',
+          certificate_url: item.certificate_url || item.photo_url || null,
+          photo_url: item.photo_url || item.certificate_url || null,
           description: item.description || '',
           tags: [category, tingkat],
         };
       });
   } catch (err) {
-    console.warn('Failed to fetch prestasi, fallback to local dataset:', err);
-    return PRESTASI_DATASET;
+    console.warn('Failed to fetch prestasi:', err);
+    return [];
   }
 };
 

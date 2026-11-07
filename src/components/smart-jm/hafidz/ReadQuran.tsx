@@ -55,6 +55,8 @@ export const ReadQuran: React.FC = () => {
 
   const ayahRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const audioStateRef = useRef<any>(null);
+  const pendingTargetAyahRef = useRef<number | null>(null);
+  const [targetAyah, setTargetAyah] = useState<number | null>(null);
 
   // Audio Hook integration with ref to avoid temporal dead zone or stale closures
   const handleAutoNext = useCallback(() => {
@@ -114,6 +116,17 @@ export const ReadQuran: React.FC = () => {
       if (isMounted) {
         setAyahs(data);
         setLoading(false);
+
+        if (pendingTargetAyahRef.current) {
+          const t = pendingTargetAyahRef.current;
+          pendingTargetAyahRef.current = null;
+          setTargetAyah(t);
+          setTimeout(() => {
+            if (ayahRefs.current[t]) {
+              ayahRefs.current[t]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }, 200);
+        }
       }
     });
 
@@ -191,11 +204,16 @@ export const ReadQuran: React.FC = () => {
     setIsDockVisible(false);
 
     if (targetAyahNumber) {
+      pendingTargetAyahRef.current = targetAyahNumber;
+      setTargetAyah(targetAyahNumber);
       setTimeout(() => {
         if (ayahRefs.current[targetAyahNumber]) {
           ayahRefs.current[targetAyahNumber]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-      }, 500);
+      }, 300);
+    } else {
+      pendingTargetAyahRef.current = null;
+      setTargetAyah(null);
     }
   };
 
@@ -246,6 +264,29 @@ export const ReadQuran: React.FC = () => {
             <BookOpen className="w-4 h-4 text-[#d4af37]" />
             <span>Pilih Surat / Juz (114)</span>
           </button>
+
+          {/* Quick Ayah Jump Dropdown */}
+          <div className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+            <span className="text-xs font-bold text-zinc-600 dark:text-zinc-300">Ayat:</span>
+            <select
+              value={targetAyah || (ayahs[0]?.numberInSurah ?? 1)}
+              onChange={(e) => {
+                const num = Number(e.target.value);
+                setTargetAyah(num);
+                if (ayahRefs.current[num]) {
+                  ayahRefs.current[num]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+              }}
+              className="text-xs font-bold bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 rounded-lg px-2 py-0.5 text-zinc-800 dark:text-zinc-100 cursor-pointer focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+              aria-label="Lompat ke nomor ayat"
+            >
+              {Array.from({ length: selectedSurah.numberOfAyahs }, (_, i) => i + 1).map((n) => (
+                <option key={n} value={n}>
+                  Ayat {n}
+                </option>
+              ))}
+            </select>
+          </div>
 
           {/* Quick Play Surah Button */}
           <button
@@ -358,6 +399,7 @@ export const ReadQuran: React.FC = () => {
 
             const isBookmarked = !!bookmarks[`${selectedSurah.number}:${ayah.numberInSurah}`];
             const isCopied = copiedAyahNumber === ayah.numberInSurah;
+            const isTargetAyah = targetAyah === ayah.numberInSurah;
 
             return (
               <div
@@ -368,6 +410,8 @@ export const ReadQuran: React.FC = () => {
                 className={`group relative p-3 sm:p-4 rounded-2xl transition-all duration-300 border ${
                   isPlayingThisAyah
                     ? 'bg-amber-50/70 dark:bg-amber-950/20 border-l-4 border-amber-500 border-t-amber-200/60 border-r-amber-200/60 border-b-amber-200/60 dark:border-amber-700/60 shadow-md ring-1 ring-amber-400/30'
+                    : isTargetAyah
+                    ? 'bg-emerald-50/60 dark:bg-emerald-950/30 border-l-4 border-emerald-600 border-t-emerald-200 border-r-emerald-200 border-b-emerald-200 dark:border-emerald-700 shadow-md ring-2 ring-emerald-500/50'
                     : 'bg-white dark:bg-zinc-900 hover:bg-zinc-50/90 dark:hover:bg-zinc-850/70 border-zinc-200/80 dark:border-zinc-800 shadow-2xs'
                 }`}
               >

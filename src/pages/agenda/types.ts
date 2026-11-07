@@ -36,6 +36,9 @@ export interface RoutineAgendaItem {
   targetAudience: string;
   description: string;
   keyActivities: string[];
+  badge?: string;
+  isFeatured?: boolean;
+  image?: string | null;
 }
 
 export type AgendaTab = 'kalender' | 'upcoming' | 'rutin';

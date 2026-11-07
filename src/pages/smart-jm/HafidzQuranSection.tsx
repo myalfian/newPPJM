@@ -28,6 +28,7 @@ import {
 } from '../../lib/quranData';
 import { RepeatMode } from './types';
 import { ReadQuran } from '../../components/smart-jm/hafidz/ReadQuran';
+import { SurahSelectorModal } from '../../components/smart-jm/hafidz/SurahSelectorModal';
 import { LiquidMercuryControl } from '../../components/common/LiquidMercuryControl';
 
 export const HafidzQuranSection: React.FC = () => {
@@ -39,6 +40,8 @@ export const HafidzQuranSection: React.FC = () => {
   const [ayahs, setAyahs] = useState<AyahItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isSelectorOpen, setIsSelectorOpen] = useState<boolean>(false);
+  const targetAyahRef = useRef<number | null>(null);
 
   // Murojaah Mode state
   const [murojaahAyahIndex, setMurojaahAyahIndex] = useState<number>(0);
@@ -66,7 +69,11 @@ export const HafidzQuranSection: React.FC = () => {
       if (isMounted) {
         setAyahs(data);
         setLoading(false);
-        setMurojaahAyahIndex(0);
+        const initialIdx = targetAyahRef.current
+          ? Math.min(Math.max(0, targetAyahRef.current - 1), data.length - 1)
+          : 0;
+        targetAyahRef.current = null;
+        setMurojaahAyahIndex(initialIdx);
         setIsClozeHidden(false);
         setRevealedWords({});
       }
@@ -279,8 +286,8 @@ export const HafidzQuranSection: React.FC = () => {
               </div>
             </div>
 
-            {/* Selected Surah Info */}
-            <div className="flex items-center justify-between pt-1.5 border-t border-zinc-200/60 dark:border-zinc-800/60">
+            {/* Selected Surah Info & Ayah Jump Control */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-2 border-t border-zinc-200/60 dark:border-zinc-800/60">
               <div className="flex items-center gap-2.5">
                 <span className="w-7 h-7 rounded-lg bg-emerald-800 text-[#d4af37] font-black text-xs flex items-center justify-center shrink-0">
                   {selectedSurah.number}
@@ -293,6 +300,41 @@ export const HafidzQuranSection: React.FC = () => {
                     {selectedSurah.nameIndo} • {selectedSurah.numberOfAyahs} Ayat • Juz {selectedSurah.juzStart} • {selectedSurah.revelationType}
                   </span>
                 </div>
+              </div>
+
+              {/* Surah Selector & Ayah Jump Picker */}
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setIsSelectorOpen(true)}
+                  className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-800 to-emerald-950 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs hover:from-emerald-700 hover:to-emerald-900 transition-all cursor-pointer"
+                >
+                  <BookOpen className="w-3.5 h-3.5 text-[#d4af37]" />
+                  <span>Pilih Surat &amp; Ayat</span>
+                </button>
+
+                {ayahs.length > 0 && (
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700">
+                    <span className="text-[11px] font-bold text-zinc-500">Ayat:</span>
+                    <select
+                      value={murojaahAyahIndex + 1}
+                      onChange={(e) => {
+                        const targetNum = Number(e.target.value);
+                        setMurojaahAyahIndex(targetNum - 1);
+                        setIsClozeHidden(false);
+                        setRevealedWords({});
+                      }}
+                      className="text-xs font-bold bg-transparent text-emerald-800 dark:text-emerald-300 cursor-pointer focus:outline-hidden"
+                      aria-label="Pilih nomor ayat murojaah"
+                    >
+                      {ayahs.map((a) => (
+                        <option key={a.numberInSurah} value={a.numberInSurah}>
+                          Ayat {a.numberInSurah} / {ayahs.length}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -463,6 +505,17 @@ export const HafidzQuranSection: React.FC = () => {
           )}
         </div>
       )}
+
+      {/* Surah & Ayah Selector Modal for Murojaah */}
+      <SurahSelectorModal
+        isOpen={isSelectorOpen}
+        onClose={() => setIsSelectorOpen(false)}
+        selectedSurahNumber={selectedSurah.number}
+        onSelectSurah={(surah, targetAyahNumber) => {
+          targetAyahRef.current = targetAyahNumber || 1;
+          setSelectedSurah(surah);
+        }}
+      />
     </div>
   );
 };
