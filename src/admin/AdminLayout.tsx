@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, Outlet, Link, useLocation, Navigate } from 'react-router-dom';
 import {
   LayoutDashboard, Layout, Landmark, History, Building2, ShieldCheck, Users, UserCircle2, ChevronsLeft, ChevronsRight,
-  ExternalLink, LogOut, Menu, X, ChevronRight, Layers,
+  ExternalLink, LogOut, Menu, X, ChevronRight, Layers, SlidersHorizontal,
 } from 'lucide-react';
 import { useAdminSession, type AdminSession } from './useAdminSession';
 import { STAFF_ROLES } from './permissions';
@@ -45,7 +45,8 @@ const GROUPS: NavGroup[] = [
         items: [
           { to: '/admin/users', label: 'Manajemen User', icon: Users, section: 'users' },
           { to: '/admin/roles', label: 'Role & Permission', icon: ShieldCheck, section: 'roles' },
-          { to: '/profile', label: 'Profil Saya', icon: UserCircle2 },
+          { to: '/admin/slider-settings', label: 'Pengaturan Slider Global', icon: SlidersHorizontal, section: 'slider_settings' },
+          { to: '/admin/profile', label: 'Profil Saya', icon: UserCircle2 },
           ...crudGroup('Manajemen'),
           ...crudGroup('Pengaturan'),
         ],
@@ -60,6 +61,8 @@ const CRUMBS: Record<string, string> = {
   '/admin/fasilitas': 'Content / Fasilitas',
   '/admin/users': 'Pengaturan / Manajemen User',
   '/admin/roles': 'Pengaturan / Role & Permission',
+  '/admin/slider-settings': 'Pengaturan / Pengaturan Slider Global',
+  '/admin/profile': 'Pengaturan / Profil Saya',
   ...Object.fromEntries(CRUD_SECTIONS.map((s) => [`/admin/s/${s.key}`, `${s.group} / ${s.label}`])),
 };
 

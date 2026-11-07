@@ -19,6 +19,7 @@ import type { AdminOutletContext } from './AdminLayout';
 import { crudByKey, type CrudSection, type Field } from './sections';
 import { convertImageToWebP, formatBytes } from '../lib/webpConverter';
 import { invalidateCache } from '../lib/queryCache';
+import { CardImageSlider } from '../components/common/CardImageSlider';
 
 type Row = Record<string, unknown> & { id: string };
 type Draft = Record<string, string | boolean>;
@@ -1174,14 +1175,45 @@ const Editor: React.FC<{ sec: CrudSection }> = ({ sec }) => {
                 {visible.map((r) => {
                   const d = drafts[r.id];
                   const get = (k?: string) => (k ? String((d?.[k] ?? r[k] ?? '') as string) : '');
-                  const img = sec.imageField ? get(sec.imageField) : '';
+                  
+                  // Extract all images for 100% identical preview with CardImageSlider
+                  const imgList: string[] = [];
+                  if (sec.imageField) {
+                    const primary = get(sec.imageField).trim();
+                    if (primary) imgList.push(primary);
+                  }
+                  const cert = get('certificate_url').trim();
+                  if (cert && !imgList.includes(cert)) imgList.push(cert);
+                  
+                  // Handle photos or gallery JSON arrays
+                  const rawPhotos = (d as any)?.photos ?? (r as any).photos ?? (d as any)?.gallery ?? (r as any).gallery;
+                  if (Array.isArray(rawPhotos)) {
+                    rawPhotos.forEach((p: any) => {
+                      const u = typeof p === 'string' ? p : p?.photo_url || p?.image_url || p?.url;
+                      if (typeof u === 'string' && u.trim() && !imgList.includes(u.trim())) {
+                        imgList.push(u.trim());
+                      }
+                    });
+                  }
+
                   return (
                     <article key={r.id} className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-xs">
                       {sec.imageField && (
-                        <div className="relative aspect-[16/10] bg-zinc-100">
-                          {img && <img src={img} alt="" className="h-full w-full object-cover" />}
+                        <div className="relative aspect-[16/10] bg-zinc-100 overflow-hidden">
+                          {imgList.length > 0 ? (
+                            <CardImageSlider
+                              images={imgList}
+                              alt={get(sec.titleField)}
+                              aspectRatio="aspect-[16/10]"
+                              containerClassName="w-full h-full"
+                            />
+                          ) : (
+                            <div className="w-full h-full grid place-items-center text-zinc-400 text-xs font-medium">
+                              (Tidak ada gambar)
+                            </div>
+                          )}
                           {sec.badgeField && get(sec.badgeField) && (
-                            <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-[9.5px] font-black uppercase tracking-wider text-emerald-300">
+                            <span className="absolute left-2 top-2 z-20 pointer-events-none rounded-full bg-black/60 px-2 py-0.5 text-[9.5px] font-black uppercase tracking-wider text-emerald-300">
                               {get(sec.badgeField)}
                             </span>
                           )}

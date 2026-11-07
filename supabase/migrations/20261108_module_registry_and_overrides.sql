@@ -349,3 +349,4 @@ DROP TRIGGER IF EXISTS trg_prevent_last_super_admin_removal ON public.profiles;
 CREATE TRIGGER trg_prevent_last_super_admin_removal
 BEFORE DELETE OR UPDATE ON public.profiles
 FOR EACH ROW EXECUTE FUNCTION public.prevent_last_super_admin_removal();
+

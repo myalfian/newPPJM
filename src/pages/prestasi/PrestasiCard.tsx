@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Trophy,
   Award,
@@ -10,6 +10,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { PrestasiItem } from './types';
+import { CardImageSlider } from '../../components/common/CardImageSlider';
 
 interface PrestasiCardProps {
   item: PrestasiItem;
@@ -17,6 +18,15 @@ interface PrestasiCardProps {
 }
 
 export const PrestasiCard: React.FC<PrestasiCardProps> = ({ item, onOpenModal }) => {
+  const images = useMemo(() => {
+    const list: string[] = [];
+    if (item.photo_url) list.push(item.photo_url);
+    if (item.certificate_url && item.certificate_url !== item.photo_url) {
+      list.push(item.certificate_url);
+    }
+    return list;
+  }, [item.photo_url, item.certificate_url]);
+
   // Medal Tone determination
   const isGold = item.medal_type.toLowerCase().includes('emas') || item.medal_type.toLowerCase().includes('juara 1');
   const isSilver = item.medal_type.toLowerCase().includes('perak') || item.medal_type.toLowerCase().includes('juara 2');
@@ -54,19 +64,19 @@ export const PrestasiCard: React.FC<PrestasiCardProps> = ({ item, onOpenModal })
       onClick={() => onOpenModal(item)}
       className="group relative bg-white/90 dark:bg-zinc-900/90 backdrop-blur-md rounded-2xl sm:rounded-3xl border border-zinc-200/80 dark:border-zinc-800/80 overflow-hidden shadow-xs hover:shadow-xl hover:border-emerald-300/80 dark:hover:border-emerald-600/60 transition-all duration-300 flex flex-col justify-between cursor-pointer active:scale-[0.985] select-none"
     >
-      {/* Top Banner Image with Aspect Ratio */}
+      {/* Top Banner Image with Aspect Ratio & Automatic Slider when >1 image */}
       <div className="relative aspect-[16/10] sm:aspect-[16/10] w-full overflow-hidden bg-zinc-100 dark:bg-zinc-800">
-        <img
-          src={item.photo_url || item.certificate_url}
+        <CardImageSlider
+          images={images}
           alt={item.title}
-          loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+          aspectRatio="aspect-[16/10]"
+          containerClassName="w-full h-full"
         />
         {/* Ambient Dark Gradient for Legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none z-10" />
 
         {/* Top Badges: Category & Tingkat */}
-        <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none">
+        <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 pointer-events-none z-20">
           <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-[10.5px] font-black text-white border border-white/20 uppercase tracking-wider flex items-center gap-1">
             <Sparkles className="w-3 h-3 text-[#d4af37]" />
             {item.category}
@@ -82,7 +92,7 @@ export const PrestasiCard: React.FC<PrestasiCardProps> = ({ item, onOpenModal })
         </div>
 
         {/* Bottom Floating Ribbon: Medal / Trophy Type */}
-        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none">
+        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between pointer-events-none z-20">
           <div
             className={`px-3 py-1 rounded-xl text-xs font-black tracking-tight flex items-center gap-1.5 ${getMedalBadgeClass()}`}
           >

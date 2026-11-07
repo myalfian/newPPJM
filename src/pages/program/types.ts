@@ -13,6 +13,7 @@ export interface PondokProgramItem {
   description: string;
   iconName: string;
   imageUrl: string | null;
+  images?: string[];
   keyFeatures: string[];
 }
 
@@ -45,6 +46,7 @@ export interface SekolahProgramItem {
   description: string;
   iconName: string;
   imageUrl?: string | null;
+  images?: string[];
   highlights: string[];
 }
 

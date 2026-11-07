@@ -18,6 +18,7 @@ import {
   SekolahProgramItem,
   SekolahStoryActivity
 } from './types';
+import { CardImageSlider } from '../../components/common/CardImageSlider';
 
 export const SekolahProgramSection: React.FC = () => {
   const [programs, setPrograms] = useState<SekolahProgramItem[]>([]);
@@ -49,6 +50,16 @@ export const SekolahProgramSection: React.FC = () => {
               ? row.highlights
               : Array.isArray(visual.points) ? visual.points : [];
 
+            const rawImages = row.images;
+            const imagesList: string[] = [];
+            if (row.image_url) imagesList.push(row.image_url);
+            if (Array.isArray(rawImages)) {
+              rawImages.forEach((img: any) => {
+                const u = typeof img === 'string' ? img : img?.image_url || img?.url;
+                if (u && !imagesList.includes(u)) imagesList.push(u);
+              });
+            }
+
             return {
               id: row.id,
               title: row.title,
@@ -56,7 +67,8 @@ export const SekolahProgramSection: React.FC = () => {
               badge: row.badge || visual.headline || 'Akreditasi A',
               description: row.description || row.curriculum || '-',
               iconName: row.icon_name || (idx === 0 ? 'GraduationCap' : 'Cpu'),
-              imageUrl: row.image_url,
+              imageUrl: imagesList[0] || row.image_url,
+              images: imagesList,
               highlights: points.length > 0 ? points : [],
               stories: []
             };
@@ -122,12 +134,13 @@ export const SekolahProgramSection: React.FC = () => {
                 key={prog.id}
                 className="group relative bg-white/90 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4.5 border border-zinc-200/70 dark:border-zinc-800/70 shadow-xs hover:shadow-xl hover:border-blue-500/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
               >
-                {prog.imageUrl && (
+                {((prog.images && prog.images.length > 0) || prog.imageUrl) && (
                   <div className="relative aspect-[16/9] rounded-xl overflow-hidden mb-3 bg-zinc-100 dark:bg-zinc-800">
-                    <img
-                      src={prog.imageUrl}
+                    <CardImageSlider
+                      images={prog.images && prog.images.length > 0 ? prog.images : [prog.imageUrl!]}
                       alt={prog.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      aspectRatio="aspect-[16/9]"
+                      containerClassName="w-full h-full"
                     />
                   </div>
                 )}

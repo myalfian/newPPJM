@@ -1,16 +1,23 @@
 import { HeroSlide, initialHeroSlides } from '../data/heroSlides';
 import { supabase, isSupabaseConfigured } from './supabase';
+import { useEffect, useState } from 'react';
+
+export type TransitionEffect = 'slide' | 'fade' | 'zoom';
 
 export interface SliderSettings {
-  autoplayInterval: number; // in seconds (e.g., 2 to 20)
-  transitionSpeed: number;  // in milliseconds (e.g., 200 to 1500)
+  autoplayInterval: number; // in seconds (2 to 20)
+  transitionSpeed: number;  // in milliseconds (150 to 2000)
+  transitionEffect: TransitionEffect;
   isAutoplayEnabled: boolean;
+  pauseOnHover: boolean;
 }
 
 export const DEFAULT_SLIDER_SETTINGS: SliderSettings = {
-  autoplayInterval: 5.5,
-  transitionSpeed: 600,
+  autoplayInterval: 5.0,
+  transitionSpeed: 500,
+  transitionEffect: 'slide',
   isAutoplayEnabled: true,
+  pauseOnHover: true,
 };
 
 const STORAGE_KEY = 'ppjm_slider_settings';
@@ -24,16 +31,25 @@ export const getSliderSettings = (): SliderSettings => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULT_SLIDER_SETTINGS;
     const parsed = JSON.parse(raw);
+    const validEffect: TransitionEffect =
+      parsed.transitionEffect === 'fade' || parsed.transitionEffect === 'zoom'
+        ? parsed.transitionEffect
+        : 'slide';
+
     return {
-      autoplayInterval: typeof parsed.autoplayInterval === 'number' && parsed.autoplayInterval > 0 
+      autoplayInterval: typeof parsed.autoplayInterval === 'number' && parsed.autoplayInterval >= 2 && parsed.autoplayInterval <= 20
         ? parsed.autoplayInterval 
         : DEFAULT_SLIDER_SETTINGS.autoplayInterval,
-      transitionSpeed: typeof parsed.transitionSpeed === 'number' && parsed.transitionSpeed >= 150 
+      transitionSpeed: typeof parsed.transitionSpeed === 'number' && parsed.transitionSpeed >= 150 && parsed.transitionSpeed <= 2000
         ? parsed.transitionSpeed 
         : DEFAULT_SLIDER_SETTINGS.transitionSpeed,
+      transitionEffect: validEffect,
       isAutoplayEnabled: typeof parsed.isAutoplayEnabled === 'boolean' 
         ? parsed.isAutoplayEnabled 
         : DEFAULT_SLIDER_SETTINGS.isAutoplayEnabled,
+      pauseOnHover: typeof parsed.pauseOnHover === 'boolean'
+        ? parsed.pauseOnHover
+        : DEFAULT_SLIDER_SETTINGS.pauseOnHover,
     };
   } catch (e) {
     console.warn('Gagal membaca pengaturan slider:', e);
@@ -41,34 +57,118 @@ export const getSliderSettings = (): SliderSettings => {
   }
 };
 
-export const saveSliderSettings = (settings: SliderSettings): void => {
-  if (typeof window === 'undefined') return;
+export const fetchSliderSettingsFromSupabase = async (): Promise<SliderSettings> => {
+  if (!isSupabaseConfigured()) return getSliderSettings();
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
-    // Dispatch custom event agar HeroSlider di halaman beranda langsung update tanpa refresh
-    window.dispatchEvent(new CustomEvent('ppjm-slider-settings-changed', { detail: settings }));
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('value')
+      .eq('key', SUPABASE_SETTINGS_KEY)
+      .maybeSingle();
+
+    if (!error && data && data.value && typeof data.value === 'object') {
+      const parsed = data.value as any;
+      const validEffect: TransitionEffect =
+        parsed.transitionEffect === 'fade' || parsed.transitionEffect === 'zoom'
+          ? parsed.transitionEffect
+          : 'slide';
+
+      const validated: SliderSettings = {
+        autoplayInterval: typeof parsed.autoplayInterval === 'number' && parsed.autoplayInterval >= 2 && parsed.autoplayInterval <= 20
+          ? parsed.autoplayInterval
+          : DEFAULT_SLIDER_SETTINGS.autoplayInterval,
+        transitionSpeed: typeof parsed.transitionSpeed === 'number' && parsed.transitionSpeed >= 150 && parsed.transitionSpeed <= 2000
+          ? parsed.transitionSpeed
+          : DEFAULT_SLIDER_SETTINGS.transitionSpeed,
+        transitionEffect: validEffect,
+        isAutoplayEnabled: typeof parsed.isAutoplayEnabled === 'boolean'
+          ? parsed.isAutoplayEnabled
+          : DEFAULT_SLIDER_SETTINGS.isAutoplayEnabled,
+        pauseOnHover: typeof parsed.pauseOnHover === 'boolean'
+          ? parsed.pauseOnHover
+          : DEFAULT_SLIDER_SETTINGS.pauseOnHover,
+      };
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(validated));
+        window.dispatchEvent(new CustomEvent('ppjm-slider-settings-changed', { detail: validated }));
+      }
+      return validated;
+    }
+  } catch (err) {
+    console.warn('Gagal sinkronisasi slider_settings dari Supabase:', err);
+  }
+  return getSliderSettings();
+};
+
+export const saveSliderSettings = async (settings: SliderSettings): Promise<{ ok: boolean; error?: string }> => {
+  if (typeof window === 'undefined') return { ok: true };
+
+  // Strict range validations
+  const clamped: SliderSettings = {
+    autoplayInterval: Math.max(2, Math.min(20, Number(settings.autoplayInterval) || 5.0)),
+    transitionSpeed: Math.max(150, Math.min(2000, Number(settings.transitionSpeed) || 500)),
+    transitionEffect: settings.transitionEffect === 'fade' || settings.transitionEffect === 'zoom' ? settings.transitionEffect : 'slide',
+    isAutoplayEnabled: Boolean(settings.isAutoplayEnabled),
+    pauseOnHover: Boolean(settings.pauseOnHover),
+  };
+
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(clamped));
+    window.dispatchEvent(new CustomEvent('ppjm-slider-settings-changed', { detail: clamped }));
   } catch (e) {
-    console.error('Gagal menyimpan pengaturan slider:', e);
+    console.error('Gagal menyimpan pengaturan slider ke localStorage:', e);
   }
 
   if (isSupabaseConfigured()) {
-    supabase
-      .from('site_settings')
-      .upsert(
-        {
-          key: SUPABASE_SETTINGS_KEY,
-          value: settings as unknown as Record<string, unknown>,
-          description: 'Pengaturan kecepatan & autoplay HeroSlider beranda PPJM',
-          updated_at: new Date().toISOString(),
-        } as any,
-        { onConflict: 'key' }
-      )
-      .then(({ error }) => {
-        if (error) {
-          console.warn('Info sinkronisasi pengaturan slider ke Supabase:', error.message);
-        }
-      });
+    try {
+      const { error } = await supabase
+        .from('site_settings')
+        .upsert(
+          {
+            key: SUPABASE_SETTINGS_KEY,
+            value: clamped as unknown as Record<string, unknown>,
+            description: 'Pengaturan kecepatan, durasi transisi, dan autoplay slider global website PPJM',
+            updated_at: new Date().toISOString(),
+          } as any,
+          { onConflict: 'key' }
+        );
+
+      if (error) {
+        return { ok: false, error: error.message };
+      }
+    } catch (err: any) {
+      return { ok: false, error: err?.message || 'Gagal menyimpan ke database' };
+    }
   }
+
+  return { ok: true };
+};
+
+/**
+ * React Hook untuk membaca pengaturan slider global yang reaktif di seluruh komponen.
+ */
+export const useSliderSettings = (): SliderSettings => {
+  const [settings, setSettings] = useState<SliderSettings>(getSliderSettings);
+
+  useEffect(() => {
+    // Initial fetch from remote
+    fetchSliderSettingsFromSupabase().then((latest) => {
+      setSettings(latest);
+    });
+
+    const handler = (e: Event) => {
+      const customDetail = (e as CustomEvent<SliderSettings>).detail;
+      if (customDetail) {
+        setSettings(customDetail);
+      }
+    };
+
+    window.addEventListener('ppjm-slider-settings-changed', handler);
+    return () => window.removeEventListener('ppjm-slider-settings-changed', handler);
+  }, []);
+
+  return settings;
 };
 
 /**

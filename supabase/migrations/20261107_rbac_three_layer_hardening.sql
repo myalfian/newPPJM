@@ -210,3 +210,4 @@ SET
   can_delete = EXCLUDED.can_delete,
   can_publish = EXCLUDED.can_publish,
   updated_at = now();
+

@@ -246,6 +246,7 @@ export const ADMIN_SECTIONS: { key: string; label: string; category?: string }[]
   { key: 'profile', label: 'Sistem: Dynamic Profile Semua Role (/profile)', category: 'Portal & Akademik' },
   { key: 'users', label: 'Manajemen: Kelola Seluruh User (/admin/users)', category: 'Pengaturan & Keamanan' },
   { key: 'roles', label: 'Pengaturan: Matriks Role & Dynamic Permissions (/admin/roles)', category: 'Pengaturan & Keamanan' },
+  { key: 'slider_settings', label: 'Pengaturan: Kontrol Slider Global (/admin/slider-settings)', category: 'Pengaturan & Keamanan' },
   // Modul CMS Website
   { key: 'visi_misi', label: 'Profil: Visi, Misi & Tujuan', category: 'CMS Website' },
   { key: 'sejarah', label: 'Profil: Sejarah Pesantren', category: 'CMS Website' },

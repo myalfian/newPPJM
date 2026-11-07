@@ -310,6 +310,25 @@ export const PUBLIC_NAV_TABS: NavTabItem[] = [
       { title: 'Show Room Santri', href: '/karya-siswa?tab=showroom', desc: 'Etalase robotik STEM & kaligrafi seni', icon: Sparkles },
     ]
   },
+  {
+    id: 'agenda',
+    label: 'Agenda',
+    shortLabel: 'Agenda',
+    icon: CalendarDays,
+    href: '/agenda',
+    isDropdown: false,
+    color: {
+      badgeBg: 'bg-indigo-50 text-indigo-700 border-indigo-200/80 group-hover:bg-indigo-100 group-hover:text-indigo-800',
+      activeBadgeBg: 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30 ring-2 ring-indigo-400/60',
+      activeText: 'text-indigo-900',
+      activeDot: 'bg-indigo-600',
+    },
+    items: [
+      { title: 'Agenda Terpadu', href: '/agenda', desc: 'Kalender kegiatan akademik, santri & pondok', icon: CalendarDays },
+      { title: 'Event Mendatang', href: '/agenda?tab=upcoming', desc: 'Jadwal terdekat & hitung mundur acara', icon: Clock },
+      { title: 'Rutinitas Harian', href: '/agenda?tab=rutin', desc: 'Jadwal ubudiyah & kegiatan berkala santri', icon: Layers },
+    ]
+  },
 ];
 
 // Single Source of Truth for Admin CMS Modules (Hierarchically aligned with 10 Public Website Menus)

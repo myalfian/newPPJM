@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, GraduationCap } from 'lucide-react';
 import { PUBLIC_NAV_TABS, NavTabItem } from '../../data/navigationData';
 import { UserMenu } from './UserMenu';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
@@ -95,7 +95,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
       );
     }
     if (tab.id === 'galeri') return location.pathname.startsWith('/galeri');
-    if (tab.id === 'agenda' || tab.id === 'karya-siswa') return location.pathname.startsWith('/karya-siswa') || location.pathname.startsWith('/agenda');
+    if (tab.id === 'karya-siswa') return location.pathname.startsWith('/karya-siswa');
+    if (tab.id === 'agenda') return location.pathname.startsWith('/agenda');
     return false;
   };
 
@@ -306,10 +307,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             </Link>
 
 
-            {/* Desktop Navigation: 9 Pillars Equal Width & Uniform Horizontal Distribution */}
+            {/* Desktop Navigation: Synchronized with Mobile Viewport (10 Pillars Equal Width) */}
             <div className="relative hidden lg:block" onMouseLeave={() => setHoveredTab(null)}>
               <nav
-                className="grid grid-cols-9 items-center h-[56px] xl:h-[60px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[720px] xl:w-[850px] 2xl:w-[940px]"
+                style={{ gridTemplateColumns: `repeat(${navTabs.length}, minmax(0, 1fr))` }}
+                className="grid items-center h-[56px] xl:h-[60px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[790px] xl:w-[930px] 2xl:w-[1040px]"
               >
                 {navTabs.map((tab) => {
                   const TabIcon = tab.icon;
@@ -390,8 +392,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               </nav>
             </div>
 
-            {/* Right Side: User Menu / Account pill (always visible, all viewports) */}
+            {/* Right Side: SPMB Button & User Menu / Account pill */}
             <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 shrink-0">
+              <Link
+                to="/spmb"
+                className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black text-white bg-gradient-to-r from-[#0f5132] to-[#126b3c] hover:from-[#0d452b] hover:to-[#0f5132] shadow-xs border border-emerald-600/40 transition-all hover:scale-105 select-none"
+              >
+                <GraduationCap className="w-3.5 h-3.5 text-amber-300" />
+                <span>SPMB 2026</span>
+              </Link>
               <UserMenu variant="pill" />
             </div>
 

@@ -21,6 +21,7 @@ import {
   PondokActivityPhoto,
   DailyScheduleItem
 } from './types';
+import { CardImageSlider } from '../../components/common/CardImageSlider';
 
 // ========================
 // PONDOK PROGRAM & PHOTOS FROM SUPABASE
@@ -69,6 +70,27 @@ function extractImageUrl(images: any): string | null {
 
   return null;
 }
+function extractAllImages(row: any): string[] {
+  const urls: string[] = [];
+  if (row.image_url && typeof row.image_url === 'string' && row.image_url.trim()) {
+    urls.push(row.image_url.trim());
+  }
+  const raw = row.images;
+  if (Array.isArray(raw)) {
+    raw.forEach((img: any) => {
+      if (typeof img === 'string' && img.trim()) urls.push(img.trim());
+      else if (img && typeof img === 'object') {
+        const u = img.image_url || img.url || img.src || img.image;
+        if (u && typeof u === 'string' && u.trim()) urls.push(u.trim());
+      }
+    });
+  } else if (raw && typeof raw === 'object') {
+    const u = raw.image_url || raw.url || raw.src || raw.image;
+    if (u && typeof u === 'string' && u.trim()) urls.push(u.trim());
+  }
+  return Array.from(new Set(urls));
+}
+
 export const PondokProgramSection: React.FC = () => {
   const [programs, setPrograms] = useState<PondokProgramItem[]>([]);
   const [pondokPhotos, setPondokPhotos] = useState<PondokActivityPhoto[]>([]);
@@ -103,22 +125,26 @@ export const PondokProgramSection: React.FC = () => {
 
         // Map programs
         if (!programsResult.error && programsResult.data && programsResult.data.length > 0) {
-          const mapped: PondokProgramItem[] = programsResult.data.map((row: any) => ({
-            id: row.id,
-            title: row.title,
-            category: row.category || 'Program Pesantren',
-            badge: row.badge || row.schedule?.target || row.schedule?.tingkat || row.schedule?.rutinitas || 'Unggulan',
-            description: row.description || '-',
-            iconName: row.icon_name || 'BookOpen',
-            imageUrl: row.image_url || extractImageUrl(row.images),
-            keyFeatures: Array.isArray(row.key_features) && row.key_features.length > 0
-              ? row.key_features
-              : [
-                  'Target & Jadwal: ' + (row.schedule?.harian || row.schedule?.waktu || 'Terstruktur'),
-                  'Talaqqi musyafahah dengan asatidz bersanad',
-                  'Evaluasi dan ujian berkala mutqin'
-                ]
-          }));
+          const mapped: PondokProgramItem[] = programsResult.data.map((row: any) => {
+            const allImgs = extractAllImages(row);
+            return {
+              id: row.id,
+              title: row.title,
+              category: row.category || 'Program Pesantren',
+              badge: row.badge || row.schedule?.target || row.schedule?.tingkat || row.schedule?.rutinitas || 'Unggulan',
+              description: row.description || '-',
+              iconName: row.icon_name || 'BookOpen',
+              imageUrl: allImgs[0] || row.image_url || extractImageUrl(row.images),
+              images: allImgs,
+              keyFeatures: Array.isArray(row.key_features) && row.key_features.length > 0
+                ? row.key_features
+                : [
+                    'Target & Jadwal: ' + (row.schedule?.harian || row.schedule?.waktu || 'Terstruktur'),
+                    'Talaqqi musyafahah dengan asatidz bersanad',
+                    'Evaluasi dan ujian berkala mutqin'
+                  ]
+            };
+          });
           setPrograms(mapped);
         }
 
@@ -206,9 +232,16 @@ export const PondokProgramSection: React.FC = () => {
                 key={prog.id}
                 className="group relative bg-white/90 dark:bg-zinc-900/90 rounded-2xl sm:rounded-3xl p-3.5 sm:p-4.5 border border-zinc-200/70 dark:border-zinc-800/70 shadow-xs hover:shadow-xl hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
               >
-                {/* Program Image */}
+                {/* Program Image with automatic slider when >1 image */}
                 <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-3 bg-zinc-100 dark:bg-zinc-800">
-                  {prog.imageUrl ? (
+                  {prog.images && prog.images.length > 0 ? (
+                    <CardImageSlider
+                      images={prog.images}
+                      alt={prog.title}
+                      aspectRatio="aspect-[4/3]"
+                      containerClassName="w-full h-full"
+                    />
+                  ) : prog.imageUrl ? (
                     <img
                       src={prog.imageUrl}
                       alt={prog.title}
@@ -219,7 +252,7 @@ export const PondokProgramSection: React.FC = () => {
                       <Icon className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
                     </div>
                   )}
-                  <div className="absolute top-2 left-2 flex items-center gap-1">
+                  <div className="absolute top-2 left-2 flex items-center gap-1 z-20 pointer-events-none">
                     <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
                       {prog.badge}
                     </span>

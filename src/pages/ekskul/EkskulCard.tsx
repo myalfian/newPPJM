@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Clock,
   UserCheck,
@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { DetailedEkskulItem } from './types';
 import { stripHtmlToPlainText } from '../../utils/richContentUtils';
+import { CardImageSlider } from '../../components/common/CardImageSlider';
 
 interface EkskulCardProps {
   item: DetailedEkskulItem;
@@ -16,6 +17,18 @@ interface EkskulCardProps {
 }
 
 export const EkskulCard: React.FC<EkskulCardProps> = ({ item, onOpenDetail }) => {
+  const images = useMemo(() => {
+    const list: string[] = [];
+    if (item.featuredPhoto) list.push(item.featuredPhoto);
+    if (Array.isArray(item.gallery)) {
+      item.gallery.forEach((g) => {
+        const u = typeof g === 'string' ? g : g?.url;
+        if (u && !list.includes(u)) list.push(u);
+      });
+    }
+    return list;
+  }, [item.featuredPhoto, item.gallery]);
+
   const categoryColorClass =
     item.category === 'Sains & Teknologi'
       ? 'bg-blue-50 dark:bg-blue-950/70 text-blue-800 dark:text-blue-300 border-blue-200/60 dark:border-blue-800/60'
@@ -32,20 +45,20 @@ export const EkskulCard: React.FC<EkskulCardProps> = ({ item, onOpenDetail }) =>
       style={{ WebkitTapHighlightColor: 'transparent' }}
     >
       <div>
-        {/* Photo Container (aspect-[16/10], rounded-2xl) */}
+        {/* Photo Container (aspect-[16/10], automatic slider when >1 photo) */}
         <div className="relative aspect-[16/10] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
-          <img
-            src={item.featuredPhoto}
+          <CardImageSlider
+            images={images}
             alt={item.name}
-            loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            aspectRatio="aspect-[16/10]"
+            containerClassName="w-full h-full"
           />
 
           {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity pointer-events-none z-10" />
 
           {/* Category Badge Top Left */}
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-3 left-3 pointer-events-none z-20">
             <span
               className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full border shadow-xs backdrop-blur-md ${categoryColorClass}`}
             >
@@ -54,7 +67,7 @@ export const EkskulCard: React.FC<EkskulCardProps> = ({ item, onOpenDetail }) =>
           </div>
 
           {/* Photo Gallery Count Badge Top Right */}
-          <div className="absolute top-3 right-3">
+          <div className="absolute top-3 right-3 pointer-events-none z-20">
             <div className="flex items-center gap-1 text-[11px] font-bold text-white bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-full shadow-xs border border-white/10 group-hover:bg-emerald-600 transition-colors">
               <Images className="w-3.5 h-3.5" />
               <span>+{item.gallery.length} Foto</span>
@@ -62,7 +75,7 @@ export const EkskulCard: React.FC<EkskulCardProps> = ({ item, onOpenDetail }) =>
           </div>
 
           {/* Bottom Title over photo on mobile preview */}
-          <div className="absolute bottom-3 left-3 right-3 text-white">
+          <div className="absolute bottom-3 left-3 right-3 text-white pointer-events-none z-20">
             <span className="text-[11px] font-semibold text-emerald-300 uppercase tracking-wider block">
               Minat Bakat Santri
             </span>

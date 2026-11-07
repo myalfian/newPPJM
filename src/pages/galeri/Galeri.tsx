@@ -24,6 +24,7 @@ import { YoutubeIcon } from '../../components/common/SocialIcons';
 import { supabase, GalleryItem, isSupabaseConfigured } from '../../lib/supabase';
 import { useCachedQuery, invalidateCache } from '../../lib/queryCache';
 import { SafeRichContent } from '../../components/common/SafeRichContent';
+import { useSliderSettings } from '../../lib/sliderSettings';
 
 // Helper to reliably extract YouTube Video ID from any URL format
 export const getYouTubeId = (urlOrId?: string): string => {
@@ -385,6 +386,7 @@ interface PhotoCardSliderProps {
 }
 
 const PhotoCardSlider: React.FC<PhotoCardSliderProps> = ({ item, cardIndex, onOpenLightbox }) => {
+  const sliderSettings = useSliderSettings();
   const photos = item.photos;
   const total = photos.length;
   const [[activeIndex, direction], setSlide] = useState<[number, number]>([0, 1]);
@@ -406,13 +408,13 @@ const PhotoCardSlider: React.FC<PhotoCardSliderProps> = ({ item, cardIndex, onOp
     });
   };
 
-  // Smooth staggered auto-play across the 3 photos, pausing on hover/touch
+  // Smooth auto-play across photos, adhering to Super Admin slider settings & pausing on hover/touch
   useEffect(() => {
-    if (isPaused || total <= 1) return;
-    const intervalMs = 4200 + (cardIndex % 3) * 550;
+    if (isPaused || total <= 1 || !sliderSettings.isAutoplayEnabled) return;
+    const intervalMs = sliderSettings.autoplayInterval || 5000;
     const timer = window.setInterval(() => paginate(1), intervalMs);
     return () => window.clearInterval(timer);
-  }, [isPaused, total, cardIndex, paginate]);
+  }, [isPaused, total, paginate, sliderSettings.isAutoplayEnabled, sliderSettings.autoplayInterval]);
 
   const activePhoto = photos[activeIndex] || photos[0];
 
