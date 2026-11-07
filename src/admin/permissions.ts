@@ -32,7 +32,7 @@ export interface RoleMeta {
   permissionsSummary: string[];
 }
 
-export const NINE_ROLES: RoleMeta[] = [
+export const TEN_ROLES: RoleMeta[] = [
   {
     value: 'super_admin',
     label: 'Super Admin',
@@ -187,7 +187,9 @@ export const NINE_ROLES: RoleMeta[] = [
   },
 ];
 
-export const STAFF_ROLES: { value: StaffRole; label: string }[] = NINE_ROLES.map((r) => ({
+export const NINE_ROLES: RoleMeta[] = TEN_ROLES;
+
+export const STAFF_ROLES: { value: StaffRole; label: string }[] = TEN_ROLES.map((r) => ({
   value: r.value,
   label: r.label,
 }));
@@ -208,10 +210,10 @@ export function normalizeCanonicalRole(raw?: string | null): CanonicalRole {
 
 export function getRoleMeta(raw?: string | null): RoleMeta {
   const canonical = normalizeCanonicalRole(raw);
-  return NINE_ROLES.find((r) => r.value === canonical) || NINE_ROLES[5]; // default santri
+  return TEN_ROLES.find((r) => r.value === canonical) || TEN_ROLES[5]; // default santri
 }
 
-export type PermAction = 'view' | 'create' | 'edit' | 'delete' | 'publish';
+export type PermAction = 'view' | 'create' | 'edit' | 'delete' | 'publish' | 'approve' | 'export';
 export const PERM_ACTIONS: { key: PermAction; label: string }[] = [
   { key: 'view', label: 'Lihat' },
   { key: 'create', label: 'Tambah' },
@@ -220,15 +222,30 @@ export const PERM_ACTIONS: { key: PermAction; label: string }[] = [
   { key: 'publish', label: 'Terbitkan' },
 ];
 
+export interface UserPermissionOverride {
+  id?: string;
+  user_id: string;
+  section: string;
+  can_view?: boolean | null;
+  can_create?: boolean | null;
+  can_edit?: boolean | null;
+  can_delete?: boolean | null;
+  can_publish?: boolean | null;
+  can_approve?: boolean | null;
+  can_export?: boolean | null;
+  reason?: string | null;
+}
+
 /** Daftar modul / halaman yang diatur pada matriks permission /admin/roles */
 export const ADMIN_SECTIONS: { key: string; label: string; category?: string }[] = [
   // Modul Baru: Portal Santri, Portal Guru, Performance & Dynamic Profile
   { key: 'santri_tugas', label: 'Portal Santri: Tugas & Pengumpulan (/santri/tugas)', category: 'Portal & Akademik' },
   { key: 'guru_tugas', label: 'Portal Guru: Buat Tugas & Penilaian (/guru/tugas)', category: 'Portal & Akademik' },
   { key: 'performance', label: 'Evaluasi: Performance & Rapor Hasil Belajar (/performance)', category: 'Portal & Akademik' },
+  { key: 'hafalan_setoran', label: 'Tahfidz: Setoran Hafalan Qur\'an (/smart-jm/hafidz)', category: 'Portal & Akademik' },
   { key: 'profile', label: 'Sistem: Dynamic Profile Semua Role (/profile)', category: 'Portal & Akademik' },
   { key: 'users', label: 'Manajemen: Kelola Seluruh User (/admin/users)', category: 'Pengaturan & Keamanan' },
-  { key: 'roles', label: 'Pengaturan: Matriks Role & Permission (/admin/roles)', category: 'Pengaturan & Keamanan' },
+  { key: 'roles', label: 'Pengaturan: Matriks Role & Dynamic Permissions (/admin/roles)', category: 'Pengaturan & Keamanan' },
   // Modul CMS Website
   { key: 'visi_misi', label: 'Profil: Visi, Misi & Tujuan', category: 'CMS Website' },
   { key: 'sejarah', label: 'Profil: Sejarah Pesantren', category: 'CMS Website' },
@@ -264,5 +281,32 @@ export function can(
   const row = perms.find(
     (p) => (p.role === role || normalizeCanonicalRole(p.role) === canonical) && p.section === section
   );
-  return Boolean(row && row[colOf(action)]);
+  return Boolean(row && (row as any)[colOf(action)]);
+}
+
+/**
+ * 3-Level Evaluation: User Override > Role Permission > Default Deny
+ */
+export function canUser(
+  overrides: UserPermissionOverride[],
+  perms: PermRow[],
+  userId: string | null | undefined,
+  role: string | null | undefined,
+  section: string,
+  action: PermAction,
+): boolean {
+  if (!role) return false;
+  const canonical = normalizeCanonicalRole(role);
+  if (canonical === 'super_admin') return true;
+
+  // 1. Cek User Override
+  if (userId && overrides.length > 0) {
+    const override = overrides.find((o) => o.user_id === userId && o.section === section);
+    if (override && typeof (override as any)[colOf(action)] === 'boolean') {
+      return Boolean((override as any)[colOf(action)]);
+    }
+  }
+
+  // 2. Cek Role Permissions
+  return can(perms, role, section, action);
 }

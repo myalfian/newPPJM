@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useOutletContext, Link } from 'react-router-dom';
 import {
   ShieldCheck,
@@ -8,13 +8,15 @@ import {
   Lock,
   Sparkles,
   ExternalLink,
+  Globe,
+  Eye,
 } from 'lucide-react';
 import { db } from './useAdminSession';
 import type { AdminOutletContext } from './AdminLayout';
 import {
   ADMIN_SECTIONS,
   PERM_ACTIONS,
-  NINE_ROLES,
+  TEN_ROLES,
   colOf,
   type PermAction,
   type PermRow,
@@ -28,10 +30,54 @@ export const RolesPage: React.FC = () => {
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [err, setErr] = useState('');
   const [savingCell, setSavingCell] = useState<string | null>(null);
+  const [guestViews, setGuestViews] = useState<Record<string, boolean>>({});
+  const [savingGuest, setSavingGuest] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(null), 3000);
+  };
+
+  // Load guest view visibility from modules_registry
+  const loadGuestViews = useCallback(async () => {
+    try {
+      const { data } = await db.from('modules_registry').select('key, can_guest_view');
+      if (data && Array.isArray(data)) {
+        const map: Record<string, boolean> = {};
+        data.forEach((item: any) => {
+          map[item.key] = Boolean(item.can_guest_view);
+        });
+        setGuestViews(map);
+      }
+    } catch (e) {
+      console.warn('Gagal memuat modules_registry untuk guest view:', e);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadGuestViews();
+  }, [loadGuestViews]);
+
+  const toggleGuestView = async (sectionKey: string, newValue: boolean) => {
+    if (!canEdit) return;
+    setSavingGuest(sectionKey);
+    setErr('');
+
+    setGuestViews((prev) => ({ ...prev, [sectionKey]: newValue }));
+
+    const { error } = await db
+      .from('modules_registry')
+      .update({ can_guest_view: newValue, updated_at: new Date().toISOString() })
+      .eq('key', sectionKey);
+
+    setSavingGuest(null);
+    if (error) {
+      setErr('Gagal memperbarui izin guest: ' + error.message);
+      // rollback
+      setGuestViews((prev) => ({ ...prev, [sectionKey]: !newValue }));
+      return;
+    }
+    showToast(`Visibilitas Guest untuk modul "${sectionKey}" berhasil ${newValue ? 'diizinkan' : 'dinonaktifkan'}.`);
   };
 
   const toggle = async (role: string, section: string, action: PermAction, value: boolean) => {
@@ -71,15 +117,15 @@ export const RolesPage: React.FC = () => {
   }, [selectedCategory]);
 
   const displayedRoles = useMemo(() => {
-    if (selectedRoleFilter === 'all') return NINE_ROLES;
-    return NINE_ROLES.filter((r) => r.value === selectedRoleFilter);
+    if (selectedRoleFilter === 'all') return TEN_ROLES;
+    return TEN_ROLES.filter((r) => r.value === selectedRoleFilter);
   }, [selectedRoleFilter]);
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       {/* Toast Notification */}
       {toastMsg && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-2xl bg-[#115E59] px-4 py-3 text-xs font-bold text-white shadow-xl">
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-2xl bg-[#115E59] px-4 py-3 text-xs font-bold text-white shadow-xl animate-in fade-in slide-in-from-bottom-3 duration-200">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-teal-200" />
           <span>{toastMsg}</span>
         </div>
@@ -90,13 +136,13 @@ export const RolesPage: React.FC = () => {
         <div>
           <div className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#115E59] border border-teal-200">
             <ShieldCheck className="h-3.5 w-3.5" />
-            Role-Based Access Control (9 Roles)
+            Dynamic RBAC (10 Roles + Guest)
           </div>
           <h1 className="mt-2 text-xl sm:text-2xl font-bold text-stone-900">
-            Manajemen 9 Role & Matriks Permission
+            Manajemen 10 Role Resmi & Matriks Permission
           </h1>
           <p className="mt-0.5 text-xs sm:text-sm text-stone-500">
-            Atur hak akses spesifik untuk 9 role resmi SMP Plus Jauharul Maknuun (termasuk modul <code>santri_tugas</code>, <code>guru_tugas</code>, <code>performance</code>, dan <code>profile</code>).
+            Atur hak akses granular untuk 10 role terautentikasi dan izin baca publik (Guest) pada database Supabase.
           </p>
         </div>
 
@@ -106,7 +152,7 @@ export const RolesPage: React.FC = () => {
             className="inline-flex items-center gap-2 rounded-xl bg-[#115E59] hover:bg-[#0F766E] px-4 py-2.5 text-xs font-bold text-white shadow-xs transition"
           >
             <Users className="h-4 w-4" />
-            Kelola Semua User (/admin/users)
+            Kelola User & Izin Khusus
           </Link>
         </div>
       </div>
@@ -117,12 +163,12 @@ export const RolesPage: React.FC = () => {
         </div>
       )}
 
-      {/* 9 Role Cards Overview with Descriptions & Route Scope */}
+      {/* 10 Role Cards Overview with Descriptions & Route Scope */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold uppercase tracking-wider text-stone-600 flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-[#115E59]" />
-            Daftar 9 Role Resmi & Cakupan Otoritas
+            Daftar 10 Role Resmi & Cakupan Otoritas
           </h2>
           {selectedRoleFilter !== 'all' && (
             <button
@@ -130,13 +176,13 @@ export const RolesPage: React.FC = () => {
               onClick={() => setSelectedRoleFilter('all')}
               className="text-xs font-bold text-[#115E59] hover:underline"
             >
-              Tampilkan Semua 9 Role
+              Tampilkan Semua 10 Role
             </button>
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {NINE_ROLES.map((r) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {TEN_ROLES.map((r) => {
             const isSelected = selectedRoleFilter === r.value;
             return (
               <div
@@ -175,14 +221,14 @@ export const RolesPage: React.FC = () => {
 
                 <div className="mt-3 pt-2.5 border-t border-stone-100 flex items-center justify-between text-[11px]">
                   <span className="text-stone-400">
-                    Rute Utama: <strong className="text-stone-700">{r.defaultRoute}</strong>
+                    Rute: <strong className="text-stone-700">{r.defaultRoute}</strong>
                   </span>
                   <Link
                     to={r.defaultRoute}
                     onClick={(e) => e.stopPropagation()}
                     className="inline-flex items-center gap-1 font-bold text-[#115E59] hover:underline"
                   >
-                    Buka Rute <ExternalLink className="h-3 w-3" />
+                    Buka <ExternalLink className="h-3 w-3" />
                   </Link>
                 </div>
               </div>
@@ -197,8 +243,8 @@ export const RolesPage: React.FC = () => {
           <span className="text-xs font-bold text-stone-500 mr-1">Filter Modul:</span>
           {[
             { key: 'all', label: `Semua Modul (${ADMIN_SECTIONS.length})` },
-            { key: 'Portal & Akademik', label: 'Portal Santri, Guru, Performance & Profile' },
-            { key: 'Pengaturan & Keamanan', label: 'Users & Role Management' },
+            { key: 'Portal & Akademik', label: 'Portal Santri, Guru, Tahfidz & Rapor' },
+            { key: 'Pengaturan & Keamanan', label: 'Manajemen Pengguna & Otoritas' },
             { key: 'CMS Website', label: 'Konten Website Publik' },
           ].map((cat) => (
             <button
@@ -218,16 +264,19 @@ export const RolesPage: React.FC = () => {
 
         <div className="flex items-center gap-1.5 text-xs text-stone-500">
           <Info className="h-3.5 w-3.5 text-[#115E59]" />
-          <span>Klik kotak centang untuk mengubah izin secara langsung di Supabase</span>
+          <span>Perubahan izin otomatis tersinkronisasi ke PostgreSQL Supabase</span>
         </div>
       </div>
 
       {/* Permission Matrix Tables per Section */}
       <div className="space-y-4">
         {filteredSections.map((s) => {
-          const isNewCoreModule = ['santri_tugas', 'guru_tugas', 'performance', 'profile', 'users', 'roles'].includes(
+          const isNewCoreModule = ['santri_tugas', 'guru_tugas', 'performance', 'hafalan_setoran', 'profile', 'users', 'roles'].includes(
             s.key
           );
+          const isGuestAllowed = Boolean(guestViews[s.key]);
+          const isBusyGuest = savingGuest === s.key;
+
           return (
             <div
               key={s.key}
@@ -235,16 +284,43 @@ export const RolesPage: React.FC = () => {
                 isNewCoreModule ? 'border-teal-600/30 ring-1 ring-teal-500/10' : 'border-stone-200/80'
               }`}
             >
-              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-stone-100 bg-[#FAF8F5] px-5 py-3.5">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 bg-[#FAF8F5] px-5 py-3.5">
                 <div className="flex items-center gap-2.5">
                   <span className="text-sm font-bold text-stone-900">{s.label}</span>
                   <code className="rounded-md bg-teal-50 px-2 py-0.5 text-[11px] font-mono font-bold text-[#115E59] border border-teal-200">
                     {s.key}
                   </code>
                 </div>
-                {s.category && (
-                  <span className="text-[11px] font-semibold text-stone-500">{s.category}</span>
-                )}
+
+                {/* Guest View Toggle Switch */}
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-1.5 border border-stone-200 shadow-2xs">
+                    <Globe className="h-3.5 w-3.5 text-emerald-600" />
+                    <span className="text-xs font-semibold text-stone-700">Publik (Guest):</span>
+                    <button
+                      type="button"
+                      disabled={!canEdit || isBusyGuest}
+                      onClick={() => toggleGuestView(s.key, !isGuestAllowed)}
+                      className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                        isGuestAllowed ? 'bg-emerald-600' : 'bg-stone-300'
+                      }`}
+                      aria-label={`Toggle Guest View ${s.label}`}
+                    >
+                      <span
+                        className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                          isGuestAllowed ? 'translate-x-4' : 'translate-x-0'
+                        }`}
+                      />
+                    </button>
+                    <span className={`text-[11px] font-bold ${isGuestAllowed ? 'text-emerald-700' : 'text-stone-400'}`}>
+                      {isGuestAllowed ? 'Boleh Baca' : 'Tertutup'}
+                    </span>
+                  </div>
+
+                  {s.category && (
+                    <span className="text-[11px] font-semibold text-stone-500">{s.category}</span>
+                  )}
+                </div>
               </div>
 
               <table className="w-full text-sm">
@@ -252,7 +328,7 @@ export const RolesPage: React.FC = () => {
                   <tr className="border-b border-stone-100 text-left text-xs text-stone-500">
                     <th className="px-5 py-2.5 font-bold">Role Pengguna</th>
                     <th className="px-3 py-2.5 font-bold">Kode Role</th>
-                    {PERM_ACTIONS.map((a) => (
+                    {PERM_ACTIONS.slice(0, 5).map((a) => (
                       <th key={a.key} className="px-3 py-2.5 text-center font-bold">
                         {a.label}
                       </th>
@@ -274,8 +350,8 @@ export const RolesPage: React.FC = () => {
                           </span>
                         </td>
                         <td className="px-3 py-2.5 font-mono text-xs text-stone-400">{r.value}</td>
-                        {PERM_ACTIONS.map((a) => {
-                          const checked = isSuperRole ? true : Boolean(row?.[colOf(a.key)]);
+                        {PERM_ACTIONS.slice(0, 5).map((a) => {
+                          const checked = isSuperRole ? true : Boolean((row as any)?.[colOf(a.key)]);
                           const isBusy = savingCell === `${r.value}:${s.key}:${a.key}`;
                           return (
                             <td key={a.key} className="px-3 py-2.5 text-center">

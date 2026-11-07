@@ -608,6 +608,18 @@ export const SantriProvider: React.FC<{ children: React.ReactNode }> = ({ childr
       rawFile: File,
       folder: 'avatars' | 'tugas' = 'tugas'
     ): Promise<{ url: string | null; error?: string }> => {
+      // Hardening: Batas maksimal 15 MB
+      if (rawFile.size > 15 * 1024 * 1024) {
+        showToast('Upload Ditolak', 'Ukuran file melebihi batas maksimal 15 MB.', 'error');
+        return { url: null, error: 'Ukuran berkas melebihi batas maksimal 15 MB' };
+      }
+      // Hardening: Tolak berkas eksekusi
+      const ext = rawFile.name.split('.').pop()?.toLowerCase() || '';
+      if (['exe', 'bat', 'cmd', 'sh', 'php', 'vbs', 'js', 'py'].includes(ext)) {
+        showToast('Upload Ditolak', 'Format file eksekusi dilarang demi keamanan.', 'error');
+        return { url: null, error: 'Format berkas eksekusi tidak diizinkan' };
+      }
+
       let file = rawFile;
       if (rawFile.type.startsWith('image/')) {
         try {

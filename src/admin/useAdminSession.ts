@@ -1,7 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { SupabaseClient, Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
-import { can as canFn, normalizeCanonicalRole, type PermAction, type PermRow } from './permissions';
+import {
+  can as canFn,
+  canUser,
+  normalizeCanonicalRole,
+  type PermAction,
+  type PermRow,
+  type UserPermissionOverride,
+} from './permissions';
 
 export const db = supabase as unknown as SupabaseClient;
 
@@ -22,6 +29,7 @@ export function useAdminSession() {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<StaffProfile | null>(null);
   const [perms, setPerms] = useState<PermRow[]>([]);
+  const [overrides, setOverrides] = useState<UserPermissionOverride[]>([]);
   const [loading, setLoading] = useState(true);
 
   const load = useCallback(async (s: Session | null) => {
@@ -31,21 +39,22 @@ export function useAdminSession() {
       // Guest: no session, no profile, no permissions.
       setProfile(null);
       setPerms([]);
+      setOverrides([]);
       setLoading(false);
       return;
     }
 
-    const { data: rp } = await db.from('role_permissions').select('*');
-    setPerms((rp as PermRow[] | null) ?? []);
+    const [rpRes, ovRes, pRes] = await Promise.all([
+      db.from('role_permissions').select('*'),
+      db.from('user_permission_overrides').select('*').eq('user_id', s.user.id),
+      db.from('profiles').select('id, full_name, role, email, status_aktif, foto_url, jabatan').eq('id', s.user.id).maybeSingle(),
+    ]);
 
-    const { data: p } = await db
-      .from('profiles')
-      .select('id, full_name, role, email, status_aktif, foto_url, jabatan')
-      .eq('id', s.user.id)
-      .maybeSingle();
+    setPerms((rpRes.data as PermRow[] | null) ?? []);
+    setOverrides((ovRes.data as UserPermissionOverride[] | null) ?? []);
 
+    const p = pRes.data;
     if (p) {
-      // Never elevate: the effective role is exactly what the database says.
       setProfile({
         id: (p as any).id,
         full_name: (p as any).full_name,
@@ -68,15 +77,22 @@ export function useAdminSession() {
     });
     return () => sub.subscription.unsubscribe();
   }, [load]);
+
   const can = useCallback(
-    (section: string, action: PermAction) => canFn(perms, profile?.role, section, action),
-    [perms, profile],
+    (section: string, action: PermAction) => canUser(overrides, perms, profile?.id, profile?.role, section, action),
+    [overrides, perms, profile],
   );
 
   const reloadPerms = useCallback(async () => {
-    const { data } = await db.from('role_permissions').select('*');
-    setPerms((data as PermRow[] | null) ?? []);
-  }, []);
+    const [rpRes, ovRes] = await Promise.all([
+      db.from('role_permissions').select('*'),
+      profile?.id
+        ? db.from('user_permission_overrides').select('*').eq('user_id', profile.id)
+        : Promise.resolve({ data: [] }),
+    ]);
+    setPerms((rpRes.data as PermRow[] | null) ?? []);
+    setOverrides((ovRes.data as UserPermissionOverride[] | null) ?? []);
+  }, [profile?.id]);
 
   const signOut = useCallback(async () => {
     await db.auth.signOut();
@@ -84,7 +100,7 @@ export function useAdminSession() {
 
   const isStaff = Boolean(session && profile && profile.is_active !== false && !NON_STAFF_ROLES.has(profile.role));
 
-  return { session, profile, perms, loading, can, isStaff, reloadPerms, signOut };
+  return { session, profile, perms, overrides, loading, can, isStaff, reloadPerms, signOut };
 }
 
 export type AdminSession = ReturnType<typeof useAdminSession>;

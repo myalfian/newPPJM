@@ -657,12 +657,11 @@ export const GuruProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { ok: true };
       }
 
-      const { data, error } = await (supabase as any)
-        .from('tugas')
-        .update(updateRow)
-        .eq('id', id)
-        .select()
-        .single();
+      let query = (supabase as any).from('tugas').update(updateRow).eq('id', id);
+      if (guruProfile.role === 'guru') {
+        query = query.eq('guru_id', userId);
+      }
+      const { data, error } = await query.select().single();
 
       if (error) {
         showToast('Gagal Memperbarui Tugas', error.message, 'error');
@@ -675,7 +674,7 @@ export const GuruProvider: React.FC<{ children: React.ReactNode }> = ({ children
       showToast('Tugas Berhasil Diperbarui!', 'Perubahan langsung tersinkronisasi ke Portal Santri.');
       return { ok: true };
     },
-    [userId, showToast]
+    [userId, guruProfile.role, showToast]
   );
 
   const deleteTugas = useCallback(
@@ -685,7 +684,11 @@ export const GuruProvider: React.FC<{ children: React.ReactNode }> = ({ children
         showToast('Tugas Dihapus', 'Tugas telah dihapus dari daftar.', 'info');
         return { ok: true };
       }
-      const { error } = await (supabase as any).from('tugas').delete().eq('id', id);
+      let query = (supabase as any).from('tugas').delete().eq('id', id);
+      if (guruProfile.role === 'guru') {
+        query = query.eq('guru_id', userId);
+      }
+      const { error } = await query;
       if (error) {
         showToast('Gagal Menghapus Tugas', error.message, 'error');
         return { ok: false, error: error.message };
@@ -693,7 +696,7 @@ export const GuruProvider: React.FC<{ children: React.ReactNode }> = ({ children
       showToast('Tugas Dihapus', 'Data tugas berhasil dihapus.', 'info');
       return { ok: true };
     },
-    [userId, showToast]
+    [userId, guruProfile.role, showToast]
   );
 
   const gradeSubmission = useCallback(
@@ -996,6 +999,18 @@ export const GuruProvider: React.FC<{ children: React.ReactNode }> = ({ children
       rawFile: File,
       bucket: 'tugas' | 'berita-images' = 'tugas'
     ): Promise<{ url: string | null; error?: string }> => {
+      // Hardening: Batas ukuran 15 MB
+      if (rawFile.size > 15 * 1024 * 1024) {
+        showToast('Upload Ditolak', 'Ukuran file melebihi batas maksimal 15 MB.', 'error');
+        return { url: null, error: 'Ukuran file melebihi batas maksimal 15 MB' };
+      }
+      // Hardening: Tolak berkas eksekusi
+      const ext = rawFile.name.split('.').pop()?.toLowerCase() || '';
+      if (['exe', 'bat', 'cmd', 'sh', 'php', 'vbs', 'js', 'py'].includes(ext)) {
+        showToast('Upload Ditolak', 'Format file eksekusi dilarang demi keamanan.', 'error');
+        return { url: null, error: 'Format file eksekusi tidak diizinkan' };
+      }
+
       let file = rawFile;
       if (rawFile.type.startsWith('image/')) {
         try {

@@ -19,10 +19,15 @@ import {
 } from 'lucide-react';
 import { db } from './useAdminSession';
 import {
-  NINE_ROLES,
+  TEN_ROLES,
+  ADMIN_SECTIONS,
+  PERM_ACTIONS,
   getRoleMeta,
   normalizeCanonicalRole,
+  colOf,
   type CanonicalRole,
+  type PermAction,
+  type UserPermissionOverride,
 } from './permissions';
 
 export interface DynamicProfileRecord {
@@ -150,6 +155,92 @@ export const UsersPage: React.FC = () => {
 
   // Confirm Deactivate Dialog
   const [confirmToggleUser, setConfirmToggleUser] = useState<DynamicProfileRecord | null>(null);
+
+  // User Permission Override Modal (Level 2 Dynamic Mapping)
+  const [overrideUser, setOverrideUser] = useState<DynamicProfileRecord | null>(null);
+  const [userOverrides, setUserOverrides] = useState<UserPermissionOverride[]>([]);
+  const [loadingOverrides, setLoadingOverrides] = useState(false);
+  const [savingOverrideKey, setSavingOverrideKey] = useState<string | null>(null);
+
+  const openOverrideModal = async (u: DynamicProfileRecord) => {
+    setOverrideUser(u);
+    setLoadingOverrides(true);
+    const { data, error } = await db
+      .from('user_permission_overrides')
+      .select('*')
+      .eq('user_id', u.id);
+
+    if (!error && data) {
+      setUserOverrides(data as UserPermissionOverride[]);
+    } else {
+      setUserOverrides([]);
+    }
+    setLoadingOverrides(false);
+  };
+
+  const handleToggleOverride = async (section: string, action: PermAction, currentVal: boolean | null | undefined) => {
+    if (!overrideUser) return;
+    const cellKey = `${section}:${action}`;
+    setSavingOverrideKey(cellKey);
+
+    // Tri-state cycle: null (Inherit Role) -> true (Allow) -> false (Deny) -> null (Inherit)
+    let nextVal: boolean | null = true;
+    if (currentVal === true) nextVal = false;
+    else if (currentVal === false) nextVal = null;
+    else nextVal = true;
+
+    const existing = userOverrides.find((o) => o.section === section);
+    const updatedRow: Record<string, any> = {
+      user_id: overrideUser.id,
+      section,
+      can_view: existing?.can_view ?? null,
+      can_create: existing?.can_create ?? null,
+      can_edit: existing?.can_edit ?? null,
+      can_delete: existing?.can_delete ?? null,
+      can_publish: existing?.can_publish ?? null,
+      [colOf(action)]: nextVal,
+      updated_at: new Date().toISOString(),
+    };
+
+    const { error } = await db
+      .from('user_permission_overrides')
+      .upsert(updatedRow, { onConflict: 'user_id,section' });
+
+    setSavingOverrideKey(null);
+
+    if (error) {
+      triggerToast('Gagal Menyimpan Izin Khusus', error.message);
+      return;
+    }
+
+    setUserOverrides((prev) => {
+      const idx = prev.findIndex((o) => o.section === section);
+      if (idx >= 0) {
+        const copy = [...prev];
+        copy[idx] = { ...copy[idx], [colOf(action)]: nextVal };
+        return copy;
+      }
+      return [...prev, updatedRow as UserPermissionOverride];
+    });
+
+    const statusLabel = nextVal === true ? 'Diizinkan (Force Allow)' : nextVal === false ? 'Ditolak (Force Deny)' : 'Ikuti Role (Default)';
+    triggerToast('Izin Khusus Diperbarui', `${section} [${action.toUpperCase()}] disetel: ${statusLabel}`);
+  };
+
+  const handleResetUserOverrides = async () => {
+    if (!overrideUser) return;
+    const { error } = await db
+      .from('user_permission_overrides')
+      .delete()
+      .eq('user_id', overrideUser.id);
+
+    if (!error) {
+      setUserOverrides([]);
+      triggerToast('Izin Khusus Direset', `Seluruh izin ${overrideUser.full_name} kini mengikuti role aslinya.`);
+    } else {
+      triggerToast('Gagal Mereset', error.message);
+    }
+  };
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -304,6 +395,19 @@ export const UsersPage: React.FC = () => {
 
   const handleConfirmToggleStatus = async () => {
     if (!confirmToggleUser) return;
+
+    // Hardening: Protect last active Super Admin
+    if (normalizeCanonicalRole(confirmToggleUser.role) === 'super_admin' && confirmToggleUser.status_aktif !== false) {
+      const activeAdmins = users.filter(
+        (u) => normalizeCanonicalRole(u.role) === 'super_admin' && u.status_aktif !== false
+      );
+      if (activeAdmins.length <= 1) {
+        triggerToast('Aksi Ditolak', 'Tidak dapat menonaktifkan Super Admin terakhir!');
+        setConfirmToggleUser(null);
+        return;
+      }
+    }
+
     const nextStatus = confirmToggleUser.status_aktif === false ? true : false;
     const { error } = await db
       .from('profiles')
@@ -321,6 +425,8 @@ export const UsersPage: React.FC = () => {
         nextStatus ? 'Akun Diaktifkan Kembali' : 'Akun Dinonaktifkan',
         `Status aktif ${targetName} berhasil diubah.`
       );
+    } else {
+      triggerToast('Gagal Mengubah Status', error.message);
     }
   };
 
@@ -420,7 +526,7 @@ export const UsersPage: React.FC = () => {
             >
               Semua ({users.length})
             </button>
-            {NINE_ROLES.map((r) => {
+            {TEN_ROLES.map((r) => {
               const count = users.filter((u) => normalizeCanonicalRole(u.role) === r.value).length;
               const isSelected = roleFilter === r.value;
               return (
@@ -598,6 +704,15 @@ export const UsersPage: React.FC = () => {
                           </button>
                           <button
                             type="button"
+                            onClick={() => openOverrideModal(u)}
+                            className="inline-flex items-center gap-1 rounded-xl border border-indigo-200 bg-indigo-50/70 hover:bg-indigo-100 px-2.5 py-1.5 text-xs font-bold text-indigo-700 transition"
+                            title="Izin Khusus User (User Permission Override)"
+                          >
+                            <ShieldCheck className="h-3.5 w-3.5" />
+                            Izin Khusus
+                          </button>
+                          <button
+                            type="button"
                             onClick={() => setConfirmToggleUser(u)}
                             className="p-1.5 rounded-xl border border-stone-200 hover:bg-rose-50 hover:text-rose-700 text-stone-500 transition"
                             title={isActive ? 'Nonaktifkan User' : 'Aktifkan User'}
@@ -669,10 +784,10 @@ export const UsersPage: React.FC = () => {
               {/* Step 1: Pilih Role */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
-                  1. Pilih Role Pengguna (9 Role)
+                  1. Pilih Role Pengguna (10 Role Resmi)
                 </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {NINE_ROLES.map((r) => {
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {TEN_ROLES.map((r) => {
                     const active = formRole === r.value;
                     return (
                       <button
@@ -1069,6 +1184,156 @@ export const UsersPage: React.FC = () => {
                   : credSaved
                   ? 'Password Telah Aktif'
                   : 'Aktifkan Password Ini'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Izin Khusus User (User Permission Override - Level 2 Dynamic Mapping) */}
+      {overrideUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 backdrop-blur-xs p-4 overflow-y-auto animate-in fade-in duration-200">
+          <div className="my-8 w-full max-w-4xl rounded-2xl border border-stone-200 bg-white shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-stone-200 bg-[#FAF8F5] px-6 py-4 shrink-0">
+              <div className="flex items-center gap-3">
+                <img
+                  src={overrideUser.foto_url || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80'}
+                  alt={overrideUser.full_name}
+                  className="h-10 w-10 rounded-xl object-cover border border-stone-200"
+                />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-bold text-stone-900">{overrideUser.full_name}</h3>
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.2 text-[11px] font-bold ${
+                        getRoleMeta(overrideUser.role).badgeClass
+                      }`}
+                    >
+                      <span className={`h-1.5 w-1.5 rounded-full ${getRoleMeta(overrideUser.role).dotClass}`} />
+                      Role: {getRoleMeta(overrideUser.role).label}
+                    </span>
+                  </div>
+                  <p className="text-xs text-stone-500">
+                    Konfigurasi Izin Khusus (User-Level Override). Mengesampingkan aturan izin role bawaan.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setOverrideUser(null)}
+                className="p-1.5 rounded-xl hover:bg-stone-200 text-stone-400 hover:text-stone-700 transition"
+                aria-label="Tutup"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Instruction banner */}
+            <div className="bg-teal-50/70 border-b border-teal-100 px-6 py-3 shrink-0 flex items-center justify-between text-xs text-[#115E59]">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 shrink-0 text-[#115E59]" />
+                <span>
+                  <strong>Panduan Override:</strong> Klik tombol izin untuk beralih status:{' '}
+                  <span className="font-bold text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded">Diizinkan (Allow)</span> →{' '}
+                  <span className="font-bold text-rose-700 bg-rose-100 px-1.5 py-0.5 rounded">Ditolak (Deny)</span> →{' '}
+                  <span className="font-bold text-stone-600 bg-stone-200 px-1.5 py-0.5 rounded">Ikuti Role (Default)</span>
+                </span>
+              </div>
+              {userOverrides.length > 0 && (
+                <button
+                  type="button"
+                  onClick={handleResetUserOverrides}
+                  className="rounded-lg bg-white border border-stone-200 hover:bg-stone-50 px-2.5 py-1 text-[11px] font-bold text-rose-700 transition shrink-0"
+                >
+                  Reset Semua Izin Khusus
+                </button>
+              )}
+            </div>
+
+            {/* Matrix Table */}
+            <div className="p-6 overflow-y-auto grow">
+              {loadingOverrides ? (
+                <div className="py-12 text-center text-xs text-stone-400">
+                  <RefreshCw className="h-6 w-6 animate-spin mx-auto text-[#115E59] mb-2" />
+                  Memuat data izin khusus dari database...
+                </div>
+              ) : (
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-stone-200 text-left text-xs text-stone-500">
+                      <th className="py-2.5 px-3 font-bold">Modul / Fitur</th>
+                      <th className="py-2.5 px-3 font-bold">Kategori</th>
+                      {PERM_ACTIONS.slice(0, 5).map((a) => (
+                        <th key={a.key} className="py-2.5 px-2 text-center font-bold">
+                          {a.label}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-stone-100">
+                    {ADMIN_SECTIONS.map((sec) => {
+                      const override = userOverrides.find((o) => o.section === sec.key);
+                      return (
+                        <tr key={sec.key} className="hover:bg-stone-50/60 transition">
+                          <td className="py-2.5 px-3">
+                            <p className="font-bold text-xs text-stone-800">{sec.label}</p>
+                            <code className="text-[10px] font-mono text-stone-400">{sec.key}</code>
+                          </td>
+                          <td className="py-2.5 px-3 text-xs text-stone-500">
+                            {sec.category || 'Modul Sistem'}
+                          </td>
+                          {PERM_ACTIONS.slice(0, 5).map((a) => {
+                            const val = override ? (override as any)[colOf(a.key)] : null;
+                            const isBusy = savingOverrideKey === `${sec.key}:${a.key}`;
+                            return (
+                              <td key={a.key} className="py-2.5 px-2 text-center">
+                                <button
+                                  type="button"
+                                  disabled={isBusy}
+                                  onClick={() => handleToggleOverride(sec.key, a.key, val)}
+                                  className={`px-2 py-1 rounded-lg text-[11px] font-bold border transition ${
+                                    val === true
+                                      ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
+                                      : val === false
+                                      ? 'bg-rose-50 text-rose-800 border-rose-300 hover:bg-rose-100'
+                                      : 'bg-stone-100 text-stone-500 border-stone-200 hover:bg-stone-200'
+                                  }`}
+                                  title={`Status: ${val === true ? 'Force Allow' : val === false ? 'Force Deny' : 'Ikuti Role'}`}
+                                >
+                                  {isBusy ? (
+                                    <RefreshCw className="h-3 w-3 animate-spin mx-auto" />
+                                  ) : val === true ? (
+                                    'ALLOW'
+                                  ) : val === false ? (
+                                    'DENY'
+                                  ) : (
+                                    'DEFAULT'
+                                  )}
+                                </button>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between border-t border-stone-200 bg-[#FAF8F5] px-6 py-3.5 shrink-0">
+              <span className="text-xs text-stone-500">
+                Total Override Aktif: <strong>{userOverrides.length}</strong> modul
+              </span>
+              <button
+                type="button"
+                onClick={() => setOverrideUser(null)}
+                className="rounded-xl bg-[#115E59] hover:bg-[#0F766E] px-4 py-2 text-xs font-bold text-white shadow-xs"
+              >
+                Selesai & Tutup
               </button>
             </div>
           </div>
