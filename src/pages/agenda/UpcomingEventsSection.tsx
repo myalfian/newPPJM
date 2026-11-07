@@ -27,6 +27,7 @@ export const UpcomingEventsSection: React.FC = () => {
         const { data, error } = await supabase
           .from('agendas')
           .select('*')
+          .eq('is_active', true)
           .order('created_at', { ascending: false });
 
         if (!error && data && data.length > 0) {

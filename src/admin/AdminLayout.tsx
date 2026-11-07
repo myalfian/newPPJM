@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, Outlet, Link, useLocation, Navigate } from 'react-router-dom';
 import {
   LayoutDashboard, Layout, Landmark, History, Building2, ShieldCheck, Users, UserCircle2, ChevronsLeft, ChevronsRight,
-  ExternalLink, LogOut, Menu, X, ChevronRight, Layers, SlidersHorizontal,
+  ExternalLink, LogOut, Menu, X, ChevronRight, ChevronDown, Layers, SlidersHorizontal,
 } from 'lucide-react';
 import { useAdminSession, type AdminSession } from './useAdminSession';
 import { STAFF_ROLES } from './permissions';
@@ -12,57 +12,103 @@ import { UserMenu } from '../components/common/UserMenu';
 type NavItem = { to: string; label: string; icon: React.ElementType; section?: string };
 type NavGroup = { title: string; items: NavItem[] };
 
-const crudGroup = (group: NavGroupKey): NavItem[] =>
-  CRUD_SECTIONS.filter((s) => s.group === group).map((s) => ({
-    to: `/admin/s/${s.key}`,
-    label: s.label,
-    icon: s.icon,
-    section: s.key,
-  }));
+const sectionItem = (key: string): NavItem => {
+  const s = CRUD_SECTIONS.find((sec) => sec.key === key);
+  if (!s) return { to: `/admin/s/${key}`, label: key, icon: Layers, section: key };
+  return { to: `/admin/s/${s.key}`, label: s.label, icon: s.icon, section: s.key };
+};
 
 const GROUPS: NavGroup[] = [
   {
-    title: 'Content',
+    title: 'Pusat Kendali & Beranda',
     items: [
-      { to: '/admin', label: 'Ringkasan', icon: LayoutDashboard },
+      { to: '/admin', label: 'Ringkasan Dashboard', icon: LayoutDashboard },
       { to: '/admin/bulk', label: 'Bulk Upload & Konten', icon: Layers, section: 'galeri_foto' },
-      { to: '/admin/visi-misi', label: 'Visi, Misi & Tujuan', icon: Landmark, section: 'visi_misi' },
-      { to: '/admin/sejarah', label: 'Sejarah', icon: History, section: 'sejarah' },
-      { to: '/admin/fasilitas', label: 'Fasilitas', icon: Building2, section: 'fasilitas' },
-      ...crudGroup('Content'),
+      sectionItem('sliders'),
+      sectionItem('quick_menus'),
+      sectionItem('kontak_medsos'),
+      sectionItem('sambutan_persons'),
+      { to: '/admin/profile', label: 'Profil Saya', icon: UserCircle2 },
     ],
   },
   {
-    title: 'Akademik',
-    items: crudGroup('Akademik'),
+    title: 'Profil & Kelembagaan',
+    items: [
+      sectionItem('institutions'),
+      { to: '/admin/visi-misi', label: 'Visi, Misi & Tujuan', icon: Landmark, section: 'visi_misi' },
+      { to: '/admin/sejarah', label: 'Sejarah & Biografi', icon: History, section: 'sejarah' },
+      sectionItem('sub_items'),
+      { to: '/admin/fasilitas', label: 'Sarana & Fasilitas', icon: Building2, section: 'fasilitas' },
+    ],
   },
   {
-    title: 'Publikasi',
-    items: crudGroup('Publikasi'),
+    title: 'Akademik, Diniyah & STEM',
+    items: [
+      sectionItem('programs_pondok'),
+      sectionItem('programs_sekolah'),
+      sectionItem('program_photos'),
+      sectionItem('madin_flyers'),
+      sectionItem('ekskul'),
+      sectionItem('mandarin_lessons'),
+      sectionItem('mandarin_vocabularies'),
+      sectionItem('mandarin_quizzes'),
+      sectionItem('stem_worksheets'),
+      sectionItem('stem_projects'),
+    ],
   },
-      {
-        title: 'Manajemen & Pengaturan',
-        items: [
-          { to: '/admin/users', label: 'Manajemen User', icon: Users, section: 'users' },
-          { to: '/admin/roles', label: 'Role & Permission', icon: ShieldCheck, section: 'roles' },
-          { to: '/admin/slider-settings', label: 'Pengaturan Slider Global', icon: SlidersHorizontal, section: 'slider_settings' },
-          { to: '/admin/profile', label: 'Profil Saya', icon: UserCircle2 },
-          ...crudGroup('Manajemen'),
-          ...crudGroup('Pengaturan'),
-        ],
-      },
+  {
+    title: 'Kesiswaan, Prestasi & OSIS',
+    items: [
+      sectionItem('prestasi'),
+      sectionItem('osis_events'),
+      sectionItem('osis_programs'),
+      sectionItem('osis_structure'),
+      sectionItem('osis_foto'),
+      sectionItem('osis_video'),
+      sectionItem('osis_dokumen'),
+      sectionItem('osis_naskah'),
+    ],
+  },
+  {
+    title: 'Publikasi & Media Santri',
+    items: [
+      sectionItem('berita'),
+      sectionItem('info_terkini'),
+      sectionItem('agendas'),
+      sectionItem('karya_siswa'),
+      sectionItem('galeri_foto'),
+      sectionItem('galeri_videos'),
+    ],
+  },
+  {
+    title: 'Pengaturan & Hak Akses',
+    items: [
+      { to: '/admin/slider-settings', label: 'Pengaturan Slider Global', icon: SlidersHorizontal, section: 'slider_settings' },
+      sectionItem('user_approvals'),
+      sectionItem('password_requests'),
+      sectionItem('spmb_info'),
+      sectionItem('master_data'),
+      sectionItem('master_jabatan'),
+      sectionItem('master_mapel'),
+      sectionItem('master_kategori'),
+      sectionItem('master_sasaran'),
+      sectionItem('master_lokasi'),
+      { to: '/admin/users', label: 'Kelola Pengguna', icon: Users, section: 'users' },
+      { to: '/admin/roles', label: 'Matriks Hak Akses', icon: ShieldCheck, section: 'roles' },
+    ],
+  },
 ];
 
 const CRUMBS: Record<string, string> = {
-  '/admin': 'Ringkasan',
-  '/admin/bulk': 'Super Admin / Bulk Upload & Konten',
-  '/admin/visi-misi': 'Content / Visi, Misi & Tujuan',
-  '/admin/sejarah': 'Content / Sejarah',
-  '/admin/fasilitas': 'Content / Fasilitas',
-  '/admin/users': 'Pengaturan / Manajemen User',
-  '/admin/roles': 'Pengaturan / Role & Permission',
-  '/admin/slider-settings': 'Pengaturan / Pengaturan Slider Global',
-  '/admin/profile': 'Pengaturan / Profil Saya',
+  '/admin': 'Pusat Kendali / Ringkasan Dashboard',
+  '/admin/bulk': 'Pusat Kendali / Bulk Upload & Konten',
+  '/admin/visi-misi': 'Profil & Kelembagaan / Visi, Misi & Tujuan',
+  '/admin/sejarah': 'Profil & Kelembagaan / Sejarah & Biografi',
+  '/admin/fasilitas': 'Profil & Kelembagaan / Sarana & Fasilitas',
+  '/admin/users': 'Pengaturan & Hak Akses / Kelola Pengguna',
+  '/admin/roles': 'Pengaturan & Hak Akses / Matriks Hak Akses',
+  '/admin/slider-settings': 'Pengaturan & Hak Akses / Pengaturan Slider Global',
+  '/admin/profile': 'Pusat Kendali / Profil Saya',
   ...Object.fromEntries(CRUD_SECTIONS.map((s) => [`/admin/s/${s.key}`, `${s.group} / ${s.label}`])),
 };
 
@@ -73,6 +119,7 @@ export const AdminLayout: React.FC = () => {
   const { pathname } = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const [drawer, setDrawer] = useState(false);
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
 
   if (admin.loading) {
     return <div className="min-h-screen grid place-items-center bg-[#FAF7F0] text-sm text-teal-900">Memuat…</div>;
@@ -98,34 +145,56 @@ export const AdminLayout: React.FC = () => {
     items: g.items.filter((i) => !i.section || admin.can(i.section, 'view')),
   })).filter((g) => g.items.length > 0);
 
+  const toggleGroup = (title: string) => {
+    setCollapsedGroups((prev) => ({ ...prev, [title]: !prev[title] }));
+  };
+
   const Nav = (
-    <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-5">
-      {visible.map((g) => (
-        <div key={g.title}>
-          {!collapsed && (
-            <p className="px-3 pb-1.5 text-[10.5px] font-bold uppercase tracking-wider text-teal-900/50">{g.title}</p>
-          )}
-          <div className="space-y-1">
-            {g.items.map((i) => (
-              <NavLink
-                key={i.to}
-                to={i.to}
-                end={i.to === '/admin'}
-                onClick={() => setDrawer(false)}
-                title={i.label}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
-                    isActive ? 'bg-[#115E59] text-white shadow-sm' : 'text-teal-950/80 hover:bg-teal-900/5'
-                  }`
-                }
+    <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-4">
+      {visible.map((g) => {
+        const isGroupCollapsed = collapsedGroups[g.title] === true;
+        return (
+          <div key={g.title} className="space-y-1">
+            {!collapsed && (
+              <button
+                type="button"
+                onClick={() => toggleGroup(g.title)}
+                className="w-full flex items-center justify-between px-3 py-1 text-[10.5px] font-bold uppercase tracking-wider text-teal-900/60 hover:text-teal-950 transition-colors cursor-pointer select-none"
+                aria-expanded={!isGroupCollapsed}
               >
-                <i.icon className="h-4.5 w-4.5 shrink-0" size={18} />
-                {!collapsed && <span className="truncate">{i.label}</span>}
-              </NavLink>
-            ))}
+                <span>{g.title}</span>
+                <ChevronDown
+                  size={13}
+                  className={`transition-transform duration-200 text-teal-800/50 ${
+                    isGroupCollapsed ? '-rotate-90' : 'rotate-0'
+                  }`}
+                />
+              </button>
+            )}
+            {!isGroupCollapsed && (
+              <div className="space-y-0.5">
+                {g.items.map((i) => (
+                  <NavLink
+                    key={i.to}
+                    to={i.to}
+                    end={i.to === '/admin'}
+                    onClick={() => setDrawer(false)}
+                    title={i.label}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 rounded-xl px-3 py-2 text-xs sm:text-sm font-medium transition-colors ${
+                        isActive ? 'bg-[#115E59] text-white shadow-sm' : 'text-teal-950/80 hover:bg-teal-900/5'
+                      }`
+                    }
+                  >
+                    <i.icon className="h-4.5 w-4.5 shrink-0" size={17} />
+                    {!collapsed && <span className="truncate">{i.label}</span>}
+                  </NavLink>
+                ))}
+              </div>
+            )}
           </div>
-        </div>
-      ))}
+        );
+      })}
     </nav>
   );
 

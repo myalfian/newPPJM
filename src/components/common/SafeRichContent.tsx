@@ -23,21 +23,23 @@ export const SafeRichContent: React.FC<SafeRichContentProps> = ({
   className = '',
   leadParagraph = false
 }) => {
-  if (!content || typeof content !== 'string') return null;
+  const safeContent = typeof content === 'string' ? content : '';
 
   // 1. Pra-proses normalisasi string konten
   const preparedContent = useMemo(() => {
-    return cleanAndNormalizeHtml(content);
-  }, [content]);
+    if (!safeContent) return '';
+    return cleanAndNormalizeHtml(safeContent);
+  }, [safeContent]);
 
   // 2. Deteksi apakah konten berformat HTML
   const isHtml = useMemo(() => {
+    if (!preparedContent) return false;
     return /<[a-z][\s\S]*>/i.test(preparedContent);
   }, [preparedContent]);
 
   // 3. Sanitasi mendalam & penataan struktur elemen
   const sanitizedHtml = useMemo(() => {
-    if (!isHtml) return '';
+    if (!isHtml || !preparedContent) return '';
 
     // Registrasi hook sanitasi elemen
     DOMPurify.removeAllHooks();
@@ -161,6 +163,8 @@ export const SafeRichContent: React.FC<SafeRichContentProps> = ({
       .replace(/&amp;apos;/gi, "'")
       .replace(/&amp;#39;/gi, "'");
   }, [preparedContent, isHtml]);
+
+  if (!safeContent) return null;
 
   // Mode HTML
   if (isHtml) {

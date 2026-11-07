@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { KARYA_SISWA_ITEMS, KaryaSiswaItem } from '../data/karyaSiswaData';
 import { SafeRichContent } from '../components/common/SafeRichContent';
+import { openUniversalLightbox } from '../components/common/UniversalLightboxModal';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import '../components/common/NavBarTabs.css';
 
@@ -338,11 +339,30 @@ export const KaryaSiswa: React.FC = () => {
                 >
                   <div>
                     {/* Media Thumbnail Container */}
-                    <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
+                    <div
+                      className={`relative aspect-[16/10] overflow-hidden bg-zinc-950/90 flex items-center justify-center ${
+                        !isVideo ? 'cursor-pointer' : ''
+                      }`}
+                      onClick={() => {
+                        if (!isVideo) {
+                          openUniversalLightbox(
+                            filteredItems
+                              .filter((fi) => Boolean(fi.imageUrl))
+                              .map((fi) => ({
+                                url: fi.imageUrl!,
+                                title: fi.title,
+                                caption: `${fi.category} • ${fi.year} - ${fi.description}`,
+                              })),
+                            filteredItems.findIndex((fi) => fi.id === item.id),
+                            item.title
+                          );
+                        }
+                      }}
+                    >
                       <img
                         src={item.imageUrl}
                         alt={item.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-80" />

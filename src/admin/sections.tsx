@@ -214,7 +214,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   // ───────── MASTER DATA SUPERADMIN
   {
     key: 'kelas', table: 'master_kelas', label: 'Data Kelas', group: 'Pengaturan', icon: LayoutDashboard,
-    titleField: 'nama_kelas', sort: { col: 'nama_kelas', asc: true },
+    titleField: 'nama_kelas', activeField: 'is_active', sort: { col: 'nama_kelas', asc: true },
     fields: [
       { key: 'nama_kelas', label: 'Nama Kelas', kind: 'text', required: true, placeholder: 'Mis: Kelas 7A' },
       { key: 'tingkat', label: 'Tingkat', kind: 'select', options: ['7', '8', '9'], required: true },
@@ -224,7 +224,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'jabatan', table: 'master_jabatan', label: 'Data Jabatan', group: 'Pengaturan', icon: Users,
-    titleField: 'nama_jabatan', sort: { col: 'nama_jabatan', asc: true },
+    titleField: 'nama_jabatan', activeField: 'is_active', sort: { col: 'nama_jabatan', asc: true },
     fields: [
       { key: 'nama_jabatan', label: 'Nama Jabatan', kind: 'text', required: true, placeholder: 'Mis: Kepala Sekolah' },
       { key: 'singkatan', label: 'Singkatan', kind: 'text', placeholder: 'Mis: KS' },
@@ -234,7 +234,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'mapel', table: 'master_mapel', label: 'Data Mata Pelajaran', group: 'Pengaturan', icon: BookOpen,
-    titleField: 'nama_mapel', sort: { col: 'nama_mapel', asc: true },
+    titleField: 'nama_mapel', activeField: 'is_active', sort: { col: 'nama_mapel', asc: true },
     fields: [
       { key: 'nama_mapel', label: 'Nama Mata Pelajaran', kind: 'text', required: true, placeholder: 'Mis: Agama Islam' },
       { key: 'kode_mapel', label: 'Kode Mapel', kind: 'text', placeholder: 'Mis: AGM-101' },
@@ -244,7 +244,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'kategori', table: 'master_kategori', label: 'Data Kategori', group: 'Pengaturan', icon: Layers,
-    titleField: 'nama_kategori', sort: { col: 'nama_kategori', asc: true },
+    titleField: 'nama_kategori', activeField: 'is_active', sort: { col: 'nama_kategori', asc: true },
     fields: [
       { key: 'nama_kategori', label: 'Nama Kategori', kind: 'text', required: true, placeholder: 'Mis: Akademik' },
       { key: 'deskripsi', label: 'Deskripsi', kind: 'textarea', placeholder: 'Tulis deskripsi kategori…' },
@@ -253,7 +253,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'sasaran', table: 'master_sasaran', label: 'Data Sasaran', group: 'Pengaturan', icon: Target,
-    titleField: 'nama_sasaran', sort: { col: 'nama_sasaran', asc: true },
+    titleField: 'nama_sasaran', activeField: 'is_active', sort: { col: 'nama_sasaran', asc: true },
     fields: [
       { key: 'nama_sasaran', label: 'Nama Sasaran', kind: 'text', required: true, placeholder: 'Mis: Seluruh Santri' },
       { key: 'deskripsi', label: 'Deskripsi', kind: 'textarea', placeholder: 'Tulis deskripsi sasaran…' },
@@ -262,7 +262,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'lokasi', table: 'master_lokasi', label: 'Data Lokasi', group: 'Pengaturan', icon: MapPin,
-    titleField: 'nama_lokasi', sort: { col: 'nama_lokasi', asc: true },
+    titleField: 'nama_lokasi', activeField: 'is_active', sort: { col: 'nama_lokasi', asc: true },
     fields: [
       { key: 'nama_lokasi', label: 'Nama Lokasi', kind: 'text', required: true, placeholder: 'Mis: Aula Utama' },
       { key: 'gedung', label: 'Gedung', kind: 'text', placeholder: 'Mis: Gedung Utama' },
@@ -366,7 +366,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   {
     key: 'agendas', table: 'agendas', label: 'Agenda', group: 'Publikasi', icon: CalendarDays,
     titleField: 'title', subtitleField: 'date_display', imageField: 'image', badgeField: 'category',
-    sort: { col: 'created_at', asc: false },
+    activeField: 'is_active', sort: { col: 'created_at', asc: false },
     fields: [
       { key: 'title', label: 'Nama kegiatan', kind: 'text', required: true, placeholder: 'Masukkan nama kegiatan…' },
       { key: 'category', label: 'Kategori', kind: 'select', options: ['Kegiatan Akbar', 'Akademik & Ujian', 'Tahfidz & Haflah', 'Kajian Rutin', 'Peringatan Hari Besar', 'Lomba & Ekspo', 'Rapat & Wali Santri', 'Sekolah', 'Pondok', 'Event Akbar', 'Diniyah', 'Libur', 'Umum'], defaultValue: 'Kegiatan Akbar' },
@@ -468,7 +468,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   {
     key: 'prestasi', table: 'prestasi', label: 'Prestasi', group: 'Publikasi', icon: Trophy,
     titleField: 'title', subtitleField: 'santri_name', imageField: 'photo_url', badgeField: 'level',
-    sort: { col: 'created_at', asc: false },
+    activeField: 'is_active', sort: { col: 'created_at', asc: false },
     fields: [
       { key: 'title', label: 'Nama prestasi', kind: 'text', required: true, placeholder: 'Mis: Juara 1 Lomba Tahfidz Nasional' },
       { key: 'santri_name', label: 'Nama santri', kind: 'text', required: true, placeholder: 'Mis: Ahmad Fauzi' },
@@ -525,7 +525,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   {
     key: 'madin_flyers', table: 'madin_flyers', label: 'Flyer Madin', group: 'Akademik', icon: FileText,
     titleField: 'title', subtitleField: 'category', imageField: 'image_url', orderField: 'order_index',
-    sort: { col: 'order_index', asc: true },
+    activeField: 'is_active', sort: { col: 'order_index', asc: true },
     fields: [
       { key: 'title', label: 'Judul', kind: 'text', required: true, placeholder: 'Masukkan judul flyer…' },
       { key: 'category', label: 'Kategori', kind: 'select', options: ['kitab', 'tahfidz', 'kurikulum', 'jadwal', 'brosur'], defaultValue: 'kitab' },
@@ -551,7 +551,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'institutions', table: 'institutions', label: 'Lembaga', group: 'Akademik', icon: Building,
-    titleField: 'name', subtitleField: 'type', imageField: 'image_url', sort: { col: 'created_at', asc: true },
+    titleField: 'name', subtitleField: 'type', imageField: 'image_url', activeField: 'is_active', sort: { col: 'created_at', asc: true },
     fields: [
       { key: 'name', label: 'Nama lembaga', kind: 'text', required: true, placeholder: 'Mis: SMP Plus Jauharul Maknuun' },
       { key: 'type', label: 'Jenis', kind: 'select', options: ['pondok', 'sekolah', 'madin', 'tahfidz'], defaultValue: 'pondok' },
@@ -563,7 +563,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   {
     key: 'mandarin_lessons', table: 'mandarin_lessons', label: 'Materi Mandarin', group: 'Akademik', icon: Languages,
     titleField: 'topic', subtitleField: 'pinyin', imageField: 'cover_image', badgeField: 'level',
-    orderField: 'order_index', sort: { col: 'order_index', asc: true },
+    orderField: 'order_index', activeField: 'is_active', sort: { col: 'order_index', asc: true },
     fields: [
       { key: 'topic', label: 'Topik', kind: 'text', required: true, placeholder: '例如: 你好' },
       { key: 'level', label: 'Level', kind: 'select', options: ['Dasar', 'Menengah', 'Lanjutan', 'HSK 1', 'HSK 2'], defaultValue: 'Dasar' },
@@ -577,7 +577,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'mandarin_vocabularies', table: 'mandarin_vocabularies', label: 'Kosakata Mandarin', group: 'Akademik', icon: Type,
-    titleField: 'hanzi', subtitleField: 'arti', badgeField: 'category', sort: { col: 'created_at', asc: false },
+    titleField: 'hanzi', subtitleField: 'arti', badgeField: 'category', activeField: 'is_active', sort: { col: 'created_at', asc: false },
     fields: [
       { key: 'hanzi', label: 'Hanzi', kind: 'text', required: true, placeholder: '例如: 你好' },
       { key: 'pinyin', label: 'Pinyin', kind: 'text', required: true, placeholder: 'Mis: nǐ hǎo' },
@@ -593,7 +593,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'mandarin_quizzes', table: 'mandarin_quizzes', label: 'Kuis Mandarin', group: 'Akademik', icon: HelpCircle,
-    titleField: 'question', subtitleField: 'explanation', badgeField: 'question_type', sort: { col: 'created_at', asc: false },
+    titleField: 'question', subtitleField: 'explanation', badgeField: 'question_type', activeField: 'is_active', sort: { col: 'created_at', asc: false },
     fields: [
       { key: 'question', label: 'Pertanyaan kuis', kind: 'textarea', required: true, placeholder: 'Tulis pertanyaan kuis…' },
       { key: 'question_type', label: 'Tipe / Topik', kind: 'select', options: ['Salam & Perkenalan', 'Kosakata HSK 1', 'Tata Bahasa Dasar', 'Percakapan Pesantren', 'Angka & Waktu'], defaultValue: 'Salam & Perkenalan' },
@@ -605,7 +605,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   {
     key: 'stem_worksheets', table: 'stem_worksheets', label: 'LKPD STEM', group: 'Akademik', icon: FlaskConical,
     titleField: 'title', subtitleField: 'level', imageField: 'image_url', badgeField: 'category',
-    sort: { col: 'created_at', asc: false },
+    activeField: 'is_active', sort: { col: 'created_at', asc: false },
     fields: [
       { key: 'title', label: 'Judul', kind: 'text', required: true, placeholder: 'Masukkan judul LKPD…' },
       { key: 'category', label: 'Kategori', kind: 'select', options: ['Robotika & IoT', 'Energi Terbarukan', 'Sains Terapan & Kimia', 'Pemrograman & AI', 'Biologi & Lingkungan'], defaultValue: 'Robotika & IoT' },
@@ -621,7 +621,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   {
     key: 'stem_projects', table: 'stem_projects', label: 'Proyek STEM', group: 'Akademik', icon: Rocket,
     titleField: 'title', subtitleField: 'author_santri', imageField: 'cover_image', badgeField: 'category',
-    sort: { col: 'created_at', asc: false }, slugFrom: 'title',
+    activeField: 'is_active', sort: { col: 'created_at', asc: false }, slugFrom: 'title',
     fields: [
       { key: 'title', label: 'Judul proyek', kind: 'text', required: true, placeholder: 'Masukkan judul proyek…' },
       { key: 'category', label: 'Kategori', kind: 'select', options: ['IoT & Mikrokontroler', 'Energi Surya & Lingkungan', 'Robotika Otomasi', 'Aplikasi & Sains Data'], defaultValue: 'IoT & Mikrokontroler' },
@@ -638,7 +638,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   // ───────── MASTER DATA (SuperAdmin)
   {
     key: 'master_data', table: 'master_kelas', label: 'Data Tabel Master', group: 'Manajemen', icon: LayoutDashboard,
-    titleField: 'nama_kelas', subtitleField: 'tingkat', badgeField: 'is_active', sort: { col: 'nama_kelas', asc: true },
+    titleField: 'nama_kelas', subtitleField: 'tingkat', badgeField: 'is_active', activeField: 'is_active', sort: { col: 'nama_kelas', asc: true },
     fields: [
       { key: 'nama_kelas', label: 'Nama Kelas', kind: 'text', required: true, placeholder: 'Mis: Kelas 7A' },
       { key: 'tingkat', label: 'Tingkat', kind: 'select', options: ['7', '8', '9'], required: true },
@@ -648,7 +648,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'master_jabatan', table: 'master_jabatan', label: 'Data Jabatan', group: 'Manajemen', icon: Users,
-    titleField: 'nama_jabatan', sort: { col: 'nama_jabatan', asc: true },
+    titleField: 'nama_jabatan', activeField: 'is_active', sort: { col: 'nama_jabatan', asc: true },
     fields: [
       { key: 'nama_jabatan', label: 'Nama Jabatan', kind: 'text', required: true, placeholder: 'Mis: Kepala Sekolah' },
       { key: 'singkatan', label: 'Singkatan', kind: 'text', placeholder: 'Mis: KS' },
@@ -658,7 +658,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'master_mapel', table: 'master_mapel', label: 'Data Mata Pelajaran', group: 'Manajemen', icon: BookOpen,
-    titleField: 'nama_mapel', sort: { col: 'nama_mapel', asc: true },
+    titleField: 'nama_mapel', activeField: 'is_active', sort: { col: 'nama_mapel', asc: true },
     fields: [
       { key: 'nama_mapel', label: 'Nama Mata Pelajaran', kind: 'text', required: true, placeholder: 'Mis: Agama Islam' },
       { key: 'kode_mapel', label: 'Kode Mapel', kind: 'text', placeholder: 'Mis: AGM-101' },
@@ -668,7 +668,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'master_kategori', table: 'master_kategori', label: 'Data Kategori', group: 'Manajemen', icon: Layers,
-    titleField: 'nama_kategori', sort: { col: 'nama_kategori', asc: true },
+    titleField: 'nama_kategori', activeField: 'is_active', sort: { col: 'nama_kategori', asc: true },
     fields: [
       { key: 'nama_kategori', label: 'Nama Kategori', kind: 'text', required: true, placeholder: 'Mis: Akademik' },
       { key: 'deskripsi', label: 'Deskripsi', kind: 'textarea', placeholder: 'Tulis deskripsi kategori…' },
@@ -677,7 +677,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'master_sasaran', table: 'master_sasaran', label: 'Data Sasaran', group: 'Manajemen', icon: Target,
-    titleField: 'nama_sasaran', sort: { col: 'nama_sasaran', asc: true },
+    titleField: 'nama_sasaran', activeField: 'is_active', sort: { col: 'nama_sasaran', asc: true },
     fields: [
       { key: 'nama_sasaran', label: 'Nama Sasaran', kind: 'text', required: true, placeholder: 'Mis: Santri Teladan' },
       { key: 'deskripsi', label: 'Deskripsi', kind: 'textarea', placeholder: 'Tulis deskripsi sasaran…' },
@@ -686,7 +686,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'master_lokasi', table: 'master_lokasi', label: 'Data Lokasi', group: 'Manajemen', icon: MapPin,
-    titleField: 'nama_lokasi', sort: { col: 'nama_lokasi', asc: true },
+    titleField: 'nama_lokasi', activeField: 'is_active', sort: { col: 'nama_lokasi', asc: true },
     fields: [
       { key: 'nama_lokasi', label: 'Nama Lokasi', kind: 'text', required: true, placeholder: 'Mis: Aula Utama' },
       { key: 'gedung', label: 'Gedung', kind: 'text', placeholder: 'Mis: Gedung Utama' },
@@ -780,7 +780,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   {
     key: 'osis_events', table: 'osis_events', label: 'Kegiatan OSIS', group: 'Manajemen', icon: PartyPopper,
     titleField: 'title', subtitleField: 'date', imageField: 'image_url', badgeField: 'category',
-    sort: { col: 'date', asc: false },
+    activeField: 'is_active', sort: { col: 'date', asc: false },
     fields: [
       { key: 'title', label: 'Nama kegiatan', kind: 'text', required: true },
       { key: 'category', label: 'Kategori', kind: 'select', options: ['Kepemimpinan & LDKS', 'Bakti Sosial', 'Lomba Classmeeting', 'Kajian & Rohis', 'Peringatan Hari Besar'], defaultValue: 'Kepemimpinan & LDKS' },
@@ -791,7 +791,7 @@ export const CRUD_SECTIONS: CrudSection[] = [
   },
   {
     key: 'osis_programs', table: 'osis_programs', label: 'Program OSIS', group: 'Manajemen', icon: Target,
-    titleField: 'title', subtitleField: 'department', badgeField: 'frequency', sort: { col: 'created_at', asc: true },
+    titleField: 'title', subtitleField: 'department', badgeField: 'frequency', activeField: 'is_active', sort: { col: 'created_at', asc: true },
     fields: [
       { key: 'title', label: 'Nama program', kind: 'text', required: true },
       { key: 'department', label: 'Bidang', kind: 'select', options: ['Departemen Keagamaan & Ubudiyah', 'Departemen Bahasa & Literasi', 'Departemen Sains & IPTEK', 'Departemen Olahraga & Kesehatan', 'Departemen Kebersihan & Lingkungan'], defaultValue: 'Departemen Keagamaan & Ubudiyah' },

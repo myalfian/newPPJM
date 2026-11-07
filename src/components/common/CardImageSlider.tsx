@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useSliderSettings, SliderSettings, TransitionEffect } from '../../lib/sliderSettings';
+import { openUniversalLightbox } from './UniversalLightboxModal';
 
 export interface SlideImageItem {
   url: string;
@@ -27,6 +28,8 @@ export interface CardImageSliderProps {
   alt?: string;
   /** Optional click handler for image/lightbox */
   onImageClick?: (index: number) => void;
+  /** Whether to disable clicking to open Universal Lightbox modal (default: false) */
+  disableLightbox?: boolean;
   /** Whether to show indicator dots on multi-image cards (default: true) */
   showIndicators?: boolean;
   /** Whether to show previous/next arrow buttons (default: true) */
@@ -49,6 +52,7 @@ export const CardImageSlider: React.FC<CardImageSliderProps> = ({
   imgClassName = '',
   alt = 'Dokumentasi',
   onImageClick,
+  disableLightbox = false,
   showIndicators = true,
   showArrows = true,
   badgeTopLeft,
@@ -170,12 +174,19 @@ export const CardImageSlider: React.FC<CardImageSliderProps> = ({
   // ─────────────────────────────────────────────────────────────────────────────
   if (total === 1) {
     const single = items[0];
+    const canClick = Boolean(onImageClick || !disableLightbox);
     return (
       <div
         ref={containerRef}
-        onClick={() => onImageClick?.(0)}
-        className={`relative ${aspectRatio} w-full overflow-hidden rounded-2xl bg-zinc-900 select-none ${
-          onImageClick ? 'cursor-pointer' : ''
+        onClick={() => {
+          if (onImageClick) {
+            onImageClick(0);
+          } else if (!disableLightbox) {
+            openUniversalLightbox(items, 0, alt);
+          }
+        }}
+        className={`relative ${aspectRatio} w-full overflow-hidden rounded-2xl bg-zinc-950/90 flex items-center justify-center select-none ${
+          canClick ? 'cursor-pointer' : ''
         } ${outerClass}`}
       >
         <img
@@ -183,11 +194,11 @@ export const CardImageSlider: React.FC<CardImageSliderProps> = ({
           alt={single.alt || single.caption || alt}
           loading="lazy"
           decoding="async"
-          className={`w-full h-full object-cover ${imgClassName}`}
+          className={`w-full h-full object-contain ${imgClassName}`}
         />
-        {badgeTopLeft && <div className="absolute top-2.5 left-2.5 z-10">{badgeTopLeft}</div>}
-        {badgeTopRight && <div className="absolute top-2.5 right-2.5 z-10">{badgeTopRight}</div>}
-        {badgeBottom && <div className="absolute inset-x-0 bottom-0 z-10">{badgeBottom}</div>}
+        {badgeTopLeft && <div className="absolute top-2.5 left-2.5 z-10 pointer-events-none">{badgeTopLeft}</div>}
+        {badgeTopRight && <div className="absolute top-2.5 right-2.5 z-10 pointer-events-none">{badgeTopRight}</div>}
+        {badgeBottom && <div className="absolute inset-x-0 bottom-0 z-10 pointer-events-none">{badgeBottom}</div>}
       </div>
     );
   }
@@ -244,6 +255,8 @@ export const CardImageSlider: React.FC<CardImageSliderProps> = ({
     }
   };
 
+  const canClickMulti = Boolean(onImageClick || !disableLightbox);
+
   return (
     <div
       ref={containerRef}
@@ -269,7 +282,7 @@ export const CardImageSlider: React.FC<CardImageSliderProps> = ({
         setTouchStart(null);
         setIsHovered(false);
       }}
-      className={`group/cardslider relative ${aspectRatio} w-full overflow-hidden rounded-2xl bg-zinc-900 select-none shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${outerClass}`}
+      className={`group/cardslider relative ${aspectRatio} w-full overflow-hidden rounded-2xl bg-zinc-950/90 select-none shadow-xs focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${outerClass}`}
     >
       {/* Animated Slides Viewport */}
       <AnimatePresence initial={false} custom={direction} mode="popLayout">
@@ -285,15 +298,21 @@ export const CardImageSlider: React.FC<CardImageSliderProps> = ({
             opacity: { duration: durationSec, ease: 'easeOut' },
             scale: { duration: durationSec, ease: 'easeOut' },
           }}
-          onClick={() => onImageClick?.(current)}
-          className={`absolute inset-0 w-full h-full ${onImageClick ? 'cursor-pointer' : ''}`}
+          onClick={() => {
+            if (onImageClick) {
+              onImageClick(current);
+            } else if (!disableLightbox) {
+              openUniversalLightbox(items, current, alt);
+            }
+          }}
+          className={`absolute inset-0 w-full h-full flex items-center justify-center ${canClickMulti ? 'cursor-pointer' : ''}`}
         >
           <img
             src={activeItem.url}
             alt={activeItem.alt || activeItem.caption || `${alt} - Slide ${current + 1}`}
             loading={current === 0 ? 'eager' : 'lazy'}
             decoding="async"
-            className={`w-full h-full object-cover ${imgClassName}`}
+            className={`w-full h-full object-contain ${imgClassName}`}
           />
         </motion.div>
       </AnimatePresence>

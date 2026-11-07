@@ -33,6 +33,7 @@ export const OsisProgramsSection: React.FC = () => {
         const { data, error } = await supabase
           .from('osis_programs')
           .select('*')
+          .eq('is_active', true)
           .order('created_at', { ascending: true });
 
         if (!error && data && data.length > 0) {

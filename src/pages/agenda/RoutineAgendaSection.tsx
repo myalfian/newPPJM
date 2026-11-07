@@ -32,6 +32,7 @@ export const RoutineAgendaSection: React.FC = () => {
         const { data, error } = await supabase
           .from('agendas')
           .select('*')
+          .eq('is_active', true)
           .order('order_index', { ascending: true })
           .order('created_at', { ascending: true });
 

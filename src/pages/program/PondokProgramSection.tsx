@@ -22,6 +22,7 @@ import {
   DailyScheduleItem
 } from './types';
 import { CardImageSlider } from '../../components/common/CardImageSlider';
+import { openUniversalLightbox } from '../../components/common/UniversalLightboxModal';
 
 // ========================
 // PONDOK PROGRAM & PHOTOS FROM SUPABASE
@@ -325,12 +326,26 @@ export const PondokProgramSection: React.FC = () => {
                 onClick={() => setSelectedPhoto(photo)}
                 className="group cursor-pointer bg-white/90 dark:bg-zinc-900/90 rounded-2xl border border-zinc-200/70 dark:border-zinc-800/70 overflow-hidden shadow-xs hover:shadow-xl hover:border-emerald-500/40 transition-all duration-300 flex flex-col justify-between"
               >
-                <div className="relative aspect-[4/3] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                <div
+                  className="relative aspect-[4/3] overflow-hidden bg-zinc-950/90 flex items-center justify-center cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openUniversalLightbox(
+                      pondokPhotos.map((p) => ({
+                        url: p.imageUrl,
+                        title: p.title,
+                        caption: `${p.timeTag} • ${p.location} - ${p.description}`,
+                      })),
+                      pondokPhotos.findIndex((p) => p.id === photo.id),
+                      photo.title
+                    );
+                  }}
+                >
                   <img
                     src={photo.imageUrl}
                     alt={photo.title}
                     loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                   />
 
                   {/* Ambient Overlay & Badge */}

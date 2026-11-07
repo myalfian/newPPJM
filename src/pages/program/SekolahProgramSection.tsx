@@ -19,6 +19,7 @@ import {
   SekolahStoryActivity
 } from './types';
 import { CardImageSlider } from '../../components/common/CardImageSlider';
+import { openUniversalLightbox } from '../../components/common/UniversalLightboxModal';
 
 export const SekolahProgramSection: React.FC = () => {
   const [programs, setPrograms] = useState<SekolahProgramItem[]>([]);
@@ -228,17 +229,27 @@ export const SekolahProgramSection: React.FC = () => {
                   >
                     {/* Photo Column */}
                     <div
-                      className={`lg:col-span-5 relative aspect-[16/10] sm:aspect-[4/3] lg:aspect-auto lg:h-full overflow-hidden bg-zinc-100 dark:bg-zinc-800 cursor-pointer ${
+                      className={`lg:col-span-5 relative aspect-[16/10] sm:aspect-[4/3] lg:aspect-auto lg:h-full overflow-hidden bg-zinc-950/90 flex items-center justify-center cursor-pointer ${
                         !isEven ? 'lg:order-2' : 'lg:order-1'
                       }`}
-                      onClick={() => setSelectedStoryImage(story.imageUrl)}
+                      onClick={() =>
+                        openUniversalLightbox(
+                          schoolStories.map((s) => ({
+                            url: s.imageUrl,
+                            title: s.title,
+                            caption: `${s.dateOrPeriod} • ${s.categoryTag} - ${s.description}`,
+                          })),
+                          index,
+                          story.title
+                        )
+                      }
                       title="Klik untuk perbesar foto kegiatan"
                     >
                       <img
                         src={story.imageUrl}
                         alt={story.title}
                         loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 min-h-[220px] sm:min-h-[260px]"
+                        className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 min-h-[220px] sm:min-h-[260px]"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
 

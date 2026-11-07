@@ -8,6 +8,7 @@ import { useAuth } from '../hooks/useAuth';
 import { GuestStickyBar } from '../components/auth/GuestStickyBar';
 import { LoginRequiredModal } from '../components/auth/LoginRequiredModal';
 import { AuthModal } from '../components/auth/AuthModal';
+import { UniversalLightboxModal } from '../components/common/UniversalLightboxModal';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 const GUEST_SESSION_STORAGE_KEY = 'jm_guest_session_id';
@@ -64,6 +65,7 @@ export const RootLayout: React.FC = () => {
       <GuestStickyBar />
       <LoginRequiredModal />
       <AuthModal />
+      <UniversalLightboxModal />
       <BottomNav />
     </div>
   );

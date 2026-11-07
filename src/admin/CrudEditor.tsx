@@ -17,6 +17,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { db } from './useAdminSession';
 import type { AdminOutletContext } from './AdminLayout';
 import { crudByKey, type CrudSection, type Field } from './sections';
+import { getFieldGuide } from './adminFieldGuides';
 import { convertImageToWebP, formatBytes } from '../lib/webpConverter';
 import { invalidateCache } from '../lib/queryCache';
 import { CardImageSlider } from '../components/common/CardImageSlider';
@@ -348,25 +349,41 @@ const GalleryPhotosEditor: React.FC<{
               )}
             </div>
             {!disabled && (
-              <label className="inline-flex w-full cursor-pointer items-center justify-center gap-1 rounded-lg border border-teal-900/20 bg-teal-50/50 py-1.5 text-[11px] font-semibold text-[#115E59] hover:bg-teal-50">
-                <ImagePlus size={12} />
-                <span>{busySlot === idx ? 'Mengonversi WebP…' : slide.photo_url ? 'Ganti Foto' : 'Upload Foto'}</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  disabled={busySlot !== null}
-                  onChange={async (e) => {
-                    const file = e.target.files?.[0];
-                    e.target.value = '';
-                    if (!file) return;
-                    setBusySlot(idx);
-                    const url = await onUpload(file);
-                    setBusySlot(null);
-                    if (url) updateSlide(idx, { photo_url: url });
-                  }}
-                />
-              </label>
+              <div className="flex items-center gap-1.5">
+                <label className="inline-flex flex-1 cursor-pointer items-center justify-center gap-1 rounded-lg border border-teal-900/20 bg-teal-50/50 py-1.5 text-[11px] font-semibold text-[#115E59] hover:bg-teal-50">
+                  <ImagePlus size={12} />
+                  <span>{busySlot === idx ? 'Mengonversi WebP…' : slide.photo_url ? 'Ganti Foto' : 'Upload Foto'}</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={busySlot !== null}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      e.target.value = '';
+                      if (!file) return;
+                      setBusySlot(idx);
+                      const url = await onUpload(file);
+                      setBusySlot(null);
+                      if (url) updateSlide(idx, { photo_url: url });
+                    }}
+                  />
+                </label>
+                {slide.photo_url && (
+                  <button
+                    type="button"
+                    aria-label={`Hapus foto slide ${idx + 1}`}
+                    title="Hapus foto slide ini"
+                    onClick={() => {
+                      updateSlide(idx, { photo_url: '', caption: '' });
+                      if (idx === 0) onPrimaryImageChange('');
+                    }}
+                    className="rounded-lg border border-rose-200 bg-rose-50 p-1.5 text-rose-600 hover:bg-rose-100 cursor-pointer transition-colors"
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                )}
+              </div>
             )}
             <input
               type="text"
@@ -468,32 +485,50 @@ const FieldInput: React.FC<{
 }> = ({ sec, f, value, draft, disabled, onChange, onDraftField, onUpload }) => {
   const [busy, setBusy] = useState(false);
   const str = String(value ?? '');
+  const guide = getFieldGuide(f.key, sec.key);
+  const effectivePlaceholder = f.placeholder || guide.placeholder || '';
+  const effectiveHelp = f.help || guide.help || '';
+  const inputId = `field-${sec.key}-${f.key}`;
+  const helpId = `help-${sec.key}-${f.key}`;
   let control: React.ReactNode;
 
   switch (f.kind) {
     case 'bool':
       control = (
-        <label className="inline-flex items-center gap-2 text-sm cursor-pointer">
+        <label htmlFor={inputId} className="inline-flex items-center gap-2 text-sm cursor-pointer select-none">
           <input
+            id={inputId}
             type="checkbox"
             className="h-4 w-4 accent-[#115E59] rounded"
             checked={value === true}
             disabled={disabled}
+            aria-describedby={effectiveHelp ? helpId : undefined}
             onChange={(e) => onChange(e.target.checked)}
           />
           <span>{f.label}</span>
         </label>
       );
-      return <div>{control}</div>;
+      return (
+        <div className="space-y-1">
+          {control}
+          {effectiveHelp && (
+            <span id={helpId} className="block text-[11px] font-normal text-zinc-500">
+              {effectiveHelp}
+            </span>
+          )}
+        </div>
+      );
 
     case 'textarea':
       control = (
         <textarea
+          id={inputId}
           className={`${input} resize-y`}
           rows={3}
           value={str}
           disabled={disabled}
-          placeholder={f.placeholder}
+          placeholder={effectivePlaceholder}
+          aria-describedby={effectiveHelp ? helpId : undefined}
           onChange={(e) => onChange(e.target.value)}
         />
       );
@@ -502,10 +537,13 @@ const FieldInput: React.FC<{
     case 'lines':
       control = (
         <textarea
+          id={inputId}
           className={`${input} resize-y font-mono text-xs`}
           rows={3}
           value={str}
           disabled={disabled}
+          placeholder={effectivePlaceholder}
+          aria-describedby={effectiveHelp ? helpId : undefined}
           onChange={(e) => onChange(e.target.value)}
         />
       );
@@ -514,11 +552,14 @@ const FieldInput: React.FC<{
     case 'json':
       control = (
         <textarea
+          id={inputId}
           className={`${input} resize-y font-mono text-xs`}
           rows={5}
           value={str}
           disabled={disabled}
           spellCheck={false}
+          placeholder={effectivePlaceholder}
+          aria-describedby={effectiveHelp ? helpId : undefined}
           onChange={(e) => onChange(e.target.value)}
         />
       );
@@ -533,9 +574,11 @@ const FieldInput: React.FC<{
       const hasCurrent = !str || opts.includes(str);
       control = (
         <select
+          id={inputId}
           className={input}
           value={str || opts[0] || ''}
           disabled={disabled}
+          aria-describedby={effectiveHelp ? helpId : undefined}
           onChange={(e) => onChange(e.target.value)}
         >
           {!hasCurrent && str && <option value={str}>{str}</option>}
@@ -557,9 +600,11 @@ const FieldInput: React.FC<{
       control = (
         <div className="space-y-1.5">
           <select
+            id={inputId}
             className={input}
             value={currentVal}
             disabled={disabled}
+            aria-describedby={effectiveHelp ? helpId : undefined}
             onChange={(e) => onChange(e.target.value)}
           >
             {!hasCurrent && currentVal && <option value={currentVal}>{currentVal}</option>}
@@ -604,7 +649,17 @@ const FieldInput: React.FC<{
           <div className="grid h-16 w-24 shrink-0 place-items-center overflow-hidden rounded-lg bg-zinc-100 border border-zinc-200/70">
             {str ? <img src={str} alt="" className="h-full w-full object-cover" /> : <ImagePlus className="text-zinc-300" />}
           </div>
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-1.5 flex-1">
+            <input
+              id={inputId}
+              className={input}
+              type="text"
+              value={str}
+              disabled={disabled}
+              placeholder={effectivePlaceholder || 'URL gambar atau unggah file'}
+              aria-describedby={effectiveHelp ? helpId : undefined}
+              onChange={(e) => onChange(e.target.value)}
+            />
             {!disabled && (
               <label className="inline-flex cursor-pointer items-center gap-1.5 rounded-lg bg-teal-50 border border-teal-900/15 px-3 py-1.5 text-xs font-semibold text-[#115E59] hover:bg-teal-100/70 transition-colors w-fit">
                 <ImagePlus size={14} />
@@ -637,11 +692,13 @@ const FieldInput: React.FC<{
     default:
       control = (
         <input
+          id={inputId}
           className={input}
           type={f.kind === 'number' ? 'number' : f.kind === 'date' ? 'date' : 'text'}
           value={str}
           disabled={disabled}
-          placeholder={f.placeholder}
+          placeholder={effectivePlaceholder}
+          aria-describedby={effectiveHelp ? helpId : undefined}
           onChange={(e) => onChange(e.target.value)}
         />
       );
@@ -649,12 +706,23 @@ const FieldInput: React.FC<{
 
   return (
     <div className="block space-y-1 text-xs font-bold text-zinc-700">
-      <span>
-        {f.label}
-        {f.required && <span className="text-red-600"> *</span>}
-      </span>
+      <div className="flex items-center justify-between">
+        <label htmlFor={inputId}>
+          {f.label}
+          {f.required && <span className="text-red-600"> *</span>}
+        </label>
+        {guide.tooltip && (
+          <span className="text-[10.5px] font-normal text-zinc-400 select-none" title={guide.tooltip}>
+            {guide.tooltip}
+          </span>
+        )}
+      </div>
       {control}
-      {f.help && <span className="block font-normal text-zinc-500">{f.help}</span>}
+      {effectiveHelp && (
+        <span id={helpId} className="block font-normal text-zinc-500">
+          {effectiveHelp}
+        </span>
+      )}
       <FieldInputTip kind={f.kind} label={f.label} />
     </div>
   );

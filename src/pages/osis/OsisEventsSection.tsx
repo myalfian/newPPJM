@@ -42,6 +42,7 @@ export const OsisEventsSection: React.FC = () => {
         const { data, error } = await supabase
           .from('osis_events')
           .select('*')
+          .eq('is_active', true)
           .order('date', { ascending: false });
 
         if (!error && data && data.length > 0) {

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { FacilityItem } from './types';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { openUniversalLightbox } from '../../components/common/UniversalLightboxModal';
 
 export const FacilitiesSection: React.FC = () => {
   const [facilities, setFacilities] = useState<FacilityItem[]>([]);
@@ -97,14 +98,27 @@ export const FacilitiesSection: React.FC = () => {
             >
               <div>
                 {/* Visual Image dengan Zoom on Hover */}
-                <div className="relative aspect-[16/10] overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+                <div
+                  className="relative aspect-[16/10] overflow-hidden bg-zinc-950/90 flex items-center justify-center cursor-pointer"
+                  onClick={() =>
+                    openUniversalLightbox(
+                      facilities.map((f) => ({
+                        url: f.image,
+                        title: f.name,
+                        caption: `${f.category} • ${f.description}`,
+                      })),
+                      facilities.findIndex((f) => f.id === fac.id),
+                      fac.name
+                    )
+                  }
+                >
                   <img
                     src={fac.image}
                     alt={fac.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 ease-out"
                     loading="lazy"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
                   {/* Category Pill Tag */}
                   <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[9.5px] font-black uppercase tracking-wider bg-black/60 backdrop-blur-md text-emerald-300 border border-white/20">
@@ -114,7 +128,18 @@ export const FacilitiesSection: React.FC = () => {
                   {/* Quick Expand Button */}
                   <button
                     type="button"
-                    onClick={() => setLightboxFacility(fac)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      openUniversalLightbox(
+                        facilities.map((f) => ({
+                          url: f.image,
+                          title: f.name,
+                          caption: `${f.category} • ${f.description}`,
+                        })),
+                        facilities.findIndex((f) => f.id === fac.id),
+                        fac.name
+                      );
+                    }}
                     className="absolute bottom-2 right-2 p-1.5 rounded-lg bg-black/60 backdrop-blur-md text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-emerald-700 cursor-pointer"
                     title="Perbesar Foto Fasilitas"
                   >
