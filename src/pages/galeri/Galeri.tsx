@@ -411,12 +411,49 @@ const PhotoCardSlider: React.FC<PhotoCardSliderProps> = ({ item, cardIndex, onOp
   // Smooth auto-play across photos, adhering to Super Admin slider settings & pausing on hover/touch
   useEffect(() => {
     if (isPaused || total <= 1 || !sliderSettings.isAutoplayEnabled) return;
-    const intervalMs = sliderSettings.autoplayInterval || 5000;
+    // Autoplay interval in seconds multiplied by 1000 for proper milliseconds
+    const intervalSec = sliderSettings.galleryAutoplayInterval || sliderSettings.autoplayInterval || 6.0;
+    const intervalMs = Math.max(2000, Math.round(intervalSec * 1000));
     const timer = window.setInterval(() => paginate(1), intervalMs);
     return () => window.clearInterval(timer);
-  }, [isPaused, total, paginate, sliderSettings.isAutoplayEnabled, sliderSettings.autoplayInterval]);
+  }, [isPaused, total, paginate, sliderSettings.isAutoplayEnabled, sliderSettings.galleryAutoplayInterval, sliderSettings.autoplayInterval]);
 
   const activePhoto = photos[activeIndex] || photos[0];
+  const effect = sliderSettings.galleryTransitionEffect || 'fade';
+  const transSpeedMs = sliderSettings.galleryTransitionSpeed || 700;
+  const transDurationSec = Math.max(0.2, transSpeedMs / 1000);
+
+  const getVariants = () => {
+    if (effect === 'fade') {
+      return {
+        enter: { opacity: 0, scale: 1.02 },
+        center: { opacity: 1, scale: 1 },
+        exit: { opacity: 0, scale: 0.98 },
+      };
+    }
+    if (effect === 'zoom') {
+      return {
+        enter: { opacity: 0, scale: 1.08 },
+        center: { opacity: 1, scale: 1 },
+        exit: { opacity: 0, scale: 0.94 },
+      };
+    }
+    // slide (default)
+    return {
+      enter: (dir: number) => ({
+        x: dir > 0 ? '60%' : '-60%',
+        opacity: 0.1,
+      }),
+      center: {
+        x: '0%',
+        opacity: 1,
+      },
+      exit: (dir: number) => ({
+        x: dir > 0 ? '-60%' : '60%',
+        opacity: 0.1,
+      }),
+    };
+  };
 
   return (
     <div
@@ -425,7 +462,7 @@ const PhotoCardSlider: React.FC<PhotoCardSliderProps> = ({ item, cardIndex, onOp
       onMouseLeave={() => setIsPaused(false)}
     >
       <div>
-        {/* SMOOTH 3-PHOTO ANIMATED SLIDER CAROUSEL + THUMBNAIL STRIP */}
+        {/* SMOOTH ANIMATED SLIDER CAROUSEL + THUMBNAIL STRIP */}
         <div className="p-2 sm:p-2.5 pb-0 space-y-1.5">
           {/* Primary Animated Viewport (Aspect 16/10) */}
           <div
@@ -446,18 +483,17 @@ const PhotoCardSlider: React.FC<PhotoCardSliderProps> = ({ item, cardIndex, onOp
             className="relative aspect-[16/10] rounded-xl sm:rounded-2xl overflow-hidden bg-zinc-900 cursor-pointer select-none group/slider shadow-inner"
             title={`Klik untuk membuka Lightbox (Foto ${activeIndex + 1} dari ${total})`}
           >
-            <AnimatePresence initial={false} custom={direction} mode="popLayout">
+            <AnimatePresence initial={false} custom={direction} mode="sync">
               <motion.img
                 key={`${item.id}-${activeIndex}`}
                 custom={direction}
-                variants={SLIDE_VARIANTS}
+                variants={getVariants()}
                 initial="enter"
                 animate="center"
                 exit="exit"
                 transition={{
-                  x: { type: 'spring', stiffness: 310, damping: 32, mass: 0.75 },
-                  opacity: { duration: 0.28, ease: 'easeOut' },
-                  scale: { duration: 0.38, ease: 'easeOut' },
+                  duration: transDurationSec,
+                  ease: [0.25, 0.1, 0.25, 1.0],
                 }}
                 src={activePhoto.photo_url}
                 alt={activePhoto.caption || `${item.title} - Foto ${activeIndex + 1}`}

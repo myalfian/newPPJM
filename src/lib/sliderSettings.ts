@@ -6,12 +6,17 @@ export type TransitionEffect = 'slide' | 'fade' | 'zoom';
 export type TickerDirection = 'left' | 'right';
 
 export interface SliderSettings {
-  // Slider gambar (Hero, Card Image Slider, Lightbox)
+  // Slider gambar umum (Hero, Card Image Slider, Lightbox)
   autoplayInterval: number; // in seconds (2 to 20)
   transitionSpeed: number;  // in milliseconds (150 to 2000)
   transitionEffect: TransitionEffect;
   isAutoplayEnabled: boolean;
   pauseOnHover: boolean;
+
+  // Khusus Slider Kartu Galeri Foto (/galeri/foto)
+  galleryAutoplayInterval: number; // in seconds (2 to 25, default 6.0s - santai & nyaman)
+  galleryTransitionSpeed: number;  // in milliseconds (150 to 2500, default 700ms - halus)
+  galleryTransitionEffect: TransitionEffect; // 'fade' | 'slide' | 'zoom', default 'fade'
 
   // Running text ticker ("INFO TERKINI" di Header / Navbar)
   tickerDuration: number;     // in seconds (15 to 180, default 75s - santai & nyaman dibaca)
@@ -26,6 +31,9 @@ export const DEFAULT_SLIDER_SETTINGS: SliderSettings = {
   transitionEffect: 'slide',
   isAutoplayEnabled: true,
   pauseOnHover: true,
+  galleryAutoplayInterval: 6.0,
+  galleryTransitionSpeed: 700,
+  galleryTransitionEffect: 'fade',
   tickerDuration: 75, // Nyaman & santai (kecepatan dikurangi)
   isTickerEnabled: true,
   tickerPauseOnHover: true,
@@ -50,6 +58,11 @@ export const getSliderSettings = (): SliderSettings => {
     const validDirection: TickerDirection =
       parsed.tickerDirection === 'right' ? 'right' : 'left';
 
+    const validGalleryEffect: TransitionEffect =
+      parsed.galleryTransitionEffect === 'slide' || parsed.galleryTransitionEffect === 'zoom'
+        ? parsed.galleryTransitionEffect
+        : 'fade';
+
     return {
       autoplayInterval: typeof parsed.autoplayInterval === 'number' && parsed.autoplayInterval >= 2 && parsed.autoplayInterval <= 20
         ? parsed.autoplayInterval 
@@ -64,6 +77,13 @@ export const getSliderSettings = (): SliderSettings => {
       pauseOnHover: typeof parsed.pauseOnHover === 'boolean'
         ? parsed.pauseOnHover
         : DEFAULT_SLIDER_SETTINGS.pauseOnHover,
+      galleryAutoplayInterval: typeof parsed.galleryAutoplayInterval === 'number' && parsed.galleryAutoplayInterval >= 2 && parsed.galleryAutoplayInterval <= 30
+        ? parsed.galleryAutoplayInterval
+        : DEFAULT_SLIDER_SETTINGS.galleryAutoplayInterval,
+      galleryTransitionSpeed: typeof parsed.galleryTransitionSpeed === 'number' && parsed.galleryTransitionSpeed >= 150 && parsed.galleryTransitionSpeed <= 2500
+        ? parsed.galleryTransitionSpeed
+        : DEFAULT_SLIDER_SETTINGS.galleryTransitionSpeed,
+      galleryTransitionEffect: validGalleryEffect,
       tickerDuration: typeof parsed.tickerDuration === 'number' && parsed.tickerDuration >= 15 && parsed.tickerDuration <= 180
         ? parsed.tickerDuration
         : DEFAULT_SLIDER_SETTINGS.tickerDuration,
@@ -96,6 +116,10 @@ export const fetchSliderSettingsFromSupabase = async (): Promise<SliderSettings>
         parsed.transitionEffect === 'fade' || parsed.transitionEffect === 'zoom'
           ? parsed.transitionEffect
           : 'slide';
+      const validGalleryEffect: TransitionEffect =
+        parsed.galleryTransitionEffect === 'slide' || parsed.galleryTransitionEffect === 'zoom'
+          ? parsed.galleryTransitionEffect
+          : 'fade';
       const validDirection: TickerDirection =
         parsed.tickerDirection === 'right' ? 'right' : 'left';
 
@@ -113,6 +137,13 @@ export const fetchSliderSettingsFromSupabase = async (): Promise<SliderSettings>
         pauseOnHover: typeof parsed.pauseOnHover === 'boolean'
           ? parsed.pauseOnHover
           : DEFAULT_SLIDER_SETTINGS.pauseOnHover,
+        galleryAutoplayInterval: typeof parsed.galleryAutoplayInterval === 'number' && parsed.galleryAutoplayInterval >= 2 && parsed.galleryAutoplayInterval <= 30
+          ? parsed.galleryAutoplayInterval
+          : DEFAULT_SLIDER_SETTINGS.galleryAutoplayInterval,
+        galleryTransitionSpeed: typeof parsed.galleryTransitionSpeed === 'number' && parsed.galleryTransitionSpeed >= 150 && parsed.galleryTransitionSpeed <= 2500
+          ? parsed.galleryTransitionSpeed
+          : DEFAULT_SLIDER_SETTINGS.galleryTransitionSpeed,
+        galleryTransitionEffect: validGalleryEffect,
         tickerDuration: typeof parsed.tickerDuration === 'number' && parsed.tickerDuration >= 15 && parsed.tickerDuration <= 180
           ? parsed.tickerDuration
           : DEFAULT_SLIDER_SETTINGS.tickerDuration,
@@ -147,6 +178,9 @@ export const saveSliderSettings = async (settings: SliderSettings): Promise<{ ok
     transitionEffect: settings.transitionEffect === 'fade' || settings.transitionEffect === 'zoom' ? settings.transitionEffect : 'slide',
     isAutoplayEnabled: Boolean(settings.isAutoplayEnabled),
     pauseOnHover: Boolean(settings.pauseOnHover),
+    galleryAutoplayInterval: Math.max(2, Math.min(30, Number(settings.galleryAutoplayInterval) || 6.0)),
+    galleryTransitionSpeed: Math.max(150, Math.min(2500, Number(settings.galleryTransitionSpeed) || 700)),
+    galleryTransitionEffect: settings.galleryTransitionEffect === 'slide' || settings.galleryTransitionEffect === 'zoom' ? settings.galleryTransitionEffect : 'fade',
     tickerDuration: Math.max(15, Math.min(180, Number(settings.tickerDuration) || 75)),
     isTickerEnabled: Boolean(settings.isTickerEnabled),
     tickerPauseOnHover: Boolean(settings.tickerPauseOnHover),
