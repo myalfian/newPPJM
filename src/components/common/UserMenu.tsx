@@ -257,7 +257,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({
           aria-expanded={open}
           aria-controls={menuId}
           aria-label={`Menu Akun: ${displayName || 'User'} (${roleLabel})`}
-          className={`group flex items-center min-h-[44px] h-[44px] rounded-full border border-slate-200/90 bg-white shadow-2xs transition-all hover:bg-slate-50/90 hover:border-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 pl-1 pr-3 sm:pr-3.5 gap-2 ${
+          className={`group flex items-center min-h-[44px] h-[44px] rounded-full border border-slate-200/90 bg-white shadow-2xs transition-all hover:bg-slate-50/90 hover:border-slate-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 pl-1 pr-3 sm:pr-3.5 gap-2 shrink-0 ${
             open ? 'ring-2 ring-emerald-500/20 border-emerald-600' : ''
           }`}
         >
@@ -277,12 +277,15 @@ export const UserMenu: React.FC<UserMenuProps> = ({
             )}
           </span>
 
-          {/* Teks Nama & Badge Role (Ellipsis Cerdas) */}
+          {/* Teks Nama & Badge Role (Full di Desktop tanpa terpotong) */}
           <span className="flex flex-col text-left leading-tight min-w-0">
-            <span className="max-w-[76px] xs:max-w-[100px] sm:max-w-[130px] md:max-w-[160px] truncate text-xs font-bold text-slate-800 tracking-tight">
+            <span
+              title={displayName || 'Pengguna'}
+              className="max-w-[80px] xs:max-w-[110px] sm:max-w-[140px] md:max-w-[190px] lg:max-w-[260px] xl:max-w-none text-xs font-bold text-slate-800 tracking-tight whitespace-nowrap truncate xl:overflow-visible"
+            >
               {displayName || 'Pengguna'}
             </span>
-            <span className="text-[10px] font-semibold text-emerald-700 tracking-wide truncate">
+            <span className="text-[10px] font-semibold text-emerald-700 tracking-wide whitespace-nowrap">
               {meta.shortLabel}
             </span>
           </span>

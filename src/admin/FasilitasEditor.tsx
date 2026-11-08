@@ -42,8 +42,8 @@ const Row: React.FC<{
     >
       <div className="flex gap-2">
         <button {...attributes} {...listeners} className="mt-2 cursor-grab touch-none text-zinc-400" aria-label="Geser urutan"><GripVertical size={16} /></button>
-        <div className="grid h-20 w-28 shrink-0 place-items-center overflow-hidden rounded-lg bg-zinc-100">
-          {f.image_url ? <img src={f.image_url} alt="" className="h-full w-full object-cover" /> : <ImagePlus className="text-zinc-300" />}
+        <div className="grid h-20 w-28 shrink-0 place-items-center overflow-hidden rounded-xl bg-zinc-950/10 border border-zinc-200/60">
+          {f.image_url ? <img src={f.image_url} alt="" className="h-full w-full object-contain p-0.5" /> : <ImagePlus className="text-zinc-300" />}
         </div>
         <div className="min-w-0 flex-1 space-y-2">
           <input className={field} placeholder="Nama fasilitas" value={f.name} disabled={disabled} onChange={(e) => onChange({ name: e.target.value })} />
@@ -213,8 +213,8 @@ export const FasilitasEditor: React.FC = () => {
               <div className={`grid gap-2.5 ${device === 'mobile' ? 'grid-cols-1' : 'grid-cols-2'}`}>
                 {shown.map((f) => (
                   <article key={f.id} className="flex flex-col overflow-hidden rounded-xl border border-zinc-200/80 bg-white shadow-xs">
-                    <div className="relative aspect-[16/10] bg-zinc-100">
-                      {f.image_url && <img src={f.image_url} alt={f.name} className="h-full w-full object-cover" />}
+                    <div className="relative aspect-[16/10] bg-zinc-950/10 flex items-center justify-center overflow-hidden">
+                      {f.image_url && <img src={f.image_url} alt={f.name} className="h-full w-full object-contain p-0.5" />}
                       <span className="absolute left-2 top-2 rounded-full border border-white/20 bg-black/60 px-2 py-0.5 text-[9.5px] font-black uppercase tracking-wider text-emerald-300">{f.category}</span>
                     </div>
                     <div className="space-y-1.5 p-3">

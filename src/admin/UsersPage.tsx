@@ -560,7 +560,7 @@ export const UsersPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Users Table */}
+      {/* Users Table & Mobile Cards */}
       <div className="overflow-hidden rounded-2xl border border-stone-200/80 bg-white shadow-xs">
         {loading ? (
           <div className="p-8 space-y-3">
@@ -575,158 +575,283 @@ export const UsersPage: React.FC = () => {
             <p className="text-xs text-stone-500">Coba ubah filter role atau kata kunci pencarian Anda.</p>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="border-b border-stone-200/80 bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-stone-500">
-                  <th className="py-3.5 px-4">Foto & Nama Lengkap</th>
-                  <th className="py-3.5 px-4">Username</th>
-                  <th className="py-3.5 px-4">Role</th>
-                  <th className="py-3.5 px-4">Kelas / Jabatan & Nomor Induk</th>
-                  <th className="py-3.5 px-4 text-center">Status Aktif</th>
-                  <th className="py-3.5 px-4 text-right">Aksi</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-stone-100 text-sm">
-                {paginatedUsers.map((u) => {
-                  const canonical = normalizeCanonicalRole(u.role);
-                  const meta = getRoleMeta(canonical);
-                  const isActive = u.status_aktif !== false;
-                  const uname = u.username || generateUsername(u.full_name || '');
+          <>
+            {/* Desktop / Tablet View (Table with guaranteed visibility, sticky actions, zero cutoffs) */}
+            <div className="hidden md:block overflow-x-auto relative scrollbar-thin">
+              <table className="min-w-[960px] w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-stone-200/80 bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-stone-500">
+                    <th className="py-3.5 px-3.5 min-w-[210px]">Foto &amp; Nama Lengkap</th>
+                    <th className="py-3.5 px-3 min-w-[115px]">Username</th>
+                    <th className="py-3.5 px-3 min-w-[125px]">Role</th>
+                    <th className="py-3.5 px-3.5 min-w-[195px]">Kelas / Jabatan &amp; Nomor Induk</th>
+                    <th className="py-3.5 px-3 text-center min-w-[90px]">Status Aktif</th>
+                    <th className="py-3.5 px-3.5 text-right min-w-[230px] sticky right-0 bg-[#FAF8F5] z-10 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.06)]">
+                      Aksi
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-stone-100 text-sm">
+                  {paginatedUsers.map((u) => {
+                    const canonical = normalizeCanonicalRole(u.role);
+                    const meta = getRoleMeta(canonical);
+                    const isActive = u.status_aktif !== false;
+                    const uname = u.username || generateUsername(u.full_name || '');
 
-                  return (
-                    <tr key={u.id} className="hover:bg-stone-50/70 transition">
-                      <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={
-                              u.foto_url ||
-                              'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'
-                            }
-                            alt={u.full_name}
-                            className="h-10 w-10 rounded-xl object-cover border border-stone-200 shrink-0"
-                          />
-                          <div className="min-w-0">
-                            <p className="font-bold text-stone-900 truncate">{u.full_name}</p>
-                            <p className="text-xs text-stone-400 truncate">
-                              {u.email || `${uname}@ppjauharulmaknuun.sch.id`}
-                            </p>
+                    return (
+                      <tr key={u.id} className="hover:bg-stone-50/70 transition group">
+                        <td className="py-3.5 px-3.5">
+                          <div className="flex items-center gap-2.5">
+                            <img
+                              src={
+                                u.foto_url ||
+                                'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'
+                              }
+                              alt={u.full_name}
+                              className="h-9 w-9 rounded-xl object-cover border border-stone-200 shrink-0"
+                            />
+                            <div className="min-w-0 flex-1">
+                              <p className="font-bold text-stone-900 leading-snug break-words text-xs sm:text-sm" title={u.full_name}>
+                                {u.full_name}
+                              </p>
+                              <p className="text-[11px] text-stone-400 break-all leading-tight">
+                                {u.email || `${uname}@ppjauharulmaknuun.sch.id`}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      </td>
+                        </td>
 
-                      <td className="py-3.5 px-4">
-                        <code className="rounded-lg bg-stone-100 px-2.5 py-1 text-xs font-mono font-semibold text-stone-700">
-                          @{uname}
-                        </code>
-                      </td>
+                        <td className="py-3.5 px-3">
+                          <code className="rounded-lg bg-stone-100 px-2 py-0.5 text-xs font-mono font-semibold text-stone-700 whitespace-nowrap">
+                            @{uname}
+                          </code>
+                        </td>
 
-                      <td className="py-3.5 px-4">
-                        <span
-                          className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold ${meta.badgeClass}`}
-                        >
-                          <span className={`h-1.5 w-1.5 rounded-full ${meta.dotClass}`} />
-                          {meta.label}
-                        </span>
-                      </td>
-
-                      <td className="py-3.5 px-4">
-                        {canonical === 'santri' ? (
-                          <div>
-                            <p className="text-xs font-bold text-stone-800">
-                              Kelas {u.kelas || 'VIII-A Tahfidz'} • {u.asrama_kamar || u.kamar_asrama || 'Asrama Putra'}
-                            </p>
-                            <p className="text-[11px] text-stone-500">
-                              NIS: {u.nis || '-'} • Tahfidz: {u.hafalan_juz ?? 0} Juz
-                            </p>
-                          </div>
-                        ) : (
-                          <div>
-                            <p className="text-xs font-bold text-stone-800">
-                              {u.jabatan || meta.label}
-                            </p>
-                            <p className="text-[11px] text-stone-500">
-                              NIP: {u.nip || '-'}
-                              {u.mapel_ampu && u.mapel_ampu.length > 0
-                                ? ` • ${u.mapel_ampu.slice(0, 2).join(', ')}`
-                                : ''}
-                            </p>
-                          </div>
-                        )}
-                      </td>
-
-                      <td className="py-3.5 px-4 text-center">
-                        <button
-                          type="button"
-                          onClick={() => setConfirmToggleUser(u)}
-                          className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold transition ${
-                            isActive
-                              ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100'
-                              : 'bg-stone-100 text-stone-500 border border-stone-200 hover:bg-stone-200'
-                          }`}
-                        >
+                        <td className="py-3.5 px-3">
                           <span
-                            className={`h-2 w-2 rounded-full ${
-                              isActive ? 'bg-emerald-600' : 'bg-stone-400'
-                            }`}
-                          />
-                          {isActive ? 'Aktif' : 'Nonaktif'}
-                        </button>
-                      </td>
+                            className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-bold whitespace-nowrap ${meta.badgeClass}`}
+                          >
+                            <span className={`h-1.5 w-1.5 rounded-full ${meta.dotClass}`} />
+                            {meta.label}
+                          </span>
+                        </td>
 
-                      <td className="py-3.5 px-4 text-right">
-                        <div className="inline-flex items-center gap-1.5">
-                          <Link
-                            to={`/profile/${canonical}/${u.id}`}
-                            className="inline-flex items-center gap-1 rounded-xl border border-stone-200 bg-[#FAF8F5] hover:bg-stone-100 px-2.5 py-1.5 text-xs font-bold text-stone-700 transition"
-                            title="Lihat Profile"
-                          >
-                            <Eye className="h-3.5 w-3.5 text-[#115E59]" />
-                            Lihat
-                          </Link>
-                          <button
-                            type="button"
-                            onClick={() => openEditModal(u)}
-                            className="inline-flex items-center gap-1 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 px-2.5 py-1.5 text-xs font-bold text-stone-700 transition"
-                            title="Edit Profile"
-                          >
-                            <Edit3 className="h-3.5 w-3.5 text-blue-600" />
-                            Edit
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => openCredentialModal(u)}
-                            className="inline-flex items-center gap-1 rounded-xl border border-teal-200 bg-teal-50/70 hover:bg-teal-100 px-2.5 py-1.5 text-xs font-bold text-[#115E59] transition"
-                            title="Bagi Credential / Generate Password"
-                          >
-                            <KeyRound className="h-3.5 w-3.5" />
-                            Credential
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => openOverrideModal(u)}
-                            className="inline-flex items-center gap-1 rounded-xl border border-indigo-200 bg-indigo-50/70 hover:bg-indigo-100 px-2.5 py-1.5 text-xs font-bold text-indigo-700 transition"
-                            title="Izin Khusus User (User Permission Override)"
-                          >
-                            <ShieldCheck className="h-3.5 w-3.5" />
-                            Izin Khusus
-                          </button>
+                        <td className="py-3.5 px-3.5">
+                          {canonical === 'santri' ? (
+                            <div>
+                              <p className="text-xs font-bold text-stone-800 leading-snug">
+                                Kelas {u.kelas || 'VIII-A Tahfidz'} • {u.asrama_kamar || u.kamar_asrama || 'Asrama Putra'}
+                              </p>
+                              <p className="text-[11px] text-stone-500 mt-0.5">
+                                <span className="font-mono whitespace-nowrap">NIS: {u.nis || '-'}</span> • Tahfidz: {u.hafalan_juz ?? 0} Juz
+                              </p>
+                            </div>
+                          ) : (
+                            <div>
+                              <p className="text-xs font-bold text-stone-800 leading-snug">
+                                {u.jabatan || meta.label}
+                              </p>
+                              <p className="text-[11px] text-stone-500 mt-0.5">
+                                <span className="font-mono whitespace-nowrap">NIP: {u.nip || '-'}</span>
+                                {u.mapel_ampu && u.mapel_ampu.length > 0
+                                  ? ` • ${u.mapel_ampu.slice(0, 2).join(', ')}`
+                                  : ''}
+                              </p>
+                            </div>
+                          )}
+                        </td>
+
+                        <td className="py-3.5 px-3 text-center">
                           <button
                             type="button"
                             onClick={() => setConfirmToggleUser(u)}
-                            className="p-1.5 rounded-xl border border-stone-200 hover:bg-rose-50 hover:text-rose-700 text-stone-500 transition"
-                            title={isActive ? 'Nonaktifkan User' : 'Aktifkan User'}
+                            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                              isActive
+                                ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 hover:bg-emerald-100'
+                                : 'bg-stone-100 text-stone-500 border border-stone-200 hover:bg-stone-200'
+                            }`}
+                            title={isActive ? 'Klik untuk nonaktifkan user' : 'Klik untuk aktifkan user'}
                           >
-                            <Power className="h-3.5 w-3.5" />
+                            <span
+                              className={`h-2 w-2 rounded-full ${
+                                isActive ? 'bg-emerald-600' : 'bg-stone-400'
+                              }`}
+                            />
+                            {isActive ? 'Aktif' : 'Nonaktif'}
                           </button>
+                        </td>
+
+                        <td className="py-3.5 px-3.5 text-right sticky right-0 bg-white group-hover:bg-stone-50/70 z-10 shadow-[-6px_0_10px_-4px_rgba(0,0,0,0.06)]">
+                          <div className="inline-flex items-center justify-end gap-1.5 whitespace-nowrap">
+                            <Link
+                              to={`/profile/${canonical}/${u.id}`}
+                              className="inline-flex items-center gap-1 rounded-xl border border-stone-200 bg-[#FAF8F5] hover:bg-stone-100 px-2.5 py-1.5 text-xs font-bold text-stone-700 transition"
+                              title="Lihat Profil Publik User"
+                            >
+                              <Eye className="h-3.5 w-3.5 text-[#115E59]" />
+                              <span className="hidden xl:inline">Lihat</span>
+                            </Link>
+                            <button
+                              type="button"
+                              onClick={() => openEditModal(u)}
+                              className="inline-flex items-center gap-1 rounded-xl border border-stone-200 bg-white hover:bg-stone-50 px-2.5 py-1.5 text-xs font-bold text-stone-700 transition cursor-pointer"
+                              title="Edit Profil & Data User"
+                            >
+                              <Edit3 className="h-3.5 w-3.5 text-blue-600" />
+                              <span>Edit</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => openCredentialModal(u)}
+                              className="inline-flex items-center gap-1 rounded-xl border border-teal-200 bg-teal-50/70 hover:bg-teal-100 px-2.5 py-1.5 text-xs font-bold text-[#115E59] transition cursor-pointer"
+                              title="Kelola Kredensial & Password Akun"
+                            >
+                              <KeyRound className="h-3.5 w-3.5" />
+                              <span>Akses</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => openOverrideModal(u)}
+                              className="inline-flex items-center gap-1 rounded-xl border border-indigo-200 bg-indigo-50/70 hover:bg-indigo-100 px-2.5 py-1.5 text-xs font-bold text-indigo-700 transition cursor-pointer"
+                              title="Pengaturan Izin Khusus (Override Permissions)"
+                            >
+                              <ShieldCheck className="h-3.5 w-3.5" />
+                              <span>Izin</span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile View: Modern Android Card View (Zero Cutoff on Phones) */}
+            <div className="md:hidden divide-y divide-stone-100 p-3 space-y-3">
+              {paginatedUsers.map((u) => {
+                const canonical = normalizeCanonicalRole(u.role);
+                const meta = getRoleMeta(canonical);
+                const isActive = u.status_aktif !== false;
+                const uname = u.username || generateUsername(u.full_name || '');
+
+                return (
+                  <div key={u.id} className="rounded-2xl border border-stone-200/90 bg-white p-3.5 space-y-3 shadow-2xs">
+                    {/* Header: Photo + Full Name (No cutoff) + Status */}
+                    <div className="flex items-start justify-between gap-2.5">
+                      <div className="flex items-start gap-2.5 min-w-0 flex-1">
+                        <img
+                          src={
+                            u.foto_url ||
+                            'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80'
+                          }
+                          alt={u.full_name}
+                          className="h-11 w-11 rounded-xl object-cover border border-stone-200 shrink-0"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-extrabold text-sm text-stone-900 leading-snug break-words">
+                            {u.full_name}
+                          </h4>
+                          <div className="flex flex-wrap items-center gap-1.5 mt-1">
+                            <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10.5px] font-bold ${meta.badgeClass}`}>
+                              <span className={`h-1.5 w-1.5 rounded-full ${meta.dotClass}`} />
+                              {meta.label}
+                            </span>
+                            <code className="text-[10.5px] font-mono text-stone-600 bg-stone-100 px-1.5 py-0.5 rounded">
+                              @{uname}
+                            </code>
+                          </div>
                         </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setConfirmToggleUser(u)}
+                        className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold shrink-0 ${
+                          isActive
+                            ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                            : 'bg-stone-100 text-stone-500 border border-stone-200'
+                        }`}
+                      >
+                        <span className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-emerald-600' : 'bg-stone-400'}`} />
+                        {isActive ? 'Aktif' : 'Nonaktif'}
+                      </button>
+                    </div>
+
+                    {/* Metadata Detail Section */}
+                    <div className="p-2.5 rounded-xl bg-[#FAF8F5] border border-stone-100 text-xs space-y-1">
+                      {canonical === 'santri' ? (
+                        <>
+                          <div className="flex justify-between text-stone-700">
+                            <span className="text-stone-400">Kelas / Kamar:</span>
+                            <span className="font-bold">{u.kelas || 'VIII-A Tahfidz'} • {u.asrama_kamar || u.kamar_asrama || 'Asrama'}</span>
+                          </div>
+                          <div className="flex justify-between text-stone-700">
+                            <span className="text-stone-400">NIS &amp; Hafalan:</span>
+                            <span className="font-bold">NIS: {u.nis || '-'} | {u.hafalan_juz ?? 0} Juz</span>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex justify-between text-stone-700">
+                            <span className="text-stone-400">Jabatan:</span>
+                            <span className="font-bold">{u.jabatan || meta.label}</span>
+                          </div>
+                          <div className="flex justify-between text-stone-700">
+                            <span className="text-stone-400">NIP Yayasan:</span>
+                            <span className="font-bold">{u.nip || '-'}</span>
+                          </div>
+                          {u.mapel_ampu && u.mapel_ampu.length > 0 && (
+                            <div className="text-[11px] text-stone-600 pt-0.5 border-t border-stone-200/50">
+                              Mapel: <strong>{u.mapel_ampu.join(', ')}</strong>
+                            </div>
+                          )}
+                        </>
+                      )}
+                      <div className="text-[11px] text-stone-500 pt-0.5 break-all">
+                        Email: {u.email || `${uname}@ppjauharulmaknuun.sch.id`}
+                      </div>
+                    </div>
+
+                    {/* Action Buttons Grid (Full Width, Easy Touch Target) */}
+                    <div className="grid grid-cols-2 gap-1.5 pt-1">
+                      <Link
+                        to={`/profile/${canonical}/${u.id}`}
+                        className="flex items-center justify-center gap-1.5 rounded-xl border border-stone-200 bg-[#FAF8F5] py-2 text-xs font-bold text-stone-700 hover:bg-stone-100 transition"
+                      >
+                        <Eye size={14} className="text-[#115E59]" />
+                        <span>Lihat Profil</span>
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => openEditModal(u)}
+                        className="flex items-center justify-center gap-1.5 rounded-xl border border-stone-200 bg-white py-2 text-xs font-bold text-stone-700 hover:bg-stone-50 transition cursor-pointer"
+                      >
+                        <Edit3 size={14} className="text-blue-600" />
+                        <span>Edit Profil</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => openCredentialModal(u)}
+                        className="flex items-center justify-center gap-1.5 rounded-xl border border-teal-200 bg-teal-50/70 py-2 text-xs font-bold text-[#115E59] hover:bg-teal-100 transition cursor-pointer"
+                      >
+                        <KeyRound size={14} />
+                        <span>Credential</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => openOverrideModal(u)}
+                        className="flex items-center justify-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/70 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-100 transition cursor-pointer"
+                      >
+                        <ShieldCheck size={14} />
+                        <span>Izin Khusus</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
         )}
 
         {/* Pagination Footer */}
@@ -760,9 +885,9 @@ export const UsersPage: React.FC = () => {
 
       {/* Modal Tambah / Edit User Dinamis Sesuai Role */}
       {showFormModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/50 backdrop-blur-xs p-4 overflow-y-auto">
-          <div className="my-8 w-full max-w-2xl rounded-2xl border border-stone-200 bg-white shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between border-b border-stone-200 bg-[#FAF8F5] px-6 py-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/50 backdrop-blur-xs p-3 sm:p-4 overflow-y-auto">
+          <div className="my-auto w-full max-w-2xl rounded-2xl border border-stone-200 bg-white shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between border-b border-stone-200 bg-[#FAF8F5] px-5 sm:px-6 py-3.5 shrink-0">
               <div>
                 <h2 className="text-base font-bold text-stone-900">
                   {editingUser ? `Edit Profil: ${editingUser.full_name}` : 'Tambah User Baru (Form Dinamis per Role)'}
@@ -774,13 +899,13 @@ export const UsersPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowFormModal(false)}
-                className="rounded-xl border border-stone-200 bg-white p-1.5 text-stone-500"
+                className="rounded-xl border border-stone-200 bg-white p-1.5 text-stone-500 cursor-pointer hover:bg-stone-50"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveUser} className="p-6 max-h-[75vh] overflow-y-auto space-y-5">
+            <form onSubmit={handleSaveUser} className="p-5 sm:p-6 overflow-y-auto flex-1 space-y-5">
               {/* Step 1: Pilih Role */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-stone-500 mb-2">
@@ -1083,18 +1208,18 @@ export const UsersPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-3 border-t border-stone-100">
+              <div className="sticky bottom-0 z-10 bg-white flex items-center justify-end gap-2 pt-3 border-t border-stone-200/80 p-4 sm:p-5 shrink-0 -mx-5 -mb-5 sm:-mx-6 sm:-mb-6 shadow-[0_-4px_12px_rgba(0,0,0,0.03)]">
                 <button
                   type="button"
                   onClick={() => setShowFormModal(false)}
-                  className="rounded-xl border border-stone-200 px-4 py-2.5 text-xs font-bold text-stone-600"
+                  className="rounded-xl border border-stone-200 px-4 py-2.5 text-xs font-bold text-stone-600 hover:bg-stone-50 cursor-pointer"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
                   disabled={savingUser}
-                  className="rounded-xl bg-[#115E59] hover:bg-[#0F766E] px-5 py-2.5 text-xs font-bold text-white shadow-xs disabled:opacity-50"
+                  className="rounded-xl bg-[#115E59] hover:bg-[#0F766E] px-5 py-2.5 text-xs font-bold text-white shadow-xs disabled:opacity-50 cursor-pointer"
                 >
                   {savingUser ? 'Menyimpan...' : editingUser ? 'Simpan Perubahan' : 'Buat User Sekarang'}
                 </button>
@@ -1253,73 +1378,75 @@ export const UsersPage: React.FC = () => {
             </div>
 
             {/* Matrix Table */}
-            <div className="p-6 overflow-y-auto grow">
+            <div className="p-4 sm:p-6 overflow-y-auto grow">
               {loadingOverrides ? (
                 <div className="py-12 text-center text-xs text-stone-400">
                   <RefreshCw className="h-6 w-6 animate-spin mx-auto text-[#115E59] mb-2" />
                   Memuat data izin khusus dari database...
                 </div>
               ) : (
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-stone-200 text-left text-xs text-stone-500">
-                      <th className="py-2.5 px-3 font-bold">Modul / Fitur</th>
-                      <th className="py-2.5 px-3 font-bold">Kategori</th>
-                      {PERM_ACTIONS.slice(0, 5).map((a) => (
-                        <th key={a.key} className="py-2.5 px-2 text-center font-bold">
-                          {a.label}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-stone-100">
-                    {ADMIN_SECTIONS.map((sec) => {
-                      const override = userOverrides.find((o) => o.section === sec.key);
-                      return (
-                        <tr key={sec.key} className="hover:bg-stone-50/60 transition">
-                          <td className="py-2.5 px-3">
-                            <p className="font-bold text-xs text-stone-800">{sec.label}</p>
-                            <code className="text-[10px] font-mono text-stone-400">{sec.key}</code>
-                          </td>
-                          <td className="py-2.5 px-3 text-xs text-stone-500">
-                            {sec.category || 'Modul Sistem'}
-                          </td>
-                          {PERM_ACTIONS.slice(0, 5).map((a) => {
-                            const val = override ? (override as any)[colOf(a.key)] : null;
-                            const isBusy = savingOverrideKey === `${sec.key}:${a.key}`;
-                            return (
-                              <td key={a.key} className="py-2.5 px-2 text-center">
-                                <button
-                                  type="button"
-                                  disabled={isBusy}
-                                  onClick={() => handleToggleOverride(sec.key, a.key, val)}
-                                  className={`px-2 py-1 rounded-lg text-[11px] font-bold border transition ${
-                                    val === true
-                                      ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
-                                      : val === false
-                                      ? 'bg-rose-50 text-rose-800 border-rose-300 hover:bg-rose-100'
-                                      : 'bg-stone-100 text-stone-500 border-stone-200 hover:bg-stone-200'
-                                  }`}
-                                  title={`Status: ${val === true ? 'Force Allow' : val === false ? 'Force Deny' : 'Ikuti Role'}`}
-                                >
-                                  {isBusy ? (
-                                    <RefreshCw className="h-3 w-3 animate-spin mx-auto" />
-                                  ) : val === true ? (
-                                    'ALLOW'
-                                  ) : val === false ? (
-                                    'DENY'
-                                  ) : (
-                                    'DEFAULT'
-                                  )}
-                                </button>
-                              </td>
-                            );
-                          })}
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
+                <div className="overflow-x-auto rounded-xl border border-stone-200">
+                  <table className="min-w-[700px] w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-stone-200 bg-[#FAF8F5] text-left text-xs text-stone-500">
+                        <th className="py-2.5 px-3 font-bold min-w-[200px]">Modul / Fitur</th>
+                        <th className="py-2.5 px-3 font-bold min-w-[140px]">Kategori</th>
+                        {PERM_ACTIONS.slice(0, 5).map((a) => (
+                          <th key={a.key} className="py-2.5 px-2 text-center font-bold min-w-[75px]">
+                            {a.label}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-stone-100">
+                      {ADMIN_SECTIONS.map((sec) => {
+                        const override = userOverrides.find((o) => o.section === sec.key);
+                        return (
+                          <tr key={sec.key} className="hover:bg-stone-50/60 transition">
+                            <td className="py-2.5 px-3">
+                              <p className="font-bold text-xs text-stone-800">{sec.label}</p>
+                              <code className="text-[10px] font-mono text-stone-400">{sec.key}</code>
+                            </td>
+                            <td className="py-2.5 px-3 text-xs text-stone-500">
+                              {sec.category || 'Modul Sistem'}
+                            </td>
+                            {PERM_ACTIONS.slice(0, 5).map((a) => {
+                              const val = override ? (override as any)[colOf(a.key)] : null;
+                              const isBusy = savingOverrideKey === `${sec.key}:${a.key}`;
+                              return (
+                                <td key={a.key} className="py-2.5 px-2 text-center">
+                                  <button
+                                    type="button"
+                                    disabled={isBusy}
+                                    onClick={() => handleToggleOverride(sec.key, a.key, val)}
+                                    className={`px-2 py-1 rounded-lg text-[11px] font-bold border transition cursor-pointer ${
+                                      val === true
+                                        ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
+                                        : val === false
+                                        ? 'bg-rose-50 text-rose-800 border-rose-300 hover:bg-rose-100'
+                                        : 'bg-stone-100 text-stone-500 border-stone-200 hover:bg-stone-200'
+                                    }`}
+                                    title={`Status: ${val === true ? 'Force Allow' : val === false ? 'Force Deny' : 'Ikuti Role'}`}
+                                  >
+                                    {isBusy ? (
+                                      <RefreshCw className="h-3 w-3 animate-spin mx-auto" />
+                                    ) : val === true ? (
+                                      'ALLOW'
+                                    ) : val === false ? (
+                                      'DENY'
+                                    ) : (
+                                      'DEFAULT'
+                                    )}
+                                  </button>
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </div>
 

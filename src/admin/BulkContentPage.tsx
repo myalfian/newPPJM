@@ -876,8 +876,8 @@ export const BulkContentPage: React.FC = () => {
                     className="flex flex-col justify-between rounded-xl border border-zinc-200 bg-[#FAF7F0]/50 p-3 space-y-2.5"
                   >
                     <div className="space-y-2">
-                      <div className="relative aspect-[16/10] overflow-hidden rounded-lg bg-zinc-100 border border-zinc-200">
-                        <img src={item.previewUrl} alt={item.title} className="h-full w-full object-cover" />
+                      <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-zinc-950/10 border border-zinc-200 flex items-center justify-center">
+                        <img src={item.previewUrl} alt={item.title} className="h-full w-full object-contain p-0.5" />
                         <span className="absolute left-2 top-2 rounded-full bg-black/70 px-2 py-0.5 text-[10px] font-bold text-amber-300">
                           #{idx + 1}{' '}
                           {groupingMode === 'album3'
@@ -1080,9 +1080,9 @@ export const BulkContentPage: React.FC = () => {
                   <div className="space-y-1.5 text-xs font-semibold text-zinc-700">
                     <span>Gambar Sampul (Auto WebP)</span>
                     <div className="flex items-center gap-2.5">
-                      <div className="h-16 w-24 shrink-0 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100 grid place-items-center">
+                      <div className="h-16 w-24 shrink-0 overflow-hidden rounded-xl border border-zinc-200 bg-zinc-950/10 grid place-items-center">
                         {art.image_url ? (
-                          <img src={art.image_url} alt="" className="h-full w-full object-cover" />
+                          <img src={art.image_url} alt="" className="h-full w-full object-contain p-0.5" />
                         ) : (
                           <ImagePlus size={18} className="text-zinc-400" />
                         )}
@@ -1292,7 +1292,7 @@ export const BulkContentPage: React.FC = () => {
                                 <img
                                   src={strVal}
                                   alt=""
-                                  className="h-9 w-12 rounded object-cover border border-zinc-200"
+                                  className="h-9 w-12 rounded-lg object-contain bg-zinc-950/10 border border-zinc-200 p-0.5"
                                 />
                               )}
                               <label className="inline-flex cursor-pointer items-center gap-1 rounded-lg border border-teal-900/20 bg-white px-2.5 py-1.5 text-[11px] font-bold text-[#115E59] hover:bg-teal-50">

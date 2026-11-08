@@ -323,7 +323,8 @@ export const RolesPage: React.FC = () => {
                 </div>
               </div>
 
-              <table className="w-full text-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm min-w-[620px]">
                 <thead>
                   <tr className="border-b border-stone-100 text-left text-xs text-stone-500">
                     <th className="px-5 py-2.5 font-bold">Role Pengguna</th>
@@ -380,6 +381,7 @@ export const RolesPage: React.FC = () => {
                   })}
                 </tbody>
               </table>
+              </div>
             </div>
           );
         })}

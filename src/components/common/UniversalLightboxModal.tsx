@@ -400,3 +400,4 @@ export const UniversalLightboxModal: React.FC = () => {
     </AnimatePresence>
   );
 };
+

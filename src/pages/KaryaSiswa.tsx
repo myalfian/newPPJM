@@ -494,11 +494,11 @@ export const KaryaSiswa: React.FC = () => {
                   />
                 </div>
               ) : activeModalItem.imageUrl ? (
-                <div className="w-full max-h-72 rounded-xl overflow-hidden border border-slate-200 shadow-2xs">
+                <div className="w-full max-h-80 rounded-2xl overflow-hidden border border-slate-200 bg-zinc-950/10 flex items-center justify-center p-1 shadow-2xs">
                   <img
                     src={activeModalItem.imageUrl}
                     alt={activeModalItem.title}
-                    className="w-full h-full object-cover"
+                    className="max-h-76 w-auto max-w-full object-contain rounded-xl"
                   />
                 </div>
               ) : null}

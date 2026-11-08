@@ -479,7 +479,7 @@ export const GuruPerformancePage: React.FC = () => {
       {/* Main Santri Table */}
       <div className="bg-white rounded-2xl border border-stone-200/80 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse min-w-[760px]">
             <thead>
               <tr className="border-b border-stone-200/80 bg-[#FAF8F5] text-[11px] font-bold uppercase tracking-wider text-stone-500">
                 <th className="py-3.5 px-4">Santri & NIS</th>
@@ -733,8 +733,8 @@ export const GuruPerformancePage: React.FC = () => {
                         + Tambah Nilai Baru
                       </button>
                     </div>
-                    <div className="border border-stone-200 rounded-xl overflow-hidden">
-                      <table className="w-full text-left text-xs">
+                    <div className="border border-stone-200 rounded-xl overflow-x-auto">
+                      <table className="w-full text-left text-xs min-w-[500px]">
                         <thead className="bg-stone-50 text-stone-500 font-bold uppercase">
                           <tr>
                             <th className="py-2.5 px-3">Mata Pelajaran</th>
@@ -971,11 +971,11 @@ export const GuruPerformancePage: React.FC = () => {
                 className="w-full p-3.5 rounded-xl border border-stone-200 bg-[#FAF8F5] font-mono text-xs text-stone-800"
               />
 
-              <div className="border border-stone-200 rounded-xl overflow-hidden">
+              <div className="border border-stone-200 rounded-xl overflow-x-auto">
                 <div className="bg-stone-50 px-3.5 py-2 text-[11px] font-bold text-stone-500 uppercase">
                   Preview Data Siap Simpan ({parsedCsvRows.length} Baris)
                 </div>
-                <table className="w-full text-left text-xs">
+                <table className="w-full text-left text-xs min-w-[480px]">
                   <thead className="border-b border-stone-100 text-stone-500">
                     <tr>
                       <th className="py-2 px-3">Santri</th>

@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sparkles, GraduationCap } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import { PUBLIC_NAV_TABS, NavTabItem } from '../../data/navigationData';
 import { UserMenu } from './UserMenu';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { useCachedQuery } from '../../lib/queryCache';
+import { useSliderSettings } from '../../lib/sliderSettings';
 
 export interface TickerItem {
   id: string;
@@ -60,6 +61,7 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) => {
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const location = useLocation();
+  const sliderSettings = useSliderSettings();
 
   // Active User Name with Default "Guest"
   const [currentUserName, setCurrentUserName] = useState<string>(() => {
@@ -79,6 +81,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
 
   // Navigation Items with Android App-style Colorful Badges (Single Source of Truth)
   const navTabs = PUBLIC_NAV_TABS;
+  // Desktop Navigation: Exclude "Agenda" menu on desktop viewport per user request
+  const desktopNavTabs: NavTabItem[] = useMemo(
+    () => PUBLIC_NAV_TABS.filter((tab: NavTabItem) => tab.id !== 'agenda'),
+    []
+  );
 
   const isTabActive = (tab: NavTabItem) => {
     if (tab.id === 'jm-center') return location.pathname.startsWith('/jm-center');
@@ -221,33 +228,43 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
   return (
     <>
       {/* 1. TOP NEWS TICKER (Dynamic CMS Running Ticker with Smooth Hover Pause) */}
-      <div
-        id="topNewsTicker"
-        className="bg-[#d4af37]/15 border-b border-[#d4af37]/30 py-1.5 px-3 sm:px-4 overflow-hidden flex items-center text-xs select-none"
-        aria-label="Warta Berjalan Info Terkini"
-      >
-        <div className="bg-[#1a6b3c] text-white font-bold px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-md text-[10px] sm:text-[11px] uppercase tracking-wider shrink-0 flex items-center gap-1.5 mr-2 sm:mr-3 shadow-xs">
-          <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#d4af37] animate-pulse" />
-          <span className="font-extrabold tracking-wider">INFO TERKINI</span>
-        </div>
-        <div className="overflow-hidden whitespace-nowrap w-full group">
-          <div className="animate-ticker text-[#0d4a28] font-medium inline-flex items-center space-x-6 group-hover:[animation-play-state:paused]">
-            {tickerItems.map((item, idx) => (
-              <React.Fragment key={`ticker-1-${item.id}-${idx}`}>
-                {renderTickerEntry(item, `t1-${idx}`)}
-                <span className="text-[#1a6b3c]/40 select-none">|</span>
-              </React.Fragment>
-            ))}
-            {/* Seamless loop duplication */}
-            {tickerItems.map((item, idx) => (
-              <React.Fragment key={`ticker-2-${item.id}-${idx}`}>
-                {renderTickerEntry(item, `t2-${idx}`)}
-                <span className="text-[#1a6b3c]/40 select-none">|</span>
-              </React.Fragment>
-            ))}
+      {sliderSettings.isTickerEnabled && (
+        <div
+          id="topNewsTicker"
+          className="bg-[#d4af37]/15 border-b border-[#d4af37]/30 py-1.5 px-3 sm:px-4 overflow-hidden flex items-center text-xs select-none"
+          aria-label="Warta Berjalan Info Terkini"
+        >
+          <div className="bg-[#1a6b3c] text-white font-bold px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-md text-[10px] sm:text-[11px] uppercase tracking-wider shrink-0 flex items-center gap-1.5 mr-2 sm:mr-3 shadow-xs">
+            <Sparkles className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-[#d4af37] animate-pulse" />
+            <span className="font-extrabold tracking-wider">INFO TERKINI</span>
+          </div>
+          <div className="overflow-hidden whitespace-nowrap w-full group">
+            <div
+              className={`animate-ticker text-[#0d4a28] font-medium inline-flex items-center space-x-6 ${
+                sliderSettings.tickerPauseOnHover ? 'group-hover:[animation-play-state:paused]' : ''
+              }`}
+              style={{
+                animationDuration: `${sliderSettings.tickerDuration || 35}s`,
+                animationDirection: sliderSettings.tickerDirection === 'right' ? 'reverse' : 'normal',
+              }}
+            >
+              {tickerItems.map((item, idx) => (
+                <React.Fragment key={`ticker-1-${item.id}-${idx}`}>
+                  {renderTickerEntry(item, `t1-${idx}`)}
+                  <span className="text-[#1a6b3c]/40 select-none">|</span>
+                </React.Fragment>
+              ))}
+              {/* Seamless loop duplication */}
+              {tickerItems.map((item, idx) => (
+                <React.Fragment key={`ticker-2-${item.id}-${idx}`}>
+                  {renderTickerEntry(item, `t2-${idx}`)}
+                  <span className="text-[#1a6b3c]/40 select-none">|</span>
+                </React.Fragment>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* 2. MAIN HEADER (Dribbble Modern Floating Pill Animation Bar) */}
       <header
@@ -307,13 +324,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
             </Link>
 
 
-            {/* Desktop Navigation: Synchronized with Mobile Viewport (10 Pillars Equal Width) */}
+            {/* Desktop Navigation: Synchronized with Mobile Viewport (9 Pillars Equal Width - Agenda excluded on Desktop) */}
             <div className="relative hidden lg:block" onMouseLeave={() => setHoveredTab(null)}>
               <nav
-                style={{ gridTemplateColumns: `repeat(${navTabs.length}, minmax(0, 1fr))` }}
-                className="grid items-center h-[56px] xl:h-[60px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[790px] xl:w-[930px] 2xl:w-[1040px]"
+                style={{ gridTemplateColumns: `repeat(${desktopNavTabs.length}, minmax(0, 1fr))` }}
+                className="grid items-center h-[56px] xl:h-[60px] p-1 rounded-2xl bg-slate-100/90 backdrop-blur-xl border border-slate-200/80 shadow-[inset_0_1px_2px_rgba(0,0,0,0.05),0_2px_10px_rgba(0,0,0,0.03)] relative gap-1 shrink-0 w-[780px] xl:w-[920px] 2xl:w-[1020px]"
               >
-                {navTabs.map((tab) => {
+                {desktopNavTabs.map((tab: NavTabItem) => {
                   const TabIcon = tab.icon;
                   const isActive = isTabActive(tab);
                   const isHovered = hoveredTab === tab.id;
@@ -392,15 +409,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenMobileMenu, userName }) =>
               </nav>
             </div>
 
-            {/* Right Side: SPMB Button & User Menu / Account pill */}
+            {/* Right Side: User Menu / Account pill */}
             <div className="flex items-center gap-1.5 xs:gap-2 sm:gap-2.5 shrink-0">
-              <Link
-                to="/spmb"
-                className="hidden xl:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black text-white bg-gradient-to-r from-[#0f5132] to-[#126b3c] hover:from-[#0d452b] hover:to-[#0f5132] shadow-xs border border-emerald-600/40 transition-all hover:scale-105 select-none"
-              >
-                <GraduationCap className="w-3.5 h-3.5 text-amber-300" />
-                <span>SPMB 2026</span>
-              </Link>
               <UserMenu variant="pill" />
             </div>
 

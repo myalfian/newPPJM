@@ -3,13 +3,21 @@ import { supabase, isSupabaseConfigured } from './supabase';
 import { useEffect, useState } from 'react';
 
 export type TransitionEffect = 'slide' | 'fade' | 'zoom';
+export type TickerDirection = 'left' | 'right';
 
 export interface SliderSettings {
+  // Slider gambar (Hero, Card Image Slider, Lightbox)
   autoplayInterval: number; // in seconds (2 to 20)
   transitionSpeed: number;  // in milliseconds (150 to 2000)
   transitionEffect: TransitionEffect;
   isAutoplayEnabled: boolean;
   pauseOnHover: boolean;
+
+  // Running text ticker ("INFO TERKINI" di Header / Navbar)
+  tickerDuration: number;     // in seconds (15 to 180, default 75s - santai & nyaman dibaca)
+  isTickerEnabled: boolean;    // default true
+  tickerPauseOnHover: boolean;// default true
+  tickerDirection: TickerDirection; // 'left' | 'right', default 'left'
 }
 
 export const DEFAULT_SLIDER_SETTINGS: SliderSettings = {
@@ -18,6 +26,10 @@ export const DEFAULT_SLIDER_SETTINGS: SliderSettings = {
   transitionEffect: 'slide',
   isAutoplayEnabled: true,
   pauseOnHover: true,
+  tickerDuration: 75, // Nyaman & santai (kecepatan dikurangi)
+  isTickerEnabled: true,
+  tickerPauseOnHover: true,
+  tickerDirection: 'left',
 };
 
 const STORAGE_KEY = 'ppjm_slider_settings';
@@ -35,6 +47,8 @@ export const getSliderSettings = (): SliderSettings => {
       parsed.transitionEffect === 'fade' || parsed.transitionEffect === 'zoom'
         ? parsed.transitionEffect
         : 'slide';
+    const validDirection: TickerDirection =
+      parsed.tickerDirection === 'right' ? 'right' : 'left';
 
     return {
       autoplayInterval: typeof parsed.autoplayInterval === 'number' && parsed.autoplayInterval >= 2 && parsed.autoplayInterval <= 20
@@ -50,6 +64,16 @@ export const getSliderSettings = (): SliderSettings => {
       pauseOnHover: typeof parsed.pauseOnHover === 'boolean'
         ? parsed.pauseOnHover
         : DEFAULT_SLIDER_SETTINGS.pauseOnHover,
+      tickerDuration: typeof parsed.tickerDuration === 'number' && parsed.tickerDuration >= 15 && parsed.tickerDuration <= 180
+        ? parsed.tickerDuration
+        : DEFAULT_SLIDER_SETTINGS.tickerDuration,
+      isTickerEnabled: typeof parsed.isTickerEnabled === 'boolean'
+        ? parsed.isTickerEnabled
+        : DEFAULT_SLIDER_SETTINGS.isTickerEnabled,
+      tickerPauseOnHover: typeof parsed.tickerPauseOnHover === 'boolean'
+        ? parsed.tickerPauseOnHover
+        : DEFAULT_SLIDER_SETTINGS.tickerPauseOnHover,
+      tickerDirection: validDirection,
     };
   } catch (e) {
     console.warn('Gagal membaca pengaturan slider:', e);
@@ -72,6 +96,8 @@ export const fetchSliderSettingsFromSupabase = async (): Promise<SliderSettings>
         parsed.transitionEffect === 'fade' || parsed.transitionEffect === 'zoom'
           ? parsed.transitionEffect
           : 'slide';
+      const validDirection: TickerDirection =
+        parsed.tickerDirection === 'right' ? 'right' : 'left';
 
       const validated: SliderSettings = {
         autoplayInterval: typeof parsed.autoplayInterval === 'number' && parsed.autoplayInterval >= 2 && parsed.autoplayInterval <= 20
@@ -87,6 +113,16 @@ export const fetchSliderSettingsFromSupabase = async (): Promise<SliderSettings>
         pauseOnHover: typeof parsed.pauseOnHover === 'boolean'
           ? parsed.pauseOnHover
           : DEFAULT_SLIDER_SETTINGS.pauseOnHover,
+        tickerDuration: typeof parsed.tickerDuration === 'number' && parsed.tickerDuration >= 15 && parsed.tickerDuration <= 180
+          ? parsed.tickerDuration
+          : DEFAULT_SLIDER_SETTINGS.tickerDuration,
+        isTickerEnabled: typeof parsed.isTickerEnabled === 'boolean'
+          ? parsed.isTickerEnabled
+          : DEFAULT_SLIDER_SETTINGS.isTickerEnabled,
+        tickerPauseOnHover: typeof parsed.tickerPauseOnHover === 'boolean'
+          ? parsed.tickerPauseOnHover
+          : DEFAULT_SLIDER_SETTINGS.tickerPauseOnHover,
+        tickerDirection: validDirection,
       };
 
       if (typeof window !== 'undefined') {
@@ -111,6 +147,10 @@ export const saveSliderSettings = async (settings: SliderSettings): Promise<{ ok
     transitionEffect: settings.transitionEffect === 'fade' || settings.transitionEffect === 'zoom' ? settings.transitionEffect : 'slide',
     isAutoplayEnabled: Boolean(settings.isAutoplayEnabled),
     pauseOnHover: Boolean(settings.pauseOnHover),
+    tickerDuration: Math.max(15, Math.min(180, Number(settings.tickerDuration) || 75)),
+    isTickerEnabled: Boolean(settings.isTickerEnabled),
+    tickerPauseOnHover: Boolean(settings.tickerPauseOnHover),
+    tickerDirection: settings.tickerDirection === 'right' ? 'right' : 'left',
   };
 
   try {

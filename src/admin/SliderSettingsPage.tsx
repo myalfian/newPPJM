@@ -23,6 +23,7 @@ import {
   fetchSliderSettingsFromSupabase,
   saveSliderSettings,
   TransitionEffect,
+  TickerDirection,
 } from '../lib/sliderSettings';
 import { CardImageSlider } from '../components/common/CardImageSlider';
 
@@ -124,14 +125,116 @@ export const SliderSettingsPage: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Form Controls */}
-        <form onSubmit={handleSave} className="lg:col-span-7 bg-white rounded-3xl border border-zinc-200/80 p-5 sm:p-7 shadow-xs space-y-6">
+        <form onSubmit={handleSave} className="lg:col-span-7 bg-white rounded-3xl border border-zinc-200/80 p-5 sm:p-7 shadow-xs space-y-8">
+          
+          {/* SECTION A: TEKS BERJALAN "INFO TERKINI" */}
           <div className="space-y-4">
-            <h2 className="text-sm font-extrabold text-zinc-900 uppercase tracking-wider flex items-center gap-2 border-b border-zinc-100 pb-2">
-              <Sliders className="w-4 h-4 text-[#115E59]" />
-              <span>Parameter Rotasi &amp; Kecepatan</span>
-            </h2>
+            <div className="flex items-center justify-between border-b border-zinc-100 pb-2">
+              <h2 className="text-sm font-extrabold text-zinc-900 uppercase tracking-wider flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-[#D4AF37]" />
+                <span>1. Teks Berjalan "INFO TERKINI" (Header Website)</span>
+              </h2>
+              <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200">
+                Navbar Marquee
+              </span>
+            </div>
 
-            {/* 1. Autoplay Interval Slider */}
+            {/* A1. Toggle Aktif/Nonaktif Ticker */}
+            <div className="flex items-center justify-between pt-1">
+              <div>
+                <label htmlFor="toggle-ticker-enabled" className="text-xs font-bold text-zinc-800 block cursor-pointer">
+                  Tampilkan Bar Info Terkini di Header
+                </label>
+                <p className="text-[11px] text-zinc-500">
+                  Bila dimatikan, bilah berita berjalan di atas menu navigasi disembunyikan sepenuhnya.
+                </p>
+              </div>
+              <input
+                id="toggle-ticker-enabled"
+                type="checkbox"
+                checked={settings.isTickerEnabled}
+                onChange={(e) => setSettings((s) => ({ ...s, isTickerEnabled: e.target.checked }))}
+                className="w-5 h-5 accent-[#115E59] rounded cursor-pointer"
+              />
+            </div>
+
+            {/* A2. Durasi Ticker Slider */}
+            <div className="space-y-2 pt-2">
+              <div className="flex items-center justify-between text-xs font-bold text-zinc-800">
+                <label htmlFor="ticker-duration" className="flex items-center gap-1.5">
+                  <Timer className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>Durasi Gulir Satu Putaran Penuh (Ticker Duration)</span>
+                </label>
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 font-black border border-amber-200">
+                  {settings.tickerDuration} Detik
+                </span>
+              </div>
+              <input
+                id="ticker-duration"
+                type="range"
+                min="15"
+                max="180"
+                step="5"
+                value={settings.tickerDuration}
+                onChange={(e) => setSettings((s) => ({ ...s, tickerDuration: parseInt(e.target.value, 10) || 75 }))}
+                className="w-full accent-[#D4AF37] cursor-pointer"
+              />
+              <div className="flex justify-between text-[10px] text-zinc-400 font-medium">
+                <span>Cepat (15s)</span>
+                <span>Standar (50s)</span>
+                <span className="text-amber-800 font-bold">Rekomendasi (75s)</span>
+                <span>Sangat Lambat (180s)</span>
+              </div>
+            </div>
+
+            {/* A3. Arah Gulir & Jeda Hover */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div className="space-y-1.5">
+                <label htmlFor="ticker-direction" className="block text-xs font-bold text-zinc-800">
+                  Arah Gulir Teks
+                </label>
+                <select
+                  id="ticker-direction"
+                  value={settings.tickerDirection}
+                  onChange={(e) => setSettings((s) => ({ ...s, tickerDirection: e.target.value as TickerDirection }))}
+                  className="w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs font-bold text-zinc-800 focus:border-[#115E59] focus:outline-none focus:ring-2 focus:ring-[#115E59]/20 cursor-pointer"
+                >
+                  <option value="left">Kanan ke Kiri (Standar Marquee)</option>
+                  <option value="right">Kiri ke Kanan (Terbalik)</option>
+                </select>
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-xl border border-zinc-100 bg-zinc-50/60">
+                <div>
+                  <label htmlFor="ticker-pause-hover" className="text-xs font-bold text-zinc-800 block cursor-pointer">
+                    Jeda Saat Hover
+                  </label>
+                  <p className="text-[10px] text-zinc-500">Berhenti saat kursor mouse di atas teks</p>
+                </div>
+                <input
+                  id="ticker-pause-hover"
+                  type="checkbox"
+                  checked={settings.tickerPauseOnHover}
+                  onChange={(e) => setSettings((s) => ({ ...s, tickerPauseOnHover: e.target.checked }))}
+                  className="w-4 h-4 accent-[#115E59] rounded cursor-pointer"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* SECTION B: PENGATURAN SLIDER GAMBAR GLOBAL */}
+          <div className="space-y-4 pt-4 border-t border-zinc-200">
+            <div className="flex items-center justify-between border-b border-zinc-100 pb-2">
+              <h2 className="text-sm font-extrabold text-zinc-900 uppercase tracking-wider flex items-center gap-2">
+                <Sliders className="w-4 h-4 text-[#115E59]" />
+                <span>2. Slider Gambar Global (Hero, Galeri, Prestasi, Program)</span>
+              </h2>
+              <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-50 text-[#115E59] border border-emerald-200">
+                Multi-Foto Card
+              </span>
+            </div>
+
+            {/* B1. Autoplay Interval Slider */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs font-bold text-zinc-800">
                 <label htmlFor="autoplay-interval" className="flex items-center gap-1.5">
@@ -159,14 +262,14 @@ export const SliderSettingsPage: React.FC = () => {
               </div>
             </div>
 
-            {/* 2. Transition Speed Slider */}
+            {/* B2. Transition Speed Slider */}
             <div className="space-y-2 pt-2">
               <div className="flex items-center justify-between text-xs font-bold text-zinc-800">
                 <label htmlFor="transition-speed" className="flex items-center gap-1.5">
                   <Gauge className="w-3.5 h-3.5 text-[#115E59]" />
                   <span>Durasi Transisi Perpindahan (Transition Duration)</span>
                 </label>
-                <span className="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 font-black border border-amber-200">
+                <span className="px-2.5 py-0.5 rounded-full bg-teal-50 text-teal-900 font-black border border-teal-200">
                   {settings.transitionSpeed} ms ({((settings.transitionSpeed || 500) / 1000).toFixed(2)}s)
                 </span>
               </div>
@@ -178,7 +281,7 @@ export const SliderSettingsPage: React.FC = () => {
                 step="50"
                 value={settings.transitionSpeed}
                 onChange={(e) => setSettings((s) => ({ ...s, transitionSpeed: parseInt(e.target.value, 10) || 500 }))}
-                className="w-full accent-amber-600 cursor-pointer"
+                className="w-full accent-teal-700 cursor-pointer"
               />
               <div className="flex justify-between text-[10px] text-zinc-400 font-medium">
                 <span>Kilat (150ms)</span>
@@ -187,7 +290,7 @@ export const SliderSettingsPage: React.FC = () => {
               </div>
             </div>
 
-            {/* 3. Transition Effect Select */}
+            {/* B3. Transition Effect Select */}
             <div className="space-y-2 pt-2">
               <label htmlFor="transition-effect" className="block text-xs font-bold text-zinc-800">
                 Jenis Efek Perpindahan (Transition Effect)
@@ -207,7 +310,7 @@ export const SliderSettingsPage: React.FC = () => {
               </p>
             </div>
 
-            {/* 4. Switch Autoplay Enabled */}
+            {/* B4. Switch Autoplay Enabled */}
             <div className="pt-3 border-t border-zinc-100 flex items-center justify-between">
               <div>
                 <label htmlFor="toggle-autoplay" className="text-xs font-bold text-zinc-800 block cursor-pointer">
@@ -226,7 +329,7 @@ export const SliderSettingsPage: React.FC = () => {
               />
             </div>
 
-            {/* 5. Switch Pause on Hover */}
+            {/* B5. Switch Pause on Hover */}
             <div className="pt-2 flex items-center justify-between">
               <div>
                 <label htmlFor="toggle-pause-hover" className="text-xs font-bold text-zinc-800 block cursor-pointer">
@@ -263,46 +366,103 @@ export const SliderSettingsPage: React.FC = () => {
               className="inline-flex min-h-[44px] items-center gap-2 px-6 py-2 rounded-xl bg-[#115E59] hover:bg-emerald-900 text-xs font-bold text-white shadow-sm transition cursor-pointer disabled:opacity-60"
             >
               <Save className="w-4 h-4" />
-              <span>{saving ? 'Menyimpan ke Cloud…' : 'Simpan Pengaturan Slider'}</span>
+              <span>{saving ? 'Menyimpan ke Cloud…' : 'Simpan Semua Pengaturan Slider'}</span>
             </button>
           </div>
         </form>
 
-        {/* Right Column: Live Interactive Preview */}
-        <div className="lg:col-span-5 bg-white rounded-3xl border border-zinc-200/80 p-5 sm:p-6 shadow-xs space-y-4 lg:sticky lg:top-24">
-          <div className="flex items-center justify-between border-b border-zinc-100 pb-2">
-            <h2 className="text-xs font-extrabold uppercase tracking-wider text-zinc-900 flex items-center gap-1.5">
-              <Eye className="w-4 h-4 text-[#115E59]" />
-              <span>Pratinjau Langsung (Live Preview)</span>
-            </h2>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-              3 Foto Uji Coba
-            </span>
-          </div>
+        {/* Right Column: Live Interactive Previews */}
+        <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
+          
+          {/* Preview 1: Live Ticker Header */}
+          <div className="bg-white rounded-3xl border border-zinc-200/80 p-5 shadow-xs space-y-3">
+            <div className="flex items-center justify-between border-b border-zinc-100 pb-2">
+              <h2 className="text-xs font-extrabold uppercase tracking-wider text-zinc-900 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <span>Pratinjau Live "INFO TERKINI"</span>
+              </h2>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                settings.isTickerEnabled ? 'bg-emerald-50 text-emerald-800 border-emerald-200' : 'bg-zinc-100 text-zinc-500 border-zinc-200'
+              }`}>
+                {settings.isTickerEnabled ? 'Aktif' : 'Nonaktif'}
+              </span>
+            </div>
 
-          <p className="text-xs text-zinc-600 leading-relaxed">
-            Komponen di bawah menggunakan <code>CardImageSlider</code> asli yang sama persis dengan web publik. Perubahan slider di sebelah kiri langsung disimulasikan secara real-time.
-          </p>
-
-          <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-2.5">
-            <CardImageSlider
-              images={SAMPLE_PREVIEW_IMAGES}
-              aspectRatio="aspect-[16/10]"
-              alt="Simulasi Kartu Dokumentasi Pondok"
-              customSettings={settings}
-              badgeTopLeft={
-                <span className="px-2.5 py-1 rounded-full bg-black/65 backdrop-blur-md text-[10px] font-black text-white border border-white/20 uppercase tracking-wider">
-                  Live Preview
-                </span>
-              }
-            />
-          </div>
-
-          <div className="p-3 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-[11px] text-amber-950 space-y-1">
-            <p className="font-bold">Catatan Sinkronisasi Realtime:</p>
-            <p className="leading-relaxed text-amber-900">
-              Ketika tombol "Simpan" diklik, seluruh halaman publik (Galeri, Prestasi, Ekskul, Berita, dan Beranda) akan langsung menerima konfigurasi ini tanpa memerlukan build ulang aplikasi.
+            {settings.isTickerEnabled ? (
+              <div className="rounded-xl border border-[#d4af37]/40 bg-[#d4af37]/15 p-2 overflow-hidden">
+                <div className="flex items-center gap-2 overflow-hidden select-none">
+                  <div className="bg-[#1a6b3c] text-white font-black px-2 py-0.5 rounded text-[10px] shrink-0 flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-[#d4af37] animate-pulse" />
+                    <span>INFO TERKINI</span>
+                  </div>
+                  <div className="overflow-hidden whitespace-nowrap w-full group">
+                    <div
+                      className={`animate-ticker text-[#0d4a28] font-medium text-xs inline-flex items-center space-x-4 ${
+                        settings.tickerPauseOnHover ? 'group-hover:[animation-play-state:paused]' : ''
+                      }`}
+                      style={{
+                        animationDuration: `${settings.tickerDuration || 35}s`,
+                        animationDirection: settings.tickerDirection === 'right' ? 'reverse' : 'normal',
+                      }}
+                    >
+                      <span>✨ SPMB TP 2026/2027 Telah Dibuka</span>
+                      <span className="text-[#1a6b3c]/40">|</span>
+                      <span>🏆 Akreditasi "A" BAN-PDM Resmi Diraih</span>
+                      <span className="text-[#1a6b3c]/40">|</span>
+                      <span>🔬 Kurikulum Terpadu STEM &amp; Tahfidz 30 Juz</span>
+                      <span className="text-[#1a6b3c]/40">|</span>
+                      {/* Loop */}
+                      <span>✨ SPMB TP 2026/2027 Telah Dibuka</span>
+                      <span className="text-[#1a6b3c]/40">|</span>
+                      <span>🏆 Akreditasi "A" BAN-PDM Resmi Diraih</span>
+                      <span className="text-[#1a6b3c]/40">|</span>
+                      <span>🔬 Kurikulum Terpadu STEM &amp; Tahfidz 30 Juz</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 rounded-xl border border-dashed border-zinc-300 text-center text-xs text-zinc-500 font-medium">
+                Bilah "INFO TERKINI" sedang dinonaktifkan di konfigurasi.
+              </div>
+            )}
+            <p className="text-[11px] text-zinc-500">
+              Durasi aktif: <strong>{settings.tickerDuration}s</strong> per putaran • Arah: <strong>{settings.tickerDirection === 'right' ? 'Kiri ke Kanan' : 'Kanan ke Kiri'}</strong>.
             </p>
+          </div>
+
+          {/* Preview 2: Live Card Image Slider */}
+          <div className="bg-white rounded-3xl border border-zinc-200/80 p-5 shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-zinc-100 pb-2">
+              <h2 className="text-xs font-extrabold uppercase tracking-wider text-zinc-900 flex items-center gap-1.5">
+                <Eye className="w-4 h-4 text-[#115E59]" />
+                <span>Pratinjau Live Card Slider</span>
+              </h2>
+              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                3 Foto Uji Coba
+              </span>
+            </div>
+
+            <div className="rounded-2xl border border-zinc-200/80 bg-zinc-50/50 p-2.5">
+              <CardImageSlider
+                images={SAMPLE_PREVIEW_IMAGES}
+                aspectRatio="aspect-[16/10]"
+                alt="Simulasi Kartu Dokumentasi Pondok"
+                customSettings={settings}
+                badgeTopLeft={
+                  <span className="px-2.5 py-1 rounded-full bg-black/65 backdrop-blur-md text-[10px] font-black text-white border border-white/20 uppercase tracking-wider">
+                    Live Preview
+                  </span>
+                }
+              />
+            </div>
+
+            <div className="p-3 rounded-2xl bg-amber-50/80 border border-amber-200/80 text-[11px] text-amber-950 space-y-1">
+              <p className="font-bold">Sinkronisasi Realtime Terjamin:</p>
+              <p className="leading-relaxed text-amber-900">
+                Setelah klik "Simpan", konfigurasi tersimpan di basis data Supabase <code>site_settings</code> dan disiarkan ke seluruh tab browser via Web Custom Events secara instan.
+              </p>
+            </div>
           </div>
         </div>
       </div>

@@ -459,15 +459,15 @@ const GuruShell: React.FC = () => {
         )}
 
         {/* Main Outlet */}
-        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-5 sm:py-6 max-w-6xl w-full mx-auto">
+        <main className="flex-1 px-3 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-6xl w-full mx-auto pb-[calc(env(safe-area-inset-bottom)+84px)] lg:pb-12 min-w-0 overflow-x-hidden">
           <Outlet />
         </main>
       </div>
 
-      {/* ─── MOBILE BOTTOM NAVIGATION BAR ─── */}
+      {/* ─── MOBILE BOTTOM NAVIGATION BAR (Android Modern Style) ─── */}
       <nav
         aria-label="Navigasi Mobile Guru"
-        className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-2 py-1.5 flex items-center justify-around"
+        className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-1 py-1 pb-[env(safe-area-inset-bottom)] flex items-center justify-around shadow-[0_-4px_20px_rgba(0,0,0,0.06)]"
       >
         {[
           { to: '/guru', end: true, label: 'Dashboard', icon: LayoutDashboard },
@@ -489,17 +489,23 @@ const GuruShell: React.FC = () => {
               to={m.to}
               end={m.end}
               className={({ isActive }) =>
-                `relative flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-[11px] font-bold ${
-                  isActive ? 'text-[#115E59]' : 'text-slate-400'
+                `relative flex flex-1 flex-col items-center justify-center py-1.5 px-1 rounded-xl text-[10px] font-bold transition-all active:scale-95 ${
+                  isActive ? 'text-[#115E59]' : 'text-slate-500 hover:text-slate-800'
                 }`
               }
             >
-              <Icon className="w-5 h-5 mb-0.5" />
-              <span>{m.label}</span>
-              {m.badge !== undefined && (
-                <span className="absolute top-0.5 right-1 w-4 h-4 rounded-full bg-rose-600 text-white text-[9.5px] font-black flex items-center justify-center">
-                  {m.badge}
-                </span>
+              {({ isActive }) => (
+                <>
+                  <div className={`p-1 rounded-xl transition-colors ${isActive ? 'bg-[#115E59]/10' : ''}`}>
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <span className="truncate max-w-[64px]">{m.label}</span>
+                  {m.badge !== undefined && (
+                    <span className="absolute top-1 right-2.5 w-4 h-4 rounded-full bg-rose-600 text-white text-[9px] font-black flex items-center justify-center shadow-xs">
+                      {m.badge}
+                    </span>
+                  )}
+                </>
               )}
             </NavLink>
           );

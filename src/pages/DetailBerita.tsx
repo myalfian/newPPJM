@@ -226,11 +226,11 @@ export const DetailBerita: React.FC = () => {
 
           {/* Featured Image */}
           {article.thumbnail && (
-            <div className="rounded-xl overflow-hidden max-h-[460px] bg-slate-100 shadow-2xs">
+            <div className="rounded-2xl overflow-hidden max-h-[520px] bg-zinc-950/5 dark:bg-zinc-900/40 border border-slate-200/60 dark:border-zinc-800 flex items-center justify-center p-1 shadow-xs">
               <img
                 src={article.thumbnail}
                 alt={article.title}
-                className="w-full h-full object-cover"
+                className="max-h-[500px] w-auto max-w-full object-contain rounded-xl"
               />
             </div>
           )}

@@ -407,15 +407,15 @@ const SantriShell: React.FC = () => {
         )}
 
         {/* Page Content */}
-        <main className="flex-1 px-4 sm:px-6 lg:px-8 py-5 sm:py-6 max-w-6xl w-full mx-auto">
+        <main className="flex-1 px-3 sm:px-6 lg:px-8 py-4 sm:py-6 max-w-6xl w-full mx-auto pb-[calc(env(safe-area-inset-bottom)+84px)] lg:pb-12 min-w-0 overflow-x-hidden">
           <Outlet />
         </main>
       </div>
 
-      {/* ─── MOBILE BOTTOM NAVIGATION BAR ─── */}
+      {/* ─── MOBILE BOTTOM NAVIGATION BAR (Android Modern Style) ─── */}
       <nav
         aria-label="Navigasi Bawah Santri"
-        className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-2 py-1.5 flex items-center justify-around"
+        className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-1 py-1 pb-[env(safe-area-inset-bottom)] flex items-center justify-around shadow-[0_-4px_20px_rgba(0,0,0,0.06)]"
       >
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -425,17 +425,23 @@ const SantriShell: React.FC = () => {
               to={item.to}
               end={item.end}
               className={({ isActive }) =>
-                `relative flex flex-col items-center justify-center py-1 px-2.5 rounded-xl text-[11px] font-bold transition-colors ${
-                  isActive ? 'text-[#115E59]' : 'text-slate-400 hover:text-slate-700'
+                `relative flex flex-1 flex-col items-center justify-center py-1.5 px-1 rounded-xl text-[10px] font-bold transition-all active:scale-95 ${
+                  isActive ? 'text-[#115E59]' : 'text-slate-500 hover:text-slate-800'
                 }`
               }
             >
-              <Icon className="w-5 h-5 mb-0.5" />
-              <span>{item.shortLabel}</span>
-              {item.badge !== undefined && (
-                <span className="absolute top-0.5 right-1.5 w-4 h-4 rounded-full bg-amber-400 text-slate-950 text-[9.5px] font-black flex items-center justify-center">
-                  {item.badge}
-                </span>
+              {({ isActive }) => (
+                <>
+                  <div className={`p-1 rounded-xl transition-colors ${isActive ? 'bg-[#115E59]/10' : ''}`}>
+                    <Icon className="w-5 h-5" />
+                  </div>
+                  <span className="truncate max-w-[64px]">{item.shortLabel}</span>
+                  {item.badge !== undefined && (
+                    <span className="absolute top-1 right-2.5 w-4 h-4 rounded-full bg-amber-400 text-slate-950 text-[9px] font-black flex items-center justify-center shadow-xs">
+                      {item.badge}
+                    </span>
+                  )}
+                </>
               )}
             </NavLink>
           );

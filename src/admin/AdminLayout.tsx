@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, Link, useLocation, Navigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard, Layout, Landmark, History, Building2, ShieldCheck, Users, UserCircle2, ChevronsLeft, ChevronsRight,
-  ExternalLink, LogOut, Menu, X, ChevronRight, ChevronDown, Layers, SlidersHorizontal,
+  ExternalLink, LogOut, Menu, X, ChevronRight, ChevronDown, Layers, SlidersHorizontal, BookOpen, MoreHorizontal, Sparkles,
 } from 'lucide-react';
 import { useAdminSession, type AdminSession } from './useAdminSession';
 import { STAFF_ROLES } from './permissions';
@@ -24,6 +25,7 @@ const GROUPS: NavGroup[] = [
     items: [
       { to: '/admin', label: 'Ringkasan Dashboard', icon: LayoutDashboard },
       { to: '/admin/bulk', label: 'Bulk Upload & Konten', icon: Layers, section: 'galeri_foto' },
+      { to: '/admin/readme', label: 'Panduan & Read Me', icon: BookOpen },
       sectionItem('sliders'),
       sectionItem('quick_menus'),
       sectionItem('kontak_medsos'),
@@ -74,6 +76,7 @@ const GROUPS: NavGroup[] = [
     items: [
       sectionItem('berita'),
       sectionItem('info_terkini'),
+      { to: '/admin/ticker-settings', label: 'Kecepatan Info Terkini', icon: Sparkles, section: 'info_terkini' },
       sectionItem('agendas'),
       sectionItem('karya_siswa'),
       sectionItem('galeri_foto'),
@@ -102,12 +105,14 @@ const GROUPS: NavGroup[] = [
 const CRUMBS: Record<string, string> = {
   '/admin': 'Pusat Kendali / Ringkasan Dashboard',
   '/admin/bulk': 'Pusat Kendali / Bulk Upload & Konten',
+  '/admin/readme': 'Pusat Kendali / Panduan & Read Me',
   '/admin/visi-misi': 'Profil & Kelembagaan / Visi, Misi & Tujuan',
   '/admin/sejarah': 'Profil & Kelembagaan / Sejarah & Biografi',
   '/admin/fasilitas': 'Profil & Kelembagaan / Sarana & Fasilitas',
   '/admin/users': 'Pengaturan & Hak Akses / Kelola Pengguna',
   '/admin/roles': 'Pengaturan & Hak Akses / Matriks Hak Akses',
   '/admin/slider-settings': 'Pengaturan & Hak Akses / Pengaturan Slider Global',
+  '/admin/ticker-settings': 'Publikasi & Media / Kecepatan Info Terkini',
   '/admin/profile': 'Pusat Kendali / Profil Saya',
   ...Object.fromEntries(CRUD_SECTIONS.map((s) => [`/admin/s/${s.key}`, `${s.group} / ${s.label}`])),
 };
@@ -119,6 +124,7 @@ export const AdminLayout: React.FC = () => {
   const { pathname } = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const [drawer, setDrawer] = useState(false);
+  const [bottomSheetOpen, setBottomSheetOpen] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
 
   if (admin.loading) {
@@ -223,11 +229,12 @@ export const AdminLayout: React.FC = () => {
         </button>
       </aside>
 
+      {/* Mobile Drawer (Left Sidebar) */}
       {drawer && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setDrawer(false)} />
-          <aside className="absolute inset-y-0 left-0 flex w-[280px] flex-col bg-white shadow-xl">
-            <button className="absolute right-3 top-4 p-1" onClick={() => setDrawer(false)} aria-label="Tutup menu">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-xs" onClick={() => setDrawer(false)} />
+          <aside className="absolute inset-y-0 left-0 flex w-[280px] flex-col bg-white shadow-2xl">
+            <button className="absolute right-3 top-4 p-1 rounded-lg hover:bg-zinc-100 text-zinc-500" onClick={() => setDrawer(false)} aria-label="Tutup menu">
               <X size={18} />
             </button>
             {Brand}
@@ -236,57 +243,249 @@ export const AdminLayout: React.FC = () => {
         </div>
       )}
 
+      {/* Main Content Area */}
       <div className={`${collapsed ? 'lg:pl-[76px]' : 'lg:pl-[280px]'} transition-[padding]`}>
-        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-teal-900/10 bg-white/90 px-4 backdrop-blur">
-          <button className="lg:hidden p-2 -ml-2" onClick={() => setDrawer(true)} aria-label="Buka menu">
+        {/* Top App Bar (56px Material Design on Mobile, 64px on Desktop) */}
+        <header className="sticky top-0 z-20 flex h-14 sm:h-16 items-center gap-2.5 sm:gap-3 border-b border-teal-900/10 bg-white/95 px-3.5 sm:px-4 backdrop-blur shadow-xs">
+          <button
+            className="lg:hidden p-1.5 -ml-1 text-teal-950 hover:bg-teal-900/5 rounded-xl cursor-pointer"
+            onClick={() => setDrawer(true)}
+            aria-label="Buka menu navigasi"
+          >
             <Menu size={20} />
           </button>
-          <div className="flex min-w-0 items-center gap-1.5 text-sm text-teal-900/70">
+
+          {/* Android Monogram Badge on Mobile */}
+          <div className="lg:hidden grid h-8 w-8 place-items-center rounded-xl bg-[#115E59] text-[11px] font-black text-white shrink-0 shadow-xs">
+            JM
+          </div>
+
+          <div className="flex min-w-0 flex-1 items-center gap-1.5 text-xs sm:text-sm text-teal-900/70">
             <span className="hidden sm:inline">Admin</span>
             <ChevronRight size={14} className="hidden sm:block" />
-            <span className="truncate font-semibold text-teal-950">{CRUMBS[pathname] ?? 'Admin'}</span>
+            <h1 className="truncate font-extrabold text-teal-950 text-xs sm:text-sm">
+              {CRUMBS[pathname] ?? 'Admin'}
+            </h1>
           </div>
-          <div className="ml-auto flex items-center gap-2">
+
+          <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
             <Link
               to="/"
               target="_blank"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-teal-900/15 px-3 py-2 text-xs font-semibold text-teal-900 hover:bg-teal-900/5"
+              className="hidden xs:inline-flex items-center gap-1.5 rounded-xl border border-teal-900/15 px-2.5 sm:px-3 py-1.5 text-xs font-semibold text-teal-900 hover:bg-teal-900/5 transition-colors"
             >
-              <ExternalLink size={14} /> <span className="hidden sm:inline">Lihat Website</span>
+              <ExternalLink size={13} /> <span className="hidden sm:inline">Lihat Web</span>
             </Link>
             <UserMenu variant="compact" />
           </div>
         </header>
 
-        <main className="p-4 sm:p-6 pb-28 lg:pb-8">
+        {/* Content Body with Safe Bottom Spacing for Mobile Bottom Nav */}
+        <main className="p-3.5 sm:p-6 pb-[calc(env(safe-area-inset-bottom)+84px)] lg:pb-8 max-w-[1920px] mx-auto min-w-0 overflow-x-hidden">
           <Outlet context={admin satisfies AdminOutletContext} />
         </main>
       </div>
 
-      <nav className="lg:hidden fixed inset-x-0 bottom-0 z-30 flex border-t border-teal-900/10 bg-white pb-[env(safe-area-inset-bottom)]">
-        {visible.flatMap((g) => g.items).slice(0, 4).map((i) => (
-          <NavLink
-            key={i.to}
-            to={i.to}
-            end={i.to === '/admin'}
-            className={({ isActive }) =>
-              `flex flex-1 flex-col items-center gap-0.5 py-2 text-[10.5px] font-medium ${
-                isActive ? 'text-[#115E59]' : 'text-zinc-500'
-              }`
-            }
-          >
-            <i.icon size={20} />
-            <span className="truncate max-w-[72px]">{i.label.split(' ')[0]}</span>
-          </NavLink>
-        ))}
-        <button
-          onClick={() => setDrawer(true)}
-          className="flex flex-1 flex-col items-center gap-0.5 py-2 text-[10.5px] font-medium text-zinc-500"
+      {/* Modern Android Bottom Navigation Bar (< 1024px) */}
+      <nav className="lg:hidden fixed inset-x-0 bottom-0 z-30 flex items-center justify-around border-t border-teal-900/10 bg-white/95 backdrop-blur-md px-1 py-1 pb-[env(safe-area-inset-bottom)] shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+        {/* Item 1: Ringkasan */}
+        <NavLink
+          to="/admin"
+          end
+          className={({ isActive }) =>
+            `flex flex-1 flex-col items-center justify-center py-1.5 px-1 rounded-xl text-[10px] font-bold transition-all active:scale-95 ${
+              isActive ? 'text-[#115E59]' : 'text-zinc-500 hover:text-zinc-800'
+            }`
+          }
         >
-          <Menu size={20} />
-          <span>Menu</span>
+          {({ isActive }) => (
+            <>
+              <div className={`p-1 rounded-xl transition-colors ${isActive ? 'bg-[#115E59]/10' : ''}`}>
+                <LayoutDashboard size={19} className={isActive ? 'stroke-[2.5]' : 'stroke-2'} />
+              </div>
+              <span className="truncate max-w-[64px]">Dashboard</span>
+            </>
+          )}
+        </NavLink>
+
+        {/* Item 2: Bulk Konten */}
+        <NavLink
+          to="/admin/bulk"
+          className={({ isActive }) =>
+            `flex flex-1 flex-col items-center justify-center py-1.5 px-1 rounded-xl text-[10px] font-bold transition-all active:scale-95 ${
+              isActive ? 'text-[#115E59]' : 'text-zinc-500 hover:text-zinc-800'
+            }`
+          }
+        >
+          {({ isActive }) => (
+            <>
+              <div className={`p-1 rounded-xl transition-colors ${isActive ? 'bg-[#115E59]/10' : ''}`}>
+                <Layers size={19} className={isActive ? 'stroke-[2.5]' : 'stroke-2'} />
+              </div>
+              <span className="truncate max-w-[64px]">Konten</span>
+            </>
+          )}
+        </NavLink>
+
+        {/* Item 3: Sliders / Readme */}
+        <NavLink
+          to={admin.profile?.role === 'super_admin' ? '/admin/slider-settings' : '/admin/readme'}
+          className={({ isActive }) =>
+            `flex flex-1 flex-col items-center justify-center py-1.5 px-1 rounded-xl text-[10px] font-bold transition-all active:scale-95 ${
+              isActive ? 'text-[#115E59]' : 'text-zinc-500 hover:text-zinc-800'
+            }`
+          }
+        >
+          {({ isActive }) => (
+            <>
+              <div className={`p-1 rounded-xl transition-colors ${isActive ? 'bg-[#115E59]/10' : ''}`}>
+                {admin.profile?.role === 'super_admin' ? (
+                  <SlidersHorizontal size={19} className={isActive ? 'stroke-[2.5]' : 'stroke-2'} />
+                ) : (
+                  <BookOpen size={19} className={isActive ? 'stroke-[2.5]' : 'stroke-2'} />
+                )}
+              </div>
+              <span className="truncate max-w-[64px]">
+                {admin.profile?.role === 'super_admin' ? 'Slider' : 'Panduan'}
+              </span>
+            </>
+          )}
+        </NavLink>
+
+        {/* Item 4: Profil Saya */}
+        <NavLink
+          to="/admin/profile"
+          className={({ isActive }) =>
+            `flex flex-1 flex-col items-center justify-center py-1.5 px-1 rounded-xl text-[10px] font-bold transition-all active:scale-95 ${
+              isActive ? 'text-[#115E59]' : 'text-zinc-500 hover:text-zinc-800'
+            }`
+          }
+        >
+          {({ isActive }) => (
+            <>
+              <div className={`p-1 rounded-xl transition-colors ${isActive ? 'bg-[#115E59]/10' : ''}`}>
+                <UserCircle2 size={19} className={isActive ? 'stroke-[2.5]' : 'stroke-2'} />
+              </div>
+              <span className="truncate max-w-[64px]">Profil</span>
+            </>
+          )}
+        </NavLink>
+
+        {/* Item 5: Tombol "Lainnya" (Android Bottom Sheet Trigger) */}
+        <button
+          type="button"
+          onClick={() => setBottomSheetOpen(true)}
+          className={`flex flex-1 flex-col items-center justify-center py-1.5 px-1 rounded-xl text-[10px] font-bold transition-all active:scale-95 cursor-pointer ${
+            bottomSheetOpen ? 'text-[#115E59]' : 'text-zinc-500 hover:text-zinc-800'
+          }`}
+        >
+          <div className={`p-1 rounded-xl transition-colors ${bottomSheetOpen ? 'bg-[#115E59]/10' : ''}`}>
+            <MoreHorizontal size={19} className={bottomSheetOpen ? 'stroke-[2.5]' : 'stroke-2'} />
+          </div>
+          <span className="truncate max-w-[64px]">Lainnya</span>
         </button>
       </nav>
+
+      {/* Android Slide-Up Bottom Sheet for Full Modules */}
+      <AnimatePresence>
+        {bottomSheetOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-xs"
+              onClick={() => setBottomSheetOpen(false)}
+            />
+
+            {/* Slide-Up Sheet */}
+            <motion.div
+              initial={{ y: '100%' }}
+              animate={{ y: 0 }}
+              exit={{ y: '100%' }}
+              transition={{ type: 'spring', damping: 26, stiffness: 260 }}
+              className="absolute inset-x-0 bottom-0 max-h-[82vh] bg-white rounded-t-3xl shadow-2xl flex flex-col border-t border-teal-900/10"
+            >
+              {/* Grab Handle */}
+              <div className="w-12 h-1.5 rounded-full bg-zinc-300 mx-auto my-3 shrink-0 cursor-pointer" onClick={() => setBottomSheetOpen(false)} />
+
+              {/* Sheet Header */}
+              <div className="flex items-center justify-between px-5 pb-3 border-b border-zinc-100 shrink-0">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-[#115E59] text-white flex items-center justify-center font-bold text-xs">
+                    JM
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-black text-zinc-900">Semua Modul &amp; Menu</h2>
+                    <p className="text-[11px] text-zinc-500">Akses modul sesuai hak: <strong>{roleLabel}</strong></p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setBottomSheetOpen(false)}
+                  className="p-1.5 rounded-full bg-zinc-100 hover:bg-zinc-200 text-zinc-600 cursor-pointer"
+                  aria-label="Tutup panel"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              {/* Sheet Body (Categorized Scrollable Modules) */}
+              <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4 pb-[calc(env(safe-area-inset-bottom)+24px)]">
+                {/* Quick Utilities */}
+                <div className="grid grid-cols-2 gap-2">
+                  <Link
+                    to="/"
+                    target="_blank"
+                    onClick={() => setBottomSheetOpen(false)}
+                    className="flex items-center gap-2 p-2.5 rounded-xl border border-teal-900/15 bg-teal-50/50 text-xs font-bold text-teal-900 hover:bg-teal-100/50 transition-colors"
+                  >
+                    <ExternalLink size={15} />
+                    <span>Lihat Web Publik</span>
+                  </Link>
+                  <NavLink
+                    to="/admin/readme"
+                    onClick={() => setBottomSheetOpen(false)}
+                    className="flex items-center gap-2 p-2.5 rounded-xl border border-amber-900/15 bg-amber-50/50 text-xs font-bold text-amber-950 hover:bg-amber-100/50 transition-colors"
+                  >
+                    <BookOpen size={15} />
+                    <span>Panduan Read Me</span>
+                  </NavLink>
+                </div>
+
+                {visible.map((group) => (
+                  <div key={group.title} className="space-y-1.5">
+                    <div className="text-[10px] font-black uppercase tracking-wider text-teal-900/60 px-2">
+                      {group.title}
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                      {group.items.map((item) => (
+                        <NavLink
+                          key={item.to}
+                          to={item.to}
+                          end={item.to === '/admin'}
+                          onClick={() => setBottomSheetOpen(false)}
+                          className={({ isActive }) =>
+                            `flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
+                              isActive
+                                ? 'bg-[#115E59] text-white shadow-xs'
+                                : 'text-zinc-700 bg-zinc-50/80 hover:bg-teal-900/5'
+                            }`
+                          }
+                        >
+                          <item.icon size={16} className="shrink-0" />
+                          <span className="truncate">{item.label}</span>
+                        </NavLink>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

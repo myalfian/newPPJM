@@ -416,7 +416,7 @@ export const SantriPerformancePage: React.FC = () => {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs sm:text-sm">
+              <table className="w-full text-left border-collapse text-xs sm:text-sm min-w-[720px]">
                 <thead>
                   <tr className="bg-[#FAF8F5] text-slate-600 border-b border-slate-200">
                     <th className="py-3 px-3.5 font-extrabold">No.</th>

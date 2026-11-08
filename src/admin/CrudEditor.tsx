@@ -5,7 +5,7 @@ import StarterKit from '@tiptap/starter-kit';
 import {
   GripVertical, Trash2, Plus, Save, ImagePlus, Eye, EyeOff, Search, ChevronDown, ChevronUp,
   Bold, Italic, List, Monitor, Tablet, Smartphone, Sparkles, Layers, CheckCircle2, AlertCircle,
-  HelpCircle, Info, FileText, Image, Calendar, BarChart3, Code as CodeIcon,
+  HelpCircle, Info, FileText, Image, Calendar, BarChart3, Code as CodeIcon, ExternalLink,
 } from 'lucide-react';
 import {
   DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors, type DragEndEvent,
@@ -339,9 +339,9 @@ const GalleryPhotosEditor: React.FC<{
                 </span>
               )}
             </div>
-            <div className="relative aspect-[16/10] overflow-hidden rounded-lg bg-zinc-100 border border-zinc-200/60">
+            <div className="relative aspect-[16/10] overflow-hidden rounded-xl bg-zinc-950/10 border border-zinc-200/60 flex items-center justify-center">
               {slide.photo_url ? (
-                <img src={slide.photo_url} alt={`Slide ${idx + 1}`} className="h-full w-full object-cover" />
+                <img src={slide.photo_url} alt={`Slide ${idx + 1}`} className="h-full w-full object-contain p-0.5" />
               ) : (
                 <div className="grid h-full w-full place-items-center text-[11px] text-zinc-400">
                   Belum ada foto
@@ -646,8 +646,8 @@ const FieldInput: React.FC<{
     case 'image':
       control = (
         <div className="flex flex-wrap items-center gap-3">
-          <div className="grid h-16 w-24 shrink-0 place-items-center overflow-hidden rounded-lg bg-zinc-100 border border-zinc-200/70">
-            {str ? <img src={str} alt="" className="h-full w-full object-cover" /> : <ImagePlus className="text-zinc-300" />}
+          <div className="grid h-16 w-24 shrink-0 place-items-center overflow-hidden rounded-xl bg-zinc-950/10 border border-zinc-200/70">
+            {str ? <img src={str} alt="" className="h-full w-full object-contain p-0.5" /> : <ImagePlus className="text-zinc-300" />}
           </div>
           <div className="flex flex-col gap-1.5 flex-1">
             <input
@@ -748,35 +748,41 @@ const Item: React.FC<{
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`rounded-xl border bg-white ${isDragging ? 'border-[#115E59] shadow-md' : 'border-zinc-200'} ${active ? '' : 'opacity-60'}`}
+      className={`rounded-2xl border bg-white transition-all ${
+        isDragging ? 'border-[#115E59] shadow-lg ring-2 ring-[#115E59]/20' : 'border-zinc-200/90 shadow-2xs hover:shadow-xs'
+      } ${active ? '' : 'opacity-65 bg-zinc-50/70'}`}
     >
-      <div className="flex items-center gap-2 p-2.5">
+      <div className="flex items-center gap-2 sm:gap-2.5 p-3">
         {sortable && (
-          <button {...attributes} {...listeners} className="cursor-grab touch-none text-zinc-400" aria-label="Geser urutan">
+          <button {...attributes} {...listeners} className="cursor-grab touch-none p-1 text-zinc-400 hover:text-zinc-600 rounded-lg" aria-label="Geser urutan">
             <GripVertical size={16} />
           </button>
         )}
         {sec.imageField && (
-          <div className="h-12 w-16 shrink-0 overflow-hidden rounded-lg bg-zinc-100">
-            {img && <img src={img} alt="" className="h-full w-full object-cover" />}
+          <div className="h-12 w-16 shrink-0 overflow-hidden rounded-xl bg-zinc-950/10 border border-zinc-200/60 flex items-center justify-center">
+            {img ? (
+              <img src={img} alt="" className="h-full w-full object-contain p-0.5" loading="lazy" />
+            ) : (
+              <Image size={18} className="text-zinc-400" />
+            )}
           </div>
         )}
-        <button type="button" onClick={onToggleOpen} className="min-w-0 flex-1 text-left" aria-expanded={open}>
-          <p className="truncate text-sm font-semibold text-teal-950">{title}</p>
-          <p className="truncate text-xs text-zinc-500">{[badge, sub].filter(Boolean).join(' · ')}</p>
+        <button type="button" onClick={onToggleOpen} className="min-w-0 flex-1 text-left cursor-pointer" aria-expanded={open}>
+          <p className="truncate text-xs sm:text-sm font-bold text-teal-950">{title}</p>
+          <p className="truncate text-[11px] text-zinc-500">{[badge, sub].filter(Boolean).join(' · ')}</p>
         </button>
         {sec.activeField && canPublish && (
           <button
             onClick={onToggleActive}
-            className="text-zinc-500 hover:text-[#115E59]"
+            className="p-1.5 rounded-lg text-zinc-500 hover:text-[#115E59] hover:bg-zinc-100 transition-colors cursor-pointer"
             aria-label={active ? 'Sembunyikan dari website' : 'Tampilkan di website'}
             title={active ? 'Tampil di website' : 'Disembunyikan'}
           >
-            {active ? <Eye size={16} /> : <EyeOff size={16} />}
+            {active ? <Eye size={17} className="text-[#115E59]" /> : <EyeOff size={17} />}
           </button>
         )}
-        <button onClick={onToggleOpen} className="text-zinc-400" aria-label={open ? 'Tutup' : 'Buka'}>
-          {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        <button onClick={onToggleOpen} className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 cursor-pointer" aria-label={open ? 'Tutup' : 'Buka'}>
+          {open ? <ChevronUp size={17} /> : <ChevronDown size={17} />}
         </button>
       </div>
       {open && (
@@ -1122,6 +1128,22 @@ const Editor: React.FC<{ sec: CrudSection }> = ({ sec }) => {
 
         {!canEdit && <p className="rounded-xl bg-amber-50 p-3 text-xs text-amber-900">Anda hanya bisa melihat bagian ini.</p>}
 
+        {sec.key === 'info_terkini' && (
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3.5 rounded-2xl bg-amber-50/90 border border-amber-200/90 text-xs text-amber-950">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
+              <span>Ingin memperlambat atau mengatur animasi teks berjalan di header?</span>
+            </div>
+            <Link
+              to="/admin/ticker-settings"
+              className="inline-flex items-center gap-1.5 font-bold text-[#115E59] hover:underline shrink-0 bg-white px-3 py-1.5 rounded-xl border border-teal-900/15 shadow-2xs text-xs"
+            >
+              <span>Buka Pengaturan Kecepatan</span>
+              <ExternalLink size={12} />
+            </Link>
+          </div>
+        )}
+
         {msg && (
           <div
             role="status"
@@ -1220,6 +1242,24 @@ const Editor: React.FC<{ sec: CrudSection }> = ({ sec }) => {
               </div>
             </SortableContext>
           </DndContext>
+        )}
+
+        {/* Android Floating Action Button (FAB) for Mobile Add Data */}
+        {canCreate && !newRow && (
+          <button
+            type="button"
+            onClick={() => {
+              setNewRow(toDraft(sec, null));
+              setOpenId(null);
+              setMsg('');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="fixed bottom-[calc(env(safe-area-inset-bottom)+76px)] right-4 z-20 lg:hidden flex items-center justify-center w-13 h-13 rounded-full bg-[#115E59] text-white shadow-lg shadow-teal-950/20 active:scale-90 transition-transform cursor-pointer border border-emerald-400/30"
+            aria-label={`Tambah ${sec.label}`}
+            title={`Tambah ${sec.label}`}
+          >
+            <Plus size={24} className="stroke-[2.5]" />
+          </button>
         )}
       </section>
 
