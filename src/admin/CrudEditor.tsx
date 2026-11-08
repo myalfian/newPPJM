@@ -1135,10 +1135,10 @@ const Editor: React.FC<{ sec: CrudSection }> = ({ sec }) => {
               <span>Ingin memperlambat atau mengatur animasi teks berjalan di header?</span>
             </div>
             <Link
-              to="/admin/ticker-settings"
+              to="/admin/slider-settings?tab=ticker"
               className="inline-flex items-center gap-1.5 font-bold text-[#115E59] hover:underline shrink-0 bg-white px-3 py-1.5 rounded-xl border border-teal-900/15 shadow-2xs text-xs"
             >
-              <span>Buka Pengaturan Kecepatan</span>
+              <span>Buka Pengaturan Slider &amp; Info Terkini</span>
               <ExternalLink size={12} />
             </Link>
           </div>

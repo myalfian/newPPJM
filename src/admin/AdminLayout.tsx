@@ -76,7 +76,6 @@ const GROUPS: NavGroup[] = [
     items: [
       sectionItem('berita'),
       sectionItem('info_terkini'),
-      { to: '/admin/ticker-settings', label: 'Kecepatan Info Terkini', icon: Sparkles, section: 'info_terkini' },
       sectionItem('agendas'),
       sectionItem('karya_siswa'),
       sectionItem('galeri_foto'),
@@ -86,7 +85,7 @@ const GROUPS: NavGroup[] = [
   {
     title: 'Pengaturan & Hak Akses',
     items: [
-      { to: '/admin/slider-settings', label: 'Pengaturan Slider Global', icon: SlidersHorizontal, section: 'slider_settings' },
+      { to: '/admin/slider-settings', label: 'Pengaturan Slider & Info Terkini', icon: SlidersHorizontal, section: 'slider_settings' },
       sectionItem('user_approvals'),
       sectionItem('password_requests'),
       sectionItem('spmb_info'),
@@ -111,8 +110,8 @@ const CRUMBS: Record<string, string> = {
   '/admin/fasilitas': 'Profil & Kelembagaan / Sarana & Fasilitas',
   '/admin/users': 'Pengaturan & Hak Akses / Kelola Pengguna',
   '/admin/roles': 'Pengaturan & Hak Akses / Matriks Hak Akses',
-  '/admin/slider-settings': 'Pengaturan & Hak Akses / Pengaturan Slider Global',
-  '/admin/ticker-settings': 'Publikasi & Media / Kecepatan Info Terkini',
+  '/admin/slider-settings': 'Pengaturan & Hak Akses / Pengaturan Slider & Info Terkini',
+  '/admin/ticker-settings': 'Pengaturan & Hak Akses / Pengaturan Slider & Info Terkini',
   '/admin/profile': 'Pusat Kendali / Profil Saya',
   ...Object.fromEntries(CRUD_SECTIONS.map((s) => [`/admin/s/${s.key}`, `${s.group} / ${s.label}`])),
 };

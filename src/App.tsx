@@ -134,7 +134,6 @@ const BulkContentPage = lazy(() => import('./admin/BulkContentPage').then(m => (
 const RolesPage = lazy(() => import('./admin/RolesPage').then(m => ({ default: m.RolesPage })));
 const UsersPage = lazy(() => import('./admin/UsersPage').then(m => ({ default: m.UsersPage })));
 const SliderSettingsPage = lazy(() => import('./admin/SliderSettingsPage').then(m => ({ default: m.SliderSettingsPage })));
-const TickerSettingsPage = lazy(() => import('./admin/TickerSettingsPage').then(m => ({ default: m.TickerSettingsPage })));
 const AdminReadmePage = lazy(() => import('./admin/AdminReadmePage').then(m => ({ default: m.AdminReadmePage })));
 const Home = lazy(() => import('./pages/Home').then(m => ({ default: m.Home })));
 const JmCenter = lazy(() => import('./pages/jm-center/JmCenter').then(m => ({ default: m.JmCenter })));
@@ -308,7 +307,7 @@ export const App: React.FC = () => {
             <Route path="users" element={<UsersPage />} />
             <Route path="roles" element={<RolesPage />} />
             <Route path="slider-settings" element={<SliderSettingsPage />} />
-            <Route path="ticker-settings" element={<TickerSettingsPage />} />
+            <Route path="ticker-settings" element={<Navigate to="/admin/slider-settings?tab=ticker" replace />} />
             <Route path="readme" element={<AdminReadmePage />} />
             <Route path="profile" element={<UserProfilePage />} />
           </Route>
